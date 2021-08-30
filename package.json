@@ -1,0 +1,55 @@
+{
+  "private": true,
+  "name": "jssim",
+  "version": "1.0.0",
+  "description": "A simulator of electronic circuits.",
+  "author": "Aliaksandr Radzivanovich",
+  "license": "ISC",
+  "keywords": [
+    "electronics",
+    "simulation",
+    "circuit"
+  ],
+  "homepage": "https://github.com/aradzie/jssim#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aradzie/jssim.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aradzie/jssim/issues"
+  },
+  "scripts": {
+    "compile": "tsc",
+    "test": "ava",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "lint-fix": "eslint src --ext .js,.jsx,.jsx,.ts,.tsx --fix",
+    "format": "prettier . --write",
+    "webpack-dev": "env NODE_ENV=development webpack",
+    "webpack-prod": "env NODE_ENV=production webpack"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.19",
+    "@types/react-dom": "^17.0.9",
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
+    "css-loader": "^6.2.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-restricted-globals": "^0.2.0",
+    "prettier": "^2.3.2",
+    "source-map-loader": "^3.0.0",
+    "style-loader": "^3.2.1",
+    "ts-loader": "^9.2.5",
+    "typescript": "^4.3.5",
+    "webpack": "^5.51.1",
+    "webpack-cli": "^4.8.0"
+  },
+  "dependencies": {
+    "@mdi/js": "^5.9.55",
+    "clsx": "^1.1.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "tslib": "^2.3.1"
+  }
+}

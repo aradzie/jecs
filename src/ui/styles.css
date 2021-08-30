@@ -1,0 +1,63 @@
+.App {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.ToolBar {
+  flex: none;
+  display: flex;
+  flex-direction: row;
+  min-height: 2rem;
+  border-bottom: 1px solid gray;
+}
+
+.ToolItem {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
+  outline: 1px dotted gray;
+}
+
+.ComponentBar {
+  flex: none;
+  display: flex;
+  flex-direction: row;
+  min-height: 42px;
+  border-bottom: 1px solid gray;
+}
+
+.ComponentItem {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 42px;
+  height: 42px;
+  outline: 1px dotted gray;
+}
+
+.Schematic {
+  flex: auto;
+}
+
+.StatusBar {
+  flex: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 2rem;
+  border-top: 1px solid gray;
+}
+
+.Icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 2rem;
+  height: 2rem;
+  fill: #222222;
+}

@@ -1,0 +1,9 @@
+node_modules/
+build/
+out/
+lib/
+tmp/
+.idea/
+.vscode/
+package-lock.json
+*.snap
