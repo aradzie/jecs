@@ -33,7 +33,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(js)$/,
         use: [
           {
             loader: "source-map-loader",
@@ -41,7 +41,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.css$/,
+        test: /\.(css)$/,
         use: [
           {
             loader: "style-loader",

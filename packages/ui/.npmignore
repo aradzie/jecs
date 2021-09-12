@@ -1,0 +1,12 @@
+# Ignore everything by default
+**
+
+# Use negative patterns to bring back the specific things we want to publish
+!/lib/**
+!/lib-cjs/**
+!/lib-esm/**
+
+# Ignore certain files in the above directories
+**/test/*
+**/*.test.*
+.tsbuildcache

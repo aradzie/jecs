@@ -5,12 +5,7 @@ module.exports = {
     es2020: true,
   },
   plugins: [],
-  extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
-  ],
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   rules: {
     // configure eslint
     "eqeqeq": ["error", "always", { null: "never" }],
@@ -27,15 +22,7 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-use-before-define": "off",
-    // configure react
-    "react/display-name": "off",
-    "react/prop-types": "off",
-    "react/react-in-jsx-scope": "off",
   },
   overrides: [],
-  settings: {
-    react: {
-      version: "detect",
-    },
-  },
+  settings: {},
 };
