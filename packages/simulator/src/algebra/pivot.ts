@@ -77,6 +77,27 @@ export function findRookPivot(
   return [i, j];
 }
 
+export function findCompletePivot(
+  mat: ArrayLike<Float64Array>,
+  size: number,
+  k: number,
+): [rowIndex: number, colIndex: number] {
+  let pivotRow = k;
+  let pivotCol = k;
+  let pivotValue = 0;
+  for (let i = k; i < size; i++) {
+    for (let j = k; j < size; j++) {
+      const v = Math.abs(mat[pivotRow][pivotCol]);
+      if (v > pivotValue) {
+        pivotRow = i;
+        pivotCol = j;
+        pivotValue = v;
+      }
+    }
+  }
+  return [pivotRow, pivotCol];
+}
+
 export function swapRows<T>(
   m: { [index: number]: T },
   a: number,
