@@ -99,27 +99,3 @@ export function findCompletePivot(
   }
   return [pivotRow, pivotCol];
 }
-
-export function swapRows<T>(
-  m: { [index: number]: T },
-  a: number,
-  b: number,
-): void {
-  const t = m[a];
-  m[a] = m[b];
-  m[b] = t;
-}
-
-export function swapColumns<T>(
-  m: ArrayLike<{ [index: number]: T }>,
-  size: number,
-  a: number,
-  b: number,
-): void {
-  for (let i = 0; i < size; i++) {
-    const row = m[i];
-    const t = row[a];
-    row[a] = row[b];
-    row[b] = t;
-  }
-}

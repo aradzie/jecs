@@ -1,4 +1,5 @@
-import { findPivotRow, swapRows } from "./pivot";
+import { swapRows } from "./matrix";
+import { findPivotRow } from "./pivot";
 import type { Matrix, MatrixLike, Vector, VectorLike } from "./types";
 
 export interface Solver {
