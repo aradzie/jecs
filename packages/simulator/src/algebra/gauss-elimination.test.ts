@@ -1,6 +1,6 @@
 import test from "ava";
 import { toMatrix, toVector } from "./debug";
-import { solve } from "./gaussian-elimination";
+import { solve } from "./gauss-elimination";
 
 test("solve", (t) => {
   {

@@ -4,7 +4,7 @@ import type { Matrix, MatrixLike, Vector, VectorLike } from "./types";
 
 /**
  * Solves `A * x = b`, returns a solution vector `x`.
- * Uses Gaussian elimination to find the solution.
+ * Uses Gauss elimination to find the solution.
  * @param matA A matrix `A`.
  * @param vecB A vector `b`.
  * @return A solution vector `x`.
