@@ -1,16 +1,6 @@
 import { swapRows } from "./matrix";
 import { findPivotRow } from "./pivot";
-import type { Matrix, MatrixLike, Vector, VectorLike } from "./types";
-
-export interface Solver {
-  /**
-   * Solves `A * x = b`, returns a solution vector `x`.
-   * The matrix `A` is specified when a solver is created.
-   * @param vecB A vector `b`.
-   * @return A solution vector `x`.
-   */
-  solve(vecB: VectorLike): Vector;
-}
+import type { Matrix, MatrixLike, Solver, Vector } from "./types";
 
 /**
  * Creates a new solver which uses LU decomposition to find a solution
