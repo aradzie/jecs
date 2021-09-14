@@ -2,8 +2,10 @@
  * Scans the given column which starts at [i, j] and ends at [size, j],
  * returns index of the row with the largest value in the column.
  */
+import type { MatrixLike } from "./types";
+
 export function findPivotRow(
-  mat: ArrayLike<Float64Array>,
+  mat: MatrixLike,
   size: number,
   i: number,
   j: number,
@@ -27,7 +29,7 @@ export function findPivotRow(
  * returns index of the column with the largest value in the row.
  */
 export function findPivotCol(
-  mat: ArrayLike<Float64Array>,
+  mat: MatrixLike,
   size: number,
   i: number,
   j: number,
@@ -51,7 +53,7 @@ export function findPivotCol(
  * using the rook pivot strategy.
  */
 export function findRookPivot(
-  mat: ArrayLike<Float64Array>,
+  mat: MatrixLike,
   size: number,
   k: number,
 ): [rowIndex: number, colIndex: number] {
@@ -78,7 +80,7 @@ export function findRookPivot(
 }
 
 export function findCompletePivot(
-  mat: ArrayLike<Float64Array>,
+  mat: MatrixLike,
   size: number,
   k: number,
 ): [rowIndex: number, colIndex: number] {

@@ -1,16 +1,18 @@
-export function toVector(data: ArrayLike<number>): Float64Array {
+import type { Matrix, MatrixLike, Vector, VectorLike } from "./types";
+
+export function toVector(data: VectorLike): Vector {
   return new Float64Array(data);
 }
 
-export function toMatrix(data: ArrayLike<ArrayLike<number>>): Float64Array[] {
-  return Array.from(data).map((row) => new Float64Array(row));
+export function toMatrix(data: MatrixLike): Matrix {
+  return Array.from(data).map((row) => toVector(row));
 }
 
-export function toArray(matrix: ArrayLike<Float64Array>): number[][] {
+export function toArray(matrix: Matrix): number[][] {
   return Array.from(matrix).map((row) => [...row]);
 }
 
-export function dump(m: ArrayLike<ArrayLike<number>>) {
+export function dumpMatrix(m: MatrixLike): void {
   for (let i = 0; i < m.length; i++) {
     const row = m[i];
     const s = [];

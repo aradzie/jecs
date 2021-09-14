@@ -1,4 +1,5 @@
 import { findPivotRow, swapRows } from "./pivot";
+import type { Matrix, MatrixLike, Vector, VectorLike } from "./types";
 
 export interface Solver {
   /**
@@ -7,7 +8,7 @@ export interface Solver {
    * @param vecB A vector `b`.
    * @return A solution vector `x`.
    */
-  solve(vecB: Float64Array): Float64Array;
+  solve(vecB: VectorLike): Vector;
 }
 
 /**
@@ -15,7 +16,7 @@ export interface Solver {
  * to equation `A * x = b`.
  * @param matA A matrix `A`.
  */
-export function createSolver(matA: ArrayLike<Float64Array>): Solver {
+export function createSolver(matA: MatrixLike): Solver {
   const size = matA.length;
 
   if (size === 0) {
@@ -46,7 +47,7 @@ export function createSolver(matA: ArrayLike<Float64Array>): Solver {
   const vecY = new Float64Array(size);
 
   return new (class implements Solver {
-    solve(vecB: Float64Array): Float64Array {
+    solve(vecB: Vector): Vector {
       if (size !== vecB.length) {
         throw new TypeError();
       }
@@ -78,12 +79,7 @@ export function createSolver(matA: ArrayLike<Float64Array>): Solver {
   })();
 }
 
-function pivot(
-  matM: Float64Array[],
-  p: Int32Array,
-  size: number,
-  k: number,
-): void {
+function pivot(matM: Matrix, p: Int32Array, size: number, k: number): void {
   const [_, pk] = findPivotRow(matM, size, k, k);
   if (pk !== k) {
     swapRows(matM, k, pk);
