@@ -15,6 +15,7 @@ export class Resistor extends Device {
   readonly a: Node;
   readonly b: Node;
   readonly r: number;
+  current: number = 0;
 
   constructor([a, b]: readonly Node[], { name, r }: ResistorProps) {
     super([a, b], name);
@@ -29,5 +30,9 @@ export class Resistor extends Device {
     stamper.stampMatrix(this.a, this.b, -g);
     stamper.stampMatrix(this.b, this.a, -g);
     stamper.stampMatrix(this.b, this.b, g);
+  }
+
+  override update(): void {
+    this.current = (this.b.voltage - this.a.voltage) / this.r;
   }
 }
