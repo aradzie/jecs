@@ -55,7 +55,7 @@ export class Circuit implements Network {
 
     const stamper = new (class implements Stamper {
       stampMatrix(i: Node | Branch, j: Node | Branch, x: number): void {
-        if (Number.isNaN(x) || !Number.isFinite(x)) {
+        if (!Number.isFinite(x)) {
           throw new TypeError();
         }
         if (i !== groundNode && j !== groundNode) {
@@ -64,7 +64,7 @@ export class Circuit implements Network {
       }
 
       stampRightSide(i: Node | Branch, x: number): void {
-        if (Number.isNaN(x) || !Number.isFinite(x)) {
+        if (!Number.isFinite(x)) {
           throw new TypeError();
         }
         if (i !== groundNode) {
