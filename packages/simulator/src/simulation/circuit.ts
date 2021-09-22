@@ -73,7 +73,7 @@ export class Circuit implements Network {
       }
     })();
 
-    for (const device of this.devices.values()) {
+    for (const device of this.devices) {
       device.stamp(stamper);
     }
 
@@ -110,7 +110,7 @@ export class Circuit implements Network {
       }
     }
 
-    for (const device of this.devices.values()) {
+    for (const device of this.devices) {
       device.update();
     }
   }
