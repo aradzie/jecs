@@ -7,12 +7,14 @@ import type { Node } from "./network";
 
 export type NetList = readonly NetListItem[];
 
+type AnyDeviceProps = DeviceProps & {
+  readonly [name: string]: unknown;
+};
+
 export type NetListItem = readonly [
   id: string,
   connections: readonly string[],
-  props: DeviceProps & {
-    readonly [name: string]: unknown;
-  },
+  props: AnyDeviceProps,
 ];
 
 const deviceMap = new Map<
@@ -42,7 +44,7 @@ export function registerDevice(...deviceClasses: DeviceClass[]) {
 export function createDevice(
   id: string,
   nodes: readonly Node[],
-  props: unknown,
+  props: AnyDeviceProps,
 ): Device {
   if (id === "g") {
     return new Ground(nodes);
@@ -53,7 +55,10 @@ export function createDevice(
   }
   const { deviceClass, numTerminals } = deviceInfo;
   if (nodes.length !== numTerminals) {
-    throw new CircuitError(`Invalid number of terminals ${nodes.length}`);
+    throw new CircuitError(
+      `Invalid number of terminals ${nodes.length} ` +
+        `for device [${id}:${props.name}]`,
+    );
   }
   return new deviceClass(nodes, props);
 }
