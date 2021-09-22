@@ -35,5 +35,10 @@ export class VCISource extends Device {
     this.gain = gain;
   }
 
-  override stamp(stamper: Stamper): void {}
+  override stamp(stamper: Stamper): void {
+    stamper.stampMatrix(this.oa, this.ib, this.gain);
+    stamper.stampMatrix(this.oa, this.ia, -this.gain);
+    stamper.stampMatrix(this.ob, this.ib, -this.gain);
+    stamper.stampMatrix(this.ob, this.ia, this.gain);
+  }
 }
