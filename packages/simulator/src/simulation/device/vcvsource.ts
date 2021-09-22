@@ -41,5 +41,12 @@ export class VCVSource extends Device {
     this.branch = network.allocBranch(this.oa, this.ob);
   }
 
-  override stamp(stamper: Stamper): void {}
+  override stamp(stamper: Stamper): void {
+    stamper.stampMatrix(this.oa, this.branch, -1);
+    stamper.stampMatrix(this.ob, this.branch, 1);
+    stamper.stampMatrix(this.branch, this.oa, -1);
+    stamper.stampMatrix(this.branch, this.ob, 1);
+    stamper.stampMatrix(this.branch, this.ia, this.gain);
+    stamper.stampMatrix(this.branch, this.ib, -this.gain);
+  }
 }
