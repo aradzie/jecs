@@ -59,7 +59,7 @@ export function createDevice(
   if (nodes.length !== numTerminals) {
     throw new CircuitError(
       `Error in device [${id}:${name}]: ` + //
-        `Invalid number of terminals`,
+        `Invalid number of nodes`,
     );
   }
   let props;
