@@ -63,7 +63,7 @@ export function createDevice(
       `Netlist error in device [${id}:${name}]: ` + err.message,
     );
   }
-  return new deviceClass(nodes, { ...props, name });
+  return new deviceClass(name, nodes, props);
 }
 
 registerDevice(...devices);

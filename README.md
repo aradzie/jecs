@@ -14,12 +14,10 @@ const n0 = circuit.allocNode("N0");
 
 // Add devices to the circuit.
 circuit.addDevice(
-  new VSource([ng, n0], {
-    name: "V1",
+  new VSource("V1", [ng, n0], {
     v: 10,
   }),
-  new Resistor([ng, n0], {
-    name: "R1",
+  new Resistor("R1", [ng, n0], {
     r: 1000,
   }),
 );

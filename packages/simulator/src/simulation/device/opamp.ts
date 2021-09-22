@@ -20,8 +20,12 @@ export class OpAmp extends Device {
   readonly o: Node;
   readonly gain: number;
 
-  constructor([a, b, o]: readonly Node[], { name, gain }: OpAmpProps) {
-    super([a, b, o], name);
+  constructor(
+    name: string, //
+    [a, b, o]: readonly Node[],
+    { gain }: OpAmpProps,
+  ) {
+    super(name, [a, b, o]);
     this.a = a;
     this.b = b;
     this.o = o;

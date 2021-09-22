@@ -18,8 +18,12 @@ export class Resistor extends Device {
   readonly r: number;
   current: number = 0;
 
-  constructor([a, b]: readonly Node[], { name, r }: ResistorProps) {
-    super([a, b], name);
+  constructor(
+    name: string, //
+    [a, b]: readonly Node[],
+    { r }: ResistorProps,
+  ) {
+    super(name, [a, b]);
     this.a = a;
     this.b = b;
     this.r = r;

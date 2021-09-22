@@ -27,10 +27,11 @@ export class VCISource extends Device {
   readonly gain: number;
 
   constructor(
+    name: string,
     [ia, ib, oa, ob]: readonly Node[],
-    { name, gain }: VCISourceProps,
+    { gain }: VCISourceProps,
   ) {
-    super([ia, ib, oa, ob], name);
+    super(name, [ia, ib, oa, ob]);
     this.ia = ia;
     this.ib = ib;
     this.oa = oa;

@@ -21,8 +21,12 @@ export class ISource extends Device {
   /** Output value in amperes. */
   readonly i: number;
 
-  constructor([a, b]: readonly Node[], { name, i }: ISourceProps) {
-    super([a, b], name);
+  constructor(
+    name: string, //
+    [a, b]: readonly Node[],
+    { i }: ISourceProps,
+  ) {
+    super(name, [a, b]);
     this.a = a;
     this.b = b;
     this.i = i;

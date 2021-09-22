@@ -8,8 +8,7 @@ test("short circuit", (t) => {
   const circuit = new Circuit();
   const ng = circuit.groundNode;
   circuit.addDevice(
-    new VSource([ng, ng], {
-      name: "V1",
+    new VSource("V1", [ng, ng], {
       v: 1,
     }),
   );
@@ -28,8 +27,7 @@ test("open circuit", (t) => {
   const ng = circuit.groundNode;
   const n0 = circuit.allocNode("N0");
   circuit.addDevice(
-    new VSource([ng, n0], {
-      name: "V1",
+    new VSource("V1", [ng, n0], {
       v: 1,
     }),
   );
@@ -49,12 +47,10 @@ test("`is` in series with `r`", (t) => {
   const ng = circuit.groundNode;
   const n0 = circuit.allocNode("N0");
   circuit.addDevice(
-    new ISource([ng, n0], {
-      name: "I1",
+    new ISource("I1", [ng, n0], {
       i: 0.001,
     }),
-    new Resistor([ng, n0], {
-      name: "R1",
+    new Resistor("R1", [ng, n0], {
       r: 1000,
     }),
   );
@@ -74,16 +70,13 @@ test("`is` in series with `r` in series with `r`", (t) => {
   const n0 = circuit.allocNode("N0");
   const n1 = circuit.allocNode("N1");
   circuit.addDevice(
-    new ISource([ng, n1], {
-      name: "I1",
+    new ISource("I1", [ng, n1], {
       i: 0.001,
     }),
-    new Resistor([ng, n0], {
-      name: "R1",
+    new Resistor("R1", [ng, n0], {
       r: 300,
     }),
-    new Resistor([n0, n1], {
-      name: "R2",
+    new Resistor("R2", [n0, n1], {
       r: 700,
     }),
   );
@@ -103,12 +96,10 @@ test("`vs` in series with `r`", (t) => {
   const ng = circuit.groundNode;
   const n0 = circuit.allocNode("N0");
   circuit.addDevice(
-    new VSource([ng, n0], {
-      name: "V1",
+    new VSource("V1", [ng, n0], {
       v: 10,
     }),
-    new Resistor([ng, n0], {
-      name: "R1",
+    new Resistor("R1", [ng, n0], {
       r: 1000,
     }),
   );
@@ -129,16 +120,13 @@ test("`vs` in series with `r` in series with `r`", (t) => {
   const n0 = circuit.allocNode("N0");
   const n1 = circuit.allocNode("N1");
   circuit.addDevice(
-    new VSource([ng, n1], {
-      name: "V1",
+    new VSource("V1", [ng, n1], {
       v: 10,
     }),
-    new Resistor([ng, n0], {
-      name: "R1",
+    new Resistor("R1", [ng, n0], {
       r: 300,
     }),
-    new Resistor([n0, n1], {
-      name: "R2",
+    new Resistor("R2", [n0, n1], {
       r: 700,
     }),
   );
@@ -160,16 +148,13 @@ test("`vs` in series with `vs` in series with `r`", (t) => {
   const n0 = circuit.allocNode("N0");
   const n1 = circuit.allocNode("N1");
   circuit.addDevice(
-    new VSource([ng, n0], {
-      name: "V1",
+    new VSource("V1", [ng, n0], {
       v: 10,
     }),
-    new VSource([n0, n1], {
-      name: "V2",
+    new VSource("V2", [n0, n1], {
       v: 10,
     }),
-    new Resistor([ng, n1], {
-      name: "R1",
+    new Resistor("R1", [ng, n1], {
       r: 1000,
     }),
   );

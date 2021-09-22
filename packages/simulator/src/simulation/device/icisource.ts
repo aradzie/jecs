@@ -27,10 +27,11 @@ export class ICISource extends Device {
   readonly gain: number;
 
   constructor(
+    name: string,
     [ia, ib, oa, ob]: readonly Node[],
-    { name, gain }: ICISourceProps,
+    { gain }: ICISourceProps,
   ) {
-    super([ia, ib, oa, ob], name);
+    super(name, [ia, ib, oa, ob]);
     this.ia = ia;
     this.ib = ib;
     this.oa = oa;

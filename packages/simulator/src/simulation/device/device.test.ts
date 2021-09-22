@@ -1,5 +1,5 @@
 import test from "ava";
-import { DeviceProps, Unit, validateDeviceProps } from "./device";
+import { Unit, validateDeviceProps } from "./device";
 
 test("validate device props", (t) => {
   t.notThrows(() => {
@@ -33,6 +33,6 @@ test("validate device props", (t) => {
     validateDeviceProps({}, [
       { name: "v", unit: Unit.VOLT, default: 1 }, //
     ]),
-    { v: 1 } as unknown as DeviceProps,
+    { v: 1 },
   );
 });

@@ -1,6 +1,6 @@
 import { CircuitError } from "../error";
 import type { Network, Node } from "../network";
-import { Device, DeviceProps } from "./device";
+import { Device } from "./device";
 
 export class Ground extends Device {
   static override readonly id = "g";
@@ -9,11 +9,8 @@ export class Ground extends Device {
 
   readonly n: Node;
 
-  constructor(
-    [n]: readonly Node[],
-    { name }: DeviceProps = { name: "GROUND" },
-  ) {
-    super([n], name);
+  constructor(name: string, [n]: readonly Node[]) {
+    super(name, [n]);
     this.n = n;
   }
 

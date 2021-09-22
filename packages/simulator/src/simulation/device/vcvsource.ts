@@ -29,10 +29,11 @@ export class VCVSource extends Device {
   branch!: Branch;
 
   constructor(
+    name: string,
     [ia, ib, oa, ob]: readonly Node[],
-    { name, gain }: VCVSourceProps,
+    { gain }: VCVSourceProps,
   ) {
-    super([ia, ib, oa, ob], name);
+    super(name, [ia, ib, oa, ob]);
     this.ia = ia;
     this.ib = ib;
     this.oa = oa;

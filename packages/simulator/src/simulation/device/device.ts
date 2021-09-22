@@ -20,7 +20,7 @@ export enum Unit {
 }
 
 export type DeviceProps = {
-  readonly name: string;
+  readonly [name: string]: number;
 };
 
 export type RawDeviceProps = {
@@ -39,7 +39,8 @@ export interface DeviceClass {
   readonly id: string;
   readonly numTerminals: number;
   readonly propsSchema: DevicePropsSchema;
-  new (nodes: readonly Node[], props: any): Device;
+
+  new (name: string, nodes: readonly Node[], props: any): Device;
 }
 
 export abstract class Device {
@@ -47,12 +48,12 @@ export abstract class Device {
   static readonly numTerminals: number;
   static readonly propsSchema: DevicePropsSchema;
 
-  readonly nodes: Node[];
   readonly name: string;
+  readonly nodes: Node[];
 
-  constructor(nodes: readonly Node[], name: string) {
-    this.nodes = [...nodes];
+  constructor(name: string, nodes: readonly Node[]) {
     this.name = name;
+    this.nodes = [...nodes];
   }
 
   /**
