@@ -6,13 +6,13 @@ import { VSource } from "./device/vsource";
 import { CircuitError } from "./error";
 import type { Node } from "./network";
 
-export type NetList = readonly NetListItem[];
+export type Netlist = readonly NetlistItem[];
 
 type AnyDeviceProps = DeviceProps & {
   readonly [name: string]: unknown;
 };
 
-export type NetListItem = readonly [
+export type NetlistItem = readonly [
   id: string,
   connections: readonly string[],
   props: AnyDeviceProps,
@@ -64,7 +64,7 @@ export function createDevice(
   return new deviceClass(nodes, props);
 }
 
-export function readNetList(netlist: NetList): Circuit {
+export function readNetlist(netlist: Netlist): Circuit {
   const circuit = new Circuit();
 
   const nodeMap = new Map<string, Node>();
