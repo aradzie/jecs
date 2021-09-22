@@ -17,7 +17,7 @@ test("short circuit", (t) => {
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0.0],
+      ["V[GROUND]", 0],
       ["I[GROUND->GROUND]", Infinity],
     ]),
   );
@@ -37,9 +37,9 @@ test("open circuit", (t) => {
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0.0],
-      ["V[N0]", 1.0],
-      ["I[GROUND->N0]", 0.0],
+      ["V[GROUND]", 0],
+      ["V[N0]", 1],
+      ["I[GROUND->N0]", 0],
     ]),
   );
 });
@@ -55,15 +55,15 @@ test("`is` in series with `r`", (t) => {
     }),
     new Resistor([ng, n0], {
       name: "R1",
-      r: 1000.0,
+      r: 1000,
     }),
   );
   const r = circuit.dc();
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0.0],
-      ["V[N0]", 1.0],
+      ["V[GROUND]", 0],
+      ["V[N0]", 1],
     ]),
   );
 });
@@ -80,20 +80,20 @@ test("`is` in series with `r` in series with `r`", (t) => {
     }),
     new Resistor([ng, n0], {
       name: "R1",
-      r: 300.0,
+      r: 300,
     }),
     new Resistor([n0, n1], {
       name: "R2",
-      r: 700.0,
+      r: 700,
     }),
   );
   const r = circuit.dc();
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0.0],
+      ["V[GROUND]", 0],
       ["V[N0]", 0.3],
-      ["V[N1]", 1.0],
+      ["V[N1]", 1],
     ]),
   );
 });
@@ -105,19 +105,19 @@ test("`vs` in series with `r`", (t) => {
   circuit.addDevice(
     new VSource([ng, n0], {
       name: "V1",
-      v: 10.0,
+      v: 10,
     }),
     new Resistor([ng, n0], {
       name: "R1",
-      r: 1000.0,
+      r: 1000,
     }),
   );
   const r = circuit.dc();
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0.0],
-      ["V[N0]", 10.0],
+      ["V[GROUND]", 0],
+      ["V[N0]", 10],
       ["I[GROUND->N0]", -0.01],
     ]),
   );
@@ -131,24 +131,24 @@ test("`vs` in series with `r` in series with `r`", (t) => {
   circuit.addDevice(
     new VSource([ng, n1], {
       name: "V1",
-      v: 10.0,
+      v: 10,
     }),
     new Resistor([ng, n0], {
       name: "R1",
-      r: 300.0,
+      r: 300,
     }),
     new Resistor([n0, n1], {
       name: "R2",
-      r: 700.0,
+      r: 700,
     }),
   );
   const r = circuit.dc();
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0.0],
+      ["V[GROUND]", 0],
       ["V[N0]", 2.9999999999999996],
-      ["V[N1]", 10.0],
+      ["V[N1]", 10],
       ["I[GROUND->N1]", -0.01],
     ]),
   );
@@ -162,24 +162,24 @@ test("`vs` in series with `vs` in series with `r`", (t) => {
   circuit.addDevice(
     new VSource([ng, n0], {
       name: "V1",
-      v: 10.0,
+      v: 10,
     }),
     new VSource([n0, n1], {
       name: "V2",
-      v: 10.0,
+      v: 10,
     }),
     new Resistor([ng, n1], {
       name: "R1",
-      r: 1000.0,
+      r: 1000,
     }),
   );
   const r = circuit.dc();
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0.0],
-      ["V[N0]", 10.0],
-      ["V[N1]", 20.0],
+      ["V[GROUND]", 0],
+      ["V[N0]", 10],
+      ["V[N1]", 20],
       ["I[GROUND->N0]", -0.02],
       ["I[N0->N1]", -0.02],
     ]),
