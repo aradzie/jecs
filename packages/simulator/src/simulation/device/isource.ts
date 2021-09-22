@@ -1,5 +1,5 @@
 import type { Node, Stamper } from "../network";
-import { Device, DeviceProps } from "./device";
+import { Device, DeviceProps, Unit } from "./device";
 
 export interface ISourceProps extends DeviceProps {
   /** Current in amperes. */
@@ -12,6 +12,7 @@ export interface ISourceProps extends DeviceProps {
 export class ISource extends Device {
   static override readonly id = "i";
   static override readonly numTerminals = 2;
+  static override readonly propsSchema = [{ name: "i", unit: Unit.AMPERE }];
 
   /** Negative terminal. */
   readonly a: Node;

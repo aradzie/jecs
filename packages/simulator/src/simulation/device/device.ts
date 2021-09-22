@@ -5,19 +5,46 @@ import type { Network, Node, Stamper } from "../network";
 // one-port
 // two-port
 
+export enum Unit {
+  UNITLESS,
+  VOLT,
+  AMPERE,
+  OHM,
+  SIEMENS,
+  FARAD,
+  HENRY,
+  HERTZ,
+  METER,
+  GRAM,
+}
+
+export type DeviceProps = {
+  readonly name: string;
+};
+
+export type AnyDeviceProps = DeviceProps & {
+  readonly [name: string]: string | number;
+};
+
+export type DevicePropsSchema = readonly DevicePropsSchemaItem[];
+
+export type DevicePropsSchemaItem = {
+  readonly name: string;
+  readonly unit: Unit;
+  readonly default?: number;
+};
+
 export interface DeviceClass {
   readonly id: string;
   readonly numTerminals: number;
-  new (...args: any[]): Device;
-}
-
-export interface DeviceProps {
-  readonly name: string;
+  readonly propsSchema: DevicePropsSchema;
+  new (nodes: readonly Node[], props: any): Device;
 }
 
 export abstract class Device {
   static readonly id: string;
   static readonly numTerminals: number;
+  static readonly propsSchema: DevicePropsSchema;
 
   readonly nodes: Node[];
   readonly name: string;
@@ -42,4 +69,14 @@ export abstract class Device {
   stamp(stamper: Stamper): void {}
 
   update(): void {}
+}
+
+export function validateProps(
+  props: AnyDeviceProps,
+  schema: DevicePropsSchema,
+): void {
+  const itemMap = new Map<string, DevicePropsSchemaItem>();
+  for (const item of schema) {
+    itemMap.set(item.name, item);
+  }
 }

@@ -1,5 +1,5 @@
 import type { Branch, Network, Node, Stamper } from "../network";
-import { Device, DeviceProps } from "./device";
+import { Device, DeviceProps, Unit } from "./device";
 
 export interface ICVSourceProps extends DeviceProps {
   readonly gain: number;
@@ -11,6 +11,9 @@ export interface ICVSourceProps extends DeviceProps {
 export class ICVSource extends Device {
   static override readonly id = "icvs";
   static override readonly numTerminals = 4;
+  static override readonly propsSchema = [
+    { name: "gain", unit: Unit.UNITLESS },
+  ];
 
   /** Negative input terminal. */
   readonly ia: Node;

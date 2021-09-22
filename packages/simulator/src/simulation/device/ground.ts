@@ -5,6 +5,7 @@ import { Device, DeviceProps } from "./device";
 export class Ground extends Device {
   static override readonly id = "g";
   static override readonly numTerminals = 1;
+  static override readonly propsSchema = [];
 
   readonly n: Node;
 

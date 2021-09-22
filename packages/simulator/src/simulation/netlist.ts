@@ -1,6 +1,6 @@
 import { Circuit } from "./circuit";
 import { devices } from "./device";
-import type { Device, DeviceClass, DeviceProps } from "./device/device";
+import type { AnyDeviceProps, Device, DeviceClass } from "./device/device";
 import { Ground } from "./device/ground";
 import { VSource } from "./device/vsource";
 import { CircuitError } from "./error";
@@ -8,37 +8,39 @@ import type { Node } from "./network";
 
 export type Netlist = readonly NetlistItem[];
 
-type AnyDeviceProps = DeviceProps & {
-  readonly [name: string]: unknown;
-};
-
 export type NetlistItem = readonly [
   id: string,
   connections: readonly string[],
   props: AnyDeviceProps,
 ];
 
-const deviceMap = new Map<
-  string,
-  {
-    readonly deviceClass: { new (...args: any[]): Device };
-    readonly numTerminals: number;
-  }
->();
+const deviceMap = new Map<string, DeviceClass>();
 
 export function registerDevice(...deviceClasses: DeviceClass[]) {
   for (const deviceClass of deviceClasses) {
-    const { id, numTerminals } = deviceClass;
+    const { id, numTerminals, propsSchema } = deviceClass;
     if (id == null) {
-      throw new CircuitError(`The [id] attribute is missing`);
+      throw new CircuitError(
+        `The [id] attribute is missing` + //
+          ` in device class [${deviceClass}]`,
+      );
     }
     if (numTerminals == null) {
-      throw new CircuitError(`The [numTerminals] attribute is missing`);
+      throw new CircuitError(
+        `The [numTerminals] attribute is missing in` + //
+          ` device class [${deviceClass}]`,
+      );
+    }
+    if (propsSchema == null) {
+      throw new CircuitError(
+        `The [propsSchema] attribute is missing` + //
+          ` in device class [${deviceClass}]`,
+      );
     }
     if (deviceMap.has(id)) {
       throw new CircuitError(`Duplicate device id [${id}]`);
     }
-    deviceMap.set(id, { deviceClass, numTerminals });
+    deviceMap.set(id, deviceClass);
   }
 }
 
@@ -50,11 +52,11 @@ export function createDevice(
   if (id === Ground.id) {
     return new Ground(nodes);
   }
-  const deviceInfo = deviceMap.get(id) ?? null;
-  if (deviceInfo == null) {
+  const deviceClass = deviceMap.get(id) ?? null;
+  if (deviceClass == null) {
     throw new CircuitError(`Unknown device id [${id}]`);
   }
-  const { deviceClass, numTerminals } = deviceInfo;
+  const { numTerminals } = deviceClass;
   if (nodes.length !== numTerminals) {
     throw new CircuitError(
       `Invalid number of terminals ${nodes.length} ` +

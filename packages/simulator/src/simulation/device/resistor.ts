@@ -1,5 +1,5 @@
 import type { Node, Stamper } from "../network";
-import { Device, DeviceProps } from "./device";
+import { Device, DeviceProps, Unit } from "./device";
 
 export interface ResistorProps extends DeviceProps {
   readonly r: number;
@@ -11,6 +11,7 @@ export interface ResistorProps extends DeviceProps {
 export class Resistor extends Device {
   static override readonly id = "r";
   static override readonly numTerminals = 2;
+  static override readonly propsSchema = [{ name: "r", unit: Unit.OHM }];
 
   readonly a: Node;
   readonly b: Node;

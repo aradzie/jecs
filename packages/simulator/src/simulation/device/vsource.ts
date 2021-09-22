@@ -1,5 +1,5 @@
 import type { Branch, Network, Node, Stamper } from "../network";
-import { Device, DeviceProps } from "./device";
+import { Device, DeviceProps, Unit } from "./device";
 
 export interface VSourceProps extends DeviceProps {
   /** Voltage in volts. */
@@ -12,6 +12,7 @@ export interface VSourceProps extends DeviceProps {
 export class VSource extends Device {
   static override readonly id = "v";
   static override readonly numTerminals = 2;
+  static override readonly propsSchema = [{ name: "v", unit: Unit.VOLT }];
 
   /** Negative terminal. */
   readonly a: Node;
