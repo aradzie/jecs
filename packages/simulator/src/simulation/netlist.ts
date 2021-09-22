@@ -2,6 +2,7 @@ import { Circuit } from "./circuit";
 import { devices } from "./device";
 import type { Device, DeviceClass, DeviceProps } from "./device/device";
 import { Ground } from "./device/ground";
+import { VSource } from "./device/vsource";
 import { CircuitError } from "./error";
 import type { Node } from "./network";
 
@@ -46,7 +47,7 @@ export function createDevice(
   nodes: readonly Node[],
   props: AnyDeviceProps,
 ): Device {
-  if (id === "g") {
+  if (id === Ground.id) {
     return new Ground(nodes);
   }
   const deviceInfo = deviceMap.get(id) ?? null;
@@ -65,7 +66,30 @@ export function createDevice(
 
 export function readNetList(netlist: NetList): Circuit {
   const circuit = new Circuit();
+
   const nodeMap = new Map<string, Node>();
+
+  // Find ground nodes.
+  for (const [id, connections] of netlist) {
+    if (id === Ground.id) {
+      const [node] = connections;
+      nodeMap.set(node, circuit.groundNode);
+    }
+  }
+
+  // If ground node is not set explicitly, then ground the negative terminal
+  // of the first voltage source.
+  if (nodeMap.size === 0) {
+    for (const [id, connections] of netlist) {
+      if (id === VSource.id) {
+        const [node] = connections;
+        nodeMap.set(node, circuit.groundNode);
+        break;
+      }
+    }
+  }
+
+  // Create and connect devices.
   for (const [id, connections, props] of netlist) {
     const nodes = connections.map((name) => {
       let node = nodeMap.get(name) ?? null;
@@ -76,6 +100,7 @@ export function readNetList(netlist: NetList): Circuit {
     });
     circuit.addDevice(createDevice(id, nodes, props));
   }
+
   return circuit;
 }
 

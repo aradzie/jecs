@@ -1,4 +1,5 @@
-import type { Node, Stamper } from "../network";
+import { CircuitError } from "../error";
+import type { Network, Node, Stamper } from "../network";
 import { Device, DeviceProps } from "./device";
 
 export class Ground extends Device {
@@ -13,6 +14,14 @@ export class Ground extends Device {
   ) {
     super([n], name);
     this.n = n;
+  }
+
+  override connect(network: Network): void {
+    if (this.n !== network.groundNode) {
+      throw new CircuitError(
+        `The ground device must be connected to the ground node.`,
+      );
+    }
   }
 
   override stamp(stamper: Stamper): void {}
