@@ -1,6 +1,6 @@
 import { Circuit } from "./circuit";
-import type { RawDeviceProps } from "./device/device";
-import { createDevice } from "./device/devicemap";
+import type { DeviceClass, RawDeviceProps } from "./device/device";
+import { createDevice, getDeviceClass } from "./device/devicemap";
 import { Ground } from "./device/ground";
 import { VSource } from "./device/vsource";
 import type { Node } from "./network";
@@ -14,13 +14,11 @@ export type NetlistItem = readonly [
 ];
 
 export function readNetlist(netlist: Netlist): Circuit {
-  const expNetlist = expandNames(netlist);
-
   const circuit = new Circuit();
 
   const nodeMap = new Map<string, Node>();
 
-  const mapNode = (name: string): Node => {
+  const nameToNode = (name: string): Node => {
     let node = nodeMap.get(name) ?? null;
     if (node == null) {
       nodeMap.set(name, (node = circuit.allocNode(name)));
@@ -28,38 +26,40 @@ export function readNetlist(netlist: Netlist): Circuit {
     return node;
   };
 
+  const expNetlist = expandNetlist(netlist);
+
   // Find ground nodes.
-  for (const [id, name, nodes] of expNetlist) {
-    if (id === Ground.id) {
-      const [node] = nodes;
-      nodeMap.set(node, circuit.groundNode);
+  for (const [deviceClass, name, nodes] of expNetlist) {
+    if (deviceClass === Ground) {
+      nodeMap.set(nodes[0], circuit.groundNode);
     }
   }
 
   // If ground node is not set explicitly, then ground the negative terminal
   // of the first voltage source.
   if (nodeMap.size === 0) {
-    for (const [id, name, nodes] of expNetlist) {
-      if (id === VSource.id) {
-        const [node] = nodes;
-        nodeMap.set(node, circuit.groundNode);
+    for (const [deviceClass, name, nodes] of expNetlist) {
+      if (deviceClass === VSource) {
+        nodeMap.set(nodes[0], circuit.groundNode);
         break;
       }
     }
   }
 
   // Create and connect devices.
-  for (const [id, name, nodes, rawProps] of expNetlist) {
-    circuit.addDevice(createDevice(id, name, nodes.map(mapNode), rawProps));
+  for (const [deviceClass, name, nodes, rawProps] of expNetlist) {
+    circuit.addDevice(
+      createDevice(deviceClass, name, nodes.map(nameToNode), rawProps),
+    );
   }
 
   return circuit;
 }
 
-function expandNames(
+function expandNetlist(
   netlist: Netlist,
 ): readonly [
-  id: string,
+  deviceClass: DeviceClass,
   name: string,
   nodes: readonly string[],
   rawProps: RawDeviceProps,
@@ -68,13 +68,13 @@ function expandNames(
   return netlist.map(([idName, nodes, rawProps]) => {
     if (idName.indexOf("/") !== -1) {
       const [id, name] = idName.split("/", 2);
-      return [id, name, nodes, rawProps];
+      return [getDeviceClass(id), name, nodes, rawProps];
     } else {
       const prefix = idName.toUpperCase();
       let index = counter.get(prefix) ?? 0;
       counter.set(prefix, (index += 1));
       const name = `${prefix}${index}`;
-      return [idName, name, nodes, rawProps];
+      return [getDeviceClass(idName), name, nodes, rawProps];
     }
   });
 }

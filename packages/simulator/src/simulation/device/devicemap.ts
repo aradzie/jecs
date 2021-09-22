@@ -10,7 +10,7 @@ import { devices } from "./index";
 
 const deviceMap = new Map<string, DeviceClass>();
 
-export function registerDevice(...deviceClasses: DeviceClass[]) {
+export function registerDeviceClass(...deviceClasses: DeviceClass[]) {
   for (const deviceClass of deviceClasses) {
     const { id, numTerminals, propsSchema } = deviceClass;
     if (id == null) {
@@ -38,20 +38,27 @@ export function registerDevice(...deviceClasses: DeviceClass[]) {
   }
 }
 
-export function createDevice(
-  id: string,
-  name: string,
-  nodes: readonly Node[],
-  rawProps: RawDeviceProps,
-): Device {
+export function getDeviceClass(id: string): DeviceClass {
   const deviceClass = deviceMap.get(id) ?? null;
   if (deviceClass == null) {
     throw new CircuitError(`Unknown device id [${id}]`);
   }
-  const { numTerminals, propsSchema } = deviceClass;
+  return deviceClass;
+}
+
+export function createDevice(
+  deviceClass: string | DeviceClass,
+  name: string,
+  nodes: readonly Node[],
+  rawProps: RawDeviceProps,
+): Device {
+  if (typeof deviceClass === "string") {
+    deviceClass = getDeviceClass(deviceClass);
+  }
+  const { id, numTerminals, propsSchema } = deviceClass;
   if (nodes.length !== numTerminals) {
     throw new CircuitError(
-      `Netlist error in device [${id}:${name}]: ` +
+      `Error in device [${id}:${name}]: ` + //
         `Invalid number of terminals`,
     );
   }
@@ -60,10 +67,11 @@ export function createDevice(
     props = validateDeviceProps(rawProps, propsSchema);
   } catch (err) {
     throw new CircuitError(
-      `Netlist error in device [${id}:${name}]: ` + err.message,
+      `Error in device [${id}:${name}]: ` + //
+        `${err.message}`,
     );
   }
   return new deviceClass(name, nodes, props);
 }
 
-registerDevice(...devices);
+registerDeviceClass(...devices);
