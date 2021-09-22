@@ -23,8 +23,8 @@ export type DeviceProps = {
   readonly name: string;
 };
 
-export type RawDeviceProps = DeviceProps & {
-  readonly [name: string]: string | number;
+export type RawDeviceProps = {
+  readonly [name: string]: number;
 };
 
 export type DevicePropsSchema = readonly DevicePropsSchemaItem[];
@@ -39,7 +39,6 @@ export interface DeviceClass {
   readonly id: string;
   readonly numTerminals: number;
   readonly propsSchema: DevicePropsSchema;
-
   new (nodes: readonly Node[], props: any): Device;
 }
 
@@ -83,13 +82,11 @@ export function validateDeviceProps(
   }
   const props: [string, unknown][] = [];
   for (const [name, value] of Object.entries(rawProps)) {
-    if (name !== "name") {
-      const schemaItem = itemMap.get(name) ?? null;
-      if (schemaItem == null) {
-        throw new CircuitError(`Unknown property [${name}]`);
-      }
-      itemMap.delete(name);
+    const schemaItem = itemMap.get(name) ?? null;
+    if (schemaItem == null) {
+      throw new CircuitError(`Unknown property [${name}]`);
     }
+    itemMap.delete(name);
     props.push([name, value]);
   }
   for (const schemaItem of itemMap.values()) {

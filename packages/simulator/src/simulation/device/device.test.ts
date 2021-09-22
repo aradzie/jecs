@@ -3,21 +3,21 @@ import { DeviceProps, Unit, validateDeviceProps } from "./device";
 
 test("validate device props", (t) => {
   t.notThrows(() => {
-    validateDeviceProps({ name: "Dev" }, []);
+    validateDeviceProps({}, []);
   });
   t.notThrows(() => {
-    validateDeviceProps({ name: "Dev", v: 1 }, [
+    validateDeviceProps({ v: 1 }, [
       { name: "v", unit: Unit.VOLT }, //
     ]);
   });
   t.notThrows(() => {
-    validateDeviceProps({ name: "Dev" }, [
+    validateDeviceProps({}, [
       { name: "v", unit: Unit.VOLT, default: 1 }, //
     ]);
   });
   t.throws(
     () => {
-      validateDeviceProps({ name: "Dev" }, [
+      validateDeviceProps({}, [
         { name: "v", unit: Unit.VOLT }, //
       ]);
     },
@@ -25,14 +25,14 @@ test("validate device props", (t) => {
   );
   t.throws(
     () => {
-      validateDeviceProps({ name: "Dev", x: 0 }, []);
+      validateDeviceProps({ x: 0 }, []);
     },
     { message: "Unknown property [x]" },
   );
   t.deepEqual(
-    validateDeviceProps({ name: "Dev" }, [
+    validateDeviceProps({}, [
       { name: "v", unit: Unit.VOLT, default: 1 }, //
     ]),
-    { name: "Dev", v: 1 } as DeviceProps,
+    { v: 1 } as unknown as DeviceProps,
   );
 });

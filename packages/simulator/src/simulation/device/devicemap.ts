@@ -40,16 +40,13 @@ export function registerDevice(...deviceClasses: DeviceClass[]) {
 
 export function createDevice(
   id: string,
+  name: string,
   nodes: readonly Node[],
   rawProps: RawDeviceProps,
 ): Device {
   const deviceClass = deviceMap.get(id) ?? null;
   if (deviceClass == null) {
     throw new CircuitError(`Unknown device id [${id}]`);
-  }
-  const { name } = rawProps;
-  if (typeof name !== "string") {
-    throw new CircuitError(`The [name] property is missing`);
   }
   const { numTerminals, propsSchema } = deviceClass;
   if (nodes.length !== numTerminals) {
@@ -66,7 +63,7 @@ export function createDevice(
       `Netlist error in device [${id}:${name}]: ` + err.message,
     );
   }
-  return new deviceClass(nodes, props);
+  return new deviceClass(nodes, { ...props, name });
 }
 
 registerDevice(...devices);

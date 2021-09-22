@@ -4,9 +4,9 @@ import { readNetlist } from "./netlist";
 
 test("read netlist, find explicit ground node", (t) => {
   const circuit = readNetlist([
-    ["g", ["g"], { name: "GROUND" }],
-    ["v", ["g", "n1"], { name: "V1", v: 5 }],
-    ["r", ["g", "n1"], { name: "R1", r: 1000 }],
+    ["g/GROUND", ["g"], {}],
+    ["v/V1", ["g", "n1"], { v: 5 }],
+    ["r/R1", ["g", "n1"], { r: 1000 }],
   ]);
 
   t.is(circuit.nodes.length, 2);
@@ -18,9 +18,9 @@ test("read netlist, find explicit ground node", (t) => {
 
 test("read netlist, assign implicit ground node", (t) => {
   const circuit = readNetlist([
-    ["v", ["n0", "n1"], { name: "V1", v: 2.5 }],
-    ["v", ["n1", "n2"], { name: "V2", v: 2.5 }],
-    ["r", ["n0", "n2"], { name: "R1", r: 1000 }],
+    ["v/V1", ["n0", "n1"], { v: 2.5 }],
+    ["v/V2", ["n1", "n2"], { v: 2.5 }],
+    ["r/R1", ["n0", "n2"], { r: 1000 }],
   ]);
 
   t.is(circuit.nodes.length, 4);

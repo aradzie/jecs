@@ -3,9 +3,9 @@ import { readNetlist } from "../netlist";
 
 test("voltage controlled current source", (t) => {
   const circuit = readNetlist([
-    ["v", ["g", "NIB"], { name: "V1", v: 3 }],
-    ["vcis", ["g", "NIB", "g", "NOB"], { name: "VCI1", gain: 0.5 }],
-    ["r", ["g", "NOB"], { name: "R1", r: 100 }],
+    ["v", ["g", "NIB"], { v: 3 }],
+    ["vcis", ["g", "NIB", "g", "NOB"], { gain: 0.5 }],
+    ["r", ["g", "NOB"], { r: 100 }],
   ]);
   const r = circuit.dc();
   t.deepEqual(
