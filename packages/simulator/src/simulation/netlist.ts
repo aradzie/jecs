@@ -2,6 +2,7 @@ import { Circuit } from "./circuit";
 import { devices } from "./device";
 import type { Device, DeviceClass, DeviceProps } from "./device/device";
 import { Ground } from "./device/ground";
+import { CircuitError } from "./error";
 import type { Node } from "./network";
 
 export type NetList = readonly NetListItem[];
@@ -26,13 +27,13 @@ export function registerDevice(...deviceClasses: DeviceClass[]) {
   for (const deviceClass of deviceClasses) {
     const { id, numTerminals } = deviceClass;
     if (id == null) {
-      throw new TypeError(`The [id] attribute is missing`);
+      throw new CircuitError(`The [id] attribute is missing`);
     }
     if (numTerminals == null) {
-      throw new TypeError(`The [numTerminals] attribute is missing`);
+      throw new CircuitError(`The [numTerminals] attribute is missing`);
     }
     if (deviceMap.has(id)) {
-      throw new TypeError(`Duplicate device id [${id}]`);
+      throw new CircuitError(`Duplicate device id [${id}]`);
     }
     deviceMap.set(id, { deviceClass, numTerminals });
   }
@@ -48,11 +49,11 @@ export function createDevice(
   }
   const deviceInfo = deviceMap.get(id) ?? null;
   if (deviceInfo == null) {
-    throw new TypeError(`Unknown device id [${id}]`);
+    throw new CircuitError(`Unknown device id [${id}]`);
   }
   const { deviceClass, numTerminals } = deviceInfo;
   if (nodes.length !== numTerminals) {
-    throw new TypeError(`Invalid number of terminals ${nodes.length}`);
+    throw new CircuitError(`Invalid number of terminals ${nodes.length}`);
   }
   return new deviceClass(nodes, props);
 }

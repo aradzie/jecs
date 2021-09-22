@@ -1,7 +1,9 @@
+import { MathError } from "../math/error";
 import { solve } from "../math/gauss-elimination";
 import { matMakeEmpty } from "../math/matrix";
 import type { Vector } from "../math/types";
 import type { Device } from "./device/device";
+import { CircuitError } from "./error";
 import { Branch, Network, Node, Stamper } from "./network";
 
 export class Circuit implements Network {
@@ -17,7 +19,7 @@ export class Circuit implements Network {
 
   allocNode(name: string): Node {
     if (this.nodeNames.has(name)) {
-      throw new TypeError(`Duplicate node name [${name}]`);
+      throw new CircuitError(`Duplicate node name [${name}]`);
     }
     this.nodeNames.add(name);
     const node = new Node(this.nodes.length, name);
@@ -35,7 +37,7 @@ export class Circuit implements Network {
     for (const device of devices) {
       const { name } = device;
       if (this.deviceNames.has(name)) {
-        throw new TypeError(`Duplicate device name [${name}]`);
+        throw new CircuitError(`Duplicate device name [${name}]`);
       }
       this.deviceNames.add(device.name);
       this.devices.push(device);
@@ -45,7 +47,7 @@ export class Circuit implements Network {
 
   dc(): Map<string, number> {
     if (this.devices.length === 0) {
-      throw new TypeError(`Empty circuit`);
+      throw new CircuitError(`Empty circuit`);
     }
 
     const n = this.nodes.length;
@@ -56,7 +58,7 @@ export class Circuit implements Network {
     const stamper = new (class implements Stamper {
       stampMatrix(i: Node | Branch, j: Node | Branch, x: number): void {
         if (!Number.isFinite(x)) {
-          throw new TypeError();
+          throw new MathError();
         }
         if (i !== groundNode && j !== groundNode) {
           matrix[i.index][j.index] += x;
@@ -65,7 +67,7 @@ export class Circuit implements Network {
 
       stampRightSide(i: Node | Branch, x: number): void {
         if (!Number.isFinite(x)) {
-          throw new TypeError();
+          throw new MathError();
         }
         if (i !== groundNode) {
           rhs[i.index] += x;
