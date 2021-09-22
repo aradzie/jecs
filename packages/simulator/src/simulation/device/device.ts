@@ -1,3 +1,4 @@
+import { CircuitError } from "../error";
 import type { Network, Node, Stamper } from "../network";
 
 // pin
@@ -22,7 +23,7 @@ export type DeviceProps = {
   readonly name: string;
 };
 
-export type AnyDeviceProps = DeviceProps & {
+export type RawDeviceProps = DeviceProps & {
   readonly [name: string]: string | number;
 };
 
@@ -38,6 +39,7 @@ export interface DeviceClass {
   readonly id: string;
   readonly numTerminals: number;
   readonly propsSchema: DevicePropsSchema;
+
   new (nodes: readonly Node[], props: any): Device;
 }
 
@@ -71,12 +73,32 @@ export abstract class Device {
   update(): void {}
 }
 
-export function validateProps(
-  props: AnyDeviceProps,
+export function validateDeviceProps(
+  rawProps: RawDeviceProps,
   schema: DevicePropsSchema,
-): void {
+): DeviceProps {
   const itemMap = new Map<string, DevicePropsSchemaItem>();
   for (const item of schema) {
     itemMap.set(item.name, item);
   }
+  const props: [string, unknown][] = [];
+  for (const [name, value] of Object.entries(rawProps)) {
+    if (name !== "name") {
+      const schemaItem = itemMap.get(name) ?? null;
+      if (schemaItem == null) {
+        throw new CircuitError(`Unknown property [${name}]`);
+      }
+      itemMap.delete(name);
+    }
+    props.push([name, value]);
+  }
+  for (const schemaItem of itemMap.values()) {
+    const { name, default: def } = schemaItem;
+    if (def != null) {
+      props.push([name, def]);
+    } else {
+      throw new CircuitError(`Missing property [${name}]`);
+    }
+  }
+  return Object.fromEntries(props) as DeviceProps;
 }

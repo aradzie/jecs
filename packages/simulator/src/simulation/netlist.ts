@@ -1,6 +1,7 @@
 import { Circuit } from "./circuit";
 import { devices } from "./device";
-import type { AnyDeviceProps, Device, DeviceClass } from "./device/device";
+import type { Device, DeviceClass, RawDeviceProps } from "./device/device";
+import { validateDeviceProps } from "./device/device";
 import { Ground } from "./device/ground";
 import { VSource } from "./device/vsource";
 import { CircuitError } from "./error";
@@ -11,7 +12,7 @@ export type Netlist = readonly NetlistItem[];
 export type NetlistItem = readonly [
   id: string,
   connections: readonly string[],
-  props: AnyDeviceProps,
+  rawProps: RawDeviceProps,
 ];
 
 const deviceMap = new Map<string, DeviceClass>();
@@ -47,20 +48,29 @@ export function registerDevice(...deviceClasses: DeviceClass[]) {
 export function createDevice(
   id: string,
   nodes: readonly Node[],
-  props: AnyDeviceProps,
+  rawProps: RawDeviceProps,
 ): Device {
-  if (id === Ground.id) {
-    return new Ground(nodes);
-  }
   const deviceClass = deviceMap.get(id) ?? null;
   if (deviceClass == null) {
     throw new CircuitError(`Unknown device id [${id}]`);
   }
-  const { numTerminals } = deviceClass;
+  const { name } = rawProps;
+  if (typeof name !== "string") {
+    throw new CircuitError(`The [name] property is missing`);
+  }
+  const { numTerminals, propsSchema } = deviceClass;
   if (nodes.length !== numTerminals) {
     throw new CircuitError(
-      `Invalid number of terminals ${nodes.length} ` +
-        `for device [${id}:${props.name}]`,
+      `Netlist error in device [${id}:${name}]: ` +
+        `Invalid number of terminals`,
+    );
+  }
+  let props;
+  try {
+    props = validateDeviceProps(rawProps, propsSchema);
+  } catch (err) {
+    throw new CircuitError(
+      `Netlist error in device [${id}:${name}]: ` + err.message,
     );
   }
   return new deviceClass(nodes, props);
@@ -92,7 +102,7 @@ export function readNetlist(netlist: Netlist): Circuit {
   }
 
   // Create and connect devices.
-  for (const [id, connections, props] of netlist) {
+  for (const [id, connections, rawProps] of netlist) {
     const nodes = connections.map((name) => {
       let node = nodeMap.get(name) ?? null;
       if (node == null) {
@@ -100,7 +110,7 @@ export function readNetlist(netlist: Netlist): Circuit {
       }
       return node;
     });
-    circuit.addDevice(createDevice(id, nodes, props));
+    circuit.addDevice(createDevice(id, nodes, rawProps));
   }
 
   return circuit;
