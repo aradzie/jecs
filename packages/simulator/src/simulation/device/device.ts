@@ -35,7 +35,7 @@ export abstract class Device {
 
   /**
    * Circuit calls this method to let a device
-   * to stamp MAN matrix and RHS vector.
+   * to stamp MNA matrix and RHS vector.
    * @param stamper A stamper which updates MNA matrix and RHS vector.
    */
   stamp(stamper: Stamper): void {}
