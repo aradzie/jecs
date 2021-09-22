@@ -1,7 +1,8 @@
 import { Circuit } from "./circuit";
-import type { DeviceClass, RawDeviceProps } from "./device/device";
+import type { DeviceClass } from "./device/device";
 import { createDevice, getDeviceClass } from "./device/devicemap";
 import { Ground } from "./device/ground";
+import type { RawDeviceProps } from "./device/props";
 import { VSource } from "./device/vsource";
 import type { Node } from "./network";
 

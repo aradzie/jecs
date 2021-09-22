@@ -1,5 +1,7 @@
 import type { Node, Stamper } from "../network";
-import { Device, DeviceProps, Unit } from "./device";
+import { Device } from "./device";
+import type { DeviceProps } from "./props";
+import { Unit } from "./props";
 
 export interface ResistorProps extends DeviceProps {
   readonly r: number;

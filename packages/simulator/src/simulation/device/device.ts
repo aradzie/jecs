@@ -1,45 +1,15 @@
-import { CircuitError } from "../error";
 import type { Network, Node, Stamper } from "../network";
+import type { DevicePropsSchema } from "./props";
 
 // pin
 // two-terminal, three-terminal, etc
 // one-port
 // two-port
 
-export enum Unit {
-  UNITLESS,
-  VOLT,
-  AMPERE,
-  OHM,
-  SIEMENS,
-  FARAD,
-  HENRY,
-  HERTZ,
-  METER,
-  GRAM,
-}
-
-export type DeviceProps = {
-  readonly [name: string]: number;
-};
-
-export type RawDeviceProps = {
-  readonly [name: string]: number;
-};
-
-export type DevicePropsSchema = readonly DevicePropsSchemaItem[];
-
-export type DevicePropsSchemaItem = {
-  readonly name: string;
-  readonly unit: Unit;
-  readonly default?: number;
-};
-
 export interface DeviceClass {
   readonly id: string;
   readonly numTerminals: number;
   readonly propsSchema: DevicePropsSchema;
-
   new (name: string, nodes: readonly Node[], props: any): Device;
 }
 
@@ -71,32 +41,4 @@ export abstract class Device {
   stamp(stamper: Stamper): void {}
 
   update(): void {}
-}
-
-export function validateDeviceProps(
-  rawProps: RawDeviceProps,
-  schema: DevicePropsSchema,
-): DeviceProps {
-  const itemMap = new Map<string, DevicePropsSchemaItem>();
-  for (const item of schema) {
-    itemMap.set(item.name, item);
-  }
-  const props: [string, unknown][] = [];
-  for (const [name, value] of Object.entries(rawProps)) {
-    const schemaItem = itemMap.get(name) ?? null;
-    if (schemaItem == null) {
-      throw new CircuitError(`Unknown property [${name}]`);
-    }
-    itemMap.delete(name);
-    props.push([name, value]);
-  }
-  for (const schemaItem of itemMap.values()) {
-    const { name, default: def } = schemaItem;
-    if (def != null) {
-      props.push([name, def]);
-    } else {
-      throw new CircuitError(`Missing property [${name}]`);
-    }
-  }
-  return Object.fromEntries(props) as DeviceProps;
 }

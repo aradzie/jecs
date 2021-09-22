@@ -1,5 +1,5 @@
 import test from "ava";
-import { Unit, validateDeviceProps } from "./device";
+import { Unit, validateDeviceProps } from "./props";
 
 test("validate device props", (t) => {
   t.notThrows(() => {
