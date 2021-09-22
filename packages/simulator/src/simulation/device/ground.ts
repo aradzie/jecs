@@ -1,5 +1,5 @@
 import { CircuitError } from "../error";
-import type { Network, Node, Stamper } from "../network";
+import type { Network, Node } from "../network";
 import { Device, DeviceProps } from "./device";
 
 export class Ground extends Device {
@@ -24,6 +24,4 @@ export class Ground extends Device {
       );
     }
   }
-
-  override stamp(stamper: Stamper): void {}
 }
