@@ -1,3 +1,4 @@
+import { MathError } from "./error";
 import type { Matrix, MatrixLike, Vector, VectorLike } from "./types";
 
 export function matSize(a: MatrixLike): [height: number, width: number] {
@@ -24,7 +25,7 @@ export function matMultiplyMat(a: MatrixLike, b: MatrixLike): Matrix {
   const [aHeight, aWidth] = matSize(a);
   const [bHeight, bWidth] = matSize(b);
   if (aWidth !== bHeight) {
-    throw new TypeError();
+    throw new MathError();
   }
   const c = matMakeEmpty(aHeight, bWidth);
   for (let i = 0; i < aHeight; i++) {
@@ -42,7 +43,7 @@ export function matMultiplyMat(a: MatrixLike, b: MatrixLike): Matrix {
 export function matMultiplyVec(a: MatrixLike, b: VectorLike): Vector {
   const [height, width] = matSize(a);
   if (width !== b.length) {
-    throw new TypeError();
+    throw new MathError();
   }
   const c = new Float64Array(height);
   for (let i = 0; i < height; i++) {

@@ -1,3 +1,4 @@
+import { MathError } from "./error";
 import { swapRows } from "./matrix";
 import { findPivotRow } from "./pivot";
 import type { Matrix, MatrixLike, Vector, VectorLike } from "./types";
@@ -13,10 +14,10 @@ export function solve(matA: MatrixLike, vecB: VectorLike): Vector {
   const size = matA.length;
 
   if (size === 0) {
-    throw new TypeError();
+    throw new MathError();
   }
   if (size !== vecB.length) {
-    throw new TypeError();
+    throw new MathError();
   }
 
   const matM = new Array<Float64Array>(size);
