@@ -1,4 +1,4 @@
-import type { Unit } from "./unit";
+import type { Unit } from "../util/unit";
 
 export type Details = readonly DetailsItem[];
 

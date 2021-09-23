@@ -2,7 +2,7 @@ import type { Details } from "../simulation/details";
 import { Device } from "../simulation/device";
 import type { Node, Stamper } from "../simulation/network";
 import type { DeviceProps } from "../simulation/props";
-import { Unit } from "../simulation/unit";
+import { Unit } from "../util/unit";
 
 export interface CSourceProps extends DeviceProps {
   /** Current in amperes. */

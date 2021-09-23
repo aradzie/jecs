@@ -1,7 +1,7 @@
 import test from "ava";
 import { dcAnalysis } from "../simulation/dc";
 import { readNetlist } from "../simulation/netlist";
-import { Unit } from "../simulation/unit";
+import { Unit } from "../util/unit";
 import type { CCVSource } from "./ccvsource";
 
 test("current controlled voltage source", (t) => {

@@ -1,5 +1,5 @@
+import type { Unit } from "../util/unit";
 import { CircuitError } from "./error";
-import type { Unit } from "./unit";
 
 export type RawDeviceProps = {
   readonly [name: string]: number;

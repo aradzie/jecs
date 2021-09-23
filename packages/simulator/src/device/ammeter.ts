@@ -1,7 +1,7 @@
 import type { Details } from "../simulation/details";
 import { Device } from "../simulation/device";
 import type { Branch, Network, Node, Stamper } from "../simulation/network";
-import { Unit } from "../simulation/unit";
+import { Unit } from "../util/unit";
 
 /**
  * Ammeter.

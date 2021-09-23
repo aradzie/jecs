@@ -2,7 +2,7 @@ import type { Details } from "../simulation/details";
 import { Device } from "../simulation/device";
 import { CircuitError } from "../simulation/error";
 import type { Network, Node } from "../simulation/network";
-import { Unit } from "../simulation/unit";
+import { Unit } from "../util/unit";
 
 export class Ground extends Device {
   static override readonly id = "g";
