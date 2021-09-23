@@ -1,10 +1,8 @@
-import { MathError } from "../math/error";
-import { solve } from "../math/gauss-elimination";
-import { matMakeEmpty } from "../math/matrix";
 import type { Vector } from "../math/types";
+import { dcAnalysis } from "./dc";
 import type { Device } from "./device";
 import { CircuitError } from "./error";
-import { Branch, Network, Node, Stamper } from "./network";
+import { Branch, Network, Node } from "./network";
 
 export class Circuit implements Network {
   readonly groundNode: Node;
@@ -46,60 +44,10 @@ export class Circuit implements Network {
   }
 
   dc(): Map<string, number> {
-    if (this.devices.length === 0) {
-      throw new CircuitError(`Empty circuit`);
-    }
-
-    const n = this.nodes.length;
-    const matrix = matMakeEmpty(n, n);
-    const rhs = new Float64Array(n);
-    const { groundNode } = this;
-
-    const stamper = new (class implements Stamper {
-      stampMatrix(i: Node | Branch, j: Node | Branch, x: number): void {
-        if (!Number.isFinite(x)) {
-          throw new MathError();
-        }
-        if (i !== groundNode && j !== groundNode) {
-          matrix[i.index][j.index] += x;
-        }
-      }
-
-      stampRightSide(i: Node | Branch, x: number): void {
-        if (!Number.isFinite(x)) {
-          throw new MathError();
-        }
-        if (i !== groundNode) {
-          rhs[i.index] += x;
-        }
-      }
-    })();
-
-    for (const device of this.devices) {
-      device.stamp(stamper);
-    }
-
-    const x = solve(matrix, rhs);
-
-    this.updateDevices(x);
-
-    const result = new Map<string, number>();
-    result.set(`V[${groundNode.name}]`, 0);
-    for (let i = 0; i < this.nodes.length; i++) {
-      const node = this.nodes[i];
-      if (node instanceof Node) {
-        result.set(`V[${node.name}]`, node.voltage);
-        continue;
-      }
-      if (node instanceof Branch) {
-        result.set(`I[${node.a.name}->${node.b.name}]`, node.current);
-        continue;
-      }
-    }
-    return result;
+    return dcAnalysis(this);
   }
 
-  private updateDevices(x: Vector): void {
+  updateDevices(x: Vector): void {
     for (let i = 0; i < this.nodes.length; i++) {
       const node = this.nodes[i];
       if (node instanceof Node) {
