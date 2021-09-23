@@ -1,3 +1,6 @@
+import { MathError } from "../math/error";
+import type { Matrix, Vector } from "../math/types";
+
 export interface Network {
   /**
    * The only ground node in the whole circuit.
@@ -98,4 +101,30 @@ export interface Stamper {
    * @param x Stamp value.
    */
   stampRightSide(i: Node | Branch, x: number): void;
+}
+
+export function makeStamper(
+  groundNode: Node,
+  matrix: Matrix,
+  rhs: Vector,
+): Stamper {
+  return new (class implements Stamper {
+    stampMatrix(i: Node | Branch, j: Node | Branch, x: number): void {
+      if (!Number.isFinite(x)) {
+        throw new MathError();
+      }
+      if (i !== groundNode && j !== groundNode) {
+        matrix[i.index][j.index] += x;
+      }
+    }
+
+    stampRightSide(i: Node | Branch, x: number): void {
+      if (!Number.isFinite(x)) {
+        throw new MathError();
+      }
+      if (i !== groundNode) {
+        rhs[i.index] += x;
+      }
+    }
+  })();
 }
