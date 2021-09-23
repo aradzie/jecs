@@ -1,4 +1,4 @@
-import { CircuitError } from "../error";
+import { CircuitError } from "./error";
 
 export type RawDeviceProps = {
   readonly [name: string]: number;

@@ -1,5 +1,5 @@
 import test from "ava";
-import { readNetlist } from "../netlist";
+import { readNetlist } from "../simulation/netlist";
 
 test("voltage controlled current source", (t) => {
   const circuit = readNetlist([

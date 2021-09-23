@@ -1,4 +1,4 @@
-import type { DeviceClass } from "./device";
+import type { DeviceClass } from "../simulation/device";
 import { Ground } from "./ground";
 import { ICISource } from "./icisource";
 import { ICVSource } from "./icvsource";

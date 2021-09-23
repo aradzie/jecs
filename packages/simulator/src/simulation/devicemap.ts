@@ -1,7 +1,7 @@
-import { CircuitError } from "../error";
-import type { Node } from "../network";
+import { devices } from "../device";
 import type { Device, DeviceClass } from "./device";
-import { devices } from "./index";
+import { CircuitError } from "./error";
+import type { Node } from "./network";
 import { RawDeviceProps, validateDeviceProps } from "./props";
 
 const deviceMap = new Map<string, DeviceClass>();

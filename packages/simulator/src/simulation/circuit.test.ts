@@ -1,8 +1,8 @@
 import test from "ava";
+import { ISource } from "../device/isource";
+import { Resistor } from "../device/resistor";
+import { VSource } from "../device/vsource";
 import { Circuit } from "./circuit";
-import { ISource } from "./device/isource";
-import { Resistor } from "./device/resistor";
-import { VSource } from "./device/vsource";
 
 test("short circuit", (t) => {
   const circuit = new Circuit();

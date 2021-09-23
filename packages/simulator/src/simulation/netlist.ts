@@ -1,10 +1,10 @@
+import { Ground } from "../device/ground";
+import { VSource } from "../device/vsource";
 import { Circuit } from "./circuit";
-import type { DeviceClass } from "./device/device";
-import { createDevice, getDeviceClass } from "./device/devicemap";
-import { Ground } from "./device/ground";
-import type { RawDeviceProps } from "./device/props";
-import { VSource } from "./device/vsource";
+import type { DeviceClass } from "./device";
+import { createDevice, getDeviceClass } from "./devicemap";
 import type { Node } from "./network";
+import type { RawDeviceProps } from "./props";
 
 export type Netlist = readonly NetlistItem[];
 

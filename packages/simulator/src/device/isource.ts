@@ -1,7 +1,7 @@
-import type { Node, Stamper } from "../network";
-import { Device } from "./device";
-import type { DeviceProps } from "./props";
-import { Unit } from "./props";
+import { Device } from "../simulation/device";
+import type { Node, Stamper } from "../simulation/network";
+import type { DeviceProps } from "../simulation/props";
+import { Unit } from "../simulation/props";
 
 export interface ISourceProps extends DeviceProps {
   /** Current in amperes. */

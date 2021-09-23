@@ -2,7 +2,7 @@ import { MathError } from "../math/error";
 import { solve } from "../math/gauss-elimination";
 import { matMakeEmpty } from "../math/matrix";
 import type { Vector } from "../math/types";
-import type { Device } from "./device/device";
+import type { Device } from "./device";
 import { CircuitError } from "./error";
 import { Branch, Network, Node, Stamper } from "./network";
 

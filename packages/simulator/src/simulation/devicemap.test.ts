@@ -1,5 +1,5 @@
 import test from "ava";
-import { Circuit } from "../circuit";
+import { Circuit } from "./circuit";
 import { createDevice } from "./devicemap";
 
 test("create device", (t) => {

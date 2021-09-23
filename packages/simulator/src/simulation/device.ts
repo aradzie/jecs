@@ -1,4 +1,4 @@
-import type { Network, Node, Stamper } from "../network";
+import type { Network, Node, Stamper } from "./network";
 import type { DevicePropsSchema } from "./props";
 
 // pin

@@ -1,6 +1,6 @@
-import { CircuitError } from "../error";
-import type { Network, Node } from "../network";
-import { Device } from "./device";
+import { Device } from "../simulation/device";
+import { CircuitError } from "../simulation/error";
+import type { Network, Node } from "../simulation/network";
 
 export class Ground extends Device {
   static override readonly id = "g";
