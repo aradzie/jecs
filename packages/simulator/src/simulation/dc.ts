@@ -1,5 +1,5 @@
 import { solve } from "../math/gauss-elimination";
-import { matMakeEmpty } from "../math/matrix";
+import { matMake, vecMake } from "../math/matrix";
 import type { Circuit } from "./circuit";
 import { CircuitError } from "./error";
 import { Branch, makeStamper, Node } from "./network";
@@ -14,8 +14,8 @@ export function dcAnalysis(circuit: Circuit): DcAnalysisResult {
   }
 
   const n = nodes.length;
-  const matrix = matMakeEmpty(n, n);
-  const rhs = new Float64Array(n);
+  const matrix = matMake(n, n);
+  const rhs = vecMake(n);
 
   const stamper = makeStamper(groundNode, matrix, rhs);
 

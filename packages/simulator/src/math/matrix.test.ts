@@ -1,6 +1,6 @@
 import test from "ava";
-import { toArray, toMatrix } from "./debug";
-import { matMakeIdentity, matMultiplyMat, matMultiplyVec } from "./matrix";
+import { toArray, toMatrix, toVector } from "./debug";
+import { matMultiplyMat, matMultiplyVec } from "./matrix";
 
 test("multiply matrix by matrix", (t) => {
   {
@@ -28,7 +28,11 @@ test("multiply matrix by matrix", (t) => {
       [7, 8, 9],
     ];
     const a = toMatrix(data);
-    const b = matMakeIdentity(3);
+    const b = toMatrix([
+      [1, 0, 0],
+      [0, 1, 0],
+      [0, 0, 1],
+    ]);
     const c = matMultiplyMat(a, b);
     const d = matMultiplyMat(b, a);
     t.deepEqual(toArray(c), data);
@@ -39,7 +43,7 @@ test("multiply matrix by matrix", (t) => {
 test("multiply matrix by vector", (t) => {
   {
     const a = toMatrix([[2]]);
-    const b = new Float64Array([3]);
+    const b = toVector([3]);
     const c = matMultiplyVec(a, b);
     t.deepEqual([...c], [6]);
   }
@@ -48,7 +52,7 @@ test("multiply matrix by vector", (t) => {
       [1, 2, 3],
       [4, 5, 6],
     ]);
-    const b = new Float64Array([4, 5, 6]);
+    const b = toVector([4, 5, 6]);
     const c = matMultiplyVec(a, b);
     t.deepEqual([...c], [32, 77]);
   }

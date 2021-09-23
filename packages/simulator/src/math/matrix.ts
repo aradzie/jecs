@@ -5,18 +5,10 @@ export function matSize(a: MatrixLike): [height: number, width: number] {
   return [a.length, a[0].length];
 }
 
-export function matMakeEmpty(height: number, width: number): Matrix {
-  const m = new Array<Float64Array>(height);
+export function matMake(height: number, width: number): Matrix {
+  const m = new Array<Vector>(height);
   for (let i = 0; i < height; i++) {
-    m[i] = new Float64Array(width);
-  }
-  return m;
-}
-
-export function matMakeIdentity(size: number): Matrix {
-  const m = matMakeEmpty(size, size);
-  for (let i = 0; i < size; i++) {
-    m[i][i] = 1;
+    m[i] = vecMake(width);
   }
   return m;
 }
@@ -27,7 +19,7 @@ export function matMultiplyMat(a: MatrixLike, b: MatrixLike): Matrix {
   if (aWidth !== bHeight) {
     throw new MathError();
   }
-  const c = matMakeEmpty(aHeight, bWidth);
+  const c = matMake(aHeight, bWidth);
   for (let i = 0; i < aHeight; i++) {
     for (let j = 0; j < bWidth; j++) {
       let x = 0;
@@ -45,7 +37,7 @@ export function matMultiplyVec(a: MatrixLike, b: VectorLike): Vector {
   if (width !== b.length) {
     throw new MathError();
   }
-  const c = new Float64Array(height);
+  const c = vecMake(height);
   for (let i = 0; i < height; i++) {
     let x = 0;
     for (let j = 0; j < width; j++) {
@@ -54,6 +46,10 @@ export function matMultiplyVec(a: MatrixLike, b: VectorLike): Vector {
     c[i] = x;
   }
   return c;
+}
+
+export function vecMake(size: number): Vector {
+  return new Float64Array(size);
 }
 
 export function swapRows<T>(

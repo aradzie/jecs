@@ -43,7 +43,7 @@ export function dumpSle(m: MatrixLike, v: VectorLike, separator = "|"): void {
   }
 }
 
-function printValue(x: number) {
+function printValue(x: number): string {
   return String(round(x)).padStart(7);
 }
 
