@@ -1,9 +1,12 @@
+import type { MatrixLike } from "./types";
+
+export type PermVectorLike = ArrayLike<number>;
+export type PermVector = Int32Array;
+
 /**
  * Scans the given column which starts at [i, j] and ends at [size, j],
  * returns index of the row with the largest value in the column.
  */
-import type { MatrixLike } from "./types";
-
 export function findPivotRow(
   mat: MatrixLike,
   size: number,

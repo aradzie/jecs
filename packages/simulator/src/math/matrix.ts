@@ -13,6 +13,17 @@ export function matMake(height: number, width: number): Matrix {
   return m;
 }
 
+export function matCopy(src: MatrixLike, dst: Matrix): void {
+  const [aHeight, aWidth] = matSize(src);
+  const [bHeight, bWidth] = matSize(dst);
+  if (aHeight !== bHeight || aWidth !== bWidth) {
+    throw new MathError();
+  }
+  for (let i = 0; i < aHeight; i++) {
+    dst[i].set(src[i]);
+  }
+}
+
 export function matMultiplyMat(a: MatrixLike, b: MatrixLike): Matrix {
   const [aHeight, aWidth] = matSize(a);
   const [bHeight, bWidth] = matSize(b);
@@ -50,6 +61,13 @@ export function matMultiplyVec(a: MatrixLike, b: VectorLike): Vector {
 
 export function vecMake(size: number): Vector {
   return new Float64Array(size);
+}
+
+export function vecCopy(src: VectorLike, dst: Vector): void {
+  if (src.length !== dst.length) {
+    throw new MathError();
+  }
+  dst.set(src);
 }
 
 export function swapRows<T>(
