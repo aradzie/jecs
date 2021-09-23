@@ -1,4 +1,5 @@
 import type { DeviceClass } from "../simulation/device";
+import { Ammeter } from "./ammeter";
 import { Ground } from "./ground";
 import { ICISource } from "./icisource";
 import { ICVSource } from "./icvsource";
@@ -10,6 +11,7 @@ import { VCVSource } from "./vcvsource";
 import { VSource } from "./vsource";
 
 export {
+  Ammeter,
   Ground,
   ICISource,
   ICVSource,
@@ -22,6 +24,7 @@ export {
 };
 
 export const devices: readonly DeviceClass[] = [
+  Ammeter,
   Ground,
   ICISource,
   ICVSource,
