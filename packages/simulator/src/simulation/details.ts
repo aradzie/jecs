@@ -1,4 +1,4 @@
-import type { Unit } from "./props";
+import type { Unit } from "./unit";
 
 export type Details = readonly DetailsItem[];
 

@@ -1,7 +1,7 @@
 import test from "ava";
 import { dcAnalysis } from "../simulation/dc";
 import { readNetlist } from "../simulation/netlist";
-import { Unit } from "../simulation/props";
+import { Unit } from "../simulation/unit";
 import type { Ammeter } from "./ammeter";
 
 test("ammeter", (t) => {

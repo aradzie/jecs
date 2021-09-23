@@ -1,4 +1,5 @@
 import { CircuitError } from "./error";
+import type { Unit } from "./unit";
 
 export type RawDeviceProps = {
   readonly [name: string]: number;
@@ -7,20 +8,6 @@ export type RawDeviceProps = {
 export type DeviceProps = {
   readonly [name: string]: number;
 };
-
-export enum Unit {
-  UNITLESS,
-  VOLT,
-  AMPERE,
-  WATT,
-  OHM,
-  SIEMENS,
-  FARAD,
-  HENRY,
-  HERTZ,
-  METER,
-  GRAM,
-}
 
 export type DevicePropsSchema = readonly DevicePropsSchemaItem[];
 

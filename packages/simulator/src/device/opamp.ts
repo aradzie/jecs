@@ -1,7 +1,7 @@
 import { Device } from "../simulation/device";
 import type { Node, Stamper } from "../simulation/network";
 import type { DeviceProps } from "../simulation/props";
-import { Unit } from "../simulation/props";
+import { Unit } from "../simulation/unit";
 
 export interface OpAmpProps extends DeviceProps {
   readonly gain: number;
