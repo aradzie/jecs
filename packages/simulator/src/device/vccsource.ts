@@ -1,3 +1,4 @@
+import type { Details } from "../simulation/details";
 import { Device } from "../simulation/device";
 import type { Branch, Network, Node, Stamper } from "../simulation/network";
 import type { DeviceProps } from "../simulation/props";
@@ -54,5 +55,15 @@ export class VCCSource extends Device {
     stamper.stampMatrix(branch, nin, -gain);
     stamper.stampMatrix(branch, nip, gain);
     stamper.stampMatrix(branch, branch, -1);
+  }
+
+  override details(): Details {
+    const { non, nop, branch } = this;
+    const voltage = nop.voltage - non.voltage;
+    const current = branch.current;
+    return [
+      { name: "I", value: current, unit: Unit.AMPERE },
+      { name: "Vd", value: voltage, unit: Unit.VOLT },
+    ];
   }
 }

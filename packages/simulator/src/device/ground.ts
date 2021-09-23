@@ -1,6 +1,8 @@
+import type { Details } from "../simulation/details";
 import { Device } from "../simulation/device";
 import { CircuitError } from "../simulation/error";
 import type { Network, Node } from "../simulation/network";
+import { Unit } from "../simulation/props";
 
 export class Ground extends Device {
   static override readonly id = "g";
@@ -20,5 +22,11 @@ export class Ground extends Device {
         `The ground device must be connected to the ground node.`,
       );
     }
+  }
+
+  override details(): Details {
+    return [
+      { name: "V", value: this.n.voltage, unit: Unit.VOLT }, //
+    ];
   }
 }

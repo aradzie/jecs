@@ -1,3 +1,4 @@
+import type { Details } from "../simulation/details";
 import { Device } from "../simulation/device";
 import type { Branch, Network, Node, Stamper } from "../simulation/network";
 import type { DeviceProps } from "../simulation/props";
@@ -24,10 +25,6 @@ export class VSource extends Device {
   readonly v: number;
   /** Extra MNA branch. */
   branch!: Branch;
-  /** Current through device. */
-  current = 0;
-  /** Power produced by device. */
-  power = 0;
 
   constructor(
     name: string, //
@@ -53,8 +50,14 @@ export class VSource extends Device {
     stamper.stampRightSide(branch, v);
   }
 
-  override update(): void {
-    this.current = -this.branch.current;
-    this.power = -(this.v * this.current);
+  override details(): Details {
+    const { branch, v } = this;
+    const current = -branch.current;
+    const power = -(v * current);
+    return [
+      { name: "I", value: current, unit: Unit.AMPERE },
+      { name: "Vd", value: v, unit: Unit.VOLT },
+      { name: "P", value: power, unit: Unit.WATT },
+    ];
   }
 }

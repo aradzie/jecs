@@ -1,5 +1,7 @@
+import type { Details } from "../simulation/details";
 import { Device } from "../simulation/device";
 import type { Branch, Network, Node, Stamper } from "../simulation/network";
+import { Unit } from "../simulation/props";
 
 /**
  * Ammeter.
@@ -10,35 +12,36 @@ export class Ammeter extends Device {
   static override readonly propsSchema = [];
 
   /** Negative terminal. */
-  readonly a: Node;
+  readonly nn: Node;
   /** Positive terminal. */
-  readonly b: Node;
+  readonly np: Node;
   /** Extra MNA branch. */
   branch!: Branch;
-  /** Current through device. */
-  current = 0;
 
   constructor(
     name: string, //
-    [a, b]: readonly Node[],
+    [nn, np]: readonly Node[],
   ) {
-    super(name, [a, b]);
-    this.a = a;
-    this.b = b;
+    super(name, [nn, np]);
+    this.nn = nn;
+    this.np = np;
   }
 
   override connect(network: Network): void {
-    this.branch = network.allocBranch(this.a, this.b);
+    this.branch = network.allocBranch(this.np, this.nn);
   }
 
   override stamp(stamper: Stamper): void {
-    stamper.stampMatrix(this.a, this.branch, 1);
-    stamper.stampMatrix(this.b, this.branch, -1);
-    stamper.stampMatrix(this.branch, this.a, 1);
-    stamper.stampMatrix(this.branch, this.b, -1);
+    const { nn, np, branch } = this;
+    stamper.stampMatrix(nn, branch, -1);
+    stamper.stampMatrix(np, branch, 1);
+    stamper.stampMatrix(branch, nn, -1);
+    stamper.stampMatrix(branch, np, 1);
   }
 
-  override update(): void {
-    this.current = this.branch.current;
+  override details(): Details {
+    return [
+      { name: "I", value: this.branch.current, unit: Unit.AMPERE }, //
+    ];
   }
 }

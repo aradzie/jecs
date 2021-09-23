@@ -1,3 +1,4 @@
+import type { Details } from "../simulation/details";
 import { Device } from "../simulation/device";
 import type { Node, Stamper } from "../simulation/network";
 import type { DeviceProps } from "../simulation/props";
@@ -42,7 +43,12 @@ export class CSource extends Device {
     stamper.stampRightSide(np, i);
   }
 
-  override update(): void {
-    this.voltage = Math.abs(this.np.voltage - this.nn.voltage);
+  override details(): Details {
+    const { nn, np, i } = this;
+    const voltage = np.voltage - nn.voltage;
+    return [
+      { name: "I", value: i, unit: Unit.AMPERE },
+      { name: "Vd", value: voltage, unit: Unit.VOLT },
+    ];
   }
 }

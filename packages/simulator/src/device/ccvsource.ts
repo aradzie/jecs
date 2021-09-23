@@ -1,3 +1,4 @@
+import type { Details } from "../simulation/details";
 import { Device } from "../simulation/device";
 import type { Branch, Network, Node, Stamper } from "../simulation/network";
 import type { DeviceProps } from "../simulation/props";
@@ -61,5 +62,17 @@ export class CCVSource extends Device {
     stamper.stampMatrix(nop, branch2, 1);
     stamper.stampMatrix(branch2, nin, 1);
     stamper.stampMatrix(branch2, nip, -1);
+  }
+
+  override details(): Details {
+    const { branch2, non, nop } = this;
+    const voltage = nop.voltage - non.voltage;
+    const current = -branch2.current;
+    const power = -(voltage * current);
+    return [
+      { name: "I", value: current, unit: Unit.AMPERE },
+      { name: "Vd", value: voltage, unit: Unit.VOLT },
+      { name: "P", value: power, unit: Unit.WATT },
+    ];
   }
 }

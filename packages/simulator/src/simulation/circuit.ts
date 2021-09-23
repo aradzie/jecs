@@ -70,7 +70,7 @@ export class Circuit implements Network {
     return device;
   }
 
-  updateDevices(x: Vector): void {
+  updateNodes(x: Vector): void {
     for (let i = 0; i < this.#nodes.length; i++) {
       const node = this.#nodes[i];
       if (node instanceof Node) {
@@ -81,10 +81,6 @@ export class Circuit implements Network {
         node.current = x[i];
         continue;
       }
-    }
-
-    for (const device of this.#devices) {
-      device.update();
     }
   }
 }

@@ -25,7 +25,7 @@ export function dcAnalysis(circuit: Circuit): DcAnalysisResult {
 
   const x = solve(matrix, rhs);
 
-  circuit.updateDevices(x);
+  circuit.updateNodes(x);
 
   return makeResult([groundNode, ...nodes]);
 }

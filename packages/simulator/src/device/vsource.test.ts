@@ -1,6 +1,7 @@
 import test from "ava";
 import { dcAnalysis } from "../simulation/dc";
 import { readNetlist } from "../simulation/netlist";
+import { Unit } from "../simulation/props";
 import type { VSource } from "./vsource";
 
 test("voltage source", (t) => {
@@ -19,7 +20,9 @@ test("voltage source", (t) => {
     ]),
   );
   const device = circuit.getDevice("DUT") as VSource;
-  t.is(device.v, 5);
-  t.is(device.current, 0.005);
-  t.is(device.power, -0.025);
+  t.deepEqual(device.details(), [
+    { name: "I", value: 0.005, unit: Unit.AMPERE },
+    { name: "Vd", value: 5, unit: Unit.VOLT },
+    { name: "P", value: -0.025, unit: Unit.WATT },
+  ]);
 });

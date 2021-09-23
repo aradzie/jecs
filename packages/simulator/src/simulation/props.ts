@@ -12,6 +12,7 @@ export enum Unit {
   UNITLESS,
   VOLT,
   AMPERE,
+  WATT,
   OHM,
   SIEMENS,
   FARAD,

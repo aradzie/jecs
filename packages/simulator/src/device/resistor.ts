@@ -1,3 +1,4 @@
+import type { Details } from "../simulation/details";
 import { Device } from "../simulation/device";
 import type { Node, Stamper } from "../simulation/network";
 import type { DeviceProps } from "../simulation/props";
@@ -21,10 +22,6 @@ export class Resistor extends Device {
   readonly b: Node;
   /** Resistance. */
   readonly r: number;
-  /** Voltage difference on the device terminals. */
-  voltage = 0;
-  /** Current through device. */
-  current = 0;
 
   constructor(
     name: string, //
@@ -45,8 +42,15 @@ export class Resistor extends Device {
     stamper.stampMatrix(this.b, this.b, g);
   }
 
-  override update(): void {
-    this.voltage = Math.abs(this.b.voltage - this.a.voltage);
-    this.current = this.voltage / this.r;
+  override details(): Details {
+    const { a, b, r } = this;
+    const voltage = Math.abs(b.voltage - a.voltage);
+    const current = voltage / r;
+    const power = voltage * current;
+    return [
+      { name: "I", value: current, unit: Unit.AMPERE },
+      { name: "Vd", value: voltage, unit: Unit.VOLT },
+      { name: "P", value: power, unit: Unit.WATT },
+    ];
   }
 }

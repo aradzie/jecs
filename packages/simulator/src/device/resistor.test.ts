@@ -1,6 +1,7 @@
 import test from "ava";
 import { dcAnalysis } from "../simulation/dc";
 import { readNetlist } from "../simulation/netlist";
+import { Unit } from "../simulation/props";
 import type { Resistor } from "./resistor";
 
 test("resistor", (t) => {
@@ -18,6 +19,9 @@ test("resistor", (t) => {
     ]),
   );
   const device = circuit.getDevice("DUT") as Resistor;
-  t.is(device.voltage, 5);
-  t.is(device.current, 0.005);
+  t.deepEqual(device.details(), [
+    { name: "I", value: 0.005, unit: Unit.AMPERE },
+    { name: "Vd", value: 5, unit: Unit.VOLT },
+    { name: "P", value: 0.025, unit: Unit.WATT },
+  ]);
 });

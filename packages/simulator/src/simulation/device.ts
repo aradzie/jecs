@@ -1,3 +1,4 @@
+import type { Details } from "./details";
 import type { Network, Node, Stamper } from "./network";
 import type { DevicePropsSchema } from "./props";
 
@@ -10,6 +11,7 @@ export interface DeviceClass {
   readonly id: string;
   readonly numTerminals: number;
   readonly propsSchema: DevicePropsSchema;
+
   new (name: string, nodes: readonly Node[], props: any): Device;
 }
 
@@ -40,5 +42,10 @@ export abstract class Device {
    */
   stamp(stamper: Stamper): void {}
 
-  update(): void {}
+  /**
+   * Returns device details, such as voltage difference, current, etc.
+   */
+  details(): Details {
+    return [];
+  }
 }
