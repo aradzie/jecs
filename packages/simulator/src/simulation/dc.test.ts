@@ -1,6 +1,7 @@
 import test from "ava";
 import { ISource, Resistor, VSource } from "../device";
 import { Circuit } from "./circuit";
+import { dcAnalysis } from "./dc";
 
 test("short circuit", (t) => {
   const circuit = new Circuit();
@@ -10,7 +11,7 @@ test("short circuit", (t) => {
       v: 1,
     }),
   );
-  const r = circuit.dc();
+  const r = dcAnalysis(circuit);
   t.deepEqual(
     r,
     new Map([
@@ -29,7 +30,7 @@ test("open circuit", (t) => {
       v: 1,
     }),
   );
-  const r = circuit.dc();
+  const r = dcAnalysis(circuit);
   t.deepEqual(
     r,
     new Map([
@@ -52,7 +53,7 @@ test("`is` in series with `r`", (t) => {
       r: 1000,
     }),
   );
-  const r = circuit.dc();
+  const r = dcAnalysis(circuit);
   t.deepEqual(
     r,
     new Map([
@@ -78,7 +79,7 @@ test("`is` in series with `r` in series with `r`", (t) => {
       r: 700,
     }),
   );
-  const r = circuit.dc();
+  const r = dcAnalysis(circuit);
   t.deepEqual(
     r,
     new Map([
@@ -101,7 +102,7 @@ test("`vs` in series with `r`", (t) => {
       r: 1000,
     }),
   );
-  const r = circuit.dc();
+  const r = dcAnalysis(circuit);
   t.deepEqual(
     r,
     new Map([
@@ -128,7 +129,7 @@ test("`vs` in series with `r` in series with `r`", (t) => {
       r: 700,
     }),
   );
-  const r = circuit.dc();
+  const r = dcAnalysis(circuit);
   t.deepEqual(
     r,
     new Map([
@@ -156,7 +157,7 @@ test("`vs` in series with `vs` in series with `r`", (t) => {
       r: 1000,
     }),
   );
-  const r = circuit.dc();
+  const r = dcAnalysis(circuit);
   t.deepEqual(
     r,
     new Map([

@@ -1,5 +1,4 @@
 import type { Vector } from "../math/types";
-import { dcAnalysis } from "./dc";
 import type { Device } from "./device";
 import { CircuitError } from "./error";
 import { Branch, Network, Node } from "./network";
@@ -41,10 +40,6 @@ export class Circuit implements Network {
       this.devices.push(device);
       device.connect(this);
     }
-  }
-
-  dc(): Map<string, number> {
-    return dcAnalysis(this);
   }
 
   updateDevices(x: Vector): void {

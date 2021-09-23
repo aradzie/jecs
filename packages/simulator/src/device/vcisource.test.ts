@@ -1,4 +1,5 @@
 import test from "ava";
+import { dcAnalysis } from "../simulation/dc";
 import { readNetlist } from "../simulation/netlist";
 
 test("voltage controlled current source", (t) => {
@@ -7,7 +8,7 @@ test("voltage controlled current source", (t) => {
     ["vcis", ["g", "NIB", "g", "NOB"], { gain: 0.5 }],
     ["r", ["g", "NOB"], { r: 100 }],
   ]);
-  const r = circuit.dc();
+  const r = dcAnalysis(circuit);
   t.deepEqual(
     r,
     new Map([
