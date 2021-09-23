@@ -5,7 +5,7 @@ import { readNetlist } from "../simulation/netlist";
 test("voltage controlled voltage source", (t) => {
   const circuit = readNetlist([
     ["v", ["g", "NIB"], { v: 3 }],
-    ["vcvs", ["g", "NIB", "g", "NOB"], { gain: 0.5 }],
+    ["vcvs/DUT", ["g", "NIB", "g", "NOB"], { gain: 0.5 }],
     ["r", ["g", "NOB"], { r: 1000 }],
   ]);
   const r = dcAnalysis(circuit);

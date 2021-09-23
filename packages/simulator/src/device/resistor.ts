@@ -15,9 +15,15 @@ export class Resistor extends Device {
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [{ name: "r", unit: Unit.OHM }];
 
+  /** First terminal. */
   readonly a: Node;
+  /** Second terminal. */
   readonly b: Node;
+  /** Resistance. */
   readonly r: number;
+  /** Voltage difference on the device terminals. */
+  voltage = 0;
+  /** Current through device. */
   current = 0;
 
   constructor(
@@ -40,6 +46,7 @@ export class Resistor extends Device {
   }
 
   override update(): void {
-    this.current = (this.b.voltage - this.a.voltage) / this.r;
+    this.voltage = Math.abs(this.b.voltage - this.a.voltage);
+    this.current = this.voltage / this.r;
   }
 }

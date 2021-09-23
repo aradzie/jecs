@@ -24,6 +24,8 @@ export class VSource extends Device {
   readonly v: number;
   /** Extra MNA branch. */
   branch!: Branch;
+  /** Current through device. */
+  current = 0;
 
   constructor(
     name: string, //
@@ -46,5 +48,9 @@ export class VSource extends Device {
     stamper.stampMatrix(this.branch, this.a, -1);
     stamper.stampMatrix(this.branch, this.b, 1);
     stamper.stampRightSide(this.branch, this.v);
+  }
+
+  override update(): void {
+    this.current = this.branch.current;
   }
 }
