@@ -1,37 +1,37 @@
 import type { DeviceClass } from "../simulation/device";
 import { Ammeter } from "./ammeter";
+import { CCCSource } from "./cccsource";
+import { CCVSource } from "./ccvsource";
+import { CSource } from "./csource";
 import { Ground } from "./ground";
-import { ICISource } from "./icisource";
-import { ICVSource } from "./icvsource";
-import { ISource } from "./isource";
 import { OpAmp } from "./opamp";
 import { Resistor } from "./resistor";
-import { VCISource } from "./vcisource";
+import { VCCSource } from "./vccsource";
 import { VCVSource } from "./vcvsource";
 import { VSource } from "./vsource";
 
 export {
   Ammeter,
+  CCCSource,
+  CCVSource,
+  CSource,
   Ground,
-  ICISource,
-  ICVSource,
-  ISource,
   OpAmp,
   Resistor,
-  VCISource,
+  VCCSource,
   VCVSource,
   VSource,
 };
 
 export const devices: readonly DeviceClass[] = [
   Ammeter,
+  CCCSource,
+  CCVSource,
+  CSource,
   Ground,
-  ICISource,
-  ICVSource,
-  ISource,
   OpAmp,
   Resistor,
-  VCISource,
+  VCCSource,
   VCVSource,
   VSource,
 ];

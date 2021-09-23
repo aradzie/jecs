@@ -1,5 +1,5 @@
 import test from "ava";
-import { ISource, Resistor, VSource } from "../device";
+import { CSource, Resistor, VSource } from "../device";
 import { Circuit } from "./circuit";
 import { dcAnalysis } from "./dc";
 
@@ -46,7 +46,7 @@ test("`is` in series with `r`", (t) => {
   const ng = circuit.groundNode;
   const n0 = circuit.allocNode("N0");
   circuit.addDevice(
-    new ISource("I1", [ng, n0], {
+    new CSource("I1", [ng, n0], {
       i: 0.001,
     }),
     new Resistor("R1", [ng, n0], {
@@ -69,7 +69,7 @@ test("`is` in series with `r` in series with `r`", (t) => {
   const n0 = circuit.allocNode("N0");
   const n1 = circuit.allocNode("N1");
   circuit.addDevice(
-    new ISource("I1", [ng, n1], {
+    new CSource("I1", [ng, n1], {
       i: 0.001,
     }),
     new Resistor("R1", [ng, n0], {

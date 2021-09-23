@@ -3,7 +3,7 @@ import type { Node, Stamper } from "../simulation/network";
 import type { DeviceProps } from "../simulation/props";
 import { Unit } from "../simulation/props";
 
-export interface ISourceProps extends DeviceProps {
+export interface CSourceProps extends DeviceProps {
   /** Current in amperes. */
   readonly i: number;
 }
@@ -11,7 +11,7 @@ export interface ISourceProps extends DeviceProps {
 /**
  * Current source.
  */
-export class ISource extends Device {
+export class CSource extends Device {
   static override readonly id = "i";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [{ name: "i", unit: Unit.AMPERE }];
@@ -26,7 +26,7 @@ export class ISource extends Device {
   constructor(
     name: string, //
     [a, b]: readonly Node[],
-    { i }: ISourceProps,
+    { i }: CSourceProps,
   ) {
     super(name, [a, b]);
     this.a = a;

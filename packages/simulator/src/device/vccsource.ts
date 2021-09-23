@@ -3,15 +3,15 @@ import type { Node, Stamper } from "../simulation/network";
 import type { DeviceProps } from "../simulation/props";
 import { Unit } from "../simulation/props";
 
-export interface ICISourceProps extends DeviceProps {
+export interface VCCSourceProps extends DeviceProps {
   readonly gain: number;
 }
 
 /**
- * Current-controlled current source.
+ * Voltage-controlled current source.
  */
-export class ICISource extends Device {
-  static override readonly id = "icis";
+export class VCCSource extends Device {
+  static override readonly id = "vccs";
   static override readonly numTerminals = 4;
   static override readonly propsSchema = [
     { name: "gain", unit: Unit.UNITLESS },
@@ -19,9 +19,9 @@ export class ICISource extends Device {
 
   /** Negative input terminal. */
   readonly ia: Node;
-  /** Positive input terminal. */
-  readonly ib: Node;
   /** Negative output terminal. */
+  readonly ib: Node;
+  /** Positive input terminal. */
   readonly oa: Node;
   /** Positive output terminal. */
   readonly ob: Node;
@@ -31,7 +31,7 @@ export class ICISource extends Device {
   constructor(
     name: string,
     [ia, ib, oa, ob]: readonly Node[],
-    { gain }: ICISourceProps,
+    { gain }: VCCSourceProps,
   ) {
     super(name, [ia, ib, oa, ob]);
     this.ia = ia;
@@ -41,5 +41,10 @@ export class ICISource extends Device {
     this.gain = gain;
   }
 
-  override stamp(stamper: Stamper): void {}
+  override stamp(stamper: Stamper): void {
+    stamper.stampMatrix(this.oa, this.ib, this.gain);
+    stamper.stampMatrix(this.oa, this.ia, -this.gain);
+    stamper.stampMatrix(this.ob, this.ib, -this.gain);
+    stamper.stampMatrix(this.ob, this.ia, this.gain);
+  }
 }
