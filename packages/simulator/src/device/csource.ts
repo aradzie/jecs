@@ -17,25 +17,32 @@ export class CSource extends Device {
   static override readonly propsSchema = [{ name: "i", unit: Unit.AMPERE }];
 
   /** Negative terminal. */
-  readonly a: Node;
+  readonly nn: Node;
   /** Positive terminal. */
-  readonly b: Node;
+  readonly np: Node;
   /** Output value in amperes. */
   readonly i: number;
+  /** Voltage difference on the device terminals. */
+  voltage = 0;
 
   constructor(
     name: string, //
-    [a, b]: readonly Node[],
+    [nn, np]: readonly Node[],
     { i }: CSourceProps,
   ) {
-    super(name, [a, b]);
-    this.a = a;
-    this.b = b;
+    super(name, [nn, np]);
+    this.nn = nn;
+    this.np = np;
     this.i = i;
   }
 
   override stamp(stamper: Stamper): void {
-    stamper.stampRightSide(this.a, -this.i);
-    stamper.stampRightSide(this.b, this.i);
+    const { nn, np, i } = this;
+    stamper.stampRightSide(nn, -i);
+    stamper.stampRightSide(np, i);
+  }
+
+  override update(): void {
+    this.voltage = Math.abs(this.np.voltage - this.nn.voltage);
   }
 }

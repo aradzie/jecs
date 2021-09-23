@@ -18,34 +18,48 @@ export class CCVSource extends Device {
   ];
 
   /** Negative input terminal. */
-  readonly ia: Node;
+  readonly nin: Node;
   /** Positive input terminal. */
-  readonly ib: Node;
+  readonly nip: Node;
   /** Negative output terminal. */
-  readonly oa: Node;
+  readonly non: Node;
   /** Positive output terminal. */
-  readonly ob: Node;
+  readonly nop: Node;
   /** Gain. */
   readonly gain: number;
   /** Extra MNA branch. */
-  branch!: Branch;
+  branch1!: Branch;
+  /** Extra MNA branch. */
+  branch2!: Branch;
 
   constructor(
     name: string,
-    [ia, ib, oa, ob]: readonly Node[],
+    [nin, nip, non, nop]: readonly Node[],
     { gain }: CCVSourceProps,
   ) {
-    super(name, [ia, ib, oa, ob]);
-    this.ia = ia;
-    this.ib = ib;
-    this.oa = oa;
-    this.ob = ob;
+    super(name, [nin, nip, non, nop]);
+    this.nin = nin;
+    this.nip = nip;
+    this.non = non;
+    this.nop = nop;
     this.gain = gain;
   }
 
   override connect(network: Network): void {
-    this.branch = network.allocBranch(this.oa, this.ob);
+    this.branch1 = network.allocBranch(this.nin, this.nip);
+    this.branch2 = network.allocBranch(this.non, this.nop);
   }
 
-  override stamp(stamper: Stamper): void {}
+  override stamp(stamper: Stamper): void {
+    const { nin, nip, non, nop, branch1, branch2, gain } = this;
+    stamper.stampMatrix(nin, branch1, -1);
+    stamper.stampMatrix(nip, branch1, 1);
+    stamper.stampMatrix(branch1, non, -1);
+    stamper.stampMatrix(branch1, nop, 1);
+    stamper.stampMatrix(branch1, branch1, -gain);
+    stamper.stampMatrix(non, branch2, -1);
+    stamper.stampMatrix(nop, branch2, 1);
+    stamper.stampMatrix(branch2, nin, 1);
+    stamper.stampMatrix(branch2, nip, -1);
+  }
 }

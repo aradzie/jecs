@@ -17,40 +17,44 @@ export class VSource extends Device {
   static override readonly propsSchema = [{ name: "v", unit: Unit.VOLT }];
 
   /** Negative terminal. */
-  readonly a: Node;
+  readonly nn: Node;
   /** Positive terminal. */
-  readonly b: Node;
+  readonly np: Node;
   /** Output value in volts. */
   readonly v: number;
   /** Extra MNA branch. */
   branch!: Branch;
   /** Current through device. */
   current = 0;
+  /** Power produced by device. */
+  power = 0;
 
   constructor(
     name: string, //
-    [a, b]: readonly Node[],
+    [nn, np]: readonly Node[],
     { v }: VSourceProps,
   ) {
-    super(name, [a, b]);
-    this.a = a;
-    this.b = b;
+    super(name, [nn, np]);
+    this.nn = nn;
+    this.np = np;
     this.v = v;
   }
 
   override connect(network: Network): void {
-    this.branch = network.allocBranch(this.a, this.b);
+    this.branch = network.allocBranch(this.nn, this.np);
   }
 
   override stamp(stamper: Stamper): void {
-    stamper.stampMatrix(this.a, this.branch, -1);
-    stamper.stampMatrix(this.b, this.branch, 1);
-    stamper.stampMatrix(this.branch, this.a, -1);
-    stamper.stampMatrix(this.branch, this.b, 1);
-    stamper.stampRightSide(this.branch, this.v);
+    const { nn, np, branch, v } = this;
+    stamper.stampMatrix(nn, branch, -1);
+    stamper.stampMatrix(np, branch, 1);
+    stamper.stampMatrix(branch, nn, -1);
+    stamper.stampMatrix(branch, np, 1);
+    stamper.stampRightSide(branch, v);
   }
 
   override update(): void {
-    this.current = this.branch.current;
+    this.current = -this.branch.current;
+    this.power = -(this.v * this.current);
   }
 }

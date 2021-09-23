@@ -4,18 +4,21 @@ import { readNetlist } from "../simulation/netlist";
 
 test("voltage controlled current source", (t) => {
   const circuit = readNetlist([
-    ["v", ["g", "NIB"], { v: 3 }],
-    ["vccs/DUT", ["g", "NIB", "g", "NOB"], { gain: 0.5 }],
-    ["r", ["g", "NOB"], { r: 100 }],
+    ["g", ["NIN"], {}],
+    ["g", ["NON"], {}],
+    ["v", ["NIN", "NIP"], { v: 1 }],
+    ["vccs/DUT", ["NIN", "NIP", "NON", "NOP"], { gain: 0.5 }],
+    ["r", ["NIN", "NOP"], { r: 10 }],
   ]);
   const r = dcAnalysis(circuit);
   t.deepEqual(
     r,
     new Map([
       ["V[GROUND]", 0],
-      ["V[NIB]", 3],
-      ["I[GROUND->NIB]", 0],
-      ["V[NOB]", 150],
+      ["V[NIP]", 1],
+      ["I[GROUND->NIP]", 0],
+      ["V[NOP]", 5],
+      ["I[GROUND->NOP]", 0.5],
     ]),
   );
 });

@@ -2,12 +2,12 @@ import test from "ava";
 import { dcAnalysis } from "../simulation/dc";
 import { readNetlist } from "../simulation/netlist";
 
-test("voltage controlled voltage source", (t) => {
+test("current controlled voltage source", (t) => {
   const circuit = readNetlist([
     ["g", ["NIN"], {}],
     ["g", ["NON"], {}],
-    ["v", ["NIN", "NIP"], { v: 5 }],
-    ["vcvs/DUT", ["NIN", "NIP", "NON", "NOP"], { gain: 0.5 }],
+    ["i", ["NIN", "NIP"], { i: 1 }],
+    ["ccvs/DUT", ["NIN", "NIP", "NON", "NOP"], { gain: 2 }],
     ["r", ["NON", "NOP"], { r: 1000 }],
   ]);
   const r = dcAnalysis(circuit);
@@ -15,10 +15,10 @@ test("voltage controlled voltage source", (t) => {
     r,
     new Map([
       ["V[GROUND]", 0],
-      ["V[NIP]", 5],
-      ["I[GROUND->NIP]", 0],
-      ["V[NOP]", 2.5],
-      ["I[GROUND->NOP]", -0.0025],
+      ["V[NIP]", 0],
+      ["V[NOP]", 2],
+      ["I[GROUND->NIP]", 1],
+      ["I[GROUND->NOP]", 0.002],
     ]),
   );
 });

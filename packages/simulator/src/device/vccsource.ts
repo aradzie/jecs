@@ -1,5 +1,5 @@
 import { Device } from "../simulation/device";
-import type { Node, Stamper } from "../simulation/network";
+import type { Branch, Network, Node, Stamper } from "../simulation/network";
 import type { DeviceProps } from "../simulation/props";
 import { Unit } from "../simulation/props";
 
@@ -18,33 +18,41 @@ export class VCCSource extends Device {
   ];
 
   /** Negative input terminal. */
-  readonly ia: Node;
-  /** Negative output terminal. */
-  readonly ib: Node;
+  readonly nin: Node;
   /** Positive input terminal. */
-  readonly oa: Node;
+  readonly nip: Node;
+  /** Negative output terminal. */
+  readonly non: Node;
   /** Positive output terminal. */
-  readonly ob: Node;
+  readonly nop: Node;
   /** Gain. */
   readonly gain: number;
+  /** Extra MNA branch. */
+  branch!: Branch;
 
   constructor(
     name: string,
-    [ia, ib, oa, ob]: readonly Node[],
+    [nin, nip, non, nop]: readonly Node[],
     { gain }: VCCSourceProps,
   ) {
-    super(name, [ia, ib, oa, ob]);
-    this.ia = ia;
-    this.ib = ib;
-    this.oa = oa;
-    this.ob = ob;
+    super(name, [nin, nip, non, nop]);
+    this.nin = nin;
+    this.nip = nip;
+    this.non = non;
+    this.nop = nop;
     this.gain = gain;
   }
 
+  override connect(network: Network): void {
+    this.branch = network.allocBranch(this.non, this.nop);
+  }
+
   override stamp(stamper: Stamper): void {
-    stamper.stampMatrix(this.oa, this.ib, this.gain);
-    stamper.stampMatrix(this.oa, this.ia, -this.gain);
-    stamper.stampMatrix(this.ob, this.ib, -this.gain);
-    stamper.stampMatrix(this.ob, this.ia, this.gain);
+    const { nin, nip, non, nop, branch, gain } = this;
+    stamper.stampMatrix(non, branch, 1);
+    stamper.stampMatrix(nop, branch, -1);
+    stamper.stampMatrix(branch, nin, -gain);
+    stamper.stampMatrix(branch, nip, gain);
+    stamper.stampMatrix(branch, branch, -1);
   }
 }

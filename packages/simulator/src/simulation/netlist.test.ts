@@ -13,7 +13,7 @@ test("read netlist, find explicit ground node", (t) => {
   t.is(circuit.devices.length, 3);
   const device = circuit.devices[1] as VSource;
   t.is(device.name, "V1");
-  t.is(device.a, circuit.groundNode);
+  t.is(device.nn, circuit.groundNode);
 });
 
 test("read netlist, assign implicit ground node", (t) => {
@@ -27,5 +27,5 @@ test("read netlist, assign implicit ground node", (t) => {
   t.is(circuit.devices.length, 3);
   const device = circuit.devices[0] as VSource;
   t.is(device.name, "V1");
-  t.is(device.a, circuit.groundNode);
+  t.is(device.nn, circuit.groundNode);
 });
