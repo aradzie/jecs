@@ -1,7 +1,5 @@
 import test from "ava";
-import { ISource } from "../device/isource";
-import { Resistor } from "../device/resistor";
-import { VSource } from "../device/vsource";
+import { ISource, Resistor, VSource } from "../device";
 import { Circuit } from "./circuit";
 
 test("short circuit", (t) => {

@@ -1,5 +1,4 @@
-import { Ground } from "../device/ground";
-import { VSource } from "../device/vsource";
+import { Ground, VSource } from "../device";
 import { Circuit } from "./circuit";
 import type { DeviceClass } from "./device";
 import { createDevice, getDeviceClass } from "./devicemap";

@@ -9,6 +9,18 @@ import { VCISource } from "./vcisource";
 import { VCVSource } from "./vcvsource";
 import { VSource } from "./vsource";
 
+export {
+  Ground,
+  ICISource,
+  ICVSource,
+  ISource,
+  OpAmp,
+  Resistor,
+  VCISource,
+  VCVSource,
+  VSource,
+};
+
 export const devices: readonly DeviceClass[] = [
   Ground,
   ICISource,

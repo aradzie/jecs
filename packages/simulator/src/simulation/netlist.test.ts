@@ -1,5 +1,5 @@
 import test from "ava";
-import type { VSource } from "../device/vsource";
+import type { VSource } from "../device";
 import { readNetlist } from "./netlist";
 
 test("read netlist, find explicit ground node", (t) => {
