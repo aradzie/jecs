@@ -6,7 +6,7 @@ import { RawDeviceProps, validateDeviceProps } from "./props";
 
 const deviceMap = new Map<string, DeviceClass>();
 
-export function registerDeviceClass(...deviceClasses: DeviceClass[]) {
+export function registerDeviceClass(...deviceClasses: DeviceClass[]): void {
   for (const deviceClass of deviceClasses) {
     const { id, numTerminals, propsSchema } = deviceClass;
     if (id == null) {

@@ -18,7 +18,7 @@ export class Resistor extends Device {
   readonly a: Node;
   readonly b: Node;
   readonly r: number;
-  current: number = 0;
+  current = 0;
 
   constructor(
     name: string, //

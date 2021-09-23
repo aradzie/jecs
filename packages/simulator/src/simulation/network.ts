@@ -39,7 +39,7 @@ export class Node {
   /**
    * Computed node voltage.
    */
-  voltage: number = 0;
+  voltage = 0;
 
   constructor(index: number, name: string) {
     this.index = index;
@@ -73,7 +73,7 @@ export class Branch {
   /**
    * Computed branch current.
    */
-  current: number = 0;
+  current = 0;
 
   constructor(index: number, a: Node, b: Node) {
     this.index = index;
