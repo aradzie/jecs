@@ -6,9 +6,9 @@ import { Branch, Network, Node } from "./network";
 export class Circuit implements Network {
   readonly #groundNode: Node;
   readonly #nodes: (Node | Branch)[] = [];
-  readonly #nodeNames = new Set<string>();
+  readonly #nodesByName = new Map<string, Node>();
   readonly #devices: Device[] = [];
-  readonly #deviceNames = new Set<string>();
+  readonly #devicesByName = new Map<string, Device>();
 
   constructor() {
     this.#groundNode = new Node(-1, "GROUND");
@@ -27,11 +27,11 @@ export class Circuit implements Network {
   }
 
   allocNode(name: string): Node {
-    if (this.#nodeNames.has(name)) {
+    if (this.#nodesByName.has(name)) {
       throw new CircuitError(`Duplicate node name [${name}]`);
     }
-    this.#nodeNames.add(name);
     const node = new Node(this.#nodes.length, name);
+    this.#nodesByName.set(node.name, node);
     this.#nodes.push(node);
     return node;
   }
@@ -45,13 +45,29 @@ export class Circuit implements Network {
   addDevice(...devices: readonly Device[]): void {
     for (const device of devices) {
       const { name } = device;
-      if (this.#deviceNames.has(name)) {
+      if (this.#devicesByName.has(name)) {
         throw new CircuitError(`Duplicate device name [${name}]`);
       }
-      this.#deviceNames.add(device.name);
       this.#devices.push(device);
+      this.#devicesByName.set(device.name, device);
       device.connect(this);
     }
+  }
+
+  getNode(name: string): Node {
+    const node = this.#nodesByName.get(name);
+    if (node == null) {
+      throw new CircuitError(`Unknown node [${name}]`);
+    }
+    return node;
+  }
+
+  getDevice(name: string): Device {
+    const device = this.#devicesByName.get(name);
+    if (device == null) {
+      throw new CircuitError(`Unknown device [${name}]`);
+    }
+    return device;
   }
 
   updateDevices(x: Vector): void {
