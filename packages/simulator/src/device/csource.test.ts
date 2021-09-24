@@ -1,7 +1,7 @@
 import test from "ava";
 import { dcAnalysis } from "../simulation/dc";
+import { dumpCircuit } from "../simulation/debug";
 import { readNetlist } from "../simulation/netlist";
-import { Unit } from "../util/unit";
 
 test("current source", (t) => {
   const circuit = readNetlist([
@@ -9,11 +9,10 @@ test("current source", (t) => {
     ["i/DUT", ["NP", "NN"], { i: 1 }],
     ["r/R1", ["NP", "NN"], { r: 10 }],
   ]);
-  const r = dcAnalysis(circuit);
-  t.deepEqual(r, new Map([["V[NP]", -10]]));
-  const dut = circuit.getDevice("DUT");
-  t.deepEqual(dut.details(), [
-    { name: "Vd", value: -10, unit: Unit.VOLT },
-    { name: "I", value: 1, unit: Unit.AMPERE },
+  dcAnalysis(circuit);
+  t.deepEqual(dumpCircuit(circuit), [
+    "V(NP)=-10V",
+    "DUT{Vd=-10V,I=1A}",
+    "R1{Vd=-10V,I=-1A,P=10W}",
   ]);
 });

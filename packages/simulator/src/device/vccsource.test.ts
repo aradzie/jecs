@@ -1,7 +1,7 @@
 import test from "ava";
 import { dcAnalysis } from "../simulation/dc";
+import { dumpCircuit } from "../simulation/debug";
 import { readNetlist } from "../simulation/netlist";
-import { Unit } from "../util/unit";
 
 test("voltage controlled current source", (t) => {
   const circuit = readNetlist([
@@ -11,17 +11,12 @@ test("voltage controlled current source", (t) => {
     ["vccs/DUT", ["NOP", "NON", "NCP", "NCN"], { gain: 0.5 }],
     ["r", ["NOP", "NON"], { r: 10 }],
   ]);
-  const r = dcAnalysis(circuit);
-  t.deepEqual(
-    r,
-    new Map([
-      ["V[NCP]", 1],
-      ["V[NOP]", -5],
-    ]),
-  );
-  const dut = circuit.getDevice("DUT");
-  t.deepEqual(dut.details(), [
-    { name: "Vd", value: -5, unit: Unit.VOLT },
-    { name: "I", value: 0.5, unit: Unit.AMPERE },
+  dcAnalysis(circuit);
+  t.deepEqual(dumpCircuit(circuit), [
+    "V(NCP)=1V",
+    "V(NOP)=-5V",
+    "V1{Vd=1V,I=0A,P=0W}",
+    "DUT{Vd=-5V,I=500mA}",
+    "R1{Vd=-5V,I=-500mA,P=2.5W}",
   ]);
 });

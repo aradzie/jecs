@@ -2,11 +2,9 @@ import { solve } from "../math/gauss-elimination";
 import { matMake, vecMake } from "../math/matrix";
 import type { Circuit } from "./circuit";
 import { CircuitError } from "./error";
-import { Branch, makeStamper, Node } from "./network";
+import { makeStamper } from "./network";
 
-export type DcAnalysisResult = Map<string, number>;
-
-export function dcAnalysis(circuit: Circuit): DcAnalysisResult {
+export function dcAnalysis(circuit: Circuit): void {
   const { groundNode, nodes, devices } = circuit;
 
   if (devices.length === 0) {
@@ -26,17 +24,4 @@ export function dcAnalysis(circuit: Circuit): DcAnalysisResult {
   const x = solve(matrix, rhs);
 
   circuit.updateNodes(x);
-
-  return makeResult(nodes);
-}
-
-function makeResult(nodes: readonly (Node | Branch)[]): DcAnalysisResult {
-  const result = new Map<string, number>();
-  for (const node of nodes) {
-    if (node instanceof Node) {
-      result.set(`V[${node.name}]`, node.voltage);
-      continue;
-    }
-  }
-  return result;
 }

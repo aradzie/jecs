@@ -1,19 +1,17 @@
 import test from "ava";
 import { dcAnalysis } from "../simulation/dc";
+import { dumpCircuit } from "../simulation/debug";
 import { readNetlist } from "../simulation/netlist";
-import { Unit } from "../util/unit";
 
 test("resistor", (t) => {
   const circuit = readNetlist([
     ["v", ["NP", "g"], { v: 5 }],
     ["r/DUT", ["NP", "g"], { r: 1000 }],
   ]);
-  const r = dcAnalysis(circuit);
-  t.deepEqual(r, new Map([["V[NP]", 5]]));
-  const dut = circuit.getDevice("DUT");
-  t.deepEqual(dut.details(), [
-    { name: "Vd", value: 5, unit: Unit.VOLT },
-    { name: "I", value: 0.005, unit: Unit.AMPERE },
-    { name: "P", value: 0.025, unit: Unit.WATT },
+  dcAnalysis(circuit);
+  t.deepEqual(dumpCircuit(circuit), [
+    "V(NP)=5V",
+    "V1{Vd=5V,I=-5mA,P=-25mW}",
+    "DUT{Vd=5V,I=5mA,P=25mW}",
   ]);
 });
