@@ -27,7 +27,7 @@ export function dcAnalysis(circuit: Circuit): DcAnalysisResult {
 
   circuit.updateNodes(x);
 
-  return makeResult([groundNode, ...nodes]);
+  return makeResult(nodes);
 }
 
 function makeResult(nodes: readonly (Node | Branch)[]): DcAnalysisResult {

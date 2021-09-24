@@ -13,7 +13,6 @@ test("resistor", (t) => {
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0],
       ["V[NIA]", 5],
       ["I[GROUND->NIA]", -0.005],
     ]),

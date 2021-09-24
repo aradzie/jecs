@@ -12,13 +12,7 @@ test("short circuit", (t) => {
     }),
   );
   const r = dcAnalysis(circuit);
-  t.deepEqual(
-    r,
-    new Map([
-      ["V[GROUND]", 0],
-      ["I[GROUND->GROUND]", Infinity],
-    ]),
-  );
+  t.deepEqual(r, new Map([["I[GROUND->GROUND]", Infinity]]));
 });
 
 test("open circuit", (t) => {
@@ -34,7 +28,6 @@ test("open circuit", (t) => {
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0],
       ["V[N0]", 1],
       ["I[GROUND->N0]", 0],
     ]),
@@ -54,13 +47,7 @@ test("`is` in series with `r`", (t) => {
     }),
   );
   const r = dcAnalysis(circuit);
-  t.deepEqual(
-    r,
-    new Map([
-      ["V[GROUND]", 0],
-      ["V[N0]", 1],
-    ]),
-  );
+  t.deepEqual(r, new Map([["V[N0]", 1]]));
 });
 
 test("`is` in series with `r` in series with `r`", (t) => {
@@ -83,7 +70,6 @@ test("`is` in series with `r` in series with `r`", (t) => {
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0],
       ["V[N0]", 0.3],
       ["V[N1]", 1],
     ]),
@@ -106,7 +92,6 @@ test("`vs` in series with `r`", (t) => {
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0],
       ["V[N0]", 10],
       ["I[GROUND->N0]", -0.01],
     ]),
@@ -133,7 +118,6 @@ test("`vs` in series with `r` in series with `r`", (t) => {
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0],
       ["V[N0]", 2.9999999999999996],
       ["V[N1]", 10],
       ["I[GROUND->N1]", -0.01],
@@ -161,7 +145,6 @@ test("`vs` in series with `vs` in series with `r`", (t) => {
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0],
       ["V[N0]", 10],
       ["V[N1]", 20],
       ["I[GROUND->N0]", -0.02],

@@ -15,7 +15,6 @@ test("ammeter", (t) => {
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0],
       ["V[NB]", 5],
       ["I[GROUND->NB]", -0.005],
       ["V[NC]", 5],

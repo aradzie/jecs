@@ -16,7 +16,6 @@ test("current controlled voltage source", (t) => {
   t.deepEqual(
     r,
     new Map([
-      ["V[GROUND]", 0],
       ["V[NIP]", -0],
       ["V[NOP]", 2],
       ["I[GROUND->NIP]", 1],
