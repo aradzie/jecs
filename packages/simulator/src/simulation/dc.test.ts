@@ -58,13 +58,7 @@ test("`vs` in series with `r`", (t) => {
     }),
   );
   const r = dcAnalysis(circuit);
-  t.deepEqual(
-    r,
-    new Map([
-      ["V[N1]", 10],
-      ["I[N1->GROUND]", -0.01],
-    ]),
-  );
+  t.deepEqual(r, new Map([["V[N1]", 10]]));
 });
 
 test("`vs` in series with `r` in series with `r`", (t) => {
@@ -89,7 +83,6 @@ test("`vs` in series with `r` in series with `r`", (t) => {
     new Map([
       ["V[N1]", 2.9999999999999996],
       ["V[N2]", 10],
-      ["I[N2->GROUND]", -0.01],
     ]),
   );
 });
@@ -116,8 +109,6 @@ test("`vs` in series with `vs` in series with `r`", (t) => {
     new Map([
       ["V[N1]", 10],
       ["V[N2]", 20],
-      ["I[N1->GROUND]", -0.02],
-      ["I[N2->N1]", -0.02],
     ]),
   );
 });

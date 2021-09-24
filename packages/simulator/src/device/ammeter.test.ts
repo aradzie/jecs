@@ -15,9 +15,7 @@ test("ammeter", (t) => {
     r,
     new Map([
       ["V[NB]", 5],
-      ["I[NB->GROUND]", -0.005],
       ["V[NC]", 5],
-      ["I[NB->NC]", 0.005],
     ]),
   );
   const dut = circuit.getDevice("DUT");

@@ -10,13 +10,7 @@ test("voltage source", (t) => {
     ["r", ["NP", "NN"], { r: 1000 }],
   ]);
   const r = dcAnalysis(circuit);
-  t.deepEqual(
-    r,
-    new Map([
-      ["V[NP]", 5],
-      ["I[NP->GROUND]", -0.005],
-    ]),
-  );
+  t.deepEqual(r, new Map([["V[NP]", 5]]));
   const dut = circuit.getDevice("DUT");
   t.deepEqual(dut.details(), [
     { name: "Vd", value: 5, unit: Unit.VOLT },
@@ -31,7 +25,7 @@ test("short circuit", (t) => {
     ["v/DUT", ["G", "G"], { v: 5 }],
   ]);
   const r = dcAnalysis(circuit);
-  t.deepEqual(r, new Map([["I[GROUND->GROUND]", Infinity]]));
+  t.deepEqual(r, new Map([]));
 });
 
 test("open circuit", (t) => {
@@ -40,11 +34,5 @@ test("open circuit", (t) => {
     ["v/DUT", ["N1", "G"], { v: 5 }],
   ]);
   const r = dcAnalysis(circuit);
-  t.deepEqual(
-    r,
-    new Map([
-      ["V[N1]", 5],
-      ["I[N1->GROUND]", 0],
-    ]),
-  );
+  t.deepEqual(r, new Map([["V[N1]", 5]]));
 });

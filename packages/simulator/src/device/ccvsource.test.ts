@@ -17,8 +17,6 @@ test("current controlled voltage source", (t) => {
     new Map([
       ["V[NCP]", -0],
       ["V[NOP]", 2],
-      ["I[NCP->GROUND]", 1],
-      ["I[NOP->GROUND]", -0.2],
     ]),
   );
   const dut = circuit.getDevice("DUT");

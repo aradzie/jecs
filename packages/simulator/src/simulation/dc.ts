@@ -37,24 +37,6 @@ function makeResult(nodes: readonly (Node | Branch)[]): DcAnalysisResult {
       result.set(`V[${node.name}]`, node.voltage);
       continue;
     }
-    if (node instanceof Branch) {
-      result.set(
-        `I[${uniqueName(`${node.a.name}->${node.b.name}`, result)}]`,
-        node.current,
-      );
-      continue;
-    }
   }
   return result;
-}
-
-function uniqueName(name: string, names: { has(v: string): boolean }): string {
-  let candidate = name;
-  let counter = 0;
-  while (true) {
-    if (!names.has(candidate)) {
-      return candidate;
-    }
-    candidate = `${name}-${(counter += 1)}`;
-  }
 }
