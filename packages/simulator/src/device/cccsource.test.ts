@@ -2,7 +2,6 @@ import test from "ava";
 import { dcAnalysis } from "../simulation/dc";
 import { readNetlist } from "../simulation/netlist";
 import { Unit } from "../util/unit";
-import type { CCCSource } from "./cccsource";
 
 test("current controlled current source", (t) => {
   const circuit = readNetlist([
@@ -21,8 +20,8 @@ test("current controlled current source", (t) => {
       ["I[NCP->GROUND]", -2],
     ]),
   );
-  const device = circuit.getDevice("DUT") as CCCSource;
-  t.deepEqual(device.details(), [
+  const dut = circuit.getDevice("DUT");
+  t.deepEqual(dut.details(), [
     { name: "Vd", value: 10, unit: Unit.VOLT },
     { name: "I", value: -2, unit: Unit.AMPERE },
   ]);

@@ -2,7 +2,6 @@ import test from "ava";
 import { dcAnalysis } from "../simulation/dc";
 import { readNetlist } from "../simulation/netlist";
 import { Unit } from "../util/unit";
-import type { VCVSource } from "./vcvsource";
 
 test("voltage controlled voltage source", (t) => {
   const circuit = readNetlist([
@@ -22,8 +21,8 @@ test("voltage controlled voltage source", (t) => {
       ["I[NOP->GROUND]", -0.01],
     ]),
   );
-  const device = circuit.getDevice("DUT") as VCVSource;
-  t.deepEqual(device.details(), [
+  const dut = circuit.getDevice("DUT");
+  t.deepEqual(dut.details(), [
     { name: "Vd", value: 10, unit: Unit.VOLT },
     { name: "I", value: -0.01, unit: Unit.AMPERE },
     { name: "P", value: -0.1, unit: Unit.WATT },
