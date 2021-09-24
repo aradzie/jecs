@@ -17,10 +17,10 @@ export class VSource extends Device {
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [{ name: "v", unit: Unit.VOLT }];
 
-  /** Negative terminal. */
-  readonly nn: Node;
   /** Positive terminal. */
   readonly np: Node;
+  /** Negative terminal. */
+  readonly nn: Node;
   /** Output value in volts. */
   readonly v: number;
   /** Extra MNA branch. */
@@ -28,35 +28,36 @@ export class VSource extends Device {
 
   constructor(
     name: string, //
-    [nn, np]: readonly Node[],
+    [np, nn]: readonly Node[],
     { v }: VSourceProps,
   ) {
-    super(name, [nn, np]);
-    this.nn = nn;
+    super(name, [np, nn]);
     this.np = np;
+    this.nn = nn;
     this.v = v;
   }
 
   override connect(network: Network): void {
-    this.branch = network.allocBranch(this.nn, this.np);
+    this.branch = network.allocBranch(this.np, this.nn);
   }
 
   override stamp(stamper: Stamper): void {
-    const { nn, np, branch, v } = this;
-    stamper.stampMatrix(nn, branch, -1);
+    const { np, nn, branch, v } = this;
     stamper.stampMatrix(np, branch, 1);
-    stamper.stampMatrix(branch, nn, -1);
+    stamper.stampMatrix(nn, branch, -1);
     stamper.stampMatrix(branch, np, 1);
+    stamper.stampMatrix(branch, nn, -1);
     stamper.stampRightSide(branch, v);
   }
 
   override details(): Details {
-    const { branch, v } = this;
-    const current = -branch.current;
-    const power = -(v * current);
+    const { np, nn, branch } = this;
+    const voltage = np.voltage - nn.voltage;
+    const current = branch.current;
+    const power = voltage * current;
     return [
+      { name: "Vd", value: voltage, unit: Unit.VOLT },
       { name: "I", value: current, unit: Unit.AMPERE },
-      { name: "Vd", value: v, unit: Unit.VOLT },
       { name: "P", value: power, unit: Unit.WATT },
     ];
   }

@@ -18,14 +18,14 @@ export class VCVSource extends Device {
     { name: "gain", unit: Unit.UNITLESS },
   ];
 
-  /** Negative input terminal. */
-  readonly nin: Node;
-  /** Positive input terminal. */
-  readonly nip: Node;
-  /** Negative output terminal. */
-  readonly non: Node;
   /** Positive output terminal. */
-  readonly nop: Node;
+  readonly np: Node;
+  /** Negative output terminal. */
+  readonly nn: Node;
+  /** Positive control terminal. */
+  readonly ncp: Node;
+  /** Negative control terminal. */
+  readonly ncn: Node;
   /** Gain. */
   readonly gain: number;
   /** Extra MNA branch. */
@@ -33,39 +33,39 @@ export class VCVSource extends Device {
 
   constructor(
     name: string,
-    [nin, nip, non, nop]: readonly Node[],
+    [np, nn, ncp, ncn]: readonly Node[],
     { gain }: VCVSourceProps,
   ) {
-    super(name, [nin, nip, non, nop]);
-    this.nin = nin;
-    this.nip = nip;
-    this.non = non;
-    this.nop = nop;
+    super(name, [np, nn, ncp, ncn]);
+    this.np = np;
+    this.nn = nn;
+    this.ncp = ncp;
+    this.ncn = ncn;
     this.gain = gain;
   }
 
   override connect(network: Network): void {
-    this.branch = network.allocBranch(this.non, this.nop);
+    this.branch = network.allocBranch(this.np, this.nn);
   }
 
   override stamp(stamper: Stamper): void {
-    const { nin, nip, non, nop, branch, gain } = this;
-    stamper.stampMatrix(non, branch, -1);
-    stamper.stampMatrix(nop, branch, 1);
-    stamper.stampMatrix(branch, non, -1);
-    stamper.stampMatrix(branch, nop, 1);
-    stamper.stampMatrix(branch, nin, gain);
-    stamper.stampMatrix(branch, nip, -gain);
+    const { np, nn, ncp, ncn, branch, gain } = this;
+    stamper.stampMatrix(np, branch, 1);
+    stamper.stampMatrix(nn, branch, -1);
+    stamper.stampMatrix(branch, np, -1);
+    stamper.stampMatrix(branch, nn, 1);
+    stamper.stampMatrix(branch, ncp, gain);
+    stamper.stampMatrix(branch, ncn, -gain);
   }
 
   override details(): Details {
-    const { branch, non, nop } = this;
-    const voltage = nop.voltage - non.voltage;
-    const current = -branch.current;
-    const power = -(voltage * current);
+    const { np, nn, branch } = this;
+    const voltage = np.voltage - nn.voltage;
+    const current = branch.current;
+    const power = voltage * current;
     return [
-      { name: "I", value: current, unit: Unit.AMPERE },
       { name: "Vd", value: voltage, unit: Unit.VOLT },
+      { name: "I", value: current, unit: Unit.AMPERE },
       { name: "P", value: power, unit: Unit.WATT },
     ];
   }

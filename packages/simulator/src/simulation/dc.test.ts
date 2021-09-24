@@ -3,66 +3,35 @@ import { CSource, Resistor, VSource } from "../device";
 import { Circuit } from "./circuit";
 import { dcAnalysis } from "./dc";
 
-test("short circuit", (t) => {
-  const circuit = new Circuit();
-  const ng = circuit.groundNode;
-  circuit.addDevice(
-    new VSource("V1", [ng, ng], {
-      v: 1,
-    }),
-  );
-  const r = dcAnalysis(circuit);
-  t.deepEqual(r, new Map([["I[GROUND->GROUND]", Infinity]]));
-});
-
-test("open circuit", (t) => {
-  const circuit = new Circuit();
-  const ng = circuit.groundNode;
-  const n0 = circuit.allocNode("N0");
-  circuit.addDevice(
-    new VSource("V1", [ng, n0], {
-      v: 1,
-    }),
-  );
-  const r = dcAnalysis(circuit);
-  t.deepEqual(
-    r,
-    new Map([
-      ["V[N0]", 1],
-      ["I[GROUND->N0]", 0],
-    ]),
-  );
-});
-
 test("`is` in series with `r`", (t) => {
   const circuit = new Circuit();
   const ng = circuit.groundNode;
-  const n0 = circuit.allocNode("N0");
+  const n1 = circuit.allocNode("N1");
   circuit.addDevice(
-    new CSource("I1", [ng, n0], {
+    new CSource("I1", [n1, ng], {
       i: 0.001,
     }),
-    new Resistor("R1", [ng, n0], {
+    new Resistor("R1", [n1, ng], {
       r: 1000,
     }),
   );
   const r = dcAnalysis(circuit);
-  t.deepEqual(r, new Map([["V[N0]", 1]]));
+  t.deepEqual(r, new Map([["V[N1]", -1]]));
 });
 
 test("`is` in series with `r` in series with `r`", (t) => {
   const circuit = new Circuit();
   const ng = circuit.groundNode;
-  const n0 = circuit.allocNode("N0");
   const n1 = circuit.allocNode("N1");
+  const n2 = circuit.allocNode("N2");
   circuit.addDevice(
-    new CSource("I1", [ng, n1], {
+    new CSource("I1", [n2, ng], {
       i: 0.001,
     }),
-    new Resistor("R1", [ng, n0], {
+    new Resistor("R1", [ng, n1], {
       r: 300,
     }),
-    new Resistor("R2", [n0, n1], {
+    new Resistor("R2", [n1, n2], {
       r: 700,
     }),
   );
@@ -70,8 +39,8 @@ test("`is` in series with `r` in series with `r`", (t) => {
   t.deepEqual(
     r,
     new Map([
-      ["V[N0]", 0.3],
-      ["V[N1]", 1],
+      ["V[N1]", -0.3],
+      ["V[N2]", -1],
     ]),
   );
 });
@@ -79,12 +48,12 @@ test("`is` in series with `r` in series with `r`", (t) => {
 test("`vs` in series with `r`", (t) => {
   const circuit = new Circuit();
   const ng = circuit.groundNode;
-  const n0 = circuit.allocNode("N0");
+  const n1 = circuit.allocNode("N1");
   circuit.addDevice(
-    new VSource("V1", [ng, n0], {
+    new VSource("V1", [n1, ng], {
       v: 10,
     }),
-    new Resistor("R1", [ng, n0], {
+    new Resistor("R1", [n1, ng], {
       r: 1000,
     }),
   );
@@ -92,8 +61,8 @@ test("`vs` in series with `r`", (t) => {
   t.deepEqual(
     r,
     new Map([
-      ["V[N0]", 10],
-      ["I[GROUND->N0]", -0.01],
+      ["V[N1]", 10],
+      ["I[N1->GROUND]", -0.01],
     ]),
   );
 });
@@ -101,16 +70,16 @@ test("`vs` in series with `r`", (t) => {
 test("`vs` in series with `r` in series with `r`", (t) => {
   const circuit = new Circuit();
   const ng = circuit.groundNode;
-  const n0 = circuit.allocNode("N0");
   const n1 = circuit.allocNode("N1");
+  const n2 = circuit.allocNode("N2");
   circuit.addDevice(
-    new VSource("V1", [ng, n1], {
+    new VSource("V1", [n2, ng], {
       v: 10,
     }),
-    new Resistor("R1", [ng, n0], {
+    new Resistor("R1", [ng, n1], {
       r: 300,
     }),
-    new Resistor("R2", [n0, n1], {
+    new Resistor("R2", [n1, n2], {
       r: 700,
     }),
   );
@@ -118,9 +87,9 @@ test("`vs` in series with `r` in series with `r`", (t) => {
   t.deepEqual(
     r,
     new Map([
-      ["V[N0]", 2.9999999999999996],
-      ["V[N1]", 10],
-      ["I[GROUND->N1]", -0.01],
+      ["V[N1]", 2.9999999999999996],
+      ["V[N2]", 10],
+      ["I[N2->GROUND]", -0.01],
     ]),
   );
 });
@@ -128,16 +97,16 @@ test("`vs` in series with `r` in series with `r`", (t) => {
 test("`vs` in series with `vs` in series with `r`", (t) => {
   const circuit = new Circuit();
   const ng = circuit.groundNode;
-  const n0 = circuit.allocNode("N0");
   const n1 = circuit.allocNode("N1");
+  const n2 = circuit.allocNode("N2");
   circuit.addDevice(
-    new VSource("V1", [ng, n0], {
+    new VSource("V1", [n1, ng], {
       v: 10,
     }),
-    new VSource("V2", [n0, n1], {
+    new VSource("V2", [n2, n1], {
       v: 10,
     }),
-    new Resistor("R1", [ng, n1], {
+    new Resistor("R1", [n2, ng], {
       r: 1000,
     }),
   );
@@ -145,10 +114,10 @@ test("`vs` in series with `vs` in series with `r`", (t) => {
   t.deepEqual(
     r,
     new Map([
-      ["V[N0]", 10],
-      ["V[N1]", 20],
-      ["I[GROUND->N0]", -0.02],
-      ["I[N0->N1]", -0.02],
+      ["V[N1]", 10],
+      ["V[N2]", 20],
+      ["I[N1->GROUND]", -0.02],
+      ["I[N2->N1]", -0.02],
     ]),
   );
 });

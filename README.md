@@ -14,10 +14,10 @@ const n0 = circuit.allocNode("N0");
 
 // Add devices to the circuit.
 circuit.addDevice(
-  new VSource("V1", [ng, n0], {
+  new VSource("V1", [n0, ng], {
     v: 10,
   }),
-  new Resistor("R1", [ng, n0], {
+  new Resistor("R1", [n0, ng], {
     r: 1000,
   }),
 );
@@ -29,9 +29,8 @@ const r = circuit.dc();
 t.deepEqual(
   r,
   new Map([
-    ["V[GROUND]", 0],
     ["V[N0]", 10],
-    ["I[GROUND->N0]", -0.01],
+    ["I[N0->GROUND]", -0.01],
   ]),
 );
 ```

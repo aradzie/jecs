@@ -1,5 +1,6 @@
 import type { Details } from "../simulation/details";
 import { Device } from "../simulation/device";
+import { CircuitError } from "../simulation/error";
 import type { Node, Stamper } from "../simulation/network";
 import type { DeviceProps } from "../simulation/props";
 import { Unit } from "../util/unit";
@@ -32,6 +33,9 @@ export class Resistor extends Device {
     this.a = a;
     this.b = b;
     this.r = r;
+    if (this.r === 0) {
+      throw new CircuitError();
+    }
   }
 
   override stamp(stamper: Stamper): void {
@@ -44,12 +48,12 @@ export class Resistor extends Device {
 
   override details(): Details {
     const { a, b, r } = this;
-    const voltage = Math.abs(b.voltage - a.voltage);
+    const voltage = a.voltage - b.voltage;
     const current = voltage / r;
     const power = voltage * current;
     return [
-      { name: "I", value: current, unit: Unit.AMPERE },
       { name: "Vd", value: voltage, unit: Unit.VOLT },
+      { name: "I", value: current, unit: Unit.AMPERE },
       { name: "P", value: power, unit: Unit.WATT },
     ];
   }

@@ -18,14 +18,14 @@ export class CCVSource extends Device {
     { name: "gain", unit: Unit.UNITLESS },
   ];
 
-  /** Negative input terminal. */
-  readonly nin: Node;
-  /** Positive input terminal. */
-  readonly nip: Node;
-  /** Negative output terminal. */
-  readonly non: Node;
   /** Positive output terminal. */
-  readonly nop: Node;
+  readonly np: Node;
+  /** Negative output terminal. */
+  readonly nn: Node;
+  /** Positive control terminal. */
+  readonly ncp: Node;
+  /** Negative control terminal. */
+  readonly ncn: Node;
   /** Gain. */
   readonly gain: number;
   /** Extra MNA branch. */
@@ -35,43 +35,43 @@ export class CCVSource extends Device {
 
   constructor(
     name: string,
-    [nin, nip, non, nop]: readonly Node[],
+    [np, nn, ncp, ncn]: readonly Node[],
     { gain }: CCVSourceProps,
   ) {
-    super(name, [nin, nip, non, nop]);
-    this.nin = nin;
-    this.nip = nip;
-    this.non = non;
-    this.nop = nop;
+    super(name, [np, nn, ncp, ncn]);
+    this.np = np;
+    this.nn = nn;
+    this.ncp = ncp;
+    this.ncn = ncn;
     this.gain = gain;
   }
 
   override connect(network: Network): void {
-    this.branch1 = network.allocBranch(this.nin, this.nip);
-    this.branch2 = network.allocBranch(this.non, this.nop);
+    this.branch1 = network.allocBranch(this.ncp, this.ncn);
+    this.branch2 = network.allocBranch(this.np, this.nn);
   }
 
   override stamp(stamper: Stamper): void {
-    const { nin, nip, non, nop, branch1, branch2, gain } = this;
-    stamper.stampMatrix(nin, branch1, -1);
-    stamper.stampMatrix(nip, branch1, 1);
-    stamper.stampMatrix(branch1, non, -1);
-    stamper.stampMatrix(branch1, nop, 1);
+    const { np, nn, ncp, ncn, branch1, branch2, gain } = this;
+    stamper.stampMatrix(ncp, branch1, 1);
+    stamper.stampMatrix(ncn, branch1, -1);
+    stamper.stampMatrix(branch1, np, 1);
+    stamper.stampMatrix(branch1, nn, -1);
     stamper.stampMatrix(branch1, branch1, -gain);
-    stamper.stampMatrix(non, branch2, -1);
-    stamper.stampMatrix(nop, branch2, 1);
-    stamper.stampMatrix(branch2, nin, 1);
-    stamper.stampMatrix(branch2, nip, -1);
+    stamper.stampMatrix(np, branch2, 1);
+    stamper.stampMatrix(nn, branch2, -1);
+    stamper.stampMatrix(branch2, ncp, -1);
+    stamper.stampMatrix(branch2, ncn, 1);
   }
 
   override details(): Details {
-    const { branch2, non, nop } = this;
-    const voltage = nop.voltage - non.voltage;
-    const current = -branch2.current;
-    const power = -(voltage * current);
+    const { np, nn, branch2 } = this;
+    const voltage = np.voltage - nn.voltage;
+    const current = branch2.current;
+    const power = voltage * current;
     return [
-      { name: "I", value: current, unit: Unit.AMPERE },
       { name: "Vd", value: voltage, unit: Unit.VOLT },
+      { name: "I", value: current, unit: Unit.AMPERE },
       { name: "P", value: power, unit: Unit.WATT },
     ];
   }

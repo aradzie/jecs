@@ -40,7 +40,7 @@ export function readNetlist(netlist: Netlist): Circuit {
   if (nodeMap.size === 0) {
     for (const [deviceClass, name, nodes] of expNetlist) {
       if (deviceClass === VSource) {
-        nodeMap.set(nodes[0], circuit.groundNode);
+        nodeMap.set(nodes[1], circuit.groundNode);
         break;
       }
     }

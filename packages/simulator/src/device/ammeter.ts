@@ -11,20 +11,20 @@ export class Ammeter extends Device {
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [];
 
-  /** Negative terminal. */
-  readonly nn: Node;
   /** Positive terminal. */
   readonly np: Node;
+  /** Negative terminal. */
+  readonly nn: Node;
   /** Extra MNA branch. */
   branch!: Branch;
 
   constructor(
     name: string, //
-    [nn, np]: readonly Node[],
+    [np, nn]: readonly Node[],
   ) {
-    super(name, [nn, np]);
-    this.nn = nn;
+    super(name, [np, nn]);
     this.np = np;
+    this.nn = nn;
   }
 
   override connect(network: Network): void {
@@ -32,11 +32,11 @@ export class Ammeter extends Device {
   }
 
   override stamp(stamper: Stamper): void {
-    const { nn, np, branch } = this;
-    stamper.stampMatrix(nn, branch, -1);
+    const { np, nn, branch } = this;
     stamper.stampMatrix(np, branch, 1);
-    stamper.stampMatrix(branch, nn, -1);
+    stamper.stampMatrix(nn, branch, -1);
     stamper.stampMatrix(branch, np, 1);
+    stamper.stampMatrix(branch, nn, -1);
   }
 
   override details(): Details {

@@ -18,14 +18,14 @@ export class CCCSource extends Device {
     { name: "gain", unit: Unit.UNITLESS },
   ];
 
-  /** Negative input terminal. */
-  readonly nin: Node;
-  /** Positive input terminal. */
-  readonly nip: Node;
-  /** Negative output terminal. */
-  readonly non: Node;
   /** Positive output terminal. */
-  readonly nop: Node;
+  readonly np: Node;
+  /** Negative output terminal. */
+  readonly nn: Node;
+  /** Positive control terminal. */
+  readonly ncp: Node;
+  /** Negative control terminal. */
+  readonly ncn: Node;
   /** Gain. */
   readonly gain: number;
   /** Extra MNA branch. */
@@ -33,38 +33,38 @@ export class CCCSource extends Device {
 
   constructor(
     name: string,
-    [nin, nip, non, nop]: readonly Node[],
+    [np, nn, ncp, ncn]: readonly Node[],
     { gain }: CCCSourceProps,
   ) {
-    super(name, [nin, nip, non, nop]);
-    this.nin = nin;
-    this.nip = nip;
-    this.non = non;
-    this.nop = nop;
+    super(name, [np, nn, ncp, ncn]);
+    this.np = np;
+    this.nn = nn;
+    this.ncp = ncp;
+    this.ncn = ncn;
     this.gain = gain;
   }
 
   override connect(network: Network): void {
-    this.branch = network.allocBranch(this.nin, this.nip);
+    this.branch = network.allocBranch(this.ncp, this.ncn);
   }
 
   override stamp(stamper: Stamper): void {
-    const { nin, nip, non, nop, branch, gain } = this;
-    stamper.stampMatrix(nin, branch, 1 / gain);
-    stamper.stampMatrix(nip, branch, -1 / gain);
-    stamper.stampMatrix(non, branch, -1);
-    stamper.stampMatrix(nop, branch, 1);
-    stamper.stampMatrix(branch, nin, -1);
-    stamper.stampMatrix(branch, nip, 1);
+    const { np, nn, ncp, ncn, branch, gain } = this;
+    stamper.stampMatrix(ncp, branch, -1 / gain);
+    stamper.stampMatrix(ncn, branch, 1 / gain);
+    stamper.stampMatrix(np, branch, 1);
+    stamper.stampMatrix(nn, branch, -1);
+    stamper.stampMatrix(branch, ncp, 1);
+    stamper.stampMatrix(branch, ncn, -1);
   }
 
   override details(): Details {
-    const { non, nop, branch } = this;
-    const voltage = nop.voltage - non.voltage;
+    const { np, nn, branch } = this;
+    const voltage = np.voltage - nn.voltage;
     const current = branch.current;
     return [
-      { name: "I", value: current, unit: Unit.AMPERE },
       { name: "Vd", value: voltage, unit: Unit.VOLT },
+      { name: "I", value: current, unit: Unit.AMPERE },
     ];
   }
 }

@@ -6,25 +6,25 @@ import type { VCCSource } from "./vccsource";
 
 test("voltage controlled current source", (t) => {
   const circuit = readNetlist([
-    ["g", ["NIN"], {}],
+    ["g", ["NCN"], {}],
     ["g", ["NON"], {}],
-    ["v", ["NIN", "NIP"], { v: 1 }],
-    ["vccs/DUT", ["NIN", "NIP", "NON", "NOP"], { gain: 0.5 }],
-    ["r", ["NIN", "NOP"], { r: 10 }],
+    ["v", ["NCP", "NCN"], { v: 1 }],
+    ["vccs/DUT", ["NOP", "NON", "NCP", "NCN"], { gain: 0.5 }],
+    ["r", ["NOP", "NON"], { r: 10 }],
   ]);
   const r = dcAnalysis(circuit);
   t.deepEqual(
     r,
     new Map([
-      ["V[NIP]", 1],
-      ["I[GROUND->NIP]", 0],
-      ["V[NOP]", 5],
-      ["I[GROUND->NOP]", 0.5],
+      ["V[NCP]", 1],
+      ["I[NCP->GROUND]", 0],
+      ["V[NOP]", -5],
+      ["I[NOP->GROUND]", 0.5],
     ]),
   );
   const device = circuit.getDevice("DUT") as VCCSource;
   t.deepEqual(device.details(), [
+    { name: "Vd", value: -5, unit: Unit.VOLT },
     { name: "I", value: 0.5, unit: Unit.AMPERE },
-    { name: "Vd", value: 5, unit: Unit.VOLT },
   ]);
 });

@@ -7,14 +7,14 @@ import type { CSource } from "./csource";
 test("current source", (t) => {
   const circuit = readNetlist([
     ["g", ["NN"], {}],
-    ["i/DUT", ["NN", "NP"], { i: 0.005 }],
-    ["r", ["NN", "NP"], { r: 1000 }],
+    ["i/DUT", ["NP", "NN"], { i: 1 }],
+    ["r/R1", ["NP", "NN"], { r: 10 }],
   ]);
   const r = dcAnalysis(circuit);
-  t.deepEqual(r, new Map([["V[NP]", 5]]));
+  t.deepEqual(r, new Map([["V[NP]", -10]]));
   const device = circuit.getDevice("DUT") as CSource;
   t.deepEqual(device.details(), [
-    { name: "I", value: 0.005, unit: Unit.AMPERE },
-    { name: "Vd", value: 5, unit: Unit.VOLT },
+    { name: "Vd", value: -10, unit: Unit.VOLT },
+    { name: "I", value: 1, unit: Unit.AMPERE },
   ]);
 });

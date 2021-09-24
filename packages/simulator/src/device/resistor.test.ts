@@ -6,21 +6,21 @@ import type { Resistor } from "./resistor";
 
 test("resistor", (t) => {
   const circuit = readNetlist([
-    ["v", ["g", "NIA"], { v: 5 }],
-    ["r/DUT", ["g", "NIA"], { r: 1000 }],
+    ["v", ["NP", "g"], { v: 5 }],
+    ["r/DUT", ["NP", "g"], { r: 1000 }],
   ]);
   const r = dcAnalysis(circuit);
   t.deepEqual(
     r,
     new Map([
-      ["V[NIA]", 5],
-      ["I[GROUND->NIA]", -0.005],
+      ["V[NP]", 5],
+      ["I[NP->GROUND]", -0.005],
     ]),
   );
   const device = circuit.getDevice("DUT") as Resistor;
   t.deepEqual(device.details(), [
-    { name: "I", value: 0.005, unit: Unit.AMPERE },
     { name: "Vd", value: 5, unit: Unit.VOLT },
+    { name: "I", value: 0.005, unit: Unit.AMPERE },
     { name: "P", value: 0.025, unit: Unit.WATT },
   ]);
 });
