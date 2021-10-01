@@ -17,7 +17,7 @@ export function dcAnalysis(circuit: Circuit): void {
 
   const stamper = makeStamper(groundNode, matrix, vector);
 
-  for (let iter = 0; iter < 10; iter++) {
+  for (let iter = 0; iter < 20; iter++) {
     matClear(matrix);
     vecClear(vector);
 

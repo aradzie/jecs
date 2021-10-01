@@ -3,6 +3,7 @@ import { Ammeter } from "./ammeter";
 import { CCCSource } from "./cccsource";
 import { CCVSource } from "./ccvsource";
 import { CSource } from "./csource";
+import { Diode } from "./diode";
 import { Ground } from "./ground";
 import { OpAmp } from "./opamp";
 import { Resistor } from "./resistor";
@@ -15,6 +16,7 @@ export {
   CCCSource,
   CCVSource,
   CSource,
+  Diode,
   Ground,
   OpAmp,
   Resistor,
@@ -28,6 +30,7 @@ export const devices: readonly DeviceClass[] = [
   CCCSource,
   CCVSource,
   CSource,
+  Diode,
   Ground,
   OpAmp,
   Resistor,
