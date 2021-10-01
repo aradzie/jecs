@@ -43,11 +43,7 @@ export class VSource extends Device {
 
   override stamp(stamper: Stamper): void {
     const { np, nn, branch, v } = this;
-    stamper.stampMatrix(np, branch, 1);
-    stamper.stampMatrix(nn, branch, -1);
-    stamper.stampMatrix(branch, np, 1);
-    stamper.stampMatrix(branch, nn, -1);
-    stamper.stampRightSide(branch, v);
+    stamper.stampVoltageSource(np, nn, branch, v);
   }
 
   override details(): Details {

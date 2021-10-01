@@ -40,11 +40,7 @@ export class Resistor extends Device {
 
   override stamp(stamper: Stamper): void {
     const { na, nb, r } = this;
-    const g = 1.0 / r;
-    stamper.stampMatrix(na, na, g);
-    stamper.stampMatrix(na, nb, -g);
-    stamper.stampMatrix(nb, na, -g);
-    stamper.stampMatrix(nb, nb, g);
+    stamper.stampConductance(na, nb, 1.0 / r);
   }
 
   override details(): Details {

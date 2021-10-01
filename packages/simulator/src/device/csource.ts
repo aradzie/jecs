@@ -37,8 +37,7 @@ export class CSource extends Device {
 
   override stamp(stamper: Stamper): void {
     const { np, nn, i } = this;
-    stamper.stampRightSide(np, -i);
-    stamper.stampRightSide(nn, i);
+    stamper.stampCurrentSource(np, nn, i);
   }
 
   override details(): Details {

@@ -86,21 +86,41 @@ export class Branch {
   }
 }
 
-export interface Stamper {
+export abstract class Stamper {
   /**
    * Stamps the MNA matrix with the given value.
    * @param i Row index.
    * @param j Column index.
    * @param x Stamp value.
    */
-  stampMatrix(i: Node | Branch, j: Node | Branch, x: number): void;
+  abstract stampMatrix(i: Node | Branch, j: Node | Branch, x: number): void;
 
   /**
    * Stamps RHS vector with the given value.
    * @param i Element index.
    * @param x Stamp value.
    */
-  stampRightSide(i: Node | Branch, x: number): void;
+  abstract stampRightSide(i: Node | Branch, x: number): void;
+
+  stampConductance(i: Node | Branch, j: Node | Branch, x: number): void {
+    this.stampMatrix(i, i, x);
+    this.stampMatrix(i, j, -x);
+    this.stampMatrix(j, i, -x);
+    this.stampMatrix(j, j, x);
+  }
+
+  stampVoltageSource(i: Node, j: Node, b: Branch, x: number): void {
+    this.stampMatrix(i, b, 1);
+    this.stampMatrix(j, b, -1);
+    this.stampMatrix(b, i, 1);
+    this.stampMatrix(b, j, -1);
+    this.stampRightSide(b, x);
+  }
+
+  stampCurrentSource(i: Node, j: Node, x: number): void {
+    this.stampRightSide(i, -x);
+    this.stampRightSide(j, x);
+  }
 }
 
 export function makeStamper(
@@ -108,7 +128,7 @@ export function makeStamper(
   matrix: Matrix,
   rhs: Vector,
 ): Stamper {
-  return new (class implements Stamper {
+  return new (class extends Stamper {
     stampMatrix(i: Node | Branch, j: Node | Branch, x: number): void {
       if (!Number.isFinite(x)) {
         throw new MathError();
