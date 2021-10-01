@@ -44,3 +44,11 @@ export function getUnitSymbol(unit: Unit): string {
       return "W";
   }
 }
+
+export function celsiusToKelvin(t: number): number {
+  return t + 273.15;
+}
+
+export function kelvinToCelsius(t: number): number {
+  return t - 273.15;
+}
