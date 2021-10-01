@@ -18,20 +18,20 @@ export class Resistor extends Device {
   static override readonly propsSchema = [{ name: "r", unit: Unit.OHM }];
 
   /** First terminal. */
-  readonly a: Node;
+  readonly na: Node;
   /** Second terminal. */
-  readonly b: Node;
+  readonly nb: Node;
   /** Resistance. */
   readonly r: number;
 
   constructor(
     name: string, //
-    [a, b]: readonly Node[],
+    [na, nb]: readonly Node[],
     { r }: ResistorProps,
   ) {
-    super(name, [a, b]);
-    this.a = a;
-    this.b = b;
+    super(name, [na, nb]);
+    this.na = na;
+    this.nb = nb;
     this.r = r;
     if (this.r === 0) {
       throw new CircuitError();
@@ -39,16 +39,17 @@ export class Resistor extends Device {
   }
 
   override stamp(stamper: Stamper): void {
-    const g = 1.0 / this.r;
-    stamper.stampMatrix(this.a, this.a, g);
-    stamper.stampMatrix(this.a, this.b, -g);
-    stamper.stampMatrix(this.b, this.a, -g);
-    stamper.stampMatrix(this.b, this.b, g);
+    const { na, nb, r } = this;
+    const g = 1.0 / r;
+    stamper.stampMatrix(na, na, g);
+    stamper.stampMatrix(na, nb, -g);
+    stamper.stampMatrix(nb, na, -g);
+    stamper.stampMatrix(nb, nb, g);
   }
 
   override details(): Details {
-    const { a, b, r } = this;
-    const voltage = a.voltage - b.voltage;
+    const { na, nb, r } = this;
+    const voltage = na.voltage - nb.voltage;
     const current = voltage / r;
     const power = voltage * current;
     return [
