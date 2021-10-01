@@ -1,52 +1,46 @@
 import { MathError } from "./error";
-import { swapRows } from "./matrix";
+import { matSize, swapRows } from "./matrix";
 import { findPivotRow } from "./pivot";
-import type { Matrix, MatrixLike, Vector, VectorLike } from "./types";
+import type { Matrix, Vector } from "./types";
 
 /**
- * Solves `A * x = b`, returns a solution vector `x`.
- * Uses Gauss-Jordan elimination to find the solution.
- * @param matA A matrix `A`.
- * @param vecB A vector `b`.
- * @return A solution vector `x`.
+ * Solves `A * x = b` using the Gauss-Jordan elimination method.
+ *
+ * The solution will be computed in place, and the content of both matrix `A`
+ * and vector `b` will be overwritten, so make sure to make copies if you need
+ * the original content.
+ *
+ * @param mat A matrix `A`.
+ * @param vec A vector which is `b` before the call and is updated to contain
+ * the values of `x` after the call.
  */
-export function solve(matA: MatrixLike, vecB: VectorLike): Vector {
-  const size = matA.length;
+export function solve(mat: Matrix, vec: Vector): void {
+  const [h, w] = matSize(mat);
+  const size = vec.length;
 
-  if (size === 0) {
+  if (size !== w || size !== h) {
     throw new MathError();
   }
-  if (size !== vecB.length) {
-    throw new MathError();
-  }
-
-  const matM = new Array<Float64Array>(size);
-  for (let i = 0; i < size; i++) {
-    matM[i] = new Float64Array(matA[i]);
-  }
-  const vecX = new Float64Array(vecB);
 
   for (let k = 0; k < size; k++) {
-    pivot(matM, vecX, size, k);
+    pivot(mat, vec, size, k);
 
-    const f = matM[k][k];
+    const x = mat[k][k];
     for (let j = k; j < size; j++) {
-      matM[k][j] /= f;
+      mat[k][j] /= x;
     }
-    vecX[k] /= f;
+    vec[k] /= x;
 
     for (let i = 0; i < size; i++) {
       if (i !== k) {
-        const f = matM[i][k];
+        const y = mat[i][k];
         for (let j = k; j < size; j++) {
-          matM[i][j] -= f * matM[k][j];
+          mat[i][j] -= mat[k][j] * y;
         }
-        vecX[i] -= f * vecX[k];
+        vec[i] -= vec[k] * y;
       }
     }
   }
-
-  return vecX;
 }
 
 function pivot(matM: Matrix, vecM: Vector, size: number, k: number): void {

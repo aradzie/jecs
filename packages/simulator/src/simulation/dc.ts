@@ -13,15 +13,15 @@ export function dcAnalysis(circuit: Circuit): void {
 
   const n = nodes.length;
   const matrix = matMake(n, n);
-  const rhs = vecMake(n);
+  const vector = vecMake(n);
 
-  const stamper = makeStamper(groundNode, matrix, rhs);
+  const stamper = makeStamper(groundNode, matrix, vector);
 
   for (const device of devices) {
     device.stamp(stamper);
   }
 
-  const x = solve(matrix, rhs);
+  solve(matrix, vector);
 
-  circuit.updateNodes(x);
+  circuit.updateNodes(vector);
 }
