@@ -13,6 +13,12 @@ export function matMake(height: number, width: number): Matrix {
   return m;
 }
 
+export function matClear(m: Matrix, x = 0): void {
+  for (const row of m) {
+    row.fill(x);
+  }
+}
+
 export function matCopy(src: MatrixLike, dst: Matrix): void {
   const [aHeight, aWidth] = matSize(src);
   const [bHeight, bWidth] = matSize(dst);
@@ -61,6 +67,10 @@ export function matMultiplyVec(a: MatrixLike, b: VectorLike): Vector {
 
 export function vecMake(size: number): Vector {
   return new Float64Array(size);
+}
+
+export function vecClear(v: Vector, x = 0): void {
+  v.fill(x);
 }
 
 export function vecCopy(src: VectorLike, dst: Vector): void {

@@ -1,5 +1,5 @@
 import { solve } from "../math/gauss-elimination";
-import { matMake, vecMake } from "../math/matrix";
+import { matClear, matMake, vecClear, vecMake } from "../math/matrix";
 import type { Circuit } from "./circuit";
 import { CircuitError } from "./error";
 import { makeStamper } from "./network";
@@ -17,11 +17,16 @@ export function dcAnalysis(circuit: Circuit): void {
 
   const stamper = makeStamper(groundNode, matrix, vector);
 
-  for (const device of devices) {
-    device.stamp(stamper);
+  for (let iter = 0; iter < 10; iter++) {
+    matClear(matrix);
+    vecClear(vector);
+
+    for (const device of devices) {
+      device.stamp(stamper);
+    }
+
+    solve(matrix, vector);
+
+    circuit.updateNodes(vector);
   }
-
-  solve(matrix, vector);
-
-  circuit.updateNodes(vector);
 }
