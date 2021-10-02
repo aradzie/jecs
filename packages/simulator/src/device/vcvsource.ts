@@ -50,12 +50,9 @@ export class VCVSource extends Device {
 
   override stamp(stamper: Stamper): void {
     const { np, nn, ncp, ncn, branch, gain } = this;
-    stamper.stampMatrix(np, branch, 1);
-    stamper.stampMatrix(nn, branch, -1);
-    stamper.stampMatrix(branch, np, -1);
-    stamper.stampMatrix(branch, nn, 1);
-    stamper.stampMatrix(branch, ncp, gain);
-    stamper.stampMatrix(branch, ncn, -gain);
+    stamper.stampVoltageSource(np, nn, branch, 0);
+    stamper.stampMatrix(branch, ncp, -gain);
+    stamper.stampMatrix(branch, ncn, gain);
   }
 
   override details(): Details {

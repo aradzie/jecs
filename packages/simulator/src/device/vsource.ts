@@ -47,12 +47,11 @@ export class VSource extends Device {
   }
 
   override details(): Details {
-    const { np, nn, branch } = this;
-    const voltage = np.voltage - nn.voltage;
+    const { branch, v } = this;
     const current = branch.current;
-    const power = voltage * current;
+    const power = v * current;
     return [
-      { name: "Vd", value: voltage, unit: Unit.VOLT },
+      { name: "Vd", value: v, unit: Unit.VOLT },
       { name: "I", value: current, unit: Unit.AMPERE },
       { name: "P", value: power, unit: Unit.WATT },
     ];

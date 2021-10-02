@@ -50,18 +50,15 @@ export class CCCSource extends Device {
 
   override stamp(stamper: Stamper): void {
     const { np, nn, ncp, ncn, branch, gain } = this;
-    stamper.stampMatrix(ncp, branch, -1 / gain);
-    stamper.stampMatrix(ncn, branch, 1 / gain);
-    stamper.stampMatrix(np, branch, 1);
-    stamper.stampMatrix(nn, branch, -1);
-    stamper.stampMatrix(branch, ncp, 1);
-    stamper.stampMatrix(branch, ncn, -1);
+    stamper.stampVoltageSource(ncp, ncn, branch, 0);
+    stamper.stampMatrix(np, branch, gain);
+    stamper.stampMatrix(nn, branch, -gain);
   }
 
   override details(): Details {
-    const { np, nn, branch } = this;
+    const { np, nn, branch, gain } = this;
     const voltage = np.voltage - nn.voltage;
-    const current = branch.current;
+    const current = branch.current * gain;
     return [
       { name: "Vd", value: voltage, unit: Unit.VOLT },
       { name: "I", value: current, unit: Unit.AMPERE },

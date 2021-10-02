@@ -33,15 +33,14 @@ export class Ammeter extends Device {
 
   override stamp(stamper: Stamper): void {
     const { np, nn, branch } = this;
-    stamper.stampMatrix(np, branch, 1);
-    stamper.stampMatrix(nn, branch, -1);
-    stamper.stampMatrix(branch, np, 1);
-    stamper.stampMatrix(branch, nn, -1);
+    stamper.stampVoltageSource(np, nn, branch, 0);
   }
 
   override details(): Details {
+    const { branch } = this;
+    const current = branch.current;
     return [
-      { name: "I", value: this.branch.current, unit: Unit.AMPERE }, //
+      { name: "I", value: current, unit: Unit.AMPERE }, //
     ];
   }
 }

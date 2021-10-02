@@ -8,15 +8,15 @@ test("voltage controlled current source", (t) => {
     ["g", ["NCN"], {}],
     ["g", ["NON"], {}],
     ["v", ["NCP", "NCN"], { v: 1 }],
-    ["vccs/DUT", ["NOP", "NON", "NCP", "NCN"], { gain: 0.5 }],
+    ["vccs/DUT", ["NOP", "NON", "NCP", "NCN"], { gain: 2 }],
     ["r", ["NOP", "NON"], { r: 10 }],
   ]);
   dcAnalysis(circuit);
   t.deepEqual(dumpCircuit(circuit), [
     "V(NCP)=1V",
-    "V(NOP)=-5V",
+    "V(NOP)=-20V",
     "V1{Vd=1V,I=0A,P=0W}",
-    "DUT{Vd=-5V,I=500mA}",
-    "R1{Vd=-5V,I=-500mA,P=2.5W}",
+    "DUT{Vd=-20V,I=2A}",
+    "R1{Vd=-20V,I=-2A,P=40W}",
   ]);
 });

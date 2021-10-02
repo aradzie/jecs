@@ -47,27 +47,21 @@ export class CCVSource extends Device {
   }
 
   override connect(network: Network): void {
-    this.branch1 = network.allocBranch(this.ncp, this.ncn);
-    this.branch2 = network.allocBranch(this.np, this.nn);
+    this.branch1 = network.allocBranch(this.np, this.nn);
+    this.branch2 = network.allocBranch(this.ncp, this.ncn);
   }
 
   override stamp(stamper: Stamper): void {
-    const { np, nn, ncp, ncn, branch1, branch2, gain } = this;
-    stamper.stampMatrix(ncp, branch1, 1);
-    stamper.stampMatrix(ncn, branch1, -1);
-    stamper.stampMatrix(branch1, np, 1);
-    stamper.stampMatrix(branch1, nn, -1);
-    stamper.stampMatrix(branch1, branch1, -gain);
-    stamper.stampMatrix(np, branch2, 1);
-    stamper.stampMatrix(nn, branch2, -1);
-    stamper.stampMatrix(branch2, ncp, -1);
-    stamper.stampMatrix(branch2, ncn, 1);
+    const { np, nn, branch1, ncp, ncn, branch2, gain } = this;
+    stamper.stampVoltageSource(np, nn, branch1, 0);
+    stamper.stampVoltageSource(ncp, ncn, branch2, 0);
+    stamper.stampMatrix(branch1, branch2, -gain);
   }
 
   override details(): Details {
-    const { np, nn, branch2 } = this;
+    const { np, nn, branch1 } = this;
     const voltage = np.voltage - nn.voltage;
-    const current = branch2.current;
+    const current = branch1.current;
     const power = voltage * current;
     return [
       { name: "Vd", value: voltage, unit: Unit.VOLT },
