@@ -11,7 +11,6 @@ export interface DeviceClass {
   readonly id: string;
   readonly numTerminals: number;
   readonly propsSchema: DevicePropsSchema;
-
   new (name: string, nodes: readonly Node[], props: any): Device;
 }
 

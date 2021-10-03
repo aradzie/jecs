@@ -5,7 +5,7 @@ import { CircuitError } from "./error";
 import { makeStamper } from "./network";
 
 export function dcAnalysis(circuit: Circuit): void {
-  const { groundNode, nodes, devices } = circuit;
+  const { nodes, devices } = circuit;
 
   if (devices.length === 0) {
     throw new CircuitError(`Empty circuit`);
@@ -15,7 +15,7 @@ export function dcAnalysis(circuit: Circuit): void {
   const matrix = matMake(n, n);
   const vector = vecMake(n);
 
-  const stamper = makeStamper(groundNode, matrix, vector);
+  const stamper = makeStamper(matrix, vector);
 
   for (let iter = 0; iter < 20; iter++) {
     matClear(matrix);

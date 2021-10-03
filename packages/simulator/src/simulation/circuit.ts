@@ -1,21 +1,16 @@
 import type { Vector } from "../math/types";
 import type { Device } from "./device";
 import { CircuitError } from "./error";
-import { Branch, Network, Node } from "./network";
+import { Branch, groundNode, Network, Node } from "./network";
 
 export class Circuit implements Network {
-  readonly #groundNode: Node;
   readonly #nodes: (Node | Branch)[] = [];
   readonly #nodesByName = new Map<string, Node>();
   readonly #devices: Device[] = [];
   readonly #devicesByName = new Map<string, Device>();
 
-  constructor() {
-    this.#groundNode = new Node(-1, "GROUND");
-  }
-
   get groundNode(): Node {
-    return this.#groundNode;
+    return groundNode;
   }
 
   get nodes(): readonly (Node | Branch)[] {

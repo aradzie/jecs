@@ -86,6 +86,8 @@ export class Branch {
   }
 }
 
+export const groundNode = new Node(-1, "GROUND");
+
 export abstract class Stamper {
   /**
    * Stamps the MNA matrix with the given value.
@@ -123,11 +125,7 @@ export abstract class Stamper {
   }
 }
 
-export function makeStamper(
-  groundNode: Node,
-  matrix: Matrix,
-  rhs: Vector,
-): Stamper {
+export function makeStamper(matrix: Matrix, rhs: Vector): Stamper {
   return new (class extends Stamper {
     stampMatrix(i: Node | Branch, j: Node | Branch, x: number): void {
       if (!Number.isFinite(x)) {
