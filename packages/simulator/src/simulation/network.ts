@@ -1,9 +1,7 @@
 import { MathError } from "../math/error";
 import type { Matrix, Vector } from "../math/types";
-import type { Options } from "./options";
 
 const { isFinite } = Number;
-const { abs, max } = Math;
 
 export interface Network {
   /**
@@ -93,32 +91,12 @@ export class Branch {
 export const groundNode = new Node(-1, "GROUND");
 
 export class Stamper {
-  readonly #options: Options;
   readonly #matrix: Matrix;
   readonly #vector: Vector;
-  #linear = true;
-  #converged = true;
 
-  constructor(options: Options, matrix: Matrix, vector: Vector) {
-    this.#options = options;
+  constructor(matrix: Matrix, vector: Vector) {
     this.#matrix = matrix;
     this.#vector = vector;
-  }
-
-  reset(): void {
-    this.#converged = true;
-  }
-
-  get options(): Options {
-    return this.#options;
-  }
-
-  get linear(): boolean {
-    return this.#linear;
-  }
-
-  get converged(): boolean {
-    return this.#converged;
   }
 
   /**
@@ -168,23 +146,5 @@ export class Stamper {
   stampCurrentSource(i: Node, j: Node, x: number): void {
     this.stampRightSide(i, -x);
     this.stampRightSide(j, x);
-  }
-
-  reportVoltageChange(prev: number, curr: number): void {
-    this.#linear = false;
-    const { vntol, reltol } = this.#options;
-    const tol = vntol + reltol * max(abs(prev), abs(curr));
-    if (abs(prev - curr) > tol) {
-      this.#converged = false;
-    }
-  }
-
-  reportCurrentChange(prev: number, curr: number): void {
-    this.#linear = false;
-    const { abstol, reltol } = this.#options;
-    const tol = abstol + reltol * max(abs(prev), abs(curr));
-    if (abs(prev - curr) > tol) {
-      this.#converged = false;
-    }
   }
 }

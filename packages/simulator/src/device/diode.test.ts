@@ -11,9 +11,9 @@ test("circuit 1", (t) => {
   ]);
   dcAnalysis(circuit);
   t.deepEqual(dumpCircuit(circuit), [
-    "V(NP)=774.231mV",
-    "I1{Vd=-774.231mV,I=100mA}",
-    "DUT{Vd=774.231mV,I=100mA,P=77.423mW}",
+    "V(NP)=774.237mV",
+    "I1{Vd=-774.237mV,I=100mA}",
+    "DUT{Vd=774.237mV,I=100.024mA,P=77.442mW}",
   ]);
 });
 
@@ -29,8 +29,8 @@ test("circuit 2", (t) => {
     "V(NP)=1.668V",
     "V(NM)=833.787mV",
     "I1{Vd=-1.668V,I=1A}",
-    "DUT1{Vd=833.787mV,I=1000mA,P=833.787mW}",
-    "DUT2{Vd=833.787mV,I=1000mA,P=833.787mW}",
+    "DUT1{Vd=833.787mV,I=1A,P=833.811mW}",
+    "DUT2{Vd=833.787mV,I=1A,P=833.811mW}",
   ]);
 });
 
