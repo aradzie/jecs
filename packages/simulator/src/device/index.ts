@@ -1,4 +1,4 @@
-import type { DeviceClass } from "../simulation/device";
+import type { DeviceClass } from "../circuit/device";
 import { Ammeter } from "./ammeter";
 import { CCCSource } from "./cccsource";
 import { CCVSource } from "./ccvsource";

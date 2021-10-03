@@ -1,6 +1,6 @@
-import type { Details } from "../simulation/details";
-import { Device } from "../simulation/device";
-import type { Branch, Network, Node, Stamper } from "../simulation/network";
+import type { Details } from "../circuit/details";
+import { Device } from "../circuit/device";
+import type { Branch, Network, Node, Stamper } from "../circuit/network";
 import { Unit } from "../util/unit";
 
 /**

@@ -1,9 +1,9 @@
+import type { Circuit } from "../circuit/circuit";
+import { CircuitError } from "../circuit/error";
+import { Stamper } from "../circuit/network";
 import { solve } from "../math/gauss-elimination";
 import { matClear, matMake, vecClear, vecCopy, vecMake } from "../math/matrix";
-import type { Circuit } from "./circuit";
 import { converged } from "./convergence";
-import { CircuitError } from "./error";
-import { Stamper } from "./network";
 import type { Options } from "./options";
 import { defaultOptions } from "./options";
 

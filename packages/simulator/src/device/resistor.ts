@@ -1,8 +1,8 @@
-import type { Details } from "../simulation/details";
-import { Device } from "../simulation/device";
-import { CircuitError } from "../simulation/error";
-import type { Node, Stamper } from "../simulation/network";
-import type { DeviceProps } from "../simulation/props";
+import type { Details } from "../circuit/details";
+import { Device } from "../circuit/device";
+import { CircuitError } from "../circuit/error";
+import type { Node, Stamper } from "../circuit/network";
+import type { DeviceProps } from "../circuit/props";
 import { Unit } from "../util/unit";
 
 export interface ResistorProps extends DeviceProps {

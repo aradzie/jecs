@@ -1,6 +1,6 @@
-import { Device } from "../simulation/device";
-import type { Node, Stamper } from "../simulation/network";
-import type { DeviceProps } from "../simulation/props";
+import { Device } from "../circuit/device";
+import type { Node, Stamper } from "../circuit/network";
+import type { DeviceProps } from "../circuit/props";
 import { Unit } from "../util/unit";
 
 export interface OpAmpProps extends DeviceProps {

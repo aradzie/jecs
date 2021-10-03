@@ -1,5 +1,5 @@
+import type { Node, Stamper } from "../circuit/network";
 import { SimulationError } from "../simulation/error";
-import type { Node, Stamper } from "../simulation/network";
 
 /** The electrical charge on the electron, `C`. */
 export const q = 1.602176634e-19;

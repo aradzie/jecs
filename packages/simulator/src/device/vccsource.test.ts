@@ -1,7 +1,7 @@
 import test from "ava";
+import { dumpCircuit } from "../circuit/debug";
+import { readNetlist } from "../circuit/netlist";
 import { dcAnalysis } from "../simulation/dc";
-import { dumpCircuit } from "../simulation/debug";
-import { readNetlist } from "../simulation/netlist";
 
 test("voltage controlled current source", (t) => {
   const circuit = readNetlist([

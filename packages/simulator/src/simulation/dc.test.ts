@@ -1,8 +1,8 @@
 import test from "ava";
+import { Circuit } from "../circuit/circuit";
+import { dumpCircuit } from "../circuit/debug";
 import { CSource, Resistor, VSource } from "../device";
-import { Circuit } from "./circuit";
 import { dcAnalysis } from "./dc";
-import { dumpCircuit } from "./debug";
 
 test("`is` in series with `r`", (t) => {
   const circuit = new Circuit();

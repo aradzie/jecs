@@ -1,5 +1,5 @@
+import { Branch, Node } from "../circuit/network";
 import type { Vector } from "../math/types";
-import { Branch, Node } from "./network";
 import type { Options } from "./options";
 
 const { abs } = Math;
