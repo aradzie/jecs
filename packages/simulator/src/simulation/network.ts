@@ -1,5 +1,9 @@
 import { MathError } from "../math/error";
 import type { Matrix, Vector } from "../math/types";
+import type { Options } from "./options";
+
+const { isFinite } = Number;
+const { abs, max } = Math;
 
 export interface Network {
   /**
@@ -88,21 +92,58 @@ export class Branch {
 
 export const groundNode = new Node(-1, "GROUND");
 
-export abstract class Stamper {
+export class Stamper {
+  readonly #options: Options;
+  readonly #matrix: Matrix;
+  readonly #vector: Vector;
+  #converged = true;
+
+  constructor(options: Options, matrix: Matrix, vector: Vector) {
+    this.#options = options;
+    this.#matrix = matrix;
+    this.#vector = vector;
+  }
+
+  reset(): void {
+    this.#converged = true;
+  }
+
+  get options(): Options {
+    return this.#options;
+  }
+
+  get converged(): boolean {
+    return this.#converged;
+  }
+
   /**
    * Stamps the MNA matrix with the given value.
    * @param i Row index.
    * @param j Column index.
    * @param x Stamp value.
    */
-  abstract stampMatrix(i: Node | Branch, j: Node | Branch, x: number): void;
+  stampMatrix(i: Node | Branch, j: Node | Branch, x: number): void {
+    if (!isFinite(x)) {
+      throw new MathError();
+    }
+    if (i !== groundNode && j !== groundNode) {
+      this.#matrix[i.index][j.index] += x;
+    }
+  }
 
   /**
    * Stamps RHS vector with the given value.
    * @param i Element index.
    * @param x Stamp value.
    */
-  abstract stampRightSide(i: Node | Branch, x: number): void;
+  stampRightSide(i: Node | Branch, x: number): void {
+    if (!isFinite(x)) {
+      throw new MathError();
+    }
+    if (i !== groundNode) {
+      this.#vector[i.index] += x;
+    }
+  }
 
   stampConductance(i: Node | Branch, j: Node | Branch, x: number): void {
     this.stampMatrix(i, i, x);
@@ -123,26 +164,20 @@ export abstract class Stamper {
     this.stampRightSide(i, -x);
     this.stampRightSide(j, x);
   }
-}
 
-export function makeStamper(matrix: Matrix, rhs: Vector): Stamper {
-  return new (class extends Stamper {
-    stampMatrix(i: Node | Branch, j: Node | Branch, x: number): void {
-      if (!Number.isFinite(x)) {
-        throw new MathError();
-      }
-      if (i !== groundNode && j !== groundNode) {
-        matrix[i.index][j.index] += x;
-      }
+  reportVoltageChange(prev: number, curr: number): void {
+    const { vntol, reltol } = this.#options;
+    const tol = vntol + reltol * max(abs(prev), abs(curr));
+    if (abs(prev - curr) > tol) {
+      this.#converged = false;
     }
+  }
 
-    stampRightSide(i: Node | Branch, x: number): void {
-      if (!Number.isFinite(x)) {
-        throw new MathError();
-      }
-      if (i !== groundNode) {
-        rhs[i.index] += x;
-      }
+  reportCurrentChange(prev: number, curr: number): void {
+    const { abstol, reltol } = this.#options;
+    const tol = abstol + reltol * max(abs(prev), abs(curr));
+    if (abs(prev - curr) > tol) {
+      this.#converged = false;
     }
-  })();
+  }
 }

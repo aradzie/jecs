@@ -27,6 +27,10 @@ export class PN {
   readonly V_T: number;
   /** Constant. */
   readonly c: number;
+  /** Last diode voltage. */
+  last_V_D: number;
+  /** Last diode current. */
+  last_I_D: number;
 
   constructor(I_S: number, T: number, n: number) {
     this.I_S = I_S;
@@ -34,6 +38,8 @@ export class PN {
     this.n = n;
     this.V_T = (k * T) / q;
     this.c = 1 / (this.V_T * this.n);
+    this.last_V_D = 0;
+    this.last_I_D = 0;
   }
 
   /** Computes diode current. */
@@ -66,5 +72,9 @@ export class PN {
     const G_D = c * I_S * exp;
     stamper.stampConductance(na, nb, G_D);
     stamper.stampCurrentSource(na, nb, I_D - G_D * v);
+    stamper.reportVoltageChange(this.last_V_D, V_D);
+    stamper.reportCurrentChange(this.last_I_D, I_D);
+    this.last_V_D = V_D;
+    this.last_I_D = I_D;
   }
 }
