@@ -1,4 +1,4 @@
-import { CircuitError } from "../simulation/error";
+import { SimulationError } from "../simulation/error";
 import type { Node, Stamper } from "../simulation/network";
 
 /** The electrical charge on the electron, `C`. */
@@ -39,7 +39,7 @@ export class PN {
   /** Computes diode current. */
   I_D(V_D: number): number {
     if (V_D < 0) {
-      throw new CircuitError();
+      throw new SimulationError();
     }
     const { I_S, c } = this;
     return I_S * (Math.exp(c * V_D) - 1);
@@ -48,7 +48,7 @@ export class PN {
   /** Computes diode conductance. */
   G_D(V_D: number): number {
     if (V_D < 0) {
-      throw new CircuitError();
+      throw new SimulationError();
     }
     const { I_S, c } = this;
     return c * I_S * Math.exp(c * V_D);
@@ -57,7 +57,7 @@ export class PN {
   /** Stamp matrix. */
   stamp(stamper: Stamper, na: Node, nb: Node, V_D: number): void {
     if (V_D < 0) {
-      throw new CircuitError();
+      throw new SimulationError();
     }
     const { I_S, c } = this;
     const v = Math.min(V_D, 5);
