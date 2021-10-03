@@ -96,6 +96,7 @@ export class Stamper {
   readonly #options: Options;
   readonly #matrix: Matrix;
   readonly #vector: Vector;
+  #linear = true;
   #converged = true;
 
   constructor(options: Options, matrix: Matrix, vector: Vector) {
@@ -110,6 +111,10 @@ export class Stamper {
 
   get options(): Options {
     return this.#options;
+  }
+
+  get linear(): boolean {
+    return this.#linear;
   }
 
   get converged(): boolean {
@@ -166,6 +171,7 @@ export class Stamper {
   }
 
   reportVoltageChange(prev: number, curr: number): void {
+    this.#linear = false;
     const { vntol, reltol } = this.#options;
     const tol = vntol + reltol * max(abs(prev), abs(curr));
     if (abs(prev - curr) > tol) {
@@ -174,6 +180,7 @@ export class Stamper {
   }
 
   reportCurrentChange(prev: number, curr: number): void {
+    this.#linear = false;
     const { abstol, reltol } = this.#options;
     const tol = abstol + reltol * max(abs(prev), abs(curr));
     if (abs(prev - curr) > tol) {

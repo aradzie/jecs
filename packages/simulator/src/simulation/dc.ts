@@ -37,7 +37,7 @@ export function dcAnalysis(
 
     circuit.updateNodes(vector);
 
-    if (iter > 0 && stamper.converged) {
+    if (stamper.linear || (iter > 0 && stamper.converged)) {
       break;
     }
 
