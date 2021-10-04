@@ -6,7 +6,7 @@ import { dcAnalysis } from "../simulation/dc";
 test("resistor", (t) => {
   const circuit = readNetlist([
     ["v", ["NP", "g"], { v: 5 }],
-    ["r/DUT", ["NP", "g"], { r: 1000 }],
+    ["r:DUT", ["NP", "g"], { r: 1000 }],
   ]);
   dcAnalysis(circuit);
   t.deepEqual(dumpCircuit(circuit), [

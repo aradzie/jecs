@@ -6,7 +6,7 @@ import { dcAnalysis } from "../simulation/dc";
 test("voltage source", (t) => {
   const circuit = readNetlist([
     ["g", ["NN"], {}],
-    ["v/DUT", ["NP", "NN"], { v: 5 }],
+    ["v:DUT", ["NP", "NN"], { v: 5 }],
     ["r", ["NP", "NN"], { r: 1000 }],
   ]);
   dcAnalysis(circuit);

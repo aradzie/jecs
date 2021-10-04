@@ -66,8 +66,8 @@ function expandNetlist(
 ][] {
   const counter = new Map<string, number>();
   return netlist.map(([idName, nodes, rawProps]) => {
-    if (idName.indexOf("/") !== -1) {
-      const [id, name] = idName.split("/", 2);
+    if (idName.indexOf(":") !== -1) {
+      const [id, name] = idName.split(":", 2);
       return [getDeviceClass(id), name, nodes, rawProps];
     } else {
       const prefix = idName.toUpperCase();

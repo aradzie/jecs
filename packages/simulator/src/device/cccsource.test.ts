@@ -8,7 +8,7 @@ test("current controlled current source", (t) => {
     ["g", ["NCN"], {}],
     ["g", ["NON"], {}],
     ["i", ["NCP", "NCN"], { i: 1 }],
-    ["cccs/DUT", ["NOP", "NON", "NCP", "NCN"], { gain: 2 }],
+    ["cccs:DUT", ["NOP", "NON", "NCP", "NCN"], { gain: 2 }],
     ["r", ["NOP", "NON"], { r: 5 }],
   ]);
   dcAnalysis(circuit);

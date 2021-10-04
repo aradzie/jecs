@@ -8,7 +8,7 @@ test("voltage controlled current source", (t) => {
     ["g", ["NCN"], {}],
     ["g", ["NON"], {}],
     ["v", ["NCP", "NCN"], { v: 1 }],
-    ["vccs/DUT", ["NOP", "NON", "NCP", "NCN"], { gain: 2 }],
+    ["vccs:DUT", ["NOP", "NON", "NCP", "NCN"], { gain: 2 }],
     ["r", ["NOP", "NON"], { r: 10 }],
   ]);
   dcAnalysis(circuit);

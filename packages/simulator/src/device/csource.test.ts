@@ -6,8 +6,8 @@ import { dcAnalysis } from "../simulation/dc";
 test("current source", (t) => {
   const circuit = readNetlist([
     ["g", ["NN"], {}],
-    ["i/DUT", ["NP", "NN"], { i: -1 }],
-    ["r/R1", ["NP", "NN"], { r: 10 }],
+    ["i:DUT", ["NP", "NN"], { i: -1 }],
+    ["r:R1", ["NP", "NN"], { r: 10 }],
   ]);
   dcAnalysis(circuit);
   t.deepEqual(dumpCircuit(circuit), [

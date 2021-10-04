@@ -7,7 +7,7 @@ test("ammeter", (t) => {
   const circuit = readNetlist([
     ["g", ["NA"], {}],
     ["v", ["NB", "NA"], { v: 5 }],
-    ["ammeter/DUT", ["NB", "NC"], {}],
+    ["ammeter:DUT", ["NB", "NC"], {}],
     ["r", ["NC", "NA"], { r: 1000 }],
   ]);
   dcAnalysis(circuit);

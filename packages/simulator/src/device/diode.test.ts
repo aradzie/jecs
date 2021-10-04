@@ -7,7 +7,7 @@ test("circuit 1", (t) => {
   const circuit = readNetlist([
     ["g", ["g"], {}],
     ["i", ["g", "NP"], { i: 0.1 }],
-    ["d/DUT", ["NP", "g"], {}],
+    ["d:DUT", ["NP", "g"], {}],
   ]);
   dcAnalysis(circuit, { reltol: 1e-5 });
   t.deepEqual(dumpCircuit(circuit), [
@@ -21,8 +21,8 @@ test("circuit 2", (t) => {
   const circuit = readNetlist([
     ["g", ["g"], {}],
     ["i", ["g", "NP"], { i: 1 }],
-    ["d/DUT1", ["NP", "NM"], {}],
-    ["d/DUT2", ["NM", "g"], {}],
+    ["d:DUT1", ["NP", "NM"], {}],
+    ["d:DUT2", ["NM", "g"], {}],
   ]);
   dcAnalysis(circuit, { reltol: 1e-5 });
   t.deepEqual(dumpCircuit(circuit), [
@@ -38,7 +38,7 @@ test("circuit 3", (t) => {
   const circuit = readNetlist([
     ["g", ["g"], {}],
     ["v", ["NP", "g"], { v: 0.8 }],
-    ["d/DUT", ["NP", "g"], {}],
+    ["d:DUT", ["NP", "g"], {}],
   ]);
   dcAnalysis(circuit, { reltol: 1e-5 });
   t.deepEqual(dumpCircuit(circuit), [
@@ -52,8 +52,8 @@ test("circuit 4", (t) => {
   const circuit = readNetlist([
     ["g", ["g"], {}],
     ["v", ["NP", "g"], { v: 1.6 }],
-    ["d/DUT1", ["NP", "NM"], {}],
-    ["d/DUT2", ["NM", "g"], {}],
+    ["d:DUT1", ["NP", "NM"], {}],
+    ["d:DUT2", ["NM", "g"], {}],
   ]);
   dcAnalysis(circuit, { reltol: 1e-5 });
   t.deepEqual(dumpCircuit(circuit), [
