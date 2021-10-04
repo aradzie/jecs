@@ -1,6 +1,6 @@
 import test from "ava";
 import { dumpCircuit } from "../circuit/debug";
-import { readNetlist } from "../circuit/netlist";
+import { readNetlist } from "../netlist/netlist";
 import { dcAnalysis } from "../simulation/dc";
 
 test("current source", (t) => {
