@@ -7,9 +7,18 @@ import { converged } from "./convergence";
 import type { Options } from "./options";
 import { defaultOptions } from "./options";
 
+export class Controller {
+  iterationCount = 0;
+
+  nextIteration(): void {
+    this.iterationCount += 1;
+  }
+}
+
 export function dcAnalysis(
   circuit: Circuit,
   userOptions: Partial<Options> = {},
+  ctl = new Controller(),
 ): void {
   const options = Object.freeze<Options>({ ...defaultOptions, ...userOptions });
   const { nodes, devices } = circuit;
@@ -25,8 +34,9 @@ export function dcAnalysis(
 
   const stamper = new Stamper(matrix, vector);
 
-  let iter = 0;
   while (true) {
+    ctl.nextIteration();
+
     matClear(matrix);
     vecClear(vector);
 
@@ -38,12 +48,10 @@ export function dcAnalysis(
 
     circuit.updateNodes(vector);
 
-    if (iter > 0 && converged(options, nodes, prev, vector)) {
+    if (ctl.iterationCount > 1 && converged(options, nodes, prev, vector)) {
       break;
     }
 
     vecCopy(vector, prev);
-
-    iter += 1;
   }
 }
