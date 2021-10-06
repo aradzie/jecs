@@ -3,15 +3,15 @@ import { Device } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
 import type { DeviceProps } from "../circuit/props";
 import { Unit } from "../util/unit";
-import { default_I_S, default_n, default_T, PN } from "./pn";
+import { k, q } from "./const";
 
 export interface DiodeProps extends DeviceProps {
-  /** The reverse bias saturation current, `A`. */
-  readonly I_S: number;
   /** The temperature, `K`. */
   readonly T: number;
-  /** The ideality factor. */
-  readonly n: number;
+  /** The reverse bias saturation current, `A`. */
+  readonly Is: number;
+  /** The emission coefficient. */
+  readonly N: number;
 }
 
 /**
@@ -21,54 +21,100 @@ export class Diode extends Device {
   static override readonly id = "d";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [
-    { name: "I_S", unit: Unit.AMPERE, default: default_I_S },
-    { name: "T", unit: Unit.KELVIN, default: default_T },
-    { name: "n", unit: Unit.UNITLESS, default: default_n },
+    { name: "T", unit: Unit.KELVIN, default: 3.0015e2 },
+    { name: "Is", unit: Unit.AMPERE, default: 1e-14 },
+    { name: "N", unit: Unit.UNITLESS, default: 1 },
   ];
 
   /** Anode terminal. */
   readonly na: Node;
   /** Cathode terminal. */
   readonly nc: Node;
-  /** Diode state. */
-  readonly pn: PN;
+  /** The temperature. */
+  readonly T: number;
+  /** The reverse bias saturation current. */
+  readonly Is: number;
+  /** The emission coefficient. */
+  readonly N: number;
+
+  private readonly Vt: number;
+  private readonly invVt: number;
+  private readonly Vcrit: number;
+  private lastVoltage: number;
 
   constructor(
     name: string, //
     [na, nc]: readonly Node[],
-    {
-      I_S = default_I_S,
-      T = default_T,
-      n = default_n,
-    }: Partial<DiodeProps> = {},
+    { T, Is, N }: DiodeProps,
   ) {
     super(name, [na, nc]);
     this.na = na;
     this.nc = nc;
-    this.pn = new PN(I_S, T, n);
+    this.T = T;
+    this.Is = Is;
+    this.N = N;
+    this.Vt = this.N * this.T * (k / q);
+    this.invVt = 1 / this.Vt;
+    this.Vcrit = this.Vt * Math.log(this.Vt / Math.sqrt(2) / this.Is);
+    this.lastVoltage = 0;
   }
 
   override stamp(stamper: Stamper): void {
-    const { na, nc, pn } = this;
-    const voltage = na.voltage - nc.voltage;
-    if (voltage >= 0) {
-      pn.stamp(stamper, na, nc, voltage);
-    }
+    const { na, nc } = this;
+    const voltage = this.limitVoltage(na.voltage - nc.voltage);
+    const Gd = this.pnConductance(voltage);
+    const Id = this.pnCurrent(voltage);
+    const Ieq = Id - Gd * voltage;
+    stamper.stampConductance(na, nc, Gd);
+    stamper.stampCurrentSource(na, nc, Ieq);
   }
 
   override details(): Details {
-    const { na, nc, pn } = this;
+    const { na, nc } = this;
     const voltage = na.voltage - nc.voltage;
-    let current = 0;
-    let power = 0;
-    if (voltage >= 0) {
-      current = pn.I_D(voltage);
-      power = voltage * current;
-    }
+    const current = this.pnCurrent(voltage);
+    const power = voltage * current;
     return [
       { name: "Vd", value: voltage, unit: Unit.VOLT },
       { name: "I", value: current, unit: Unit.AMPERE },
       { name: "P", value: power, unit: Unit.WATT },
     ];
+  }
+
+  private pnCurrent(V: number): number {
+    if (V >= 0) {
+      const { Is, invVt } = this;
+      return Is * (Math.exp(invVt * V) - 1);
+    } else {
+      return 0;
+    }
+  }
+
+  private pnConductance(V: number): number {
+    if (V >= 0) {
+      const { Is, invVt } = this;
+      return invVt * Is * Math.exp(invVt * V);
+    } else {
+      return 0;
+    }
+  }
+
+  private limitVoltage(voltage: number): number {
+    if (voltage >= 0) {
+      const { Vt, Vcrit, lastVoltage } = this;
+      if (voltage > Vcrit && Math.abs(voltage - lastVoltage) > 2 * Vt) {
+        if (lastVoltage > 0) {
+          const x = (voltage - lastVoltage) / Vt;
+          if (x > 0) {
+            voltage = lastVoltage + Vt * (2 + Math.log(x - 2));
+          } else {
+            voltage = lastVoltage - Vt * (2 + Math.log(2 - x));
+          }
+        } else {
+          voltage = Vcrit;
+        }
+      }
+    }
+    return (this.lastVoltage = voltage);
   }
 }

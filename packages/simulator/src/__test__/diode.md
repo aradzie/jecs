@@ -3,6 +3,34 @@
 ```json
 [
   ["g", ["g"], {}],
+  ["v", ["NP", "g"], { "v": 5 }],
+  ["d:DUT", ["g", "NP"], {}]
+]
+```
+
+## Options
+
+```json
+{
+  "reltol": 1e-5
+}
+```
+
+## Result
+
+```text
+V(NP)=5V
+V1{Vd=5V,I=0A,P=0W}
+DUT{Vd=-5V,I=0A,P=0W}
+```
+
+---
+
+## Netlist
+
+```json
+[
+  ["g", ["g"], {}],
   ["i", ["g", "NP"], { "i": 0.1 }],
   ["d:DUT", ["NP", "g"], {}]
 ]
