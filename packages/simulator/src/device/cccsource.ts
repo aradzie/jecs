@@ -12,7 +12,7 @@ export interface CCCSourceProps extends DeviceProps {
  * Current-controlled current source.
  */
 export class CCCSource extends Device {
-  static override readonly id = "cccs";
+  static override readonly id = "CCCS";
   static override readonly numTerminals = 4;
   static override readonly propsSchema = [
     { name: "gain", unit: Unit.UNITLESS },

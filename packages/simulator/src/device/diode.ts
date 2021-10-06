@@ -18,7 +18,7 @@ export interface DiodeProps extends DeviceProps {
  * Diode.
  */
 export class Diode extends Device {
-  static override readonly id = "d";
+  static override readonly id = "Diode";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [
     { name: "T", unit: Unit.KELVIN, default: 3.0015e2 },

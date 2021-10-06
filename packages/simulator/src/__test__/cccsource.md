@@ -2,11 +2,11 @@
 
 ```json
 [
-  ["g", ["NCN"], {}],
-  ["g", ["NON"], {}],
-  ["i", ["NCP", "NCN"], { "i": 1 }],
-  ["cccs:DUT", ["NOP", "NON", "NCP", "NCN"], { "gain": 2 }],
-  ["r", ["NOP", "NON"], { "r": 5 }]
+  ["Ground", ["NCN"], {}],
+  ["Ground", ["NON"], {}],
+  ["I", ["NCP", "NCN"], { "i": 1 }],
+  ["CCCS:DUT", ["NOP", "NON", "NCP", "NCN"], { "gain": 2 }],
+  ["R", ["NOP", "NON"], { "r": 5 }]
 ]
 ```
 

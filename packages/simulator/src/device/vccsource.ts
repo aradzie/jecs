@@ -12,7 +12,7 @@ export interface VCCSourceProps extends DeviceProps {
  * Voltage-controlled current source.
  */
 export class VCCSource extends Device {
-  static override readonly id = "vccs";
+  static override readonly id = "VCCS";
   static override readonly numTerminals = 4;
   static override readonly propsSchema = [
     { name: "gain", unit: Unit.UNITLESS },

@@ -13,7 +13,7 @@ export interface VSourceProps extends DeviceProps {
  * Voltage source.
  */
 export class VSource extends Device {
-  static override readonly id = "v";
+  static override readonly id = "V";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [{ name: "v", unit: Unit.VOLT }];
 

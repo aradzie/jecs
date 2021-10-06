@@ -12,7 +12,7 @@ export interface CCVSourceProps extends DeviceProps {
  * Current-controlled voltage source.
  */
 export class CCVSource extends Device {
-  static override readonly id = "ccvs";
+  static override readonly id = "CCVS";
   static override readonly numTerminals = 4;
   static override readonly propsSchema = [
     { name: "gain", unit: Unit.UNITLESS },

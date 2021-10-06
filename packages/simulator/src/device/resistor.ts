@@ -13,7 +13,7 @@ export interface ResistorProps extends DeviceProps {
  * Resistor.
  */
 export class Resistor extends Device {
-  static override readonly id = "r";
+  static override readonly id = "R";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [{ name: "r", unit: Unit.OHM }];
 

@@ -11,7 +11,7 @@ export interface OpAmpProps extends DeviceProps {
  * Ideal operational amplifier.
  */
 export class OpAmp extends Device {
-  static override readonly id = "oa";
+  static override readonly id = "OpAmp";
   static override readonly numTerminals = 3;
   static override readonly propsSchema = [
     { name: "gain", unit: Unit.UNITLESS },

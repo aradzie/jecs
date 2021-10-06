@@ -13,7 +13,7 @@ export interface CSourceProps extends DeviceProps {
  * Current source.
  */
 export class CSource extends Device {
-  static override readonly id = "i";
+  static override readonly id = "I";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [{ name: "i", unit: Unit.AMPERE }];
 

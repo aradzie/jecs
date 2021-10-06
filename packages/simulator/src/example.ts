@@ -4,9 +4,9 @@ import { Controller, dcAnalysis } from "./simulation/dc";
 
 {
   const circuit = readNetlist([
-    ["g", ["g"], {}],
-    ["v", ["NP", "g"], { v: 5 }],
-    ["d:DUT", ["g", "NP"], {}],
+    ["Ground", ["g"], {}],
+    ["V", ["NP", "g"], { v: 5 }],
+    ["Diode:DUT", ["g", "NP"], {}],
   ]);
   const ctl = new Controller();
   dcAnalysis(circuit, {}, ctl);
@@ -16,9 +16,9 @@ import { Controller, dcAnalysis } from "./simulation/dc";
 
 {
   const circuit = readNetlist([
-    ["g", ["g"], {}],
-    ["i", ["g", "NP"], { i: 0.1 }],
-    ["d:DUT", ["NP", "g"], {}],
+    ["Ground", ["g"], {}],
+    ["I", ["g", "NP"], { i: 0.1 }],
+    ["Diode:DUT", ["NP", "g"], {}],
   ]);
   const ctl = new Controller();
   dcAnalysis(circuit, {}, ctl);
@@ -28,10 +28,10 @@ import { Controller, dcAnalysis } from "./simulation/dc";
 
 {
   const circuit = readNetlist([
-    ["g", ["g"], {}],
-    ["v", ["NP", "g"], { v: 1.6 }],
-    ["d:DUT1", ["NP", "NM"], {}],
-    ["d:DUT2", ["NM", "g"], {}],
+    ["Ground", ["g"], {}],
+    ["V", ["NP", "g"], { v: 1.6 }],
+    ["Diode:DUT1", ["NP", "NM"], {}],
+    ["Diode:DUT2", ["NM", "g"], {}],
   ]);
   const ctl = new Controller();
   dcAnalysis(circuit, {}, ctl);

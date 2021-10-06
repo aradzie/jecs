@@ -7,7 +7,7 @@ import { Unit } from "../util/unit";
  * Ammeter.
  */
 export class Ammeter extends Device {
-  static override readonly id = "ammeter";
+  static override readonly id = "Ammeter";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [];
 
