@@ -62,10 +62,9 @@ export class Diode extends Device {
   override stamp(stamper: Stamper): void {
     const { na, nc } = this;
     const voltage = this.limitVoltage(na.voltage - nc.voltage);
-    const Gd = this.pnConductance(voltage);
-    const Id = this.pnCurrent(voltage);
-    const Ieq = Id - Gd * voltage;
-    stamper.stampConductance(na, nc, Gd);
+    const Geq = this.pnConductance(voltage);
+    const Ieq = this.pnCurrent(voltage) - Geq * voltage;
+    stamper.stampConductance(na, nc, Geq);
     stamper.stampCurrentSource(na, nc, Ieq);
   }
 
