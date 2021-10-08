@@ -1,4 +1,5 @@
 import type { Circuit } from "../circuit/circuit";
+import type { Device } from "../circuit/device";
 import { CircuitError } from "../circuit/error";
 import { Stamper } from "../circuit/network";
 import { solve } from "../math/gauss-elimination";
@@ -32,6 +33,11 @@ export function dcAnalysis(
   const vector = vecMake(n);
   const prev = vecMake(n);
 
+  const deviceState = devices.map((device) => [
+    device,
+    device.getInitialState(),
+  ]) as [Device, unknown][];
+
   const stamper = new Stamper(matrix, vector);
 
   while (true) {
@@ -40,8 +46,8 @@ export function dcAnalysis(
     matClear(matrix);
     vecClear(vector);
 
-    for (const device of devices) {
-      device.stamp(stamper);
+    for (const [device, state] of deviceState) {
+      device.stamp(stamper, state);
     }
 
     solve(matrix, vector);

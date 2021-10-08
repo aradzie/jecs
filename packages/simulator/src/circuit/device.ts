@@ -14,7 +14,7 @@ export interface DeviceClass {
   new (name: string, nodes: readonly Node[], props: any): Device;
 }
 
-export abstract class Device {
+export abstract class Device<StateT = unknown> {
   static readonly id: string;
   static readonly numTerminals: number;
   static readonly propsSchema: DevicePropsSchema;
@@ -28,18 +28,27 @@ export abstract class Device {
   }
 
   /**
-   * Circuit call this method to let a device
+   * Circuit calls this method to let a device
    * to allocate extra nodes and branches.
    * @param network A network which contains allocated nodes and branches.
    */
   connect(network: Network): void {}
 
   /**
+   * Returns a device state object which is shared between iterations.
+   * This allows running multiple analyses on the same circuit.
+   */
+  getInitialState(): StateT {
+    return {} as StateT;
+  }
+
+  /**
    * Circuit calls this method to let a device
    * to stamp MNA matrix and RHS vector.
    * @param stamper A stamper which updates MNA matrix and RHS vector.
+   * @param state Device state which is saved between iterations.
    */
-  stamp(stamper: Stamper): void {}
+  stamp(stamper: Stamper, state: StateT): void {}
 
   /**
    * Returns device details, such as voltage difference, current, etc.

@@ -14,10 +14,14 @@ export interface DiodeProps extends DeviceProps {
   readonly N: number;
 }
 
+interface DiodeState {
+  prevVoltage: number;
+}
+
 /**
  * Diode.
  */
-export class Diode extends Device {
+export class Diode extends Device<DiodeState> {
   static override readonly id = "Diode";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [
@@ -40,7 +44,6 @@ export class Diode extends Device {
   private readonly Vt: number;
   private readonly invVt: number;
   private readonly Vcrit: number;
-  private lastVoltage: number;
 
   constructor(
     name: string, //
@@ -56,12 +59,15 @@ export class Diode extends Device {
     this.Vt = this.N * this.T * (k / q);
     this.invVt = 1 / this.Vt;
     this.Vcrit = this.Vt * Math.log(this.Vt / Math.sqrt(2) / this.Is);
-    this.lastVoltage = 0;
   }
 
-  override stamp(stamper: Stamper): void {
+  override getInitialState(): DiodeState {
+    return { prevVoltage: 0 };
+  }
+
+  override stamp(stamper: Stamper, state: DiodeState): void {
     const { na, nc } = this;
-    const voltage = this.limitVoltage(na.voltage - nc.voltage);
+    const voltage = this.limitVoltage(na.voltage - nc.voltage, state);
     const Geq = this.pnConductance(voltage);
     const Ieq = this.pnCurrent(voltage) - Geq * voltage;
     stamper.stampConductance(na, nc, Geq);
@@ -98,22 +104,23 @@ export class Diode extends Device {
     }
   }
 
-  private limitVoltage(voltage: number): number {
+  private limitVoltage(voltage: number, state: DiodeState): number {
     if (voltage >= 0) {
-      const { Vt, Vcrit, lastVoltage } = this;
-      if (voltage > Vcrit && Math.abs(voltage - lastVoltage) > 2 * Vt) {
-        if (lastVoltage > 0) {
-          const x = (voltage - lastVoltage) / Vt;
+      const { Vt, Vcrit } = this;
+      const { prevVoltage } = state;
+      if (voltage > Vcrit && Math.abs(voltage - prevVoltage) > 2 * Vt) {
+        if (prevVoltage > 0) {
+          const x = (voltage - prevVoltage) / Vt;
           if (x > 0) {
-            voltage = lastVoltage + Vt * (2 + Math.log(x - 2));
+            voltage = prevVoltage + Vt * (2 + Math.log(x - 2));
           } else {
-            voltage = lastVoltage - Vt * (2 + Math.log(2 - x));
+            voltage = prevVoltage - Vt * (2 + Math.log(2 - x));
           }
         } else {
           voltage = Vcrit;
         }
       }
     }
-    return (this.lastVoltage = voltage);
+    return (state.prevVoltage = voltage);
   }
 }
