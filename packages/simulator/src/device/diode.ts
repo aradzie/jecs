@@ -3,7 +3,7 @@ import { Device } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
 import type { DeviceProps } from "../circuit/props";
 import { Unit } from "../util/unit";
-import { k, q } from "./const";
+import { PN } from "./semi";
 
 export interface DiodeProps extends DeviceProps {
   /** The temperature, `K`. */
@@ -40,10 +40,8 @@ export class Diode extends Device<DiodeState> {
   readonly Is: number;
   /** The emission coefficient. */
   readonly N: number;
-
-  private readonly Vt: number;
-  private readonly invVt: number;
-  private readonly Vcrit: number;
+  /** The PN junction of diode. */
+  readonly pn: PN;
 
   constructor(
     name: string, //
@@ -56,9 +54,7 @@ export class Diode extends Device<DiodeState> {
     this.T = T;
     this.Is = Is;
     this.N = N;
-    this.Vt = this.N * this.T * (k / q);
-    this.invVt = 1 / this.Vt;
-    this.Vcrit = this.Vt * Math.log(this.Vt / Math.sqrt(2) / this.Is);
+    this.pn = new PN(this.T, this.Is, this.N);
   }
 
   override getInitialState(): DiodeState {
@@ -66,61 +62,27 @@ export class Diode extends Device<DiodeState> {
   }
 
   override stamp(stamper: Stamper, state: DiodeState): void {
-    const { na, nc } = this;
-    const voltage = this.limitVoltage(na.voltage - nc.voltage, state);
-    const Geq = this.pnConductance(voltage);
-    const Ieq = this.pnCurrent(voltage) - Geq * voltage;
-    stamper.stampConductance(na, nc, Geq);
-    stamper.stampCurrentSource(na, nc, Ieq);
+    const { na, nc, pn } = this;
+    const voltage = (state.prevVoltage = pn.limitVoltage(
+      na.voltage - nc.voltage,
+      state.prevVoltage,
+    ));
+    const Id = pn.evalCurrent(voltage);
+    const eqGd = pn.evalConductance(voltage);
+    const eqId = Id - eqGd * voltage;
+    stamper.stampConductance(na, nc, eqGd);
+    stamper.stampCurrentSource(na, nc, eqId);
   }
 
   override details(): Details {
-    const { na, nc } = this;
+    const { na, nc, pn } = this;
     const voltage = na.voltage - nc.voltage;
-    const current = this.pnCurrent(voltage);
+    const current = pn.evalCurrent(voltage);
     const power = voltage * current;
     return [
       { name: "Vd", value: voltage, unit: Unit.VOLT },
       { name: "I", value: current, unit: Unit.AMPERE },
       { name: "P", value: power, unit: Unit.WATT },
     ];
-  }
-
-  private pnCurrent(V: number): number {
-    if (V >= 0) {
-      const { Is, invVt } = this;
-      return Is * (Math.exp(invVt * V) - 1);
-    } else {
-      return 0;
-    }
-  }
-
-  private pnConductance(V: number): number {
-    if (V >= 0) {
-      const { Is, invVt } = this;
-      return invVt * Is * Math.exp(invVt * V);
-    } else {
-      return 0;
-    }
-  }
-
-  private limitVoltage(voltage: number, state: DiodeState): number {
-    if (voltage >= 0) {
-      const { Vt, Vcrit } = this;
-      const { prevVoltage } = state;
-      if (voltage > Vcrit && Math.abs(voltage - prevVoltage) > 2 * Vt) {
-        if (prevVoltage > 0) {
-          const x = (voltage - prevVoltage) / Vt;
-          if (x > 0) {
-            voltage = prevVoltage + Vt * (2 + Math.log(x - 2));
-          } else {
-            voltage = prevVoltage - Vt * (2 + Math.log(2 - x));
-          }
-        } else {
-          voltage = Vcrit;
-        }
-      }
-    }
-    return (state.prevVoltage = voltage);
   }
 }
