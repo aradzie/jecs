@@ -140,9 +140,9 @@ export class Bjt extends Device<BjtProps, BjtState> {
     const Ie = Ar * Ir - If;
     const Ic = Af * If - Ir;
     const eqGee = pnBe.evalConductance(Vbe);
-    const eqGec = Ar * pnBc.evalConductance(Vbc);
-    const eqGce = Af * pnBe.evalConductance(Vbe);
     const eqGcc = pnBc.evalConductance(Vbc);
+    const eqGec = Ar * eqGcc;
+    const eqGce = Af * eqGee;
     const eqIe = Ie + eqGee * Vbe - eqGec * Vbc;
     const eqIc = Ic - eqGce * Vbe + eqGcc * Vbc;
     stamper.stampMatrix(ne, ne, eqGee);
