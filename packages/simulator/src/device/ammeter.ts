@@ -16,13 +16,10 @@ export class Ammeter extends Device {
   /** Negative terminal. */
   readonly nn: Node;
   /** Extra MNA branch. */
-  branch!: Branch;
+  private branch!: Branch;
 
-  constructor(
-    name: string, //
-    [np, nn]: readonly Node[],
-  ) {
-    super(name, [np, nn]);
+  constructor(name: string, [np, nn]: readonly Node[]) {
+    super(name, [np, nn], {});
     this.np = np;
     this.nn = nn;
   }

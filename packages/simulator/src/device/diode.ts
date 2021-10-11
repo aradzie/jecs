@@ -21,7 +21,7 @@ interface DiodeState {
 /**
  * Diode.
  */
-export class Diode extends Device<DiodeState> {
+export class Diode extends Device<DiodeProps, DiodeState> {
   static override readonly id = "Diode";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [
@@ -34,27 +34,14 @@ export class Diode extends Device<DiodeState> {
   readonly na: Node;
   /** Cathode terminal. */
   readonly nc: Node;
-  /** The temperature. */
-  readonly T: number;
-  /** The reverse bias saturation current. */
-  readonly Is: number;
-  /** The emission coefficient. */
-  readonly N: number;
   /** The PN junction of diode. */
   readonly pn: PN;
 
-  constructor(
-    name: string, //
-    [na, nc]: readonly Node[],
-    { T, Is, N }: DiodeProps,
-  ) {
-    super(name, [na, nc]);
+  constructor(name: string, [na, nc]: readonly Node[], props: DiodeProps) {
+    super(name, [na, nc], props);
     this.na = na;
     this.nc = nc;
-    this.T = T;
-    this.Is = Is;
-    this.N = N;
-    this.pn = new PN(this.T, this.Is, this.N);
+    this.pn = new PN(this.props.T, this.props.Is, this.props.N);
   }
 
   override getInitialState(): DiodeState {

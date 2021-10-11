@@ -11,7 +11,7 @@ export interface VCCSourceProps extends DeviceProps {
 /**
  * Voltage-controlled current source.
  */
-export class VCCSource extends Device {
+export class VCCSource extends Device<VCCSourceProps> {
   static override readonly id = "VCCS";
   static override readonly numTerminals = 4;
   static override readonly propsSchema = [
@@ -26,22 +26,19 @@ export class VCCSource extends Device {
   readonly ncp: Node;
   /** Negative control terminal. */
   readonly ncn: Node;
-  /** Gain. */
-  readonly gain: number;
   /** Extra MNA branch. */
-  branch!: Branch;
+  private branch!: Branch;
 
   constructor(
     name: string,
     [np, nn, ncp, ncn]: readonly Node[],
-    { gain }: VCCSourceProps,
+    props: VCCSourceProps,
   ) {
-    super(name, [np, nn, ncp, ncn]);
+    super(name, [np, nn, ncp, ncn], props);
     this.np = np;
     this.nn = nn;
     this.ncp = ncp;
     this.ncn = ncn;
-    this.gain = gain;
   }
 
   override connect(network: Network): void {
@@ -49,7 +46,8 @@ export class VCCSource extends Device {
   }
 
   override stamp(stamper: Stamper): void {
-    const { np, nn, ncp, ncn, branch, gain } = this;
+    const { props, np, nn, ncp, ncn, branch } = this;
+    const { gain } = props;
     stamper.stampMatrix(np, branch, 1);
     stamper.stampMatrix(nn, branch, -1);
     stamper.stampMatrix(branch, ncp, gain);

@@ -42,7 +42,7 @@ interface BjtState {
 /**
  * Bipolar junction transistor.
  */
-export class Bjt extends Device<BjtState> {
+export class Bjt extends Device<BjtProps, BjtState> {
   static override readonly id = "Bjt";
   static override readonly numTerminals = 3;
   static override readonly propsSchema = [
@@ -67,61 +67,18 @@ export class Bjt extends Device<BjtState> {
   readonly nb: Node;
   /** Collector terminal. */
   readonly nc: Node;
-  /** The temperature, `K`. */
-  readonly T: number;
-  /** The reverse bias saturation current, `A`. */
-  readonly Is: number;
-  /** The forward emission coefficient. */
-  readonly Nf: number;
-  /** The reverse emission coefficient. */
-  readonly Nr: number;
-  /** The forward Early voltage, `V`. */
-  readonly Vaf: number;
-  /** The reverse Early voltage, `V`. */
-  readonly Var: number;
-  /** The base-emitter leakage saturation current, `A`. */
-  readonly Ise: number;
-  /** The base-emitter leakage emission coefficient. */
-  readonly Ne: number;
-  /** The base-collector leakage saturation current, `A`. */
-  readonly Isc: number;
-  /** The base-collector leakage emission coefficient. */
-  readonly Nc: number;
-  /** The forward beta. */
-  readonly Bf: number;
-  /** The reverse beta. */
-  readonly Br: number;
-  /** The default area. */
-  readonly area: number;
   /** The base-emitter PN junction of BJT. */
   private readonly pnBe: PN;
   /** The base-collector PN junction of BJT. */
   private readonly pnBc: PN;
 
-  constructor(
-    name: string, //
-    [ne, nb, nc]: readonly Node[],
-    { T, Is, Nf, Nr, Vaf, Var, Ise, Ne, Isc, Nc, Bf, Br, area }: BjtProps,
-  ) {
-    super(name, [ne, nb, nc]);
+  constructor(name: string, [ne, nb, nc]: readonly Node[], props: BjtProps) {
+    super(name, [ne, nb, nc], props);
     this.ne = ne;
     this.nb = nb;
     this.nc = nc;
-    this.T = T;
-    this.Is = Is;
-    this.Nf = Nf;
-    this.Nr = Nr;
-    this.Vaf = Vaf;
-    this.Var = Var;
-    this.Ise = Ise;
-    this.Ne = Ne;
-    this.Isc = Isc;
-    this.Nc = Nc;
-    this.Bf = Bf;
-    this.Br = Br;
-    this.area = area;
-    this.pnBe = new PN(this.T, this.Is, this.area);
-    this.pnBc = new PN(this.T, this.Is, this.area);
+    this.pnBe = new PN(this.props.T, this.props.Is, this.props.area);
+    this.pnBc = new PN(this.props.T, this.props.Is, this.props.area);
   }
 
   override getInitialState(): BjtState {
@@ -129,7 +86,8 @@ export class Bjt extends Device<BjtState> {
   }
 
   override stamp(stamper: Stamper, state: BjtState): void {
-    const { ne, nb, nc, Bf, Br, pnBe, pnBc } = this;
+    const { props, ne, nb, nc, pnBe, pnBc } = this;
+    const { Bf, Br } = props;
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);
     const Vbe = (state.prevVbe = pnBe.limitVoltage(
@@ -165,7 +123,8 @@ export class Bjt extends Device<BjtState> {
   }
 
   override details(): Details {
-    const { ne, nb, nc, Bf, Br, pnBe, pnBc } = this;
+    const { props, ne, nb, nc, pnBe, pnBc } = this;
+    const { Bf, Br } = props;
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);
     const Vbe = nb.voltage - ne.voltage;

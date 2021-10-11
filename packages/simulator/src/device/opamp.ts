@@ -10,7 +10,7 @@ export interface OpAmpProps extends DeviceProps {
 /**
  * Ideal operational amplifier.
  */
-export class OpAmp extends Device {
+export class OpAmp extends Device<OpAmpProps> {
   static override readonly id = "OpAmp";
   static override readonly numTerminals = 3;
   static override readonly propsSchema = [
@@ -20,18 +20,12 @@ export class OpAmp extends Device {
   readonly a: Node;
   readonly b: Node;
   readonly o: Node;
-  readonly gain: number;
 
-  constructor(
-    name: string, //
-    [a, b, o]: readonly Node[],
-    { gain }: OpAmpProps,
-  ) {
-    super(name, [a, b, o]);
+  constructor(name: string, [a, b, o]: readonly Node[], props: OpAmpProps) {
+    super(name, [a, b, o], props);
     this.a = a;
     this.b = b;
     this.o = o;
-    this.gain = gain;
   }
 
   override stamp(stamper: Stamper): void {}

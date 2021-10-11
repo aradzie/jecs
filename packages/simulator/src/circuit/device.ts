@@ -14,17 +14,19 @@ export interface DeviceClass {
   new (name: string, nodes: readonly Node[], props: any): Device;
 }
 
-export abstract class Device<StateT = unknown> {
+export abstract class Device<PropsT = unknown, StateT = unknown> {
   static readonly id: string;
   static readonly numTerminals: number;
   static readonly propsSchema: DevicePropsSchema;
 
   readonly name: string;
   readonly nodes: Node[];
+  readonly props: PropsT;
 
-  constructor(name: string, nodes: readonly Node[]) {
+  constructor(name: string, nodes: readonly Node[], props: PropsT) {
     this.name = name;
     this.nodes = [...nodes];
+    this.props = { ...props };
   }
 
   /**

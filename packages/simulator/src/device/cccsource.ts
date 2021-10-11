@@ -11,7 +11,7 @@ export interface CCCSourceProps extends DeviceProps {
 /**
  * Current-controlled current source.
  */
-export class CCCSource extends Device {
+export class CCCSource extends Device<CCCSourceProps> {
   static override readonly id = "CCCS";
   static override readonly numTerminals = 4;
   static override readonly propsSchema = [
@@ -26,22 +26,19 @@ export class CCCSource extends Device {
   readonly ncp: Node;
   /** Negative control terminal. */
   readonly ncn: Node;
-  /** Gain. */
-  readonly gain: number;
   /** Extra MNA branch. */
-  branch!: Branch;
+  private branch!: Branch;
 
   constructor(
     name: string,
     [np, nn, ncp, ncn]: readonly Node[],
-    { gain }: CCCSourceProps,
+    props: CCCSourceProps,
   ) {
-    super(name, [np, nn, ncp, ncn]);
+    super(name, [np, nn, ncp, ncn], props);
     this.np = np;
     this.nn = nn;
     this.ncp = ncp;
     this.ncn = ncn;
-    this.gain = gain;
   }
 
   override connect(network: Network): void {
@@ -49,14 +46,16 @@ export class CCCSource extends Device {
   }
 
   override stamp(stamper: Stamper): void {
-    const { np, nn, ncp, ncn, branch, gain } = this;
+    const { props, np, nn, ncp, ncn, branch } = this;
+    const { gain } = props;
     stamper.stampVoltageSource(ncp, ncn, branch, 0);
     stamper.stampMatrix(np, branch, gain);
     stamper.stampMatrix(nn, branch, -gain);
   }
 
   override details(): Details {
-    const { np, nn, branch, gain } = this;
+    const { props, np, nn, branch } = this;
+    const { gain } = props;
     const voltage = np.voltage - nn.voltage;
     const current = branch.current * gain;
     return [

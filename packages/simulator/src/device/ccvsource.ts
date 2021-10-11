@@ -11,7 +11,7 @@ export interface CCVSourceProps extends DeviceProps {
 /**
  * Current-controlled voltage source.
  */
-export class CCVSource extends Device {
+export class CCVSource extends Device<CCVSourceProps> {
   static override readonly id = "CCVS";
   static override readonly numTerminals = 4;
   static override readonly propsSchema = [
@@ -26,24 +26,21 @@ export class CCVSource extends Device {
   readonly ncp: Node;
   /** Negative control terminal. */
   readonly ncn: Node;
-  /** Gain. */
-  readonly gain: number;
   /** Extra MNA branch. */
-  branch1!: Branch;
+  private branch1!: Branch;
   /** Extra MNA branch. */
-  branch2!: Branch;
+  private branch2!: Branch;
 
   constructor(
     name: string,
     [np, nn, ncp, ncn]: readonly Node[],
-    { gain }: CCVSourceProps,
+    props: CCVSourceProps,
   ) {
-    super(name, [np, nn, ncp, ncn]);
+    super(name, [np, nn, ncp, ncn], props);
     this.np = np;
     this.nn = nn;
     this.ncp = ncp;
     this.ncn = ncn;
-    this.gain = gain;
   }
 
   override connect(network: Network): void {
@@ -52,7 +49,8 @@ export class CCVSource extends Device {
   }
 
   override stamp(stamper: Stamper): void {
-    const { np, nn, branch1, ncp, ncn, branch2, gain } = this;
+    const { props, np, nn, branch1, ncp, ncn, branch2 } = this;
+    const { gain } = props;
     stamper.stampVoltageSource(np, nn, branch1, 0);
     stamper.stampVoltageSource(ncp, ncn, branch2, 0);
     stamper.stampMatrix(branch1, branch2, -gain);

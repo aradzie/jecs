@@ -12,7 +12,7 @@ export interface ResistorProps extends DeviceProps {
 /**
  * Resistor.
  */
-export class Resistor extends Device {
+export class Resistor extends Device<ResistorProps> {
   static override readonly id = "R";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [{ name: "r", unit: Unit.OHM }];
@@ -21,30 +21,22 @@ export class Resistor extends Device {
   readonly na: Node;
   /** Second terminal. */
   readonly nb: Node;
-  /** Resistance. */
-  readonly r: number;
 
-  constructor(
-    name: string, //
-    [na, nb]: readonly Node[],
-    { r }: ResistorProps,
-  ) {
-    super(name, [na, nb]);
+  constructor(name: string, [na, nb]: readonly Node[], props: ResistorProps) {
+    super(name, [na, nb], props);
     this.na = na;
     this.nb = nb;
-    this.r = r;
-    if (this.r === 0) {
-      throw new CircuitError();
-    }
   }
 
   override stamp(stamper: Stamper): void {
-    const { na, nb, r } = this;
+    const { props, na, nb } = this;
+    const { r } = props;
     stamper.stampConductance(na, nb, 1.0 / r);
   }
 
   override details(): Details {
-    const { na, nb, r } = this;
+    const { props, na, nb } = this;
+    const { r } = props;
     const voltage = na.voltage - nb.voltage;
     const current = voltage / r;
     const power = voltage * current;

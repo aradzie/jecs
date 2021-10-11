@@ -12,7 +12,7 @@ export interface VSourceProps extends DeviceProps {
 /**
  * Voltage source.
  */
-export class VSource extends Device {
+export class VSource extends Device<VSourceProps> {
   static override readonly id = "V";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [{ name: "v", unit: Unit.VOLT }];
@@ -21,20 +21,13 @@ export class VSource extends Device {
   readonly np: Node;
   /** Negative terminal. */
   readonly nn: Node;
-  /** Output value in volts. */
-  readonly v: number;
   /** Extra MNA branch. */
-  branch!: Branch;
+  private branch!: Branch;
 
-  constructor(
-    name: string, //
-    [np, nn]: readonly Node[],
-    { v }: VSourceProps,
-  ) {
-    super(name, [np, nn]);
+  constructor(name: string, [np, nn]: readonly Node[], props: VSourceProps) {
+    super(name, [np, nn], props);
     this.np = np;
     this.nn = nn;
-    this.v = v;
   }
 
   override connect(network: Network): void {
@@ -42,12 +35,14 @@ export class VSource extends Device {
   }
 
   override stamp(stamper: Stamper): void {
-    const { np, nn, branch, v } = this;
+    const { props, np, nn, branch } = this;
+    const { v } = props;
     stamper.stampVoltageSource(np, nn, branch, v);
   }
 
   override details(): Details {
-    const { branch, v } = this;
+    const { props, branch } = this;
+    const { v } = props;
     const current = branch.current;
     const power = v * current;
     return [

@@ -12,7 +12,7 @@ export class Ground extends Device {
   readonly n: Node;
 
   constructor(name: string, [n]: readonly Node[]) {
-    super(name, [n]);
+    super(name, [n], {});
     this.n = n;
   }
 

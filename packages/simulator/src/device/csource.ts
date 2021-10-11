@@ -12,7 +12,7 @@ export interface CSourceProps extends DeviceProps {
 /**
  * Current source.
  */
-export class CSource extends Device {
+export class CSource extends Device<CSourceProps> {
   static override readonly id = "I";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [{ name: "i", unit: Unit.AMPERE }];
@@ -21,27 +21,22 @@ export class CSource extends Device {
   readonly np: Node;
   /** Negative terminal. */
   readonly nn: Node;
-  /** Output value in amperes. */
-  readonly i: number;
 
-  constructor(
-    name: string, //
-    [np, nn]: readonly Node[],
-    { i }: CSourceProps,
-  ) {
-    super(name, [np, nn]);
+  constructor(name: string, [np, nn]: readonly Node[], props: CSourceProps) {
+    super(name, [np, nn], props);
     this.np = np;
     this.nn = nn;
-    this.i = i;
   }
 
   override stamp(stamper: Stamper): void {
-    const { np, nn, i } = this;
+    const { props, np, nn } = this;
+    const { i } = props;
     stamper.stampCurrentSource(np, nn, i);
   }
 
   override details(): Details {
-    const { nn, np, i } = this;
+    const { props, np, nn } = this;
+    const { i } = props;
     const voltage = np.voltage - nn.voltage;
     return [
       { name: "Vd", value: voltage, unit: Unit.VOLT },
