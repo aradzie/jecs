@@ -38,3 +38,16 @@ import { Controller, dcAnalysis } from "./simulation/dc";
   console.log(dumpCircuit(circuit));
   console.log(`Converged after ${ctl.iterationCount} iterations`);
 }
+
+{
+  const circuit = readNetlist([
+    ["Ground", ["g"], {}],
+    ["V", ["NC", "g"], { v: 5 }],
+    ["V", ["NB", "g"], { v: 0.65 }],
+    ["Bjt:DUT", ["g", "NB", "NC"], {}],
+  ]);
+  const ctl = new Controller();
+  dcAnalysis(circuit, {}, ctl);
+  console.log(dumpCircuit(circuit));
+  console.log(`Converged after ${ctl.iterationCount} iterations`);
+}
