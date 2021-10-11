@@ -5,7 +5,6 @@ import type { DeviceProps } from "../circuit/props";
 import { Unit } from "../util/unit";
 
 export interface VSourceProps extends DeviceProps {
-  /** Voltage in volts. */
   readonly v: number;
 }
 
@@ -15,7 +14,9 @@ export interface VSourceProps extends DeviceProps {
 export class VSource extends Device<VSourceProps> {
   static override readonly id = "V";
   static override readonly numTerminals = 2;
-  static override readonly propsSchema = [{ name: "v", unit: Unit.VOLT }];
+  static override readonly propsSchema = [
+    { name: "v", unit: Unit.VOLT, title: "voltage" },
+  ];
 
   /** Positive terminal. */
   readonly np: Node;

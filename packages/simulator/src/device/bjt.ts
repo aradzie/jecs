@@ -6,31 +6,18 @@ import { Unit } from "../util/unit";
 import { PN } from "./semi";
 
 export interface BjtProps extends DeviceProps {
-  /** The temperature, `K`. */
   readonly T: number;
-  /** The reverse bias saturation current, `A`. */
   readonly Is: number;
-  /** The forward emission coefficient. */
   readonly Nf: number;
-  /** The reverse emission coefficient. */
   readonly Nr: number;
-  /** The forward Early voltage, `V`. */
   readonly Vaf: number;
-  /** The reverse Early voltage, `V`. */
   readonly Var: number;
-  /** The base-emitter leakage saturation current, `A`. */
   readonly Ise: number;
-  /** The base-emitter leakage emission coefficient. */
   readonly Ne: number;
-  /** The base-collector leakage saturation current, `A`. */
   readonly Isc: number;
-  /** The base-collector leakage emission coefficient. */
   readonly Nc: number;
-  /** The forward beta. */
   readonly Bf: number;
-  /** The reverse beta. */
   readonly Br: number;
-  /** The default area. */
   readonly area: number;
 }
 
@@ -46,19 +33,69 @@ export class Bjt extends Device<BjtProps, BjtState> {
   static override readonly id = "Bjt";
   static override readonly numTerminals = 3;
   static override readonly propsSchema = [
-    { name: "T", unit: Unit.KELVIN, default: 3.0015e2 },
-    { name: "Is", unit: Unit.AMPERE, default: 1e-14 },
-    { name: "Nf", unit: Unit.UNITLESS, default: 1 },
-    { name: "Nr", unit: Unit.UNITLESS, default: 1 },
-    { name: "Vaf", unit: Unit.VOLT, default: 10 },
-    { name: "Var", unit: Unit.VOLT, default: 0 },
-    { name: "Ise", unit: Unit.AMPERE, default: 0 },
-    { name: "Ne", unit: Unit.UNITLESS, default: 1.5 },
-    { name: "Isc", unit: Unit.AMPERE, default: 0 },
-    { name: "Nc", unit: Unit.UNITLESS, default: 2 },
-    { name: "Bf", unit: Unit.UNITLESS, default: 100 },
-    { name: "Br", unit: Unit.UNITLESS, default: 1 },
-    { name: "area", unit: Unit.UNITLESS, default: 1 },
+    {
+      name: "T",
+      unit: Unit.KELVIN,
+      default: 3.0015e2,
+      title: "device temperature",
+    },
+    {
+      name: "Is",
+      unit: Unit.AMPERE,
+      default: 1e-14,
+      title: "saturation current",
+    },
+    {
+      name: "Nf",
+      unit: Unit.UNITLESS,
+      default: 1,
+      title: "forward emission coefficient",
+    },
+    {
+      name: "Nr",
+      unit: Unit.UNITLESS,
+      default: 1,
+      title: "reverse emission coefficient",
+    },
+    {
+      name: "Vaf",
+      unit: Unit.VOLT,
+      default: 10,
+      title: "forward Early voltage",
+    },
+    {
+      name: "Var",
+      unit: Unit.VOLT,
+      default: 0,
+      title: "reverse Early voltage",
+    },
+    {
+      name: "Ise",
+      unit: Unit.AMPERE,
+      default: 0,
+      title: "base-emitter leakage saturation current",
+    },
+    {
+      name: "Ne",
+      unit: Unit.UNITLESS,
+      default: 1.5,
+      title: "base-emitter leakage emission coefficient",
+    },
+    {
+      name: "Isc",
+      unit: Unit.AMPERE,
+      default: 0,
+      title: "base-collector leakage saturation current",
+    },
+    {
+      name: "Nc",
+      unit: Unit.UNITLESS,
+      default: 2,
+      title: "base-collector leakage emission coefficient",
+    },
+    { name: "Bf", unit: Unit.UNITLESS, default: 100, title: "forward beta" },
+    { name: "Br", unit: Unit.UNITLESS, default: 1, title: "reverse beta" },
+    { name: "area", unit: Unit.UNITLESS, default: 1, title: "transistor area" },
   ];
 
   /** Emitter terminal. */

@@ -5,7 +5,6 @@ import type { DeviceProps } from "../circuit/props";
 import { Unit } from "../util/unit";
 
 export interface CSourceProps extends DeviceProps {
-  /** Current in amperes. */
   readonly i: number;
 }
 
@@ -15,7 +14,9 @@ export interface CSourceProps extends DeviceProps {
 export class CSource extends Device<CSourceProps> {
   static override readonly id = "I";
   static override readonly numTerminals = 2;
-  static override readonly propsSchema = [{ name: "i", unit: Unit.AMPERE }];
+  static override readonly propsSchema = [
+    { name: "i", unit: Unit.AMPERE, title: "current" },
+  ];
 
   /** Positive terminal. */
   readonly np: Node;

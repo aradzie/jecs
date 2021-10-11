@@ -14,7 +14,7 @@ export class OpAmp extends Device<OpAmpProps> {
   static override readonly id = "OpAmp";
   static override readonly numTerminals = 3;
   static override readonly propsSchema = [
-    { name: "gain", unit: Unit.UNITLESS },
+    { name: "gain", unit: Unit.UNITLESS, title: "gain" },
   ];
 
   readonly a: Node;

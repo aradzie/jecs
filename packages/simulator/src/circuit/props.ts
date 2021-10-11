@@ -15,6 +15,7 @@ export type DevicePropsSchemaItem = {
   readonly name: string;
   readonly unit: Unit;
   readonly default?: number;
+  readonly title: string;
 };
 
 export function validateDeviceProps(

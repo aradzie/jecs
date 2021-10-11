@@ -6,11 +6,8 @@ import { Unit } from "../util/unit";
 import { PN } from "./semi";
 
 export interface DiodeProps extends DeviceProps {
-  /** The temperature, `K`. */
   readonly T: number;
-  /** The reverse bias saturation current, `A`. */
   readonly Is: number;
-  /** The emission coefficient. */
   readonly N: number;
 }
 
@@ -25,9 +22,24 @@ export class Diode extends Device<DiodeProps, DiodeState> {
   static override readonly id = "Diode";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = [
-    { name: "T", unit: Unit.KELVIN, default: 3.0015e2 },
-    { name: "Is", unit: Unit.AMPERE, default: 1e-14 },
-    { name: "N", unit: Unit.UNITLESS, default: 1 },
+    {
+      name: "T",
+      unit: Unit.KELVIN,
+      default: 3.0015e2,
+      title: "device temperature",
+    },
+    {
+      name: "Is",
+      unit: Unit.AMPERE,
+      default: 1e-14,
+      title: "saturation current",
+    },
+    {
+      name: "N",
+      unit: Unit.UNITLESS,
+      default: 1,
+      title: "emission coefficient",
+    },
   ];
 
   /** Anode terminal. */

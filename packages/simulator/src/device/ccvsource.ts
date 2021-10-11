@@ -15,7 +15,7 @@ export class CCVSource extends Device<CCVSourceProps> {
   static override readonly id = "CCVS";
   static override readonly numTerminals = 4;
   static override readonly propsSchema = [
-    { name: "gain", unit: Unit.UNITLESS },
+    { name: "gain", unit: Unit.UNITLESS, title: "gain" },
   ];
 
   /** Positive output terminal. */
