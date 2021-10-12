@@ -39,9 +39,9 @@ export class Diode extends Device<DiodeProps, DiodeState> {
     }),
   };
 
-  /** Anode terminal. */
+  /** The anode terminal. */
   readonly na: Node;
-  /** Cathode terminal. */
+  /** The cathode terminal. */
   readonly nc: Node;
   /** The PN junction of diode. */
   readonly pn: PN;
@@ -63,11 +63,10 @@ export class Diode extends Device<DiodeProps, DiodeState> {
       na.voltage - nc.voltage,
       state.prevVoltage,
     ));
-    const Id = pn.evalCurrent(voltage);
-    const eqGd = pn.evalConductance(voltage);
-    const eqId = Id - eqGd * voltage;
-    stamper.stampConductance(na, nc, eqGd);
-    stamper.stampCurrentSource(na, nc, eqId);
+    const eqG = pn.evalConductance(voltage);
+    const eqI = pn.evalCurrent(voltage) - eqG * voltage;
+    stamper.stampConductance(na, nc, eqG);
+    stamper.stampCurrentSource(na, nc, eqI);
   }
 
   override details(): Details {

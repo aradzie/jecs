@@ -105,11 +105,11 @@ export class Bjt extends Device<BjtProps, BjtState> {
     }),
   };
 
-  /** Emitter terminal. */
+  /** The emitter terminal. */
   readonly ne: Node;
-  /** Base terminal. */
+  /** The base terminal. */
   readonly nb: Node;
-  /** Collector terminal. */
+  /** The collector terminal. */
   readonly nc: Node;
   /** The base-emitter PN junction of BJT. */
   private readonly pnBe: PN;
@@ -142,27 +142,27 @@ export class Bjt extends Device<BjtProps, BjtState> {
       nb.voltage - nc.voltage,
       state.prevVbc,
     ));
+    const Gf = pnBe.evalConductance(Vbe);
+    const Gr = pnBc.evalConductance(Vbc);
     const If = pnBe.evalCurrent(Vbe);
     const Ir = pnBc.evalCurrent(Vbc);
-    const Ie = Ar * Ir - If;
-    const Ic = Af * If - Ir;
-    const eqGee = pnBe.evalConductance(Vbe);
-    const eqGcc = pnBc.evalConductance(Vbc);
-    const eqGec = Ar * eqGcc;
-    const eqGce = Af * eqGee;
-    const eqIe = Ie + eqGee * Vbe - eqGec * Vbc;
-    const eqIc = Ic - eqGce * Vbe + eqGcc * Vbc;
-    stamper.stampMatrix(ne, ne, eqGee);
+    const eqGee = -Gf;
+    const eqGcc = -Gr;
+    const eqGec = Ar * Gr;
+    const eqGce = Af * Gf;
+    const eqIe = Ar * Ir - If - eqGee * Vbe - eqGec * Vbc;
+    const eqIc = Af * If - Ir - eqGce * Vbe - eqGcc * Vbc;
+    stamper.stampMatrix(ne, ne, -eqGee);
     stamper.stampMatrix(ne, nc, -eqGec);
-    stamper.stampMatrix(ne, nb, eqGec - eqGee);
+    stamper.stampMatrix(ne, nb, eqGec + eqGee);
     stamper.stampRightSide(ne, -eqIe);
     stamper.stampMatrix(nc, ne, -eqGce);
-    stamper.stampMatrix(nc, nc, eqGcc);
-    stamper.stampMatrix(nc, nb, eqGce - eqGcc);
+    stamper.stampMatrix(nc, nc, -eqGcc);
+    stamper.stampMatrix(nc, nb, eqGce + eqGcc);
     stamper.stampRightSide(nc, -eqIc);
-    stamper.stampMatrix(nb, ne, eqGce - eqGee);
-    stamper.stampMatrix(nb, nc, eqGec - eqGcc);
-    stamper.stampMatrix(nb, nb, eqGcc + eqGee - eqGce - eqGec);
+    stamper.stampMatrix(nb, ne, eqGce + eqGee);
+    stamper.stampMatrix(nb, nc, eqGec + eqGcc);
+    stamper.stampMatrix(nb, nb, -(eqGcc + eqGee + eqGce + eqGec));
     stamper.stampRightSide(nb, eqIe + eqIc);
   }
 
