@@ -1,10 +1,10 @@
 import type { Details } from "../circuit/details";
 import { Device } from "../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../circuit/network";
-import type { DeviceProps } from "../circuit/props";
+import { Props } from "../circuit/props";
 import { Unit } from "../util/unit";
 
-export interface VSourceProps extends DeviceProps {
+export interface VSourceProps {
   readonly v: number;
 }
 
@@ -14,9 +14,9 @@ export interface VSourceProps extends DeviceProps {
 export class VSource extends Device<VSourceProps> {
   static override readonly id = "V";
   static override readonly numTerminals = 2;
-  static override readonly propsSchema = [
-    { name: "v", unit: Unit.VOLT, title: "voltage" },
-  ];
+  static override readonly propsSchema = {
+    v: Props.number({ unit: Unit.VOLT, title: "voltage" }),
+  };
 
   /** Positive terminal. */
   readonly np: Node;

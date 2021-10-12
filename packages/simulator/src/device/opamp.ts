@@ -1,9 +1,9 @@
 import { Device } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
-import type { DeviceProps } from "../circuit/props";
+import { Props } from "../circuit/props";
 import { Unit } from "../util/unit";
 
-export interface OpAmpProps extends DeviceProps {
+export interface OpAmpProps {
   readonly gain: number;
 }
 
@@ -13,9 +13,9 @@ export interface OpAmpProps extends DeviceProps {
 export class OpAmp extends Device<OpAmpProps> {
   static override readonly id = "OpAmp";
   static override readonly numTerminals = 3;
-  static override readonly propsSchema = [
-    { name: "gain", unit: Unit.UNITLESS, title: "gain" },
-  ];
+  static override readonly propsSchema = {
+    gain: Props.number({ unit: Unit.UNITLESS, title: "gain" }),
+  };
 
   readonly a: Node;
   readonly b: Node;

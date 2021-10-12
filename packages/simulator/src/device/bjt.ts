@@ -1,11 +1,12 @@
 import type { Details } from "../circuit/details";
 import { Device } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
-import type { DeviceProps } from "../circuit/props";
+import { Props } from "../circuit/props";
 import { Unit } from "../util/unit";
 import { PN } from "./semi";
 
-export interface BjtProps extends DeviceProps {
+export interface BjtProps {
+  readonly polarity: "npn" | "pnp";
   readonly T: number;
   readonly Is: number;
   readonly Nf: number;
@@ -32,71 +33,77 @@ interface BjtState {
 export class Bjt extends Device<BjtProps, BjtState> {
   static override readonly id = "Bjt";
   static override readonly numTerminals = 3;
-  static override readonly propsSchema = [
-    {
-      name: "T",
+  static override readonly propsSchema = {
+    polarity: Props.enum({
+      values: ["npn", "pnp"],
+      title: "transistor polarity",
+    }),
+    T: Props.number({
       unit: Unit.KELVIN,
       default: 3.0015e2,
       title: "device temperature",
-    },
-    {
-      name: "Is",
+    }),
+    Is: Props.number({
       unit: Unit.AMPERE,
       default: 1e-14,
       title: "saturation current",
-    },
-    {
-      name: "Nf",
+    }),
+    Nf: Props.number({
       unit: Unit.UNITLESS,
       default: 1,
       title: "forward emission coefficient",
-    },
-    {
-      name: "Nr",
+    }),
+    Nr: Props.number({
       unit: Unit.UNITLESS,
       default: 1,
       title: "reverse emission coefficient",
-    },
-    {
-      name: "Vaf",
+    }),
+    Vaf: Props.number({
       unit: Unit.VOLT,
       default: 10,
       title: "forward Early voltage",
-    },
-    {
-      name: "Var",
+    }),
+    Var: Props.number({
       unit: Unit.VOLT,
       default: 0,
       title: "reverse Early voltage",
-    },
-    {
-      name: "Ise",
+    }),
+    Ise: Props.number({
       unit: Unit.AMPERE,
       default: 0,
       title: "base-emitter leakage saturation current",
-    },
-    {
-      name: "Ne",
+    }),
+    Ne: Props.number({
       unit: Unit.UNITLESS,
       default: 1.5,
       title: "base-emitter leakage emission coefficient",
-    },
-    {
-      name: "Isc",
+    }),
+    Isc: Props.number({
       unit: Unit.AMPERE,
       default: 0,
       title: "base-collector leakage saturation current",
-    },
-    {
-      name: "Nc",
+    }),
+    Nc: Props.number({
       unit: Unit.UNITLESS,
       default: 2,
       title: "base-collector leakage emission coefficient",
-    },
-    { name: "Bf", unit: Unit.UNITLESS, default: 100, title: "forward beta" },
-    { name: "Br", unit: Unit.UNITLESS, default: 1, title: "reverse beta" },
-    { name: "area", unit: Unit.UNITLESS, default: 1, title: "transistor area" },
-  ];
+    }),
+    Bf: Props.number({
+      unit: Unit.UNITLESS,
+      default: 100,
+      title: "forward beta",
+    }),
+    Br: Props.number({
+      unit: Unit.UNITLESS,
+      default: 1,
+      title: "reverse beta",
+    }),
+    area: Props.number({
+      unit: Unit.UNITLESS,
+      default: 1,
+      title: "transistor area",
+    }),
+  };
 
   /** Emitter terminal. */
   readonly ne: Node;

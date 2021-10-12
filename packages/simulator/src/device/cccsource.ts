@@ -1,10 +1,10 @@
 import type { Details } from "../circuit/details";
 import { Device } from "../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../circuit/network";
-import type { DeviceProps } from "../circuit/props";
+import { Props } from "../circuit/props";
 import { Unit } from "../util/unit";
 
-export interface CCCSourceProps extends DeviceProps {
+export interface CCCSourceProps {
   readonly gain: number;
 }
 
@@ -14,9 +14,9 @@ export interface CCCSourceProps extends DeviceProps {
 export class CCCSource extends Device<CCCSourceProps> {
   static override readonly id = "CCCS";
   static override readonly numTerminals = 4;
-  static override readonly propsSchema = [
-    { name: "gain", unit: Unit.UNITLESS, title: "gain" },
-  ];
+  static override readonly propsSchema = {
+    gain: Props.number({ unit: Unit.UNITLESS, title: "gain" }),
+  };
 
   /** Positive output terminal. */
   readonly np: Node;

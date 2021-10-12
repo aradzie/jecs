@@ -1,6 +1,6 @@
 import type { Details } from "./details";
 import type { Network, Node, Stamper } from "./network";
-import type { DevicePropsSchema } from "./props";
+import type { PropsSchema } from "./props";
 
 // pin
 // two-terminal, three-terminal, etc
@@ -10,14 +10,14 @@ import type { DevicePropsSchema } from "./props";
 export interface DeviceClass {
   readonly id: string;
   readonly numTerminals: number;
-  readonly propsSchema: DevicePropsSchema;
+  readonly propsSchema: PropsSchema;
   new (name: string, nodes: readonly Node[], props: any): Device;
 }
 
 export abstract class Device<PropsT = unknown, StateT = unknown> {
   static readonly id: string;
   static readonly numTerminals: number;
-  static readonly propsSchema: DevicePropsSchema;
+  static readonly propsSchema: PropsSchema;
 
   readonly name: string;
   readonly nodes: Node[];

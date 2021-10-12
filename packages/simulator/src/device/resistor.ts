@@ -1,10 +1,10 @@
 import type { Details } from "../circuit/details";
 import { Device } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
-import type { DeviceProps } from "../circuit/props";
+import { Props } from "../circuit/props";
 import { Unit } from "../util/unit";
 
-export interface ResistorProps extends DeviceProps {
+export interface ResistorProps {
   readonly r: number;
 }
 
@@ -14,9 +14,12 @@ export interface ResistorProps extends DeviceProps {
 export class Resistor extends Device<ResistorProps> {
   static override readonly id = "R";
   static override readonly numTerminals = 2;
-  static override readonly propsSchema = [
-    { name: "r", unit: Unit.OHM, title: "resistance" },
-  ];
+  static override readonly propsSchema = {
+    r: Props.number({
+      unit: Unit.OHM,
+      title: "resistance",
+    }),
+  };
 
   /** First terminal. */
   readonly na: Node;

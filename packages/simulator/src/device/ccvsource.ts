@@ -1,10 +1,10 @@
 import type { Details } from "../circuit/details";
 import { Device } from "../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../circuit/network";
-import type { DeviceProps } from "../circuit/props";
+import { Props } from "../circuit/props";
 import { Unit } from "../util/unit";
 
-export interface CCVSourceProps extends DeviceProps {
+export interface CCVSourceProps {
   readonly gain: number;
 }
 
@@ -14,9 +14,9 @@ export interface CCVSourceProps extends DeviceProps {
 export class CCVSource extends Device<CCVSourceProps> {
   static override readonly id = "CCVS";
   static override readonly numTerminals = 4;
-  static override readonly propsSchema = [
-    { name: "gain", unit: Unit.UNITLESS, title: "gain" },
-  ];
+  static override readonly propsSchema = {
+    gain: Props.number({ unit: Unit.UNITLESS, title: "gain" }),
+  };
 
   /** Positive output terminal. */
   readonly np: Node;

@@ -1,10 +1,10 @@
 import type { Details } from "../circuit/details";
 import { Device } from "../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../circuit/network";
-import type { DeviceProps } from "../circuit/props";
+import { Props } from "../circuit/props";
 import { Unit } from "../util/unit";
 
-export interface VCCSourceProps extends DeviceProps {
+export interface VCCSourceProps {
   readonly gain: number;
 }
 
@@ -14,9 +14,9 @@ export interface VCCSourceProps extends DeviceProps {
 export class VCCSource extends Device<VCCSourceProps> {
   static override readonly id = "VCCS";
   static override readonly numTerminals = 4;
-  static override readonly propsSchema = [
-    { name: "gain", unit: Unit.UNITLESS, title: "gain" },
-  ];
+  static override readonly propsSchema = {
+    gain: Props.number({ unit: Unit.UNITLESS, title: "gain" }),
+  };
 
   /** Positive output terminal. */
   readonly np: Node;

@@ -7,7 +7,7 @@ import { Unit } from "../util/unit";
 export class Ground extends Device {
   static override readonly id = "Ground";
   static override readonly numTerminals = 1;
-  static override readonly propsSchema = [];
+  static override readonly propsSchema = {};
 
   readonly n: Node;
 

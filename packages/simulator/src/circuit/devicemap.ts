@@ -2,7 +2,7 @@ import { devices } from "../device";
 import type { Device, DeviceClass } from "./device";
 import { CircuitError } from "./error";
 import type { Node } from "./network";
-import { RawDeviceProps, validateDeviceProps } from "./props";
+import { RawDeviceProps, validateProps } from "./props";
 
 const deviceMap = new Map<string, DeviceClass>();
 
@@ -60,7 +60,7 @@ export function createDevice(
   }
   let props;
   try {
-    props = validateDeviceProps(rawProps, propsSchema);
+    props = validateProps(rawProps, propsSchema);
   } catch (err) {
     throw new CircuitError(
       `Error in device [${id}:${name}]: ` + //

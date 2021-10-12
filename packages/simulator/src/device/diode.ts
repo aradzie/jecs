@@ -1,11 +1,11 @@
 import type { Details } from "../circuit/details";
 import { Device } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
-import type { DeviceProps } from "../circuit/props";
+import { Props } from "../circuit/props";
 import { Unit } from "../util/unit";
 import { PN } from "./semi";
 
-export interface DiodeProps extends DeviceProps {
+export interface DiodeProps {
   readonly T: number;
   readonly Is: number;
   readonly N: number;
@@ -21,26 +21,23 @@ interface DiodeState {
 export class Diode extends Device<DiodeProps, DiodeState> {
   static override readonly id = "Diode";
   static override readonly numTerminals = 2;
-  static override readonly propsSchema = [
-    {
-      name: "T",
+  static override readonly propsSchema = {
+    T: Props.number({
       unit: Unit.KELVIN,
       default: 3.0015e2,
       title: "device temperature",
-    },
-    {
-      name: "Is",
+    }),
+    Is: Props.number({
       unit: Unit.AMPERE,
       default: 1e-14,
       title: "saturation current",
-    },
-    {
-      name: "N",
+    }),
+    N: Props.number({
       unit: Unit.UNITLESS,
       default: 1,
       title: "emission coefficient",
-    },
-  ];
+    }),
+  };
 
   /** Anode terminal. */
   readonly na: Node;

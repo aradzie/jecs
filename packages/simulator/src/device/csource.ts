@@ -1,10 +1,10 @@
 import type { Details } from "../circuit/details";
 import { Device } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
-import type { DeviceProps } from "../circuit/props";
+import { Props } from "../circuit/props";
 import { Unit } from "../util/unit";
 
-export interface CSourceProps extends DeviceProps {
+export interface CSourceProps {
   readonly i: number;
 }
 
@@ -14,9 +14,9 @@ export interface CSourceProps extends DeviceProps {
 export class CSource extends Device<CSourceProps> {
   static override readonly id = "I";
   static override readonly numTerminals = 2;
-  static override readonly propsSchema = [
-    { name: "i", unit: Unit.AMPERE, title: "current" },
-  ];
+  static override readonly propsSchema = {
+    i: Props.number({ unit: Unit.AMPERE, title: "current" }),
+  };
 
   /** Positive terminal. */
   readonly np: Node;
