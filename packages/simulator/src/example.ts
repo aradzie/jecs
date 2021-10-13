@@ -44,7 +44,7 @@ import { Controller, dcAnalysis } from "./simulation/dc";
     ["Ground", ["g"], {}],
     ["V", ["NC", "g"], { v: 5 }],
     ["V", ["NB", "g"], { v: 0.65 }],
-    ["Bjt:DUT", ["g", "NB", "NC"], { polarity: "npn" }],
+    ["BJT:DUT", ["g", "NB", "NC"], { polarity: "npn" }],
   ]);
   const ctl = new Controller();
   dcAnalysis(circuit, {}, ctl);

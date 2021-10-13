@@ -5,7 +5,7 @@
   ["Ground", ["g"], {}],
   ["V", ["NC", "g"], { "v": 5 }],
   ["V", ["NB", "g"], { "v": 0.65 }],
-  ["Bjt:DUT", ["g", "NB", "NC"], { "polarity": "npn" }]
+  ["BJT:DUT", ["g", "NB", "NC"], { "polarity": "npn" }]
 ]
 ```
 
@@ -36,7 +36,7 @@ DUT{Vbe=650mV,Vbc=-4.35V,Vce=5V,Ie=-820.469μA,Ic=812.346μA,Ib=8.123μA}
   ["Ground", ["g"], {}],
   ["V", ["NC", "g"], { "v": 5 }],
   ["I", ["g", "NB"], { "i": 0.0001 }],
-  ["Bjt:DUT", ["g", "NB", "NC"], { "polarity": "npn" }]
+  ["BJT:DUT", ["g", "NB", "NC"], { "polarity": "npn" }]
 ]
 ```
 

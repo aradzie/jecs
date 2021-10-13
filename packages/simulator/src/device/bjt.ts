@@ -28,10 +28,10 @@ interface BjtState {
 }
 
 /**
- * Bipolar junction transistor.
+ * Bipolar junction transistor, BJT.
  */
 export class Bjt extends Device<BjtProps, BjtState> {
-  static override readonly id = "Bjt";
+  static override readonly id = "BJT";
   static override readonly numTerminals = 3;
   static override readonly propsSchema = {
     polarity: Props.enum({
