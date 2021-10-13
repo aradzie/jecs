@@ -5,21 +5,19 @@ import { Props } from "../circuit/props";
 import { Unit } from "../util/unit";
 import { PN } from "./semi";
 
+const npn = "npn" as const;
+const pnp = "pnp" as const;
+
 export interface BjtProps {
-  readonly polarity: "npn" | "pnp";
+  readonly polarity: typeof npn | typeof pnp;
   readonly T: number;
   readonly Is: number;
   readonly Nf: number;
   readonly Nr: number;
   readonly Vaf: number;
   readonly Var: number;
-  readonly Ise: number;
-  readonly Ne: number;
-  readonly Isc: number;
-  readonly Nc: number;
   readonly Bf: number;
   readonly Br: number;
-  readonly area: number;
 }
 
 interface BjtState {
@@ -35,7 +33,7 @@ export class Bjt extends Device<BjtProps, BjtState> {
   static override readonly numTerminals = 3;
   static override readonly propsSchema = {
     polarity: Props.enum({
-      values: ["npn", "pnp"],
+      values: [npn, pnp],
       title: "transistor polarity",
     }),
     T: Props.number({
@@ -62,22 +60,6 @@ export class Bjt extends Device<BjtProps, BjtState> {
       default: 0,
       title: "reverse Early voltage",
     }),
-    Ise: Props.number({
-      default: 0,
-      title: "base-emitter leakage saturation current",
-    }),
-    Ne: Props.number({
-      default: 1.5,
-      title: "base-emitter leakage emission coefficient",
-    }),
-    Isc: Props.number({
-      default: 0,
-      title: "base-collector leakage saturation current",
-    }),
-    Nc: Props.number({
-      default: 2,
-      title: "base-collector leakage emission coefficient",
-    }),
     Bf: Props.number({
       default: 100,
       title: "forward beta",
@@ -85,10 +67,6 @@ export class Bjt extends Device<BjtProps, BjtState> {
     Br: Props.number({
       default: 1,
       title: "reverse beta",
-    }),
-    area: Props.number({
-      default: 1,
-      title: "transistor area",
     }),
   };
 
@@ -108,8 +86,9 @@ export class Bjt extends Device<BjtProps, BjtState> {
     this.ne = ne;
     this.nb = nb;
     this.nc = nc;
-    this.pnBe = new PN(this.props.T, this.props.Is, this.props.area);
-    this.pnBc = new PN(this.props.T, this.props.Is, this.props.area);
+    const { T, Is, Nf, Nr } = this.props;
+    this.pnBe = new PN(T, Is, Nf);
+    this.pnBc = new PN(T, Is, Nr);
   }
 
   override getInitialState(): BjtState {
@@ -118,27 +97,30 @@ export class Bjt extends Device<BjtProps, BjtState> {
 
   override stamp(stamper: Stamper, state: BjtState): void {
     const { props, ne, nb, nc, pnBe, pnBc } = this;
-    const { Bf, Br } = props;
+    const { polarity, Bf, Br } = props;
+    const sign = polaritySign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);
     const Vbe = (state.prevVbe = pnBe.limitVoltage(
-      nb.voltage - ne.voltage,
+      sign * (nb.voltage - ne.voltage),
       state.prevVbe,
     ));
     const Vbc = (state.prevVbc = pnBc.limitVoltage(
-      nb.voltage - nc.voltage,
+      sign * (nb.voltage - nc.voltage),
       state.prevVbc,
     ));
     const Gf = pnBe.evalConductance(Vbe);
     const Gr = pnBc.evalConductance(Vbc);
     const If = pnBe.evalCurrent(Vbe);
     const Ir = pnBc.evalCurrent(Vbc);
+    const Ie = sign * (Ar * Ir - If);
+    const Ic = sign * (Af * If - Ir);
     const eqGee = -Gf;
     const eqGcc = -Gr;
     const eqGec = Ar * Gr;
     const eqGce = Af * Gf;
-    const eqIe = Ar * Ir - If - eqGee * Vbe - eqGec * Vbc;
-    const eqIc = Af * If - Ir - eqGce * Vbe - eqGcc * Vbc;
+    const eqIe = Ie - eqGee * Vbe - eqGec * Vbc;
+    const eqIc = Ic - eqGce * Vbe - eqGcc * Vbc;
     stamper.stampMatrix(ne, ne, -eqGee);
     stamper.stampMatrix(ne, nc, -eqGec);
     stamper.stampMatrix(ne, nb, eqGec + eqGee);
@@ -155,16 +137,17 @@ export class Bjt extends Device<BjtProps, BjtState> {
 
   override details(): Details {
     const { props, ne, nb, nc, pnBe, pnBc } = this;
-    const { Bf, Br } = props;
+    const { polarity, Bf, Br } = props;
+    const sign = polaritySign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);
-    const Vbe = nb.voltage - ne.voltage;
-    const Vbc = nb.voltage - nc.voltage;
-    const Vce = nc.voltage - ne.voltage;
+    const Vbe = sign * (nb.voltage - ne.voltage);
+    const Vbc = sign * (nb.voltage - nc.voltage);
+    const Vce = sign * (nc.voltage - ne.voltage);
     const If = pnBe.evalCurrent(Vbe);
     const Ir = pnBc.evalCurrent(Vbc);
-    const Ie = Ar * Ir - If;
-    const Ic = Af * If - Ir;
+    const Ie = sign * (Ar * Ir - If);
+    const Ic = sign * (Af * If - Ir);
     const Ib = -(Ie + Ic);
     return [
       { name: "Vbe", value: Vbe, unit: Unit.VOLT },
@@ -175,4 +158,14 @@ export class Bjt extends Device<BjtProps, BjtState> {
       { name: "Ib", value: Ib, unit: Unit.AMPERE },
     ];
   }
+}
+
+function polaritySign(polarity: string): number {
+  switch (polarity) {
+    case npn:
+      return 1;
+    case pnp:
+      return -1;
+  }
+  throw new TypeError();
 }
