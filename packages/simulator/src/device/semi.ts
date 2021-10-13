@@ -1,3 +1,4 @@
+import { celsiusToKelvin } from "../util/unit";
 import { k, q } from "./const";
 
 export class PN {
@@ -18,7 +19,7 @@ export class PN {
     this.Temp = Temp;
     this.Is = Is;
     this.N = N;
-    this.Vt = this.N * this.Temp * (k / q);
+    this.Vt = this.N * celsiusToKelvin(this.Temp) * (k / q);
     this.invVt = 1 / this.Vt;
     this.Vcrit = this.Vt * Math.log(this.Vt / Math.sqrt(2) / this.Is);
   }

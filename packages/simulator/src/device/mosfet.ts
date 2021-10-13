@@ -27,7 +27,7 @@ export class MosFet extends Device<MosFetProps> {
       title: "transistor polarity",
     }),
     Temp: Props.number({
-      default: 3.0015e2,
+      default: 27,
       title: "device temperature",
     }),
     Vth: Props.number({

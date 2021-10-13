@@ -37,7 +37,7 @@ export class Bjt extends Device<BjtProps, BjtState> {
       title: "transistor polarity",
     }),
     Temp: Props.number({
-      default: 3.0015e2,
+      default: 27,
       title: "device temperature",
     }),
     Is: Props.number({

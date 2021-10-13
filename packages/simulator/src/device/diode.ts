@@ -23,7 +23,7 @@ export class Diode extends Device<DiodeProps, DiodeState> {
   static override readonly numTerminals = 2;
   static override readonly propsSchema = {
     Temp: Props.number({
-      default: 3.0015e2,
+      default: 27,
       title: "device temperature",
     }),
     Is: Props.number({
