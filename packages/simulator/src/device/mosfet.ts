@@ -3,6 +3,7 @@ import { Device } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
 import { Props } from "../circuit/props";
 import { Unit } from "../util/unit";
+import { Temp } from "./const";
 
 const nfet = "nfet" as const;
 const pfet = "pfet" as const;
@@ -27,7 +28,7 @@ export class MosFet extends Device<MosFetProps> {
       title: "transistor polarity",
     }),
     Temp: Props.number({
-      default: 27,
+      default: Temp,
       title: "device temperature",
     }),
     Vth: Props.number({

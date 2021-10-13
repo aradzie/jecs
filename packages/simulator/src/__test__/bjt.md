@@ -22,9 +22,9 @@
 ```text
 V(NC)=5V
 V(NB)=650mV
-V1{Vd=5V,I=-812.346μA,P=-4.062mW}
-V2{Vd=650mV,I=-8.123μA,P=-5.28μW}
-DUT{Vbe=650mV,Vbc=-4.35V,Vce=5V,Ie=-820.469μA,Ic=812.346μA,Ib=8.123μA}
+V1{Vd=5V,I=-822.618μA,P=-4.113mW}
+V2{Vd=650mV,I=-8.226μA,P=-5.347μW}
+DUT{Vbe=650mV,Vbc=-4.35V,Vce=5V,Ie=-830.844μA,Ic=822.618μA,Ib=8.226μA}
 ```
 
 ---
@@ -52,8 +52,8 @@ DUT{Vbe=650mV,Vbc=-4.35V,Vce=5V,Ie=-820.469μA,Ic=812.346μA,Ib=8.123μA}
 
 ```text
 V(NC)=5V
-V(NB)=714.932mV
+V(NB)=714.574mV
 V1{Vd=5V,I=-10mA,P=-50mW}
-I1{Vd=-714.932mV,I=100μA}
-DUT{Vbe=714.932mV,Vbc=-4.285V,Vce=5V,Ie=-10.1mA,Ic=10mA,Ib=100μA}
+I1{Vd=-714.574mV,I=100μA}
+DUT{Vbe=714.574mV,Vbc=-4.285V,Vce=5V,Ie=-10.1mA,Ic=10mA,Ib=100μA}
 ```

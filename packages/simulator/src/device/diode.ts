@@ -3,6 +3,7 @@ import { Device } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
 import { Props } from "../circuit/props";
 import { Unit } from "../util/unit";
+import { Temp } from "./const";
 import { PN } from "./semi";
 
 export interface DiodeProps {
@@ -23,7 +24,7 @@ export class Diode extends Device<DiodeProps, DiodeState> {
   static override readonly numTerminals = 2;
   static override readonly propsSchema = {
     Temp: Props.number({
-      default: 27,
+      default: Temp,
       title: "device temperature",
     }),
     Is: Props.number({
