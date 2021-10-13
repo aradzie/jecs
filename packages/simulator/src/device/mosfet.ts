@@ -9,6 +9,7 @@ const pfet = "pfet" as const;
 
 export interface MosFetProps {
   readonly polarity: typeof nfet | typeof pfet;
+  readonly Temp: number;
   readonly Vth: number;
   readonly beta: number;
   readonly lambda: number;
@@ -24,6 +25,10 @@ export class MosFet extends Device<MosFetProps> {
     polarity: Props.enum({
       values: [nfet, pfet],
       title: "transistor polarity",
+    }),
+    Temp: Props.number({
+      default: 3.0015e2,
+      title: "device temperature",
     }),
     Vth: Props.number({
       default: 2,

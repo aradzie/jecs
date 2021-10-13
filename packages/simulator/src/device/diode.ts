@@ -6,7 +6,7 @@ import { Unit } from "../util/unit";
 import { PN } from "./semi";
 
 export interface DiodeProps {
-  readonly T: number;
+  readonly Temp: number;
   readonly Is: number;
   readonly N: number;
 }
@@ -22,7 +22,7 @@ export class Diode extends Device<DiodeProps, DiodeState> {
   static override readonly id = "Diode";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = {
-    T: Props.number({
+    Temp: Props.number({
       default: 3.0015e2,
       title: "device temperature",
     }),
@@ -47,7 +47,8 @@ export class Diode extends Device<DiodeProps, DiodeState> {
     super(name, [na, nc], props);
     this.na = na;
     this.nc = nc;
-    this.pn = new PN(this.props.T, this.props.Is, this.props.N);
+    const { Temp, Is, N } = this.props;
+    this.pn = new PN(Temp, Is, N);
   }
 
   override getInitialState(): DiodeState {

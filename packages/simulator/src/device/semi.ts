@@ -2,7 +2,7 @@ import { k, q } from "./const";
 
 export class PN {
   /** The temperature. */
-  readonly T: number;
+  readonly Temp: number;
   /** The reverse bias saturation current. */
   readonly Is: number;
   /** The emission coefficient. */
@@ -14,11 +14,11 @@ export class PN {
   /** The critical voltage. */
   readonly Vcrit: number;
 
-  constructor(T: number, Is: number, N: number) {
-    this.T = T;
+  constructor(Temp: number, Is: number, N: number) {
+    this.Temp = Temp;
     this.Is = Is;
     this.N = N;
-    this.Vt = this.N * this.T * (k / q);
+    this.Vt = this.N * this.Temp * (k / q);
     this.invVt = 1 / this.Vt;
     this.Vcrit = this.Vt * Math.log(this.Vt / Math.sqrt(2) / this.Is);
   }

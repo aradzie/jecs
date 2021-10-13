@@ -10,7 +10,7 @@ const pnp = "pnp" as const;
 
 export interface BjtProps {
   readonly polarity: typeof npn | typeof pnp;
-  readonly T: number;
+  readonly Temp: number;
   readonly Is: number;
   readonly Nf: number;
   readonly Nr: number;
@@ -36,7 +36,7 @@ export class Bjt extends Device<BjtProps, BjtState> {
       values: [npn, pnp],
       title: "transistor polarity",
     }),
-    T: Props.number({
+    Temp: Props.number({
       default: 3.0015e2,
       title: "device temperature",
     }),
@@ -86,9 +86,9 @@ export class Bjt extends Device<BjtProps, BjtState> {
     this.ne = ne;
     this.nb = nb;
     this.nc = nc;
-    const { T, Is, Nf, Nr } = this.props;
-    this.pnBe = new PN(T, Is, Nf);
-    this.pnBc = new PN(T, Is, Nr);
+    const { Temp, Is, Nf, Nr } = this.props;
+    this.pnBe = new PN(Temp, Is, Nf);
+    this.pnBc = new PN(Temp, Is, Nr);
   }
 
   override getInitialState(): BjtState {
