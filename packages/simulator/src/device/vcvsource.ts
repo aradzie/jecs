@@ -15,7 +15,7 @@ export class VCVSource extends Device<VCVSourceProps> {
   static override readonly id = "VCVS";
   static override readonly numTerminals = 4;
   static override readonly propsSchema = {
-    gain: Props.number({ unit: Unit.UNITLESS, title: "gain" }),
+    gain: Props.number({ title: "gain" }),
   };
 
   /** Positive output terminal. */

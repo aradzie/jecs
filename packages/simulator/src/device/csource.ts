@@ -15,7 +15,7 @@ export class CSource extends Device<CSourceProps> {
   static override readonly id = "I";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = {
-    i: Props.number({ unit: Unit.AMPERE, title: "current" }),
+    i: Props.number({ title: "current" }),
   };
 
   /** Positive terminal. */

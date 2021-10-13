@@ -9,7 +9,6 @@ export type PropsItem = NumberPropsItem | EnumPropsItem;
 
 export type NumberPropsItem = {
   readonly type: "number";
-  readonly unit: Unit;
   readonly default?: number;
   readonly min?: number;
   readonly max?: number;

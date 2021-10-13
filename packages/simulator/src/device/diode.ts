@@ -23,17 +23,14 @@ export class Diode extends Device<DiodeProps, DiodeState> {
   static override readonly numTerminals = 2;
   static override readonly propsSchema = {
     T: Props.number({
-      unit: Unit.KELVIN,
       default: 3.0015e2,
       title: "device temperature",
     }),
     Is: Props.number({
-      unit: Unit.AMPERE,
       default: 1e-14,
       title: "saturation current",
     }),
     N: Props.number({
-      unit: Unit.UNITLESS,
       default: 1,
       title: "emission coefficient",
     }),

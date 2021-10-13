@@ -10,7 +10,7 @@ test("validate device props", (t) => {
     validateProps(
       { v: 1 },
       {
-        v: Props.number({ unit: Unit.VOLT, title: "haha" }),
+        v: Props.number({ title: "haha" }),
       },
     );
   });
@@ -18,7 +18,7 @@ test("validate device props", (t) => {
     validateProps(
       {},
       {
-        v: Props.number({ unit: Unit.VOLT, default: 1, title: "haha" }),
+        v: Props.number({ default: 1, title: "haha" }),
       },
     );
   });
@@ -27,7 +27,7 @@ test("validate device props", (t) => {
       validateProps(
         {},
         {
-          v: Props.number({ unit: Unit.VOLT, title: "haha" }),
+          v: Props.number({ title: "haha" }),
         },
       );
     },
@@ -44,7 +44,6 @@ test("validate device props", (t) => {
       {},
       {
         v: Props.number({
-          unit: Unit.VOLT,
           default: 1,
           title: "haha",
         }),

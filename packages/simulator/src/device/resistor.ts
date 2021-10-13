@@ -16,7 +16,6 @@ export class Resistor extends Device<ResistorProps> {
   static override readonly numTerminals = 2;
   static override readonly propsSchema = {
     r: Props.number({
-      unit: Unit.OHM,
       title: "resistance",
     }),
   };

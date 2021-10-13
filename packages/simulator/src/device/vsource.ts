@@ -15,7 +15,7 @@ export class VSource extends Device<VSourceProps> {
   static override readonly id = "V";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = {
-    v: Props.number({ unit: Unit.VOLT, title: "voltage" }),
+    v: Props.number({ title: "voltage" }),
   };
 
   /** Positive terminal. */

@@ -39,67 +39,54 @@ export class Bjt extends Device<BjtProps, BjtState> {
       title: "transistor polarity",
     }),
     T: Props.number({
-      unit: Unit.KELVIN,
       default: 3.0015e2,
       title: "device temperature",
     }),
     Is: Props.number({
-      unit: Unit.AMPERE,
       default: 1e-14,
       title: "saturation current",
     }),
     Nf: Props.number({
-      unit: Unit.UNITLESS,
       default: 1,
       title: "forward emission coefficient",
     }),
     Nr: Props.number({
-      unit: Unit.UNITLESS,
       default: 1,
       title: "reverse emission coefficient",
     }),
     Vaf: Props.number({
-      unit: Unit.VOLT,
       default: 10,
       title: "forward Early voltage",
     }),
     Var: Props.number({
-      unit: Unit.VOLT,
       default: 0,
       title: "reverse Early voltage",
     }),
     Ise: Props.number({
-      unit: Unit.AMPERE,
       default: 0,
       title: "base-emitter leakage saturation current",
     }),
     Ne: Props.number({
-      unit: Unit.UNITLESS,
       default: 1.5,
       title: "base-emitter leakage emission coefficient",
     }),
     Isc: Props.number({
-      unit: Unit.AMPERE,
       default: 0,
       title: "base-collector leakage saturation current",
     }),
     Nc: Props.number({
-      unit: Unit.UNITLESS,
       default: 2,
       title: "base-collector leakage emission coefficient",
     }),
     Bf: Props.number({
-      unit: Unit.UNITLESS,
       default: 100,
       title: "forward beta",
     }),
     Br: Props.number({
-      unit: Unit.UNITLESS,
       default: 1,
       title: "reverse beta",
     }),
     area: Props.number({
-      unit: Unit.UNITLESS,
       default: 1,
       title: "transistor area",
     }),
