@@ -12,7 +12,6 @@ module.exports = {
     "no-constant-condition": ["error", { checkLoops: false }],
     "no-floating-decimal": "error",
     "no-implicit-coercion": "error",
-    "no-restricted-globals": ["error", ...require("eslint-restricted-globals")],
     "no-sequences": "error",
     "no-throw-literal": "error",
     // configure @typescript-eslint

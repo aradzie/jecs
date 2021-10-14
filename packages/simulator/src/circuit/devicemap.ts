@@ -61,7 +61,7 @@ export function createDevice(
   let props;
   try {
     props = validateProps(rawProps, propsSchema);
-  } catch (err) {
+  } catch (err: any) {
     throw new CircuitError(
       `Error in device [${id}:${name}]: ` + //
         `${err.message}`,

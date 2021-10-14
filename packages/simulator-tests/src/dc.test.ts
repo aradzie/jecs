@@ -137,7 +137,7 @@ function parse(filename: string, content: string): TestCase[] {
     } else {
       try {
         return JSON.parse(lines.join("\n"));
-      } catch (err) {
+      } catch (err: any) {
         throw new SyntaxError(`Error parsing file ${filename}: ${err}`);
       }
     }
