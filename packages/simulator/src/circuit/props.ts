@@ -1,4 +1,3 @@
-import type { Unit } from "../util/unit";
 import { CircuitError } from "./error";
 
 export type RawDeviceProps = Record<string, unknown>;

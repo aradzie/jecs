@@ -1,9 +1,9 @@
-import type { Details } from "../circuit/details";
-import { Device } from "../circuit/device";
-import type { Node, Stamper } from "../circuit/network";
-import { Props } from "../circuit/props";
-import { Unit } from "../util/unit";
-import { Temp } from "./const";
+import type { Details } from "../../circuit/details";
+import { Device } from "../../circuit/device";
+import type { Node, Stamper } from "../../circuit/network";
+import { Props } from "../../circuit/props";
+import { Unit } from "../../util/unit";
+import { Temp } from "../const";
 import { PN } from "./semi";
 
 const npn = "npn" as const;

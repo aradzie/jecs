@@ -1,5 +1,4 @@
 import test from "ava";
-import { Unit } from "../util/unit";
 import { Props, validateProps } from "./props";
 
 test("validate device props", (t) => {

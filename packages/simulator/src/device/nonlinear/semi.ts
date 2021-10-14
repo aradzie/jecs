@@ -1,5 +1,5 @@
-import { celsiusToKelvin } from "../util/unit";
-import { k, q } from "./const";
+import { celsiusToKelvin } from "../../util/unit";
+import { k, q } from "../const";
 
 export class PN {
   /** The temperature. */

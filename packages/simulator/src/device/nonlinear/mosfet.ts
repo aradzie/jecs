@@ -1,9 +1,9 @@
-import type { Details } from "../circuit/details";
-import { Device } from "../circuit/device";
-import type { Node, Stamper } from "../circuit/network";
-import { Props } from "../circuit/props";
-import { Unit } from "../util/unit";
-import { Temp } from "./const";
+import type { Details } from "../../circuit/details";
+import { Device } from "../../circuit/device";
+import type { Node, Stamper } from "../../circuit/network";
+import { Props } from "../../circuit/props";
+import { Unit } from "../../util/unit";
+import { Temp } from "../const";
 
 const nfet = "nfet" as const;
 const pfet = "pfet" as const;

@@ -1,7 +1,6 @@
-import { Device } from "../circuit/device";
-import type { Node, Stamper } from "../circuit/network";
-import { Props } from "../circuit/props";
-import { Unit } from "../util/unit";
+import { Device } from "../../circuit/device";
+import type { Node, Stamper } from "../../circuit/network";
+import { Props } from "../../circuit/props";
 
 export interface OpAmpProps {
   readonly gain: number;
