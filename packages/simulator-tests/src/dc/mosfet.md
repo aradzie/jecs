@@ -5,7 +5,7 @@
   ["Ground", ["g"], {}],
   ["V", ["ND", "g"], { "v": 15 }],
   ["V", ["NG", "g"], { "v": 10 }],
-  ["MOSFET:DUT", ["ND", "NG","g"], { "polarity": "nfet" }]
+  ["MOSFET:DUT", ["ND", "NG", "g"], { "polarity": "nfet" }]
 ]
 ```
 

@@ -7,7 +7,7 @@ import { readNetlist } from "@jssim/simulator/lib/netlist/netlist";
 import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
 import type { Options } from "@jssim/simulator/lib/simulation/options";
 
-scan(__dirname);
+scan(join(__dirname, "dc"));
 
 function scan(dir: string): void {
   for (const entry of readdirSync(dir)) {
