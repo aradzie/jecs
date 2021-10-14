@@ -1,11 +1,11 @@
 import test from "ava";
 import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
-import { dumpCircuit } from "../circuit/debug";
-import type { Netlist } from "../netlist/netlist";
-import { readNetlist } from "../netlist/netlist";
-import { dcAnalysis } from "../simulation/dc";
-import type { Options } from "../simulation/options";
+import { dumpCircuit } from "@jssim/simulator/lib/circuit/debug";
+import type { Netlist } from "@jssim/simulator/lib/netlist/netlist";
+import { readNetlist } from "@jssim/simulator/lib/netlist/netlist";
+import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
+import type { Options } from "@jssim/simulator/lib/simulation/options";
 
 scan(__dirname);
 

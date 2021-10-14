@@ -1,5 +1,6 @@
 {
-  "name": "@jssim/simulator",
+  "private": true,
+  "name": "@jssim/simulator-tests",
   "version": "1.0.0",
   "description": "A simulator of electronic circuits.",
   "author": "Aliaksandr Radzivanovich",
@@ -24,6 +25,7 @@
     "test": "ava"
   },
   "dependencies": {
+    "@jssim/simulator": "*",
     "tslib": "^2.3.1"
   },
   "devDependencies": {},
