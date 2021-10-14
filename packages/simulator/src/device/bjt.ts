@@ -114,8 +114,8 @@ export class Bjt extends Device<BjtProps, BjtState> {
     const Gr = pnBc.evalConductance(Vbc);
     const If = pnBe.evalCurrent(Vbe);
     const Ir = pnBc.evalCurrent(Vbc);
-    const Ie = sign * (Ar * Ir - If);
-    const Ic = sign * (Af * If - Ir);
+    const Ie = Ar * Ir - If;
+    const Ic = Af * If - Ir;
     const eqGee = -Gf;
     const eqGcc = -Gr;
     const eqGec = Ar * Gr;
@@ -125,15 +125,15 @@ export class Bjt extends Device<BjtProps, BjtState> {
     stamper.stampMatrix(ne, ne, -eqGee);
     stamper.stampMatrix(ne, nc, -eqGec);
     stamper.stampMatrix(ne, nb, eqGec + eqGee);
-    stamper.stampRightSide(ne, -eqIe);
+    stamper.stampRightSide(ne, sign * -eqIe);
     stamper.stampMatrix(nc, ne, -eqGce);
     stamper.stampMatrix(nc, nc, -eqGcc);
     stamper.stampMatrix(nc, nb, eqGce + eqGcc);
-    stamper.stampRightSide(nc, -eqIc);
+    stamper.stampRightSide(nc, sign * -eqIc);
     stamper.stampMatrix(nb, ne, eqGce + eqGee);
     stamper.stampMatrix(nb, nc, eqGec + eqGcc);
     stamper.stampMatrix(nb, nb, -(eqGcc + eqGee + eqGce + eqGec));
-    stamper.stampRightSide(nb, eqIe + eqIc);
+    stamper.stampRightSide(nb, sign * (eqIe + eqIc));
   }
 
   override details(): Details {
@@ -147,16 +147,16 @@ export class Bjt extends Device<BjtProps, BjtState> {
     const Vce = sign * (nc.voltage - ne.voltage);
     const If = pnBe.evalCurrent(Vbe);
     const Ir = pnBc.evalCurrent(Vbc);
-    const Ie = sign * (Ar * Ir - If);
-    const Ic = sign * (Af * If - Ir);
+    const Ie = Ar * Ir - If;
+    const Ic = Af * If - Ir;
     const Ib = -(Ie + Ic);
     return [
-      { name: "Vbe", value: Vbe, unit: Unit.VOLT },
-      { name: "Vbc", value: Vbc, unit: Unit.VOLT },
-      { name: "Vce", value: Vce, unit: Unit.VOLT },
-      { name: "Ie", value: Ie, unit: Unit.AMPERE },
-      { name: "Ic", value: Ic, unit: Unit.AMPERE },
-      { name: "Ib", value: Ib, unit: Unit.AMPERE },
+      { name: "Vbe", value: sign * Vbe, unit: Unit.VOLT },
+      { name: "Vbc", value: sign * Vbc, unit: Unit.VOLT },
+      { name: "Vce", value: sign * Vce, unit: Unit.VOLT },
+      { name: "Ie", value: sign * Ie, unit: Unit.AMPERE },
+      { name: "Ic", value: sign * Ic, unit: Unit.AMPERE },
+      { name: "Ib", value: sign * Ib, unit: Unit.AMPERE },
     ];
   }
 }
