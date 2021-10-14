@@ -4,35 +4,49 @@ jssim is an electronic circuit simulator written in TypeScript.
 
 ## Example
 
+The following code
+
 ```typescript
 // Create an empty circuit.
 const circuit = new Circuit();
 
 // Allocate circuit nodes.
 const ng = circuit.groundNode;
-const n0 = circuit.allocNode("N0");
+const n1 = circuit.allocNode("N1");
+const n2 = circuit.allocNode("N2");
 
 // Add devices to the circuit.
 circuit.addDevice(
-  new VSource("V1", [n0, ng], {
+  new VSource("V1", [n1, ng], {
     v: 10,
   }),
-  new Resistor("R1", [n0, ng], {
+  new Resistor("R1", [n1, n2], {
     r: 1000,
+  }),
+  new Diode("D1", [n2, ng], {
+    Temp: 26.85,
+    Is: 1e-14,
+    N: 1,
   }),
 );
 
-// Make DC analysis, compute node voltages and branch currents.
-const r = circuit.dc();
+// Perform DC analysis, compute node voltages and branch currents.
+dcAnalysis(circuit);
 
-// Check the result.
-t.deepEqual(
-  r,
-  new Map([
-    ["V[N0]", 10],
-    ["I[N0->GROUND]", -0.01],
-  ]),
-);
+// Print the operating points.
+console.log(dumpCircuit(circuit));
+```
+
+prints the following result
+
+```typescript
+[
+  "V(N1)=10V", // voltage at node N1
+  "V(N2)=712.41mV", // voltage at node N2
+  "V1{Vd=10V,I=-9.288mA,P=-92.876mW}", // voltage source OP-s
+  "R1{Vd=9.288V,I=9.288mA,P=86.259mW}", // resistor OP-s
+  "D1{Vd=712.41mV,I=9.288mA,P=6.617mW}", // diode OP-s
+];
 ```
 
 ## License
