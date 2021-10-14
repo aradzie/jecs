@@ -1,18 +1,18 @@
-import type { Details } from "../circuit/details";
-import { Device } from "../circuit/device";
-import type { Branch, Network, Node, Stamper } from "../circuit/network";
-import { Props } from "../circuit/props";
-import { Unit } from "../util/unit";
+import type { Details } from "../../circuit/details";
+import { Device } from "../../circuit/device";
+import type { Branch, Network, Node, Stamper } from "../../circuit/network";
+import { Props } from "../../circuit/props";
+import { Unit } from "../../util/unit";
 
-export interface VCCSourceProps {
+export interface CCCSourceProps {
   readonly gain: number;
 }
 
 /**
- * Voltage-controlled current source.
+ * Current-controlled current source.
  */
-export class VCCSource extends Device<VCCSourceProps> {
-  static override readonly id = "VCCS";
+export class CCCSource extends Device<CCCSourceProps> {
+  static override readonly id = "CCCS";
   static override readonly numTerminals = 4;
   static override readonly propsSchema = {
     gain: Props.number({ title: "gain" }),
@@ -32,7 +32,7 @@ export class VCCSource extends Device<VCCSourceProps> {
   constructor(
     name: string,
     [np, nn, ncp, ncn]: readonly Node[],
-    props: VCCSourceProps,
+    props: CCCSourceProps,
   ) {
     super(name, [np, nn, ncp, ncn], props);
     this.np = np;
@@ -42,23 +42,22 @@ export class VCCSource extends Device<VCCSourceProps> {
   }
 
   override connect(network: Network): void {
-    this.branch = network.allocBranch(this.np, this.nn);
+    this.branch = network.allocBranch(this.ncp, this.ncn);
   }
 
   override stamp(stamper: Stamper): void {
     const { props, np, nn, ncp, ncn, branch } = this;
     const { gain } = props;
-    stamper.stampMatrix(np, branch, 1);
-    stamper.stampMatrix(nn, branch, -1);
-    stamper.stampMatrix(branch, ncp, gain);
-    stamper.stampMatrix(branch, ncn, -gain);
-    stamper.stampMatrix(branch, branch, -1);
+    stamper.stampVoltageSource(ncp, ncn, branch, 0);
+    stamper.stampMatrix(np, branch, gain);
+    stamper.stampMatrix(nn, branch, -gain);
   }
 
   override details(): Details {
-    const { np, nn, branch } = this;
+    const { props, np, nn, branch } = this;
+    const { gain } = props;
     const voltage = np.voltage - nn.voltage;
-    const current = branch.current;
+    const current = branch.current * gain;
     return [
       { name: "Vd", value: voltage, unit: Unit.VOLT },
       { name: "I", value: current, unit: Unit.AMPERE },

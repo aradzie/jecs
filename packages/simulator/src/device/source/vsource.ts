@@ -1,8 +1,8 @@
-import type { Details } from "../circuit/details";
-import { Device } from "../circuit/device";
-import type { Branch, Network, Node, Stamper } from "../circuit/network";
-import { Props } from "../circuit/props";
-import { Unit } from "../util/unit";
+import type { Details } from "../../circuit/details";
+import { Device } from "../../circuit/device";
+import type { Branch, Network, Node, Stamper } from "../../circuit/network";
+import { Props } from "../../circuit/props";
+import { Unit } from "../../util/unit";
 
 export interface VSourceProps {
   readonly v: number;
