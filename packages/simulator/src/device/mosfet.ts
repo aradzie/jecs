@@ -8,7 +8,7 @@ import { Temp } from "./const";
 const nfet = "nfet" as const;
 const pfet = "pfet" as const;
 
-export interface MosFetProps {
+export interface MosfetProps {
   readonly polarity: typeof nfet | typeof pfet;
   readonly Temp: number;
   readonly Vth: number;
@@ -19,7 +19,7 @@ export interface MosFetProps {
 /**
  * Metal–oxide–semiconductor field-effect transistor, MOSFET.
  */
-export class MosFet extends Device<MosFetProps> {
+export class Mosfet extends Device<MosfetProps> {
   static override readonly id = "MOSFET";
   static override readonly numTerminals = 3;
   static override readonly propsSchema = {
@@ -52,7 +52,7 @@ export class MosFet extends Device<MosFetProps> {
   /** The source terminal. */
   readonly ns: Node;
 
-  constructor(name: string, [nd, ng, ns]: readonly Node[], props: MosFetProps) {
+  constructor(name: string, [nd, ng, ns]: readonly Node[], props: MosfetProps) {
     super(name, [nd, ng, ns], props);
     this.nd = nd;
     this.ng = ng;

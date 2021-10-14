@@ -11,7 +11,7 @@ import { Resistor } from "./resistor";
 import { VCCSource } from "./vccsource";
 import { VCVSource } from "./vcvsource";
 import { VSource } from "./vsource";
-import { MosFet } from "./mosfet";
+import { Mosfet } from "./mosfet";
 
 export {
   Ammeter,
@@ -21,7 +21,7 @@ export {
   CSource,
   Diode,
   Ground,
-  MosFet,
+  Mosfet,
   OpAmp,
   Resistor,
   VCCSource,
@@ -37,7 +37,7 @@ export const devices: readonly DeviceClass[] = [
   CSource,
   Diode,
   Ground,
-  MosFet,
+  Mosfet,
   OpAmp,
   Resistor,
   VCCSource,
