@@ -13,7 +13,7 @@ export interface DiodeProps {
 }
 
 interface DiodeState {
-  prevVoltage: number;
+  prevVd: number;
 }
 
 /**
@@ -53,19 +53,19 @@ export class Diode extends Device<DiodeProps, DiodeState> {
   }
 
   override getInitialState(): DiodeState {
-    return { prevVoltage: 0 };
+    return { prevVd: 0 };
   }
 
   override stamp(stamper: Stamper, state: DiodeState): void {
     const { na, nc, pn } = this;
-    const voltage = (state.prevVoltage = pn.limitVoltage(
+    const Vd = (state.prevVd = pn.limitVoltage(
       na.voltage - nc.voltage,
-      state.prevVoltage,
+      state.prevVd,
     ));
-    const eqG = pn.evalConductance(voltage);
-    const eqI = pn.evalCurrent(voltage) - eqG * voltage;
-    stamper.stampConductance(na, nc, eqG);
-    stamper.stampCurrentSource(na, nc, eqI);
+    const eqGd = pn.evalConductance(Vd);
+    const eqId = pn.evalCurrent(Vd) - eqGd * Vd;
+    stamper.stampConductance(na, nc, eqGd);
+    stamper.stampCurrentSource(na, nc, eqId);
   }
 
   override details(): Details {
