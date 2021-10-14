@@ -35,7 +35,8 @@
       "tsx"
     ],
     "files": [
-      "src/**/*.test.*"
+      "src/**/*.test.*",
+      "src/**/__test__/*"
     ],
     "require": [
       "ts-node/register"

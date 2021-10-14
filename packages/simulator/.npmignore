@@ -7,6 +7,6 @@
 !/lib-esm/**
 
 # Ignore certain files in the above directories
-**/test/*
+**/__test__/*
 **/*.test.*
 .tsbuildcache
