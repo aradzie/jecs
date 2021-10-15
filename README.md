@@ -57,6 +57,10 @@ The following non-linear device I/V curves were obtained from the simulator.
 
 ![Diode I/V curve](./packages/vct/plot/iv-diode.svg)
 
+## BJT I/V Curve
+
+![BJT I/V curve](./packages/vct/plot/iv-bjt.svg)
+
 ## License
 
 This program is free software; you can redistribute it and/or modify it under
