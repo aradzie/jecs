@@ -49,23 +49,23 @@ prints the following result
 ];
 ```
 
-# Virtual Curve Tracer
+## Virtual Curve Tracer
 
 The following non-linear device I/V curves were obtained from the simulator.
 
-## Diode I/V Curve
+### Diode I/V Curve
 
 ![Diode I/V curve](./packages/vct/plot/iv-diode.svg)
 
-## BJT I/V Curve
+### BJT I/V Curve
 
 ![BJT I/V curve](./packages/vct/plot/iv-bjt.svg)
 
-## MOSFET I/V Curve
+### MOSFET I/V Curve
 
 ![MOSFET I/V curve](./packages/vct/plot/iv-mosfet.svg)
 
-## License
+# License
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
