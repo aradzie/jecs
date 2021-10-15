@@ -61,6 +61,10 @@ The following non-linear device I/V curves were obtained from the simulator.
 
 ![BJT I/V curve](./packages/vct/plot/iv-bjt.svg)
 
+## MOSFET I/V Curve
+
+![MOSFET I/V curve](./packages/vct/plot/iv-mosfet.svg)
+
 ## License
 
 This program is free software; you can redistribute it and/or modify it under
