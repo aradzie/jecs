@@ -6,7 +6,7 @@ import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import { FetPolarity, fetSign, nfet, pfet } from "./semi";
 
-export interface MosfetProps {
+export interface JfetProps {
   readonly polarity: FetPolarity;
   readonly Temp: number;
   readonly Vth: number;
@@ -15,11 +15,11 @@ export interface MosfetProps {
 }
 
 /**
- * Metal–oxide–semiconductor field-effect transistor, MOSFET.
+ * Junction field-effect transistor, JFET.
  * TODO Complete this device model.
  */
-export class Mosfet extends Device<MosfetProps> {
-  static override readonly id = "MOSFET";
+export class Jfet extends Device<JfetProps> {
+  static override readonly id = "JFET";
   static override readonly numTerminals = 3;
   static override readonly propsSchema = {
     polarity: Props.enum({
@@ -51,7 +51,7 @@ export class Mosfet extends Device<MosfetProps> {
   /** The source terminal. */
   readonly ns: Node;
 
-  constructor(name: string, [nd, ng, ns]: readonly Node[], props: MosfetProps) {
+  constructor(name: string, [nd, ng, ns]: readonly Node[], props: JfetProps) {
     super(name, [nd, ng, ns], props);
     this.nd = nd;
     this.ng = ng;

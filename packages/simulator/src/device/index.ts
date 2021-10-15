@@ -3,6 +3,7 @@ import { Ammeter } from "./ammeter";
 import { Ground } from "./ground";
 import { Bjt } from "./nonlinear/bjt";
 import { Diode } from "./nonlinear/diode";
+import { Jfet } from "./nonlinear/jfet";
 import { Mosfet } from "./nonlinear/mosfet";
 import { OpAmp } from "./nonlinear/opamp";
 import { Resistor } from "./resistor";
@@ -21,6 +22,7 @@ export {
   CSource,
   Diode,
   Ground,
+  Jfet,
   Mosfet,
   OpAmp,
   Resistor,
@@ -37,6 +39,7 @@ export const devices: readonly DeviceClass[] = [
   CSource,
   Diode,
   Ground,
+  Jfet,
   Mosfet,
   OpAmp,
   Resistor,
