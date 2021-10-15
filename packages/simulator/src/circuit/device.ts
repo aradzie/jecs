@@ -1,4 +1,4 @@
-import type { Details } from "./details";
+import type { Op } from "./ops";
 import type { Network, Node, Stamper } from "./network";
 import type { PropsSchema } from "./props";
 
@@ -53,9 +53,9 @@ export abstract class Device<PropsT = unknown, StateT = unknown> {
   stamp(stamper: Stamper, state: StateT): void {}
 
   /**
-   * Returns device details, such as voltage difference, current, etc.
+   * Returns device operating points.
    */
-  details(): Details {
+  ops(): readonly Op[] {
     return [];
   }
 }

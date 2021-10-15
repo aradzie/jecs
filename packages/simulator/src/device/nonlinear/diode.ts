@@ -1,4 +1,4 @@
-import type { Details } from "../../circuit/details";
+import type { Op } from "../../circuit/ops";
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
 import { Props } from "../../circuit/props";
@@ -68,7 +68,7 @@ export class Diode extends Device<DiodeProps, DiodeState> {
     stamper.stampCurrentSource(na, nc, eqId);
   }
 
-  override details(): Details {
+  override ops(): readonly Op[] {
     const { na, nc, pn } = this;
     const voltage = na.voltage - nc.voltage;
     const current = pn.evalCurrent(voltage);

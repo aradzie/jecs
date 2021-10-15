@@ -17,7 +17,7 @@ export function dumpCircuit(circuit: Circuit): string[] {
       continue;
     }
     const items: string[] = [];
-    for (const { name, value, unit } of device.details()) {
+    for (const { name, value, unit } of device.ops()) {
       items.push(`${name}=${formatNumber(value, unit)}`);
     }
     lines.push(`${device.name}{${items.join(",")}}`);

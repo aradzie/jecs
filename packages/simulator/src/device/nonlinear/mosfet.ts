@@ -1,4 +1,4 @@
-import type { Details } from "../../circuit/details";
+import type { Op } from "../../circuit/ops";
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
 import { Props } from "../../circuit/props";
@@ -104,7 +104,7 @@ export class Mosfet extends Device<MosfetProps> {
     stamper.stampRightSide(ns, eqIds);
   }
 
-  override details(): Details {
+  override ops(): readonly Op[] {
     const { nd, ng, ns, props } = this;
     const { polarity, Vth, beta, lambda } = props;
     const sign = fetSign(polarity); // TODO

@@ -1,4 +1,4 @@
-import type { Details } from "../circuit/details";
+import type { Op } from "../circuit/ops";
 import { Device } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
 import { Props } from "../circuit/props";
@@ -37,7 +37,7 @@ export class Resistor extends Device<ResistorProps> {
     stamper.stampConductance(na, nb, 1.0 / r);
   }
 
-  override details(): Details {
+  override ops(): readonly Op[] {
     const { props, na, nb } = this;
     const { r } = props;
     const voltage = na.voltage - nb.voltage;

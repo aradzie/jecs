@@ -1,4 +1,4 @@
-import type { Details } from "../../circuit/details";
+import type { Op } from "../../circuit/ops";
 import { Device } from "../../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network";
 import { Props } from "../../circuit/props";
@@ -55,7 +55,7 @@ export class VCCSource extends Device<VCCSourceProps> {
     stamper.stampMatrix(branch, branch, -1);
   }
 
-  override details(): Details {
+  override ops(): readonly Op[] {
     const { np, nn, branch } = this;
     const voltage = np.voltage - nn.voltage;
     const current = branch.current;

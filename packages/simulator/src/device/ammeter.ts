@@ -1,4 +1,4 @@
-import type { Details } from "../circuit/details";
+import type { Op } from "../circuit/ops";
 import { Device } from "../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../circuit/network";
 import { Unit } from "../util/unit";
@@ -33,7 +33,7 @@ export class Ammeter extends Device {
     stamper.stampVoltageSource(np, nn, branch, 0);
   }
 
-  override details(): Details {
+  override ops(): readonly Op[] {
     const { branch } = this;
     const current = branch.current;
     return [

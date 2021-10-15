@@ -1,8 +1,9 @@
 import type { Unit } from "../util/unit";
 
-export type Details = readonly DetailsItem[];
-
-export type DetailsItem = {
+/**
+ * Device operating point, such as diode voltage, etc.
+ */
+export type Op = {
   readonly name: string;
   readonly value: number;
   readonly unit: Unit;

@@ -1,4 +1,4 @@
-import type { Details } from "../../circuit/details";
+import type { Op } from "../../circuit/ops";
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
 import { Props } from "../../circuit/props";
@@ -133,7 +133,7 @@ export class Bjt extends Device<BjtProps, BjtState> {
     stamper.stampRightSide(nb, sign * (eqIe + eqIc));
   }
 
-  override details(): Details {
+  override ops(): readonly Op[] {
     const { props, ne, nb, nc, pnBe, pnBc } = this;
     const { polarity, Bf, Br } = props;
     const sign = bjtSign(polarity);

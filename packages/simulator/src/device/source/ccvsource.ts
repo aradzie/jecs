@@ -1,4 +1,4 @@
-import type { Details } from "../../circuit/details";
+import type { Op } from "../../circuit/ops";
 import { Device } from "../../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network";
 import { Props } from "../../circuit/props";
@@ -56,7 +56,7 @@ export class CCVSource extends Device<CCVSourceProps> {
     stamper.stampMatrix(branch1, branch2, -gain);
   }
 
-  override details(): Details {
+  override ops(): readonly Op[] {
     const { np, nn, branch1 } = this;
     const voltage = np.voltage - nn.voltage;
     const current = branch1.current;

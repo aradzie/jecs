@@ -1,4 +1,4 @@
-import type { Details } from "../circuit/details";
+import type { Op } from "../circuit/ops";
 import { Device } from "../circuit/device";
 import { CircuitError } from "../circuit/error";
 import type { Network, Node } from "../circuit/network";
@@ -24,7 +24,7 @@ export class Ground extends Device {
     }
   }
 
-  override details(): Details {
+  override ops(): readonly Op[] {
     return [
       { name: "V", value: this.n.voltage, unit: Unit.VOLT }, //
     ];
