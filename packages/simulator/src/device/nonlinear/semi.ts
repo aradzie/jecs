@@ -1,6 +1,34 @@
 import { celsiusToKelvin } from "../../util/unit";
 import { k, q } from "../const";
 
+export const npn = "npn" as const;
+export const pnp = "pnp" as const;
+
+export type BjtPolarity = typeof npn | typeof pnp;
+
+export const nfet = "nfet" as const;
+export const pfet = "pfet" as const;
+
+export type FetPolarity = typeof nfet | typeof pfet;
+
+export function bjtSign(polarity: BjtPolarity): number {
+  switch (polarity) {
+    case npn:
+      return 1;
+    case pnp:
+      return -1;
+  }
+}
+
+export function fetSign(polarity: FetPolarity): number {
+  switch (polarity) {
+    case nfet:
+      return 1;
+    case pfet:
+      return -1;
+  }
+}
+
 export class PN {
   /** The temperature. */
   readonly Temp: number;

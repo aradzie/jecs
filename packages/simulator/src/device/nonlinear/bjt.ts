@@ -4,13 +4,10 @@ import type { Node, Stamper } from "../../circuit/network";
 import { Props } from "../../circuit/props";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
-import { PN } from "./semi";
-
-const npn = "npn" as const;
-const pnp = "pnp" as const;
+import { BjtPolarity, bjtSign, npn, PN, pnp } from "./semi";
 
 export interface BjtProps {
-  readonly polarity: typeof npn | typeof pnp;
+  readonly polarity: BjtPolarity;
   readonly Temp: number;
   readonly Is: number;
   readonly Nf: number;
@@ -99,7 +96,7 @@ export class Bjt extends Device<BjtProps, BjtState> {
   override stamp(stamper: Stamper, state: BjtState): void {
     const { props, ne, nb, nc, pnBe, pnBc } = this;
     const { polarity, Bf, Br } = props;
-    const sign = polaritySign(polarity);
+    const sign = bjtSign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);
     const Vbe = (state.prevVbe = pnBe.limitVoltage(
@@ -139,7 +136,7 @@ export class Bjt extends Device<BjtProps, BjtState> {
   override details(): Details {
     const { props, ne, nb, nc, pnBe, pnBc } = this;
     const { polarity, Bf, Br } = props;
-    const sign = polaritySign(polarity);
+    const sign = bjtSign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);
     const Vbe = sign * (nb.voltage - ne.voltage);
@@ -159,14 +156,4 @@ export class Bjt extends Device<BjtProps, BjtState> {
       { name: "Ib", value: sign * Ib, unit: Unit.AMPERE },
     ];
   }
-}
-
-function polaritySign(polarity: string): number {
-  switch (polarity) {
-    case npn:
-      return 1;
-    case pnp:
-      return -1;
-  }
-  throw new TypeError();
 }

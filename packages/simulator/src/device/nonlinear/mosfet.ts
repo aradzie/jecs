@@ -4,12 +4,10 @@ import type { Node, Stamper } from "../../circuit/network";
 import { Props } from "../../circuit/props";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
-
-const nfet = "nfet" as const;
-const pfet = "pfet" as const;
+import { FetPolarity, fetSign, nfet, pfet } from "./semi";
 
 export interface MosfetProps {
-  readonly polarity: typeof nfet | typeof pfet;
+  readonly polarity: FetPolarity;
   readonly Temp: number;
   readonly Vth: number;
   readonly beta: number;
@@ -62,7 +60,7 @@ export class Mosfet extends Device<MosfetProps> {
   override stamp(stamper: Stamper): void {
     const { nd, ng, ns, props } = this;
     const { polarity, Vth, beta, lambda } = props;
-    const sign = polaritySign(polarity); // TODO
+    const sign = fetSign(polarity); // TODO
     const Vds = nd.voltage - ns.voltage;
     const Vgs = ng.voltage - ns.voltage;
     let Ids;
@@ -108,7 +106,7 @@ export class Mosfet extends Device<MosfetProps> {
   override details(): Details {
     const { nd, ng, ns, props } = this;
     const { polarity, Vth, beta, lambda } = props;
-    const sign = polaritySign(polarity); // TODO
+    const sign = fetSign(polarity); // TODO
     const Vds = nd.voltage - ns.voltage;
     const Vgs = ng.voltage - ns.voltage;
     let Ids;
@@ -138,14 +136,4 @@ export class Mosfet extends Device<MosfetProps> {
       { name: "Ids", value: Ids, unit: Unit.AMPERE },
     ];
   }
-}
-
-function polaritySign(polarity: string): number {
-  switch (polarity) {
-    case nfet:
-      return 1;
-    case pfet:
-      return -1;
-  }
-  throw new TypeError();
 }
