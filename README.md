@@ -49,6 +49,14 @@ prints the following result
 ];
 ```
 
+# Virtual Curve Tracer
+
+The following non-linear device I/V curves were obtained from the simulator.
+
+## Diode I/V Curve
+
+![Diode I/V curve](./packages/vct/plot/iv-diode.svg)
+
 ## License
 
 This program is free software; you can redistribute it and/or modify it under
