@@ -1,7 +1,7 @@
 import { readNetlist } from "@jssim/simulator/lib/netlist/netlist";
 import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
-import { Dataset, points } from "./dataset";
-import { op } from "./ops";
+import { Dataset, points } from "./util/dataset";
+import { op } from "./util/ops";
 
 const dataset = new Dataset();
 

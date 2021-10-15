@@ -30,7 +30,7 @@ export class Dataset {
   }
 
   save(name: string): void {
-    const file = join(__dirname, "..", "plot", `${name}.data`);
+    const file = join(__dirname, "..", "..", "plot", `${name}.data`);
     const content = this.data
       .map((points) => points.map((point) => point.toExponential(10)).join(" "))
       .join("\n");
