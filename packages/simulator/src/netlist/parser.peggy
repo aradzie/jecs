@@ -16,7 +16,7 @@ function binaryExp(head, tail) {
 
 Netlist
   = items:( _ @Item )* _
-  { return { items }; }
+    { return { items }; }
 
 Item =
   Definition
@@ -28,64 +28,63 @@ Definition
     _ nodes:NodeList
     _ properties:PropertyList
     _ ";"
-  {
-    return {
-      type: "definition",
-      deviceId,
-      id,
-      nodes,
-      properties,
-    };
-  }
+    {
+      return {
+        type: "definition",
+        deviceId,
+        id,
+        nodes,
+        properties,
+      };
+    }
 
 NodeList
   = "[" ids:( _ @Identifier )+ _ "]"
-  { return ids; }
+    { return ids; }
 
 PropertyList
-  = properties:( @Property )*
-  { return properties; }
+  = properties:( _ @Property )*
+    { return properties; }
 
 Property
-  = _ name:Identifier _ "=" _ value:PropertyValue
-  { return { name, value }; }
+  = name:Identifier _ "=" _ value:PropertyValue
+    { return { name, value }; }
 
 PropertyValue
-  = value:String { return { type: "string", value }; }
-  / value:Expression { return { type: "exp", value }; }
+  = value:String
+    { return { type: "string", value }; }
+  / value:Expression
+    { return { type: "exp", value }; }
 
 Equation
   = ".eq" _ name:Variable _ "=" _ value:Expression _ ";"
-  { return { type: "equation", name, value, }; }
+    { return { type: "equation", name, value, }; }
 
 Action
   = ( ".dc" / ".sweep" ) _ ";"
-  { return { type: "action" }; }
+    { return { type: "action" }; }
 
 Expression
-  = AdditiveExpression
+  = AdditiveExp
 
-AdditiveExpression
-  = head:MultiplicativeExpression
-    tail:( _ ( "+" / "-" ) _ MultiplicativeExpression )*
-  { return binaryExp(head, tail); }
+AdditiveExp
+  = head:MultiplicativeExp tail:( _ ( "+" / "-" ) _ MultiplicativeExp )*
+    { return binaryExp(head, tail); }
 
-MultiplicativeExpression
-  = head:ExponentiationExpression
-    tail:( _ ( "*" / "/" ) _ ExponentiationExpression )*
-  { return binaryExp(head, tail); }
+MultiplicativeExp
+  = head:ExponentiationExp tail:( _ ( "*" / "/" ) _ ExponentiationExp )*
+    { return binaryExp(head, tail); }
 
-ExponentiationExpression
-  = head:UnaryExpression
-    tail:( _ ( "^" ) _ UnaryExpression )*
-  { return binaryExp(head, tail); }
+ExponentiationExp
+  = head:UnaryExp tail:( _ ( "^" ) _ UnaryExp )*
+    { return binaryExp(head, tail); }
 
-UnaryExpression
-  = op:( "-" / "+" ) _ arg:UnaryExpression
+UnaryExp
+  = op:( "-" / "+" ) _ arg:UnaryExp
     { return { type: "unary", op, arg }; }
-  / PrimaryExpression
+  / PrimaryExp
 
-PrimaryExpression
+PrimaryExp
   = "(" _ @Expression _ ")"
   / LiteralExp
   / VarExp
@@ -93,35 +92,35 @@ PrimaryExpression
 
 LiteralExp
   = value:Number
-  { return { type: "literal", value }; }
+    { return { type: "literal", value }; }
 
 VarExp
   = id:Variable
-  { return { type: "var", id }; }
+    { return { type: "var", id }; }
 
 FuncExp
   = id:Identifier _ args:Args
-  { return { type: "func", id, args }; }
+    { return { type: "func", id, args }; }
 
 Args
   = "(" _ args:( _ @Expression )* _ ")"
-  { return args; }
+    { return args; }
 
 Variable "variable"
   = $( "$" [_a-zA-Z] [_a-zA-Z0-9]* )
-  { return { id: text()/*, location: location()*/ }; }
+    { return { id: text()/*, location: location()*/ }; }
 
 Identifier "identifier"
   = $( [_a-zA-Z] [_a-zA-Z0-9]* )
-  { return { id: text()/*, location: location()*/ }; }
+    { return { id: text()/*, location: location()*/ }; }
 
 String
   = '"' chars:$( !( '"' / "\n" / "\r" ) . )* '"'
-  { return chars; }
+    { return chars; }
 
 Number "number"
   = $( "-"? Integer Frac? Exp? )
-  { return Number.parseFloat(text()); }
+    { return Number.parseFloat(text()); }
 
 Integer
   = Digit+
