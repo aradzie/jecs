@@ -1,16 +1,21 @@
-import { readNetlist } from "@jssim/simulator/lib/netlist/netlist";
+import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist";
+import { Variables } from "@jssim/simulator/lib/netlist/variables";
 import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
 import { Dataset, points } from "./util/dataset";
 import { op } from "./util/ops";
 
+const input = `
+Ground [g];
+V [NP g] v=$xVd;
+Diode:DUT [NP g];
+`;
+
 const dataset = new Dataset();
 
 for (const xVd of points(0, 1, 100)) {
-  const circuit = readNetlist([
-    ["Ground", ["g"], {}],
-    ["V", ["NP", "g"], { v: xVd }],
-    ["Diode:DUT", ["NP", "g"], {}],
-  ]);
+  const variables = new Variables();
+  variables.addVariable("$xVd", xVd);
+  const circuit = parseNetlist(input, variables);
   dcAnalysis(circuit);
   const ops = circuit.getDevice("DUT").ops();
   const Vd = op(ops, "Vd");

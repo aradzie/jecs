@@ -1,11 +1,9 @@
 ## Netlist
 
-```json
-[
-  ["Ground", ["NN"], {}],
-  ["V:DUT", ["NP", "NN"], { "v": 5 }],
-  ["R", ["NP", "NN"], { "r": 1000 }]
-]
+```text
+Ground [NN];
+V:DUT [NP NN] v=5;
+R [NP NN] r=1000;
 ```
 
 ## Result

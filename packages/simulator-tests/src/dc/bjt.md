@@ -1,20 +1,16 @@
 ## Netlist
 
-```json
-[
-  ["Ground", ["g"], {}],
-  ["V", ["NC", "g"], { "v": 5 }],
-  ["V", ["NB", "g"], { "v": 0.65 }],
-  ["BJT:DUT", ["g", "NB", "NC"], { "polarity": "npn" }]
-]
+```text
+Ground [g];
+V [NC g] v=5;
+V [NB g] v=0.65;
+BJT:DUT [g NB NC] polarity="npn";
 ```
 
 ## Options
 
 ```json
-{
-  "reltol": 1e-5
-}
+{ "reltol": 0.00001 }
 ```
 
 ## Result
@@ -31,21 +27,17 @@ DUT{Vbe=650mV,Vbc=-4.35V,Vce=5V,Ie=-830.844μA,Ic=822.618μA,Ib=8.226μA}
 
 ## Netlist
 
-```json
-[
-  ["Ground", ["g"], {}],
-  ["V", ["NC", "g"], { "v": 5 }],
-  ["I", ["g", "NB"], { "i": 0.0001 }],
-  ["BJT:DUT", ["g", "NB", "NC"], { "polarity": "npn" }]
-]
+```text
+Ground [g];
+V [NC g] v=5;
+I [g NB] i=0.0001;
+BJT:DUT [g NB NC] polarity="npn";
 ```
 
 ## Options
 
 ```json
-{
-  "reltol": 1e-5
-}
+{ "reltol": 0.00001 }
 ```
 
 ## Result
@@ -58,23 +50,21 @@ I1{Vd=-714.574mV,I=100μA}
 DUT{Vbe=714.574mV,Vbc=-4.285V,Vce=5V,Ie=-10.1mA,Ic=10mA,Ib=100μA}
 ```
 
+---
+
 ## Netlist
 
-```json
-[
-  ["Ground", ["g"], {}],
-  ["V", ["NE", "g"], { "v": 5 }],
-  ["V", ["NE", "NB"], { "v": 0.65 }],
-  ["BJT:DUT", ["NE", "NB", "g"], { "polarity": "pnp" }]
-]
+```text
+Ground [g];
+V [NE g] v=5;
+V [NE NB] v=0.65;
+BJT:DUT [NE NB g] polarity="pnp";
 ```
 
 ## Options
 
 ```json
-{
-  "reltol": 1e-5
-}
+{ "reltol": 0.00001 }
 ```
 
 ## Result
@@ -91,21 +81,17 @@ DUT{Vbe=-650mV,Vbc=4.35V,Vce=-5V,Ie=830.844μA,Ic=-822.618μA,Ib=-8.226μA}
 
 ## Netlist
 
-```json
-[
-  ["Ground", ["g"], {}],
-  ["V", ["NE", "g"], { "v": 5 }],
-  ["I", ["NB", "NE"], { "i": 0.0001 }],
-  ["BJT:DUT", ["NE", "NB", "g"], { "polarity": "pnp" }]
-]
+```text
+Ground [g];
+V [NE g] v=5;
+I [NB NE] i=0.0001;
+BJT:DUT [NE NB g] polarity="pnp";
 ```
 
 ## Options
 
 ```json
-{
-  "reltol": 1e-5
-}
+{ "reltol": 0.00001 }
 ```
 
 ## Result

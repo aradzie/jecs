@@ -1,20 +1,16 @@
 ## Netlist
 
-```json
-[
-  ["Ground", ["g"], {}],
-  ["V", ["ND", "g"], { "v": 15 }],
-  ["V", ["NG", "g"], { "v": 10 }],
-  ["MOSFET:DUT", ["ND", "NG", "g"], { "polarity": "nfet" }]
-]
+```text
+Ground [g];
+V [ND g] v=15;
+V [NG g] v=10;
+MOSFET:DUT [ND NG g] polarity="nfet";
 ```
 
 ## Options
 
 ```json
-{
-  "reltol": 1e-5
-}
+{ "reltol": 0.00001 }
 ```
 
 ## Result

@@ -1,4 +1,11 @@
-import type { BinaryExp, Equation, Expression, FuncExp, UnaryExp } from "./ast";
+import type {
+  BinaryExp,
+  Equation,
+  Expression,
+  FuncExp,
+  Netlist,
+  UnaryExp,
+} from "./ast";
 import { equation, literalExp } from "./ast";
 import { callFunc } from "./functions";
 
@@ -10,13 +17,18 @@ export class Variables {
 
   private equations = new Map<string, Equation>();
 
-  constructor(equations: readonly Equation[]) {
-    for (const equation of Variables.builtins) {
-      this.equations.set(equation.name.id, equation);
+  constructor() {
+    for (const builtin of Variables.builtins) {
+      this.addEquation(builtin);
     }
-    for (const equation of equations) {
-      this.equations.set(equation.name.id, equation);
-    }
+  }
+
+  addVariable(name: string, value: number): void {
+    this.addEquation(equation(name, literalExp(value)));
+  }
+
+  addEquation(equation: Equation): void {
+    this.equations.set(equation.name.id, equation);
   }
 
   lookup(id: string): number {

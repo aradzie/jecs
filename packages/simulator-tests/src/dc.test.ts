@@ -1,27 +1,29 @@
+import { dumpCircuit } from "@jssim/simulator/lib/circuit/debug";
+import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist";
+import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
+import type { Options } from "@jssim/simulator/lib/simulation/options";
 import test from "ava";
 import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
-import { dumpCircuit } from "@jssim/simulator/lib/circuit/debug";
-import type { JsonNetlist } from "@jssim/simulator/lib/netlist/netlist";
-import { readNetlist } from "@jssim/simulator/lib/netlist/netlist";
-import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
-import type { Options } from "@jssim/simulator/lib/simulation/options";
 
 scan(join(__dirname, "dc"));
 
 function scan(dir: string): void {
   for (const entry of readdirSync(dir)) {
     if (entry.endsWith(".md")) {
-      makeTest(entry, readFileSync(join(dir, entry), "utf-8"));
+      const filename = join(dir, entry);
+      const content = readFileSync(filename, "utf-8");
+      const testCases = parse(entry, content);
+      makeTest(entry, testCases);
     }
   }
 }
 
-function makeTest(filename: string, content: string): void {
+function makeTest(filename: string, testCases: readonly TestCase[]): void {
   let index = 1;
-  for (const { netlist, options, result } of parse(filename, content)) {
+  for (const { netlist, options, result } of testCases) {
     test(`${filename}#${index}`, (t) => {
-      const circuit = readNetlist(netlist);
+      const circuit = parseNetlist(netlist);
       dcAnalysis(circuit, options);
       t.deepEqual(dumpCircuit(circuit), result);
     });
@@ -30,12 +32,13 @@ function makeTest(filename: string, content: string): void {
 }
 
 type TestCase = {
-  netlist: JsonNetlist;
+  netlist: string;
   options: Options;
   result: string[];
 };
 
 function parse(filename: string, content: string): TestCase[] {
+  const errorMessage = () => `Error parsing [${filename}]`;
   const cases: TestCase[] = [];
   const netlist: string[] = [];
   const options: string[] = [];
@@ -56,7 +59,7 @@ function parse(filename: string, content: string): TestCase[] {
         }
         break;
       case "netlist":
-        if (line === "```json") {
+        if (line === "```text") {
           state = "netlist-body";
           continue;
         }
@@ -112,17 +115,17 @@ function parse(filename: string, content: string): TestCase[] {
         result.push(line);
         continue;
       default:
-        throw new Error();
+        throw new Error(errorMessage());
     }
   }
   if (state !== "initial") {
-    throw new Error();
+    throw new Error(errorMessage());
   }
   return cases;
 
   function makeTestCase(): void {
     cases.push({
-      netlist: (toJson(netlist) as JsonNetlist) ?? [],
+      netlist: netlist.join("\n"),
       options: (toJson(options) as Options) ?? {},
       result: [...result],
     });
@@ -142,4 +145,35 @@ function parse(filename: string, content: string): TestCase[] {
       }
     }
   }
+}
+
+function format(testCases: readonly TestCase[]): string {
+  const lines: string[] = [];
+  for (const testCase of testCases) {
+    if (lines.length > 0) {
+      lines.push("");
+      lines.push("---");
+      lines.push("");
+    }
+    lines.push("## Netlist");
+    lines.push("");
+    lines.push("```text");
+    lines.push(testCase.netlist);
+    lines.push("```");
+    lines.push("");
+    if (Object.keys(testCase.options).length > 0) {
+      lines.push("## Options");
+      lines.push("");
+      lines.push("```json");
+      lines.push(JSON.stringify(testCase.options));
+      lines.push("```");
+      lines.push("");
+    }
+    lines.push("## Result");
+    lines.push("");
+    lines.push("```text");
+    lines.push(...testCase.result);
+    lines.push("```");
+  }
+  return lines.join("\n");
 }

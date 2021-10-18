@@ -1,5 +1,5 @@
 import test from "ava";
-import type { Equation } from "./ast";
+import { Equation } from "./ast";
 import { parse } from "./parser";
 import { Variables } from "./variables";
 
@@ -12,11 +12,13 @@ R:R2 [N1 N2] R=sin($PI);
 `;
 
 test("variables", (t) => {
-  const netlist = parse(input);
-
-  const variables = new Variables(
-    netlist.items.filter((item) => item.type === "equation") as Equation[],
-  );
+  const { items } = parse(input);
+  const variables = new Variables();
+  for (const item of items) {
+    if (item.type === "equation") {
+      variables.addEquation(item);
+    }
+  }
 
   t.is(variables.lookup("$a"), 1);
   t.is(variables.lookup("$b"), 3);

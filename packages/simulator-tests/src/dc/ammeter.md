@@ -1,12 +1,10 @@
 ## Netlist
 
-```json
-[
-  ["Ground", ["NA"], {}],
-  ["V", ["NB", "NA"], { "v": 5 }],
-  ["Ammeter:DUT", ["NB", "NC"], {}],
-  ["R", ["NC", "NA"], { "r": 1000 }]
-]
+```text
+Ground [NA];
+V [NB NA] v=5;
+Ammeter:DUT [NB NC];
+R [NC NA] r=1000;
 ```
 
 ## Result

@@ -1,80 +1,90 @@
 import { Circuit } from "../circuit/circuit";
-import type { DeviceClass } from "../circuit/device";
 import { createDevice, getDeviceClass } from "../circuit/devicemap";
 import type { Node } from "../circuit/network";
-import type { RawDeviceProps } from "../circuit/props";
-import { Ground, VSource } from "../device";
+import type { Identifier, Property } from "./ast";
+import { parse } from "./parser";
+import { Variables } from "./variables";
 
-export type JsonNetlist = readonly JsonNetlistItem[];
-
-export type JsonNetlistItem = readonly [
-  id: string,
-  nodes: readonly string[],
-  rawProps: RawDeviceProps,
-];
-
-export function readNetlist(netlist: JsonNetlist): Circuit {
+export function parseNetlist(
+  input: string,
+  variables = new Variables(),
+): Circuit {
   const circuit = new Circuit();
+  const deviceName = makeDeviceNamer();
+  const nameToNode = makeNodeMapper(circuit);
+  const { items } = parse(input);
 
-  const nodeMap = new Map<string, Node>();
-
-  const nameToNode = (name: string): Node => {
-    let node = nodeMap.get(name) ?? null;
-    if (node == null) {
-      nodeMap.set(name, (node = circuit.allocNode(name)));
-    }
-    return node;
-  };
-
-  const expNetlist = expandNetlist(netlist);
-
-  // Find ground nodes.
-  for (const [deviceClass, name, nodes] of expNetlist) {
-    if (deviceClass === Ground) {
-      nodeMap.set(nodes[0], circuit.groundNode);
+  // Add equations.
+  for (const item of items) {
+    if (item.type === "equation") {
+      variables.addEquation(item);
     }
   }
 
-  // If ground node is not set explicitly, then ground the negative terminal
-  // of the first voltage source.
-  if (nodeMap.size === 0) {
-    for (const [deviceClass, name, nodes] of expNetlist) {
-      if (deviceClass === VSource) {
-        nodeMap.set(nodes[1], circuit.groundNode);
-        break;
-      }
+  // Add devices.
+  for (const item of items) {
+    if (item.type === "definition") {
+      const { deviceId, id, nodes, properties } = item;
+      circuit.addDevice(
+        createDevice(
+          getDeviceClass(deviceId.id),
+          deviceName(deviceId, id),
+          nodes.map(nameToNode),
+          mapProps(variables, properties),
+        ),
+      );
     }
-  }
-
-  // Create and connect devices.
-  for (const [deviceClass, name, nodes, rawProps] of expNetlist) {
-    circuit.addDevice(
-      createDevice(deviceClass, name, nodes.map(nameToNode), rawProps),
-    );
   }
 
   return circuit;
 }
 
-function expandNetlist(
-  netlist: JsonNetlist,
-): readonly [
-  deviceClass: DeviceClass,
-  name: string,
-  nodes: readonly string[],
-  rawProps: RawDeviceProps,
-][] {
-  const counter = new Map<string, number>();
-  return netlist.map(([idName, nodes, rawProps]) => {
-    if (idName.indexOf(":") !== -1) {
-      const [id, name] = idName.split(":", 2);
-      return [getDeviceClass(id), name, nodes, rawProps];
-    } else {
-      const prefix = idName.toUpperCase();
-      let index = counter.get(prefix) ?? 0;
-      counter.set(prefix, (index += 1));
-      const name = `${prefix}${index}`;
-      return [getDeviceClass(idName), name, nodes, rawProps];
+function mapProps(
+  variables: Variables,
+  properties: readonly Property[],
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  for (const { name, value } of properties) {
+    switch (value.type) {
+      case "string":
+        result[name.id] = value.value;
+        break;
+      case "exp":
+        result[name.id] = variables.evalExp(value.value);
     }
-  });
+  }
+  return result;
+}
+
+function makeNodeMapper(circuit: Circuit): (id: Identifier) => Node {
+  const { groundNode } = circuit;
+  const nodeMap = new Map<string, Node>([
+    ["g", groundNode],
+    ["gnd", groundNode],
+  ]);
+  return ({ id }: Identifier): Node => {
+    let node = nodeMap.get(id) ?? null;
+    if (node == null) {
+      nodeMap.set(id, (node = circuit.allocNode(id)));
+    }
+    return node;
+  };
+}
+
+function makeDeviceNamer(): (
+  deviceId: Identifier,
+  id: Identifier | null,
+) => string {
+  // TODO Generate truly unique names, avoid collisions with existing names.
+  const instanceCounter = new Map<string, number>();
+  return (deviceId: Identifier, id: Identifier | null): string => {
+    if (id == null) {
+      const prefix = deviceId.id;
+      let index = instanceCounter.get(prefix) ?? 0;
+      instanceCounter.set(prefix, (index += 1));
+      return `${prefix}${index}`;
+    } else {
+      return id.id;
+    }
+  };
 }

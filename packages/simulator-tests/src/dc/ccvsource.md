@@ -1,13 +1,11 @@
 ## Netlist
 
-```json
-[
-  ["Ground", ["NCN"], {}],
-  ["Ground", ["NON"], {}],
-  ["I", ["NCP", "NCN"], { "i": -1 }],
-  ["CCVS:DUT", ["NOP", "NON", "NCP", "NCN"], { "gain": 10 }],
-  ["R", ["NOP", "NON"], { "r": 10 }]
-]
+```text
+Ground [NCN];
+Ground [NON];
+I [NCP NCN] i=-1;
+CCVS:DUT [NOP NON NCP NCN] gain=10;
+R [NOP NON] r=10;
 ```
 
 ## Result

@@ -1,19 +1,15 @@
 ## Netlist
 
-```json
-[
-  ["Ground", ["g"], {}],
-  ["V", ["NP", "g"], { "v": 5 }],
-  ["Diode:DUT", ["g", "NP"], {}]
-]
+```text
+Ground [g];
+V [NP g] v=5;
+Diode:DUT [g NP];
 ```
 
 ## Options
 
 ```json
-{
-  "reltol": 1e-5
-}
+{ "reltol": 0.00001 }
 ```
 
 ## Result
@@ -28,18 +24,16 @@ DUT{Vd=-5V,I=0A,P=0W}
 
 ## Netlist
 
-```json
-[
-  ["Ground", ["g"], {}],
-  ["I", ["g", "NP"], { "i": 0.1 }],
-  ["Diode:DUT", ["NP", "g"], {}]
-]
+```text
+Ground [g];
+I [g NP] i=0.1;
+Diode:DUT [NP g];
 ```
 
 ## Options
 
 ```json
-{ "reltol": 1e-5 }
+{ "reltol": 0.00001 }
 ```
 
 ## Result
@@ -54,19 +48,17 @@ DUT{Vd=773.844mV,I=100mA,P=77.384mW}
 
 ## Netlist
 
-```json
-[
-  ["Ground", ["g"], {}],
-  ["I", ["g", "NP"], { "i": 1 }],
-  ["Diode:DUT1", ["NP", "NM"], {}],
-  ["Diode:DUT2", ["NM", "g"], {}]
-]
+```text
+Ground [g];
+I [g NP] i=1;
+Diode:DUT1 [NP NM];
+Diode:DUT2 [NM g];
 ```
 
 ## Options
 
 ```json
-{ "reltol": 1e-5 }
+{ "reltol": 0.00001 }
 ```
 
 ## Result
@@ -83,18 +75,16 @@ DUT2{Vd=833.37mV,I=1A,P=833.37mW}
 
 ## Netlist
 
-```json
-[
-  ["Ground", ["g"], {}],
-  ["V", ["NP", "g"], { "v": 0.8 }],
-  ["Diode:DUT", ["NP", "g"], {}]
-]
+```text
+Ground [g];
+V [NP g] v=0.8;
+Diode:DUT [NP g];
 ```
 
 ## Options
 
 ```json
-{ "reltol": 1e-5 }
+{ "reltol": 0.00001 }
 ```
 
 ## Result
@@ -109,19 +99,17 @@ DUT{Vd=800mV,I=275.048mA,P=220.038mW}
 
 ## Netlist
 
-```json
-[
-  ["Ground", ["g"], {}],
-  ["V", ["NP", "g"], { "v": 1.6 }],
-  ["Diode:DUT1", ["NP", "NM"], {}],
-  ["Diode:DUT2", ["NM", "g"], {}]
-]
+```text
+Ground [g];
+V [NP g] v=1.6;
+Diode:DUT1 [NP NM];
+Diode:DUT2 [NM g];
 ```
 
 ## Options
 
 ```json
-{ "reltol": 1e-5 }
+{ "reltol": 0.00001 }
 ```
 
 ## Result
