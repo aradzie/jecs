@@ -1,8 +1,8 @@
 import { dumpCircuit } from "@jssim/simulator/lib/circuit/debug";
-import { Netlist, readNetlist } from "@jssim/simulator/lib/netlist/netlist";
+import { JsonNetlist, readNetlist } from "@jssim/simulator/lib/netlist/netlist";
 import { Controller, dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
 
-const netlists: Netlist[] = [
+const netlists: readonly JsonNetlist[] = [
   [
     ["Ground", ["g"], {}],
     ["V", ["NP", "g"], { v: 5 }],

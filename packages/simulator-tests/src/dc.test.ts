@@ -2,7 +2,7 @@ import test from "ava";
 import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
 import { dumpCircuit } from "@jssim/simulator/lib/circuit/debug";
-import type { Netlist } from "@jssim/simulator/lib/netlist/netlist";
+import type { JsonNetlist } from "@jssim/simulator/lib/netlist/netlist";
 import { readNetlist } from "@jssim/simulator/lib/netlist/netlist";
 import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
 import type { Options } from "@jssim/simulator/lib/simulation/options";
@@ -30,7 +30,7 @@ function makeTest(filename: string, content: string): void {
 }
 
 type TestCase = {
-  netlist: Netlist;
+  netlist: JsonNetlist;
   options: Options;
   result: string[];
 };
@@ -122,7 +122,7 @@ function parse(filename: string, content: string): TestCase[] {
 
   function makeTestCase(): void {
     cases.push({
-      netlist: (toJson(netlist) as Netlist) ?? [],
+      netlist: (toJson(netlist) as JsonNetlist) ?? [],
       options: (toJson(options) as Options) ?? {},
       result: [...result],
     });

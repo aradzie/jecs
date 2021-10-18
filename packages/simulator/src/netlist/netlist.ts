@@ -5,15 +5,15 @@ import type { Node } from "../circuit/network";
 import type { RawDeviceProps } from "../circuit/props";
 import { Ground, VSource } from "../device";
 
-export type Netlist = readonly NetlistItem[];
+export type JsonNetlist = readonly JsonNetlistItem[];
 
-export type NetlistItem = readonly [
+export type JsonNetlistItem = readonly [
   id: string,
   nodes: readonly string[],
   rawProps: RawDeviceProps,
 ];
 
-export function readNetlist(netlist: Netlist): Circuit {
+export function readNetlist(netlist: JsonNetlist): Circuit {
   const circuit = new Circuit();
 
   const nodeMap = new Map<string, Node>();
@@ -57,7 +57,7 @@ export function readNetlist(netlist: Netlist): Circuit {
 }
 
 function expandNetlist(
-  netlist: Netlist,
+  netlist: JsonNetlist,
 ): readonly [
   deviceClass: DeviceClass,
   name: string,
