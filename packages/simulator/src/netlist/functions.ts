@@ -24,18 +24,19 @@ export function addFuncDef(name: string, [func, numArgs]: Func): void {
 }
 
 export function callFunc(name: string, args: number[]): number {
-  const def = funcDefs.get(name) ?? null;
-  if (def == null) {
+  const funcDef = funcDefs.get(name);
+  if (funcDef == null) {
     throw new TypeError(`Unknown function [${name}]`);
   }
-  const [func, numArgs] = def;
-  if (numArgs !== 0 && numArgs !== args.length) {
-    throw new TypeError(
-      `Wrong number of arguments to function [${name}], ` +
-        `expected ${numArgs} but got ${args.length}`,
-    );
+  const [func, numArgs] = funcDef;
+  const { length } = args;
+  if (
+    (numArgs === 0 && length === 0) ||
+    (numArgs !== 0 && length !== numArgs)
+  ) {
+    throw new TypeError(`Wrong number of arguments to function [${name}]`);
   }
-  switch (numArgs) {
+  switch (length) {
     case 1:
       return func(args[0]);
     case 2:
