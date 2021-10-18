@@ -16,8 +16,8 @@ const dataset = new Dataset();
 for (const xVgs of points(3, 10, 5)) {
   for (const xVds of points(0, 10, 100)) {
     const variables = new Variables();
-    variables.addVariable("$xVds", xVds);
-    variables.addVariable("$xVgs", xVgs);
+    variables.setVariable("$xVds", xVds);
+    variables.setVariable("$xVgs", xVgs);
     const circuit = parseNetlist(input, variables);
     dcAnalysis(circuit);
     const ops = circuit.getDevice("DUT").ops();

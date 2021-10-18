@@ -17,8 +17,8 @@ const dataset = new Dataset();
 for (const xRl of points(100, 2000, 10)) {
   for (const xVbe of points(0.5, 0.8, 100)) {
     const variables = new Variables();
-    variables.addVariable("$xRl", xRl);
-    variables.addVariable("$xVbe", xVbe);
+    variables.setVariable("$xRl", xRl);
+    variables.setVariable("$xVbe", xVbe);
     const circuit = parseNetlist(input, variables);
     dcAnalysis(circuit);
     const q1 = circuit.getDevice("Q1").ops();

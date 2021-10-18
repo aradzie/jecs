@@ -17,7 +17,7 @@ export function parseNetlist(
   // Add equations.
   for (const item of items) {
     if (item.type === "equation") {
-      variables.addEquation(item);
+      variables.setEquation(item);
     }
   }
 

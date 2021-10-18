@@ -16,7 +16,7 @@ test("variables", (t) => {
   const variables = new Variables();
   for (const item of items) {
     if (item.type === "equation") {
-      variables.addEquation(item);
+      variables.setEquation(item);
     }
   }
 

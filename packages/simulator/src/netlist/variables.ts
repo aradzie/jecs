@@ -19,15 +19,15 @@ export class Variables {
 
   constructor() {
     for (const builtin of Variables.builtins) {
-      this.addEquation(builtin);
+      this.setEquation(builtin);
     }
   }
 
-  addVariable(name: string, value: number): void {
-    this.addEquation(equation(name, literalExp(value)));
+  setVariable(name: string, value: number): void {
+    this.setEquation(equation(name, literalExp(value)));
   }
 
-  addEquation(equation: Equation): void {
+  setEquation(equation: Equation): void {
     this.equations.set(equation.name.id, equation);
   }
 

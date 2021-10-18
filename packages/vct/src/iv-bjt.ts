@@ -16,8 +16,8 @@ const dataset = new Dataset();
 for (const xVbe of points(0.6, 0.65, 5)) {
   for (const xVce of points(0, 1, 100)) {
     const variables = new Variables();
-    variables.addVariable("$xVce", xVce);
-    variables.addVariable("$xVbe", xVbe);
+    variables.setVariable("$xVce", xVce);
+    variables.setVariable("$xVbe", xVbe);
     const circuit = parseNetlist(input, variables);
     dcAnalysis(circuit);
     const ops = circuit.getDevice("DUT").ops();
