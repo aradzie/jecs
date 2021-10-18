@@ -47,8 +47,12 @@ PropertyList
   { return properties; }
 
 Property
-  = _ name:Identifier _ "=" _ value:Expression
+  = _ name:Identifier _ "=" _ value:PropertyValue
   { return { name, value }; }
+
+PropertyValue
+  = value:String { return { type: "string", value }; }
+  / value:Expression { return { type: "exp", value }; }
 
 Equation
   = ".eq" _ name:Variable _ "=" _ value:Expression _ ";"
@@ -110,6 +114,10 @@ Variable "variable"
 Identifier "identifier"
   = $( [_a-zA-Z] [_a-zA-Z0-9]* )
   { return { id: text()/*, location: location()*/ }; }
+
+String
+  = '"' chars:$( !( '"' / "\n" / "\r" ) . )* '"'
+  { return chars; }
 
 Number "number"
   = $( "-"? Integer Frac? Exp? )

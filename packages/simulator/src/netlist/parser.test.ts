@@ -49,8 +49,11 @@ test("parse definitions", (t) => {
               id: "R",
             },
             value: {
-              type: "literal",
-              value: 1,
+              type: "exp",
+              value: {
+                type: "literal",
+                value: 1,
+              },
             },
           },
         ],
@@ -75,8 +78,11 @@ test("parse definitions", (t) => {
               id: "R",
             },
             value: {
-              type: "literal",
-              value: 1,
+              type: "exp",
+              value: {
+                type: "literal",
+                value: 1,
+              },
             },
           },
           {
@@ -84,8 +90,37 @@ test("parse definitions", (t) => {
               id: "T",
             },
             value: {
-              type: "literal",
-              value: 27,
+              type: "exp",
+              value: {
+                type: "literal",
+                value: 27,
+              },
+            },
+          },
+        ],
+      },
+    ],
+  });
+
+  t.like(parse('BJT:Q1 [e b c] polarity="npn";'), {
+    items: [
+      {
+        type: "definition",
+        deviceId: {
+          id: "BJT",
+        },
+        id: {
+          id: "Q1",
+        },
+        nodes: [{ id: "e" }, { id: "b" }, { id: "c" }],
+        properties: [
+          {
+            name: {
+              id: "polarity",
+            },
+            value: {
+              type: "string",
+              value: "npn",
             },
           },
         ],

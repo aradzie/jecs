@@ -45,6 +45,18 @@ export interface Definition extends Node {
 
 export interface Property extends Node {
   readonly name: Identifier;
+  readonly value: PropertyValue;
+}
+
+export type PropertyValue = StringPropertyValue | ExpPropertyValue;
+
+export interface StringPropertyValue {
+  readonly type: "string";
+  readonly value: string;
+}
+
+export interface ExpPropertyValue {
+  readonly type: "exp";
   readonly value: Expression;
 }
 
