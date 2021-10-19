@@ -1,4 +1,5 @@
 import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist";
+import { parse } from "@jssim/simulator/lib/netlist/parser";
 import { Variables } from "@jssim/simulator/lib/netlist/variables";
 import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
 import { Dataset, points } from "./util/dataset";
@@ -11,6 +12,7 @@ V [NB g] v=$xVbe;
 R:R1 [NR NC] r=$xRl;
 BJT:Q1 [g NB NC] polarity="npn" Bf=100;
 `;
+const netlist = parse(input, {});
 
 const dataset = new Dataset();
 
@@ -19,7 +21,7 @@ for (const xRl of points(100, 2000, 10)) {
     const variables = new Variables();
     variables.setVariable("$xRl", xRl);
     variables.setVariable("$xVbe", xVbe);
-    const circuit = parseNetlist(input, variables);
+    const circuit = parseNetlist(netlist, variables);
     dcAnalysis(circuit);
     const q1 = circuit.getDevice("Q1").ops();
     const nc = circuit.getNode("NC");

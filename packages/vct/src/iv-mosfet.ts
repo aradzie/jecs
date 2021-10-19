@@ -1,4 +1,5 @@
 import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist";
+import { parse } from "@jssim/simulator/lib/netlist/parser";
 import { Variables } from "@jssim/simulator/lib/netlist/variables";
 import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
 import { Dataset, points } from "./util/dataset";
@@ -10,6 +11,7 @@ V [ND g] v=$xVds;
 V [NG g] v=$xVgs;
 MOSFET:DUT [ND NG g] polarity="nfet";
 `;
+const netlist = parse(input, {});
 
 const dataset = new Dataset();
 
@@ -18,7 +20,7 @@ for (const xVgs of points(3, 10, 5)) {
     const variables = new Variables();
     variables.setVariable("$xVds", xVds);
     variables.setVariable("$xVgs", xVgs);
-    const circuit = parseNetlist(input, variables);
+    const circuit = parseNetlist(netlist, variables);
     dcAnalysis(circuit);
     const ops = circuit.getDevice("DUT").ops();
     const Vds = op(ops, "Vds");

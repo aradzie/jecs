@@ -88,7 +88,7 @@ export class Branch {
   }
 }
 
-export const groundNode = new Node(-1, "GROUND");
+export const groundNode = new Node(-1, "g");
 
 export class Stamper {
   readonly #matrix: Matrix;

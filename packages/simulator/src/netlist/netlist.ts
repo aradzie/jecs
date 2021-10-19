@@ -2,18 +2,18 @@ import { Circuit } from "../circuit/circuit";
 import type { DeviceClass } from "../circuit/device";
 import { createDevice, getDeviceClass } from "../circuit/devicemap";
 import type { Node } from "../circuit/network";
+import type { RawDeviceProps } from "../circuit/props";
 import { Ground } from "../device";
 import type { Definition, Identifier, Netlist } from "./ast";
 import { parse } from "./parser";
 import { Variables } from "./variables";
-
-const groundNodeId = "g";
 
 interface ExtDef {
   readonly item: Definition;
   readonly deviceClass: DeviceClass;
   instanceId: string;
   nodes: Node[];
+  props: RawDeviceProps;
 }
 
 export function parseNetlist(
@@ -43,11 +43,10 @@ export function parseNetlist(
   const circuit = new Circuit();
 
   assignInstanceIds(defs);
-  assignNodes(circuit, defs);
+  mapNodes(circuit, defs);
+  mapProps(variables, defs);
 
-  for (const def of defs) {
-    const { item, deviceClass, instanceId, nodes } = def;
-    const props = variables.mapProps(item.props);
+  for (const { deviceClass, instanceId, nodes, props } of defs) {
     circuit.addDevice(createDevice(deviceClass, instanceId, nodes, props));
   }
 
@@ -87,10 +86,10 @@ function assignInstanceIds(defs: readonly ExtDef[]): void {
   }
 }
 
-function assignNodes(circuit: Circuit, defs: readonly ExtDef[]): void {
+function mapNodes(circuit: Circuit, defs: readonly ExtDef[]): void {
   const { groundNode } = circuit;
 
-  const nodes = new Map<string, Node>([[groundNodeId, groundNode]]);
+  const nodes = new Map<string, Node>([[groundNode.name, groundNode]]);
   const mapper = ({ name }: Identifier): Node => {
     let node = nodes.get(name);
     if (node == null) {
@@ -102,18 +101,25 @@ function assignNodes(circuit: Circuit, defs: readonly ExtDef[]): void {
   // Find ground nodes.
   let found = false;
   for (const def of defs) {
-    if (def.item.id.name === Ground.id) {
+    const { item } = def;
+    if (item.id.name === Ground.id) {
       found = true;
-      for (const node of def.item.nodes) {
+      for (const node of item.nodes) {
         nodes.set(node.name, groundNode);
       }
     } else {
-      found = found || def.item.nodes.some(({ name }) => name === groundNodeId);
+      found = found || item.nodes.some(({ name }) => name === groundNode.name);
     }
   }
 
   // Allocate and assign nodes.
   for (const def of defs) {
     def.nodes = def.item.nodes.map(mapper);
+  }
+}
+
+function mapProps(variables: Variables, defs: ExtDef[]): void {
+  for (const def of defs) {
+    def.props = variables.mapProps(def.item.props);
   }
 }
