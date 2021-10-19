@@ -1,17 +1,13 @@
+import type { RawDeviceProps } from "../circuit/props";
 import type { BinaryExp, Equation, Expression, FuncExp, UnaryExp } from "./ast";
-import { equation, literalExp } from "./ast";
+import { builtins, equation, literalExp, Property } from "./ast";
 import { callFunc } from "./functions";
 
 export class Variables {
-  private static builtins: readonly Equation[] = [
-    equation("$PI", literalExp(Math.PI)),
-    equation("$E", literalExp(Math.E)),
-  ];
-
   private equations = new Map<string, Equation>();
 
   constructor() {
-    for (const builtin of Variables.builtins) {
+    for (const builtin of builtins) {
       this.setEquation(builtin);
     }
   }
@@ -22,6 +18,20 @@ export class Variables {
 
   setEquation(equation: Equation): void {
     this.equations.set(equation.id.name, equation);
+  }
+
+  mapProps(props: readonly Property[]): RawDeviceProps {
+    const result: RawDeviceProps = {};
+    for (const { id, value } of props) {
+      switch (value.type) {
+        case "string":
+          result[id.name] = value.value;
+          break;
+        case "exp":
+          result[id.name] = this.evalExp(value.value);
+      }
+    }
+    return result;
   }
 
   lookup(name: string): number {

@@ -116,3 +116,8 @@ export function equation(name: string, value: Expression): Equation {
 export function literalExp(value: number): LiteralExp {
   return { type: "literal", value };
 }
+
+export const builtins: readonly Equation[] = [
+  equation("$PI", literalExp(Math.PI)),
+  equation("$E", literalExp(Math.E)),
+];
