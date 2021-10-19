@@ -6,10 +6,9 @@ import { Dataset, points } from "./util/dataset";
 import { op } from "./util/ops";
 
 const input = `
-Ground [g];
-V [NC g] v=$xVce;
-V [NB g] v=$xVbe;
-BJT:DUT [g NB NC] polarity="npn";
+V nc g v=$xVce;
+V nb g v=$xVbe;
+BJT:DUT g nb nc polarity="npn";
 `;
 const netlist = parse(input, {});
 

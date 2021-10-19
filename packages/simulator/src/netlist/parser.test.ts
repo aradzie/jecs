@@ -2,7 +2,7 @@ import test from "ava";
 import { parse } from "./parser";
 
 test("parse definitions", (t) => {
-  t.like(parse("R [a b];"), {
+  t.like(parse("R a b;"), {
     items: [
       {
         type: "definition",
@@ -16,7 +16,7 @@ test("parse definitions", (t) => {
     ],
   });
 
-  t.like(parse("R:R1 [a b];"), {
+  t.like(parse("R:R1 a b;"), {
     items: [
       {
         type: "definition",
@@ -32,7 +32,7 @@ test("parse definitions", (t) => {
     ],
   });
 
-  t.like(parse("R:R1 [a b] R=1;"), {
+  t.like(parse("R:R1 a b R=1;"), {
     items: [
       {
         type: "definition",
@@ -61,7 +61,7 @@ test("parse definitions", (t) => {
     ],
   });
 
-  t.like(parse("R:R1 [a b] R=1 T=27;"), {
+  t.like(parse("R:R1 a b R=1 T=27;"), {
     items: [
       {
         type: "definition",
@@ -102,7 +102,7 @@ test("parse definitions", (t) => {
     ],
   });
 
-  t.like(parse('BJT:Q1 [e b c] polarity="npn";'), {
+  t.like(parse('BJT:Q1 e b c polarity="npn";'), {
     items: [
       {
         type: "definition",

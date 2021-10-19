@@ -39,8 +39,11 @@ Definition
     }
 
 NodeList
-  = "[" ids:( _ @Identifier )+ _ "]"
+  = ids:( _ @NodeIdentifier )+
     { return ids; }
+
+NodeIdentifier
+  = @Identifier !( _ "=" )
 
 PropertyList
   = props:( _ @Property )*

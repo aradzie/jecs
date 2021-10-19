@@ -6,10 +6,9 @@ import { Dataset, points } from "./util/dataset";
 import { op } from "./util/ops";
 
 const input = `
-Ground [g];
-V [ND g] v=$xVds;
-V [NG g] v=$xVgs;
-MOSFET:DUT [ND NG g] polarity="nfet";
+V nd g v=$xVds;
+V ng g v=$xVgs;
+MOSFET:DUT nd ng g polarity="nfet";
 `;
 const netlist = parse(input, {});
 

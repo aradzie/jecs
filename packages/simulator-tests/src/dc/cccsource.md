@@ -1,18 +1,18 @@
 ## Netlist
 
 ```text
-Ground [NCN];
-Ground [NON];
-I [NCP NCN] i=1;
-CCCS:DUT [NOP NON NCP NCN] gain=2;
-R [NOP NON] r=5;
+Ground ncn;
+Ground non;
+I ncp ncn i=1;
+CCCS:DUT nop non ncp ncn gain=2;
+R nop non r=5;
 ```
 
 ## Result
 
 ```text
-V(NCP)=0V
-V(NOP)=10V
+V(ncp)=0V
+V(nop)=10V
 I1{Vd=0V,I=1A}
 DUT{Vd=10V,I=-2A}
 R1{Vd=10V,I=2A,P=20W}

@@ -6,11 +6,11 @@ import { Dataset, points } from "./util/dataset";
 import { op } from "./util/ops";
 
 const input = `
-Ground [g];
-V [NR g] v=10;
-V [NB g] v=$xVbe;
-R:R1 [NR NC] r=$xRl;
-BJT:Q1 [g NB NC] polarity="npn" Bf=100;
+Ground g;
+V nr g v=10;
+V nb g v=$xVbe;
+R nr nc r=$xRl;
+BJT:Q1 g nb nc polarity="npn" Bf=100;
 `;
 const netlist = parse(input, {});
 
@@ -24,7 +24,7 @@ for (const xRl of points(100, 2000, 10)) {
     const circuit = parseNetlist(netlist, variables);
     dcAnalysis(circuit);
     const q1 = circuit.getDevice("Q1").ops();
-    const nc = circuit.getNode("NC");
+    const nc = circuit.getNode("nc");
     dataset.add(op(q1, "Vbe"), nc.voltage);
   }
   dataset.break();

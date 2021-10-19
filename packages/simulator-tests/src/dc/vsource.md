@@ -1,15 +1,15 @@
 ## Netlist
 
 ```text
-Ground [NN];
-V:DUT [NP NN] v=5;
-R [NP NN] r=1000;
+Ground nn;
+V:DUT np nn v=5;
+R np nn r=1000;
 ```
 
 ## Result
 
 ```text
-V(NP)=5V
+V(np)=5V
 DUT{Vd=5V,I=-5mA,P=-25mW}
 R1{Vd=5V,I=5mA,P=25mW}
 ```

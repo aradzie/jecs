@@ -3,8 +3,8 @@ import { parse } from "./parser";
 import { Variables } from "./variables";
 
 const input = `
-R:R1 [N1 N2] R=$c;
-R:R2 [N1 N2] R=sin($PI);
+R:R1 n1 n2 R=$c;
+R:R2 n1 n2 R=sin($PI);
 .eq $a = -(-(1));
 .eq $b = $a + 2;
 .eq $c = -+sin($a + $b);

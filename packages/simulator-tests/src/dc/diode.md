@@ -1,9 +1,9 @@
 ## Netlist
 
 ```text
-Ground [g];
-V [NP g] v=5;
-Diode:DUT [g NP];
+Ground g;
+V np g v=5;
+Diode:DUT g np;
 ```
 
 ## Options
@@ -15,7 +15,7 @@ Diode:DUT [g NP];
 ## Result
 
 ```text
-V(NP)=5V
+V(np)=5V
 V1{Vd=5V,I=0A,P=0W}
 DUT{Vd=-5V,I=0A,P=0W}
 ```
@@ -25,9 +25,9 @@ DUT{Vd=-5V,I=0A,P=0W}
 ## Netlist
 
 ```text
-Ground [g];
-I [g NP] i=0.1;
-Diode:DUT [NP g];
+Ground g;
+I g np i=0.1;
+Diode:DUT np g;
 ```
 
 ## Options
@@ -39,7 +39,7 @@ Diode:DUT [NP g];
 ## Result
 
 ```text
-V(NP)=773.844mV
+V(np)=773.844mV
 I1{Vd=-773.844mV,I=100mA}
 DUT{Vd=773.844mV,I=100mA,P=77.384mW}
 ```
@@ -49,10 +49,10 @@ DUT{Vd=773.844mV,I=100mA,P=77.384mW}
 ## Netlist
 
 ```text
-Ground [g];
-I [g NP] i=1;
-Diode:DUT1 [NP NM];
-Diode:DUT2 [NM g];
+Ground g;
+I g np i=1;
+Diode:DUT1 np nm;
+Diode:DUT2 nm g;
 ```
 
 ## Options
@@ -64,8 +64,8 @@ Diode:DUT2 [NM g];
 ## Result
 
 ```text
-V(NP)=1.667V
-V(NM)=833.37mV
+V(np)=1.667V
+V(nm)=833.37mV
 I1{Vd=-1.667V,I=1A}
 DUT1{Vd=833.37mV,I=1A,P=833.37mW}
 DUT2{Vd=833.37mV,I=1A,P=833.37mW}
@@ -76,9 +76,9 @@ DUT2{Vd=833.37mV,I=1A,P=833.37mW}
 ## Netlist
 
 ```text
-Ground [g];
-V [NP g] v=0.8;
-Diode:DUT [NP g];
+Ground g;
+V np g v=0.8;
+Diode:DUT np g;
 ```
 
 ## Options
@@ -90,7 +90,7 @@ Diode:DUT [NP g];
 ## Result
 
 ```text
-V(NP)=800mV
+V(np)=800mV
 V1{Vd=800mV,I=-275.048mA,P=-220.038mW}
 DUT{Vd=800mV,I=275.048mA,P=220.038mW}
 ```
@@ -100,10 +100,10 @@ DUT{Vd=800mV,I=275.048mA,P=220.038mW}
 ## Netlist
 
 ```text
-Ground [g];
-V [NP g] v=1.6;
-Diode:DUT1 [NP NM];
-Diode:DUT2 [NM g];
+Ground g;
+V np g v=1.6;
+Diode:DUT1 np nm;
+Diode:DUT2 nm g;
 ```
 
 ## Options
@@ -115,8 +115,8 @@ Diode:DUT2 [NM g];
 ## Result
 
 ```text
-V(NP)=1.6V
-V(NM)=800mV
+V(np)=1.6V
+V(nm)=800mV
 V1{Vd=1.6V,I=-275.048mA,P=-440.077mW}
 DUT1{Vd=800mV,I=275.048mA,P=220.038mW}
 DUT2{Vd=800mV,I=275.048mA,P=220.038mW}
