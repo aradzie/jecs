@@ -3,9 +3,9 @@
 ```text
 Ground ncn;
 Ground non;
-I ncp ncn i=1;
+I ncp ncn I=1;
 CCCS:DUT nop non ncp ncn gain=2;
-R nop non r=5;
+R nop non R=5;
 ```
 
 ## Result

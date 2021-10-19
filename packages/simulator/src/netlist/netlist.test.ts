@@ -5,8 +5,8 @@ import { parse } from "./parser";
 test("parse netlist text", (t) => {
   const circuit = parseNetlist(`
 Ground ng;
-V:V1 np ng v=5;
-R:R1 np ng r=1000;
+V:V1 np ng V=5;
+R:R1 np ng R=1000;
 `);
 
   t.is(circuit.nodes.length, 2);
@@ -19,8 +19,8 @@ R:R1 np ng r=1000;
 test("parse netlist object", (t) => {
   const netlist = parse(`
 Ground ng;
-V:V1 np ng v=5;
-R:R1 np ng r=1000;
+V:V1 np ng V=5;
+R:R1 np ng R=1000;
 `);
 
   const circuit = parseNetlist(netlist);
@@ -35,10 +35,10 @@ R:R1 np ng r=1000;
 test("assign unique instance ids", (t) => {
   const netlist = parse(`
 Ground g;
-V np g v=5;
-R np g r=1000;
-R np g r=1000;
-R:R1 np g r=1000;
+V np g V=5;
+R np g R=1000;
+R np g R=1000;
+R:R1 np g R=1000;
 `);
 
   const circuit = parseNetlist(netlist);

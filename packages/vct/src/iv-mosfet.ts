@@ -6,8 +6,8 @@ import { Dataset, points } from "./util/dataset";
 import { op } from "./util/ops";
 
 const input = `
-V nd g v=$xVds;
-V ng g v=$xVgs;
+V nd g V=$xVds;
+V ng g V=$xVgs;
 MOSFET:DUT nd ng g polarity="nfet";
 `;
 const netlist = parse(input, {});

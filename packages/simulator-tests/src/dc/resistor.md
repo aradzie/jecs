@@ -1,8 +1,8 @@
 ## Netlist
 
 ```text
-V np g v=5;
-R:DUT np g r=1000;
+V np g V=5;
+R:DUT np g R=1000;
 ```
 
 ## Result
@@ -18,8 +18,8 @@ DUT{Vd=5V,I=5mA,P=25mW}
 ## Netlist
 
 ```text
-V np g v=5;
-R:DUT np g r=-1000;
+V np g V=5;
+R:DUT np g R=-1000;
 ```
 
 ## Result

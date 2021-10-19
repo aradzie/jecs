@@ -2,9 +2,9 @@
 
 ```text
 Ground na;
-V nb na v=5;
+V nb na V=5;
 Ammeter:DUT nb nc;
-R nc na r=1000;
+R nc na R=1000;
 ```
 
 ## Result

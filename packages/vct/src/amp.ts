@@ -7,9 +7,9 @@ import { op } from "./util/ops";
 
 const input = `
 Ground g;
-V nr g v=10;
-V nb g v=$xVbe;
-R nr nc r=$xRl;
+V nr g V=10;
+V nb g V=$xVbe;
+R nr nc R=$xRl;
 BJT:Q1 g nb nc polarity="npn" Bf=100;
 `;
 const netlist = parse(input, {});

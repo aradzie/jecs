@@ -5,7 +5,7 @@ import { Props } from "../../circuit/props";
 import { Unit } from "../../util/unit";
 
 export interface VSourceProps {
-  readonly v: number;
+  readonly V: number;
 }
 
 /**
@@ -15,7 +15,7 @@ export class VSource extends Device<VSourceProps> {
   static override readonly id = "V";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = {
-    v: Props.number({ title: "voltage" }),
+    V: Props.number({ title: "voltage" }),
   };
 
   /** Positive terminal. */
@@ -37,17 +37,17 @@ export class VSource extends Device<VSourceProps> {
 
   override stamp(stamper: Stamper): void {
     const { props, np, nn, branch } = this;
-    const { v } = props;
-    stamper.stampVoltageSource(np, nn, branch, v);
+    const { V } = props;
+    stamper.stampVoltageSource(np, nn, branch, V);
   }
 
   override ops(): readonly Op[] {
     const { props, branch } = this;
-    const { v } = props;
+    const { V } = props;
     const current = branch.current;
-    const power = v * current;
+    const power = V * current;
     return [
-      { name: "Vd", value: v, unit: Unit.VOLT },
+      { name: "Vd", value: V, unit: Unit.VOLT },
       { name: "I", value: current, unit: Unit.AMPERE },
       { name: "P", value: power, unit: Unit.WATT },
     ];

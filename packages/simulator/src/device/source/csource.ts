@@ -5,7 +5,7 @@ import { Props } from "../../circuit/props";
 import { Unit } from "../../util/unit";
 
 export interface CSourceProps {
-  readonly i: number;
+  readonly I: number;
 }
 
 /**
@@ -15,7 +15,7 @@ export class CSource extends Device<CSourceProps> {
   static override readonly id = "I";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = {
-    i: Props.number({ title: "current" }),
+    I: Props.number({ title: "current" }),
   };
 
   /** Positive terminal. */
@@ -31,17 +31,17 @@ export class CSource extends Device<CSourceProps> {
 
   override stamp(stamper: Stamper): void {
     const { props, np, nn } = this;
-    const { i } = props;
-    stamper.stampCurrentSource(np, nn, i);
+    const { I } = props;
+    stamper.stampCurrentSource(np, nn, I);
   }
 
   override ops(): readonly Op[] {
     const { props, np, nn } = this;
-    const { i } = props;
+    const { I } = props;
     const voltage = np.voltage - nn.voltage;
     return [
       { name: "Vd", value: voltage, unit: Unit.VOLT },
-      { name: "I", value: i, unit: Unit.AMPERE },
+      { name: "I", value: I, unit: Unit.AMPERE },
     ];
   }
 }

@@ -6,7 +6,7 @@ import { Dataset, points } from "./util/dataset";
 import { op } from "./util/ops";
 
 const input = `
-V np g v=$xVd;
+V np g V=$xVd;
 Diode:DUT np g;
 `;
 const netlist = parse(input, {});

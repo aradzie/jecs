@@ -2,8 +2,8 @@
 
 ```text
 Ground nn;
-I:DUT np nn i=-1;
-R:R1 np nn r=10;
+I:DUT np nn I=-1;
+R:R1 np nn R=10;
 ```
 
 ## Result

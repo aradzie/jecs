@@ -2,7 +2,7 @@
 
 ```text
 Ground g;
-V np g v=5;
+V np g V=5;
 Diode:DUT g np;
 ```
 
@@ -26,7 +26,7 @@ DUT{Vd=-5V,I=0A,P=0W}
 
 ```text
 Ground g;
-I g np i=0.1;
+I g np I=0.1;
 Diode:DUT np g;
 ```
 
@@ -50,7 +50,7 @@ DUT{Vd=773.844mV,I=100mA,P=77.384mW}
 
 ```text
 Ground g;
-I g np i=1;
+I g np I=1;
 Diode:DUT1 np nm;
 Diode:DUT2 nm g;
 ```
@@ -77,7 +77,7 @@ DUT2{Vd=833.37mV,I=1A,P=833.37mW}
 
 ```text
 Ground g;
-V np g v=0.8;
+V np g V=0.8;
 Diode:DUT np g;
 ```
 
@@ -101,7 +101,7 @@ DUT{Vd=800mV,I=275.048mA,P=220.038mW}
 
 ```text
 Ground g;
-V np g v=1.6;
+V np g V=1.6;
 Diode:DUT1 np nm;
 Diode:DUT2 nm g;
 ```

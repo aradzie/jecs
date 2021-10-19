@@ -18,10 +18,10 @@ const n2 = circuit.allocNode("N2");
 // Add devices to the circuit.
 circuit.addDevice(
   new VSource("V1", [n1, ng], {
-    v: 10,
+    V: 10,
   }),
   new Resistor("R1", [n1, n2], {
-    r: 1000,
+    R: 1000,
   }),
   new Diode("D1", [n2, ng], {
     Temp: 26.85,

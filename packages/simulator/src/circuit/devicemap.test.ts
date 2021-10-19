@@ -7,7 +7,7 @@ test("create device", (t) => {
   const n1 = circuit.allocNode("N1");
   const n2 = circuit.allocNode("N2");
   t.notThrows(() => {
-    createDevice("V", "V1", [n1, n2], { v: 1 });
+    createDevice("V", "V1", [n1, n2], { V: 1 });
   });
   t.throws(
     () => {
@@ -17,7 +17,7 @@ test("create device", (t) => {
   );
   t.throws(
     () => {
-      createDevice("V", "V1", [], { v: 1 });
+      createDevice("V", "V1", [], { V: 1 });
     },
     { message: "Error in device [V:V1]: Invalid number of nodes" },
   );
@@ -25,6 +25,6 @@ test("create device", (t) => {
     () => {
       createDevice("V", "V1", [n1, n2], {});
     },
-    { message: "Error in device [V:V1]: Missing property [v]" },
+    { message: "Error in device [V:V1]: Missing property [V]" },
   );
 });

@@ -2,8 +2,8 @@
 
 ```text
 Ground g;
-V nd g v=15;
-V ng g v=10;
+V nd g V=15;
+V ng g V=10;
 MOSFET:DUT nd ng g polarity="nfet";
 ```
 

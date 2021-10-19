@@ -25,7 +25,7 @@ test("add device", (t) => {
   const circuit = new Circuit();
   const n1 = circuit.allocNode("N1");
   const n2 = circuit.allocNode("N2");
-  const r = new Resistor("R1", [n1, n2], { r: 100 });
+  const r = new Resistor("R1", [n1, n2], { R: 100 });
 
   t.deepEqual(circuit.devices, []);
 

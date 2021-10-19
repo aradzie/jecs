@@ -5,7 +5,7 @@ import { Props } from "../circuit/props";
 import { Unit } from "../util/unit";
 
 export interface ResistorProps {
-  readonly r: number;
+  readonly R: number;
 }
 
 /**
@@ -15,7 +15,7 @@ export class Resistor extends Device<ResistorProps> {
   static override readonly id = "R";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = {
-    r: Props.number({
+    R: Props.number({
       title: "resistance",
     }),
   };
@@ -33,15 +33,15 @@ export class Resistor extends Device<ResistorProps> {
 
   override stamp(stamper: Stamper): void {
     const { props, na, nb } = this;
-    const { r } = props;
-    stamper.stampConductance(na, nb, 1.0 / r);
+    const { R } = props;
+    stamper.stampConductance(na, nb, 1.0 / R);
   }
 
   override ops(): readonly Op[] {
     const { props, na, nb } = this;
-    const { r } = props;
+    const { R } = props;
     const voltage = na.voltage - nb.voltage;
-    const current = voltage / r;
+    const current = voltage / R;
     const power = voltage * current;
     return [
       { name: "Vd", value: voltage, unit: Unit.VOLT },
