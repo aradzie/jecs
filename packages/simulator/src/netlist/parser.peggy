@@ -6,8 +6,8 @@ function binaryExp(head, tail) {
     (result, element) => ({
       type: "binary",
       op: element[1],
-      a: result,
-      b: element[3],
+      arg1: result,
+      arg2: element[3],
     }),
     head,
   );
@@ -24,17 +24,17 @@ Item =
   / Action
 
 Definition
-  = deviceId:Identifier id:( ":" @Identifier )?
+  = id:Identifier instanceId:( ":" @Identifier )?
     _ nodes:NodeList
-    _ properties:PropertyList
+    _ props:PropertyList
     _ ";"
     {
       return {
         type: "definition",
-        deviceId,
         id,
+        instanceId,
         nodes,
-        properties,
+        props,
       };
     }
 
@@ -43,12 +43,12 @@ NodeList
     { return ids; }
 
 PropertyList
-  = properties:( _ @Property )*
-    { return properties; }
+  = props:( _ @Property )*
+    { return props; }
 
 Property
-  = name:Identifier _ "=" _ value:PropertyValue
-    { return { name, value }; }
+  = id:Identifier _ "=" _ value:PropertyValue
+    { return { id, value }; }
 
 PropertyValue
   = value:String
@@ -57,8 +57,8 @@ PropertyValue
     { return { type: "exp", value }; }
 
 Equation
-  = ".eq" _ name:Variable _ "=" _ value:Expression _ ";"
-    { return { type: "equation", name, value, }; }
+  = ".eq" _ id:Variable _ "=" _ value:Expression _ ";"
+    { return { type: "equation", id, value, }; }
 
 Action
   = ( ".dc" / ".sweep" ) _ ";"
@@ -108,11 +108,11 @@ Args
 
 Variable "variable"
   = $( "$" [_a-zA-Z] [_a-zA-Z0-9]* )
-    { return { id: text()/*, location: location()*/ }; }
+    { return { name: text()/*, location: location()*/ }; }
 
 Identifier "identifier"
   = $( [_a-zA-Z] [_a-zA-Z0-9]* )
-    { return { id: text()/*, location: location()*/ }; }
+    { return { name: text()/*, location: location()*/ }; }
 
 String
   = '"' chars:$( !( '"' / "\n" / "\r" ) . )* '"'

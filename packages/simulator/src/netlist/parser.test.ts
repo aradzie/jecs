@@ -6,12 +6,12 @@ test("parse definitions", (t) => {
     items: [
       {
         type: "definition",
-        deviceId: {
-          id: "R",
+        id: {
+          name: "R",
         },
-        id: null,
-        nodes: [{ id: "a" }, { id: "b" }],
-        properties: [],
+        instanceId: null,
+        nodes: [{ name: "a" }, { name: "b" }],
+        props: [],
       },
     ],
   });
@@ -20,14 +20,14 @@ test("parse definitions", (t) => {
     items: [
       {
         type: "definition",
-        deviceId: {
-          id: "R",
-        },
         id: {
-          id: "R1",
+          name: "R",
         },
-        nodes: [{ id: "a" }, { id: "b" }],
-        properties: [],
+        instanceId: {
+          name: "R1",
+        },
+        nodes: [{ name: "a" }, { name: "b" }],
+        props: [],
       },
     ],
   });
@@ -36,17 +36,17 @@ test("parse definitions", (t) => {
     items: [
       {
         type: "definition",
-        deviceId: {
-          id: "R",
-        },
         id: {
-          id: "R1",
+          name: "R",
         },
-        nodes: [{ id: "a" }, { id: "b" }],
-        properties: [
+        instanceId: {
+          name: "R1",
+        },
+        nodes: [{ name: "a" }, { name: "b" }],
+        props: [
           {
-            name: {
-              id: "R",
+            id: {
+              name: "R",
             },
             value: {
               type: "exp",
@@ -65,17 +65,17 @@ test("parse definitions", (t) => {
     items: [
       {
         type: "definition",
-        deviceId: {
-          id: "R",
-        },
         id: {
-          id: "R1",
+          name: "R",
         },
-        nodes: [{ id: "a" }, { id: "b" }],
-        properties: [
+        instanceId: {
+          name: "R1",
+        },
+        nodes: [{ name: "a" }, { name: "b" }],
+        props: [
           {
-            name: {
-              id: "R",
+            id: {
+              name: "R",
             },
             value: {
               type: "exp",
@@ -86,8 +86,8 @@ test("parse definitions", (t) => {
             },
           },
           {
-            name: {
-              id: "T",
+            id: {
+              name: "T",
             },
             value: {
               type: "exp",
@@ -106,17 +106,17 @@ test("parse definitions", (t) => {
     items: [
       {
         type: "definition",
-        deviceId: {
-          id: "BJT",
-        },
         id: {
-          id: "Q1",
+          name: "BJT",
         },
-        nodes: [{ id: "e" }, { id: "b" }, { id: "c" }],
-        properties: [
+        instanceId: {
+          name: "Q1",
+        },
+        nodes: [{ name: "e" }, { name: "b" }, { name: "c" }],
+        props: [
           {
-            name: {
-              id: "polarity",
+            id: {
+              name: "polarity",
             },
             value: {
               type: "string",
@@ -134,7 +134,7 @@ test("parse equations", (t) => {
     items: [
       {
         type: "equation",
-        name: { id: "$a" },
+        id: { name: "$a" },
         value: {
           type: "literal",
           value: 1,
@@ -147,15 +147,15 @@ test("parse equations", (t) => {
     items: [
       {
         type: "equation",
-        name: { id: "$a" },
+        id: { name: "$a" },
         value: {
           type: "binary",
           op: "+",
-          a: {
+          arg1: {
             type: "literal",
             value: 1,
           },
-          b: {
+          arg2: {
             type: "literal",
             value: 2,
           },
@@ -168,10 +168,10 @@ test("parse equations", (t) => {
     items: [
       {
         type: "equation",
-        name: { id: "$a" },
+        id: { name: "$a" },
         value: {
           type: "func",
-          id: { id: "sin" },
+          id: { name: "sin" },
           args: [
             {
               type: "literal",

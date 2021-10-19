@@ -24,13 +24,13 @@ export function parseNetlist(
   // Add devices.
   for (const item of items) {
     if (item.type === "definition") {
-      const { deviceId, id, nodes, properties } = item;
+      const { id, instanceId, nodes, props } = item;
       circuit.addDevice(
         createDevice(
-          getDeviceClass(deviceId.id),
-          deviceName(deviceId, id),
+          getDeviceClass(id.name),
+          deviceName(id, instanceId),
           nodes.map(nameToNode),
-          mapProps(variables, properties),
+          mapProps(variables, props),
         ),
       );
     }
@@ -41,16 +41,16 @@ export function parseNetlist(
 
 function mapProps(
   variables: Variables,
-  properties: readonly Property[],
+  props: readonly Property[],
 ): Record<string, unknown> {
   const result: Record<string, unknown> = {};
-  for (const { name, value } of properties) {
+  for (const { id, value } of props) {
     switch (value.type) {
       case "string":
-        result[name.id] = value.value;
+        result[id.name] = value.value;
         break;
       case "exp":
-        result[name.id] = variables.evalExp(value.value);
+        result[id.name] = variables.evalExp(value.value);
     }
   }
   return result;
@@ -62,10 +62,10 @@ function makeNodeMapper(circuit: Circuit): (id: Identifier) => Node {
     ["g", groundNode],
     ["gnd", groundNode],
   ]);
-  return ({ id }: Identifier): Node => {
-    let node = nodeMap.get(id) ?? null;
+  return ({ name }: Identifier): Node => {
+    let node = nodeMap.get(name) ?? null;
     if (node == null) {
-      nodeMap.set(id, (node = circuit.allocNode(id)));
+      nodeMap.set(name, (node = circuit.allocNode(name)));
     }
     return node;
   };
@@ -77,14 +77,14 @@ function makeDeviceNamer(): (
 ) => string {
   // TODO Generate truly unique names, avoid collisions with existing names.
   const instanceCounter = new Map<string, number>();
-  return (deviceId: Identifier, id: Identifier | null): string => {
-    if (id == null) {
-      const prefix = deviceId.id;
+  return (id: Identifier, instanceId: Identifier | null): string => {
+    if (instanceId == null) {
+      const prefix = id.name;
       let index = instanceCounter.get(prefix) ?? 0;
       instanceCounter.set(prefix, (index += 1));
       return `${prefix}${index}`;
     } else {
-      return id.id;
+      return instanceId.name;
     }
   };
 }

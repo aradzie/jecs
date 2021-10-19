@@ -1,5 +1,4 @@
 import test from "ava";
-import { Equation } from "./ast";
 import { parse } from "./parser";
 import { Variables } from "./variables";
 

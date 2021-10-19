@@ -1,11 +1,4 @@
-import type {
-  BinaryExp,
-  Equation,
-  Expression,
-  FuncExp,
-  Netlist,
-  UnaryExp,
-} from "./ast";
+import type { BinaryExp, Equation, Expression, FuncExp, UnaryExp } from "./ast";
 import { equation, literalExp } from "./ast";
 import { callFunc } from "./functions";
 
@@ -28,13 +21,13 @@ export class Variables {
   }
 
   setEquation(equation: Equation): void {
-    this.equations.set(equation.name.id, equation);
+    this.equations.set(equation.id.name, equation);
   }
 
-  lookup(id: string): number {
-    const eq = this.equations.get(id);
+  lookup(name: string): number {
+    const eq = this.equations.get(name);
     if (eq == null) {
-      throw new TypeError(`Equation [${id}] is not defined.`);
+      throw new TypeError(`Equation [${name}] is not defined.`);
     }
     return this.evalExp(eq.value);
   }
@@ -45,7 +38,7 @@ export class Variables {
         return exp.value;
       }
       case "var": {
-        return this.lookup(exp.id.id);
+        return this.lookup(exp.id.name);
       }
       case "unary": {
         return this._evalUnaryExp(exp);
@@ -70,8 +63,8 @@ export class Variables {
   }
 
   private _evalBinaryExp(exp: BinaryExp): number {
-    const a = this.evalExp(exp.a);
-    const b = this.evalExp(exp.b);
+    const a = this.evalExp(exp.arg1);
+    const b = this.evalExp(exp.arg2);
     switch (exp.op) {
       case "+": {
         return a + b;
@@ -93,7 +86,7 @@ export class Variables {
 
   private _evalFuncExp(exp: FuncExp): number {
     return callFunc(
-      exp.id.id,
+      exp.id.name,
       exp.args.map((arg) => this.evalExp(arg)),
     );
   }

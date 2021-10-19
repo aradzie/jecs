@@ -8,8 +8,8 @@ function binaryExp(head, tail) {
     (result, element) => ({
       type: "binary",
       op: element[1],
-      a: result,
-      b: element[3],
+      arg1: result,
+      arg2: element[3],
     }),
     head,
   );
@@ -244,21 +244,21 @@ function peg$parse(input, options) {
   var peg$e30 = peg$classExpectation([" ", "\t", "\n", "\r"], false, false);
 
   var peg$f0 = function(items) { return { items }; };
-  var peg$f1 = function(deviceId, id, nodes, properties) {
+  var peg$f1 = function(id, instanceId, nodes, props) {
         return {
           type: "definition",
-          deviceId,
           id,
+          instanceId,
           nodes,
-          properties,
+          props,
         };
       };
   var peg$f2 = function(ids) { return ids; };
-  var peg$f3 = function(properties) { return properties; };
-  var peg$f4 = function(name, value) { return { name, value }; };
+  var peg$f3 = function(props) { return props; };
+  var peg$f4 = function(id, value) { return { id, value }; };
   var peg$f5 = function(value) { return { type: "string", value }; };
   var peg$f6 = function(value) { return { type: "exp", value }; };
-  var peg$f7 = function(name, value) { return { type: "equation", name, value, }; };
+  var peg$f7 = function(id, value) { return { type: "equation", id, value, }; };
   var peg$f8 = function() { return { type: "action" }; };
   var peg$f9 = function(head, tail) { return binaryExp(head, tail); };
   var peg$f10 = function(op, arg) { return { type: "unary", op, arg }; };
@@ -266,7 +266,7 @@ function peg$parse(input, options) {
   var peg$f12 = function(id) { return { type: "var", id }; };
   var peg$f13 = function(id, args) { return { type: "func", id, args }; };
   var peg$f14 = function(args) { return args; };
-  var peg$f15 = function() { return { id: text()/*, location: location()*/ }; };
+  var peg$f15 = function() { return { name: text()/*, location: location()*/ }; };
   var peg$f16 = function(chars) { return chars; };
   var peg$f17 = function() { return Number.parseFloat(text()); };
 

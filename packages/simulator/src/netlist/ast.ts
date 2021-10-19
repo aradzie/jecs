@@ -23,6 +23,10 @@ export interface HasLocation {
   readonly location: Location;
 }
 
+export interface HasId {
+  readonly id: Identifier;
+}
+
 export interface Netlist {
   readonly items: readonly Item[];
 }
@@ -30,21 +34,21 @@ export interface Netlist {
 export interface Node {}
 
 export interface Identifier extends Node {
-  readonly id: string;
+  readonly name: string;
 }
 
 export type Item = Definition | Equation | Action;
 
-export interface Definition extends Node {
+export interface Definition extends Node, HasId {
   readonly type: "definition";
-  readonly deviceId: Identifier;
-  readonly id: Identifier | null;
+  readonly id: Identifier;
+  readonly instanceId: Identifier | null;
   readonly nodes: readonly Identifier[];
-  readonly properties: readonly Property[];
+  readonly props: readonly Property[];
 }
 
-export interface Property extends Node {
-  readonly name: Identifier;
+export interface Property extends Node, HasId {
+  readonly id: Identifier;
   readonly value: PropertyValue;
 }
 
@@ -60,9 +64,9 @@ export interface ExpPropertyValue {
   readonly value: Expression;
 }
 
-export interface Equation extends Node {
+export interface Equation extends Node, HasId {
   readonly type: "equation";
-  readonly name: Identifier;
+  readonly id: Identifier;
   readonly value: Expression;
 }
 
@@ -81,8 +85,8 @@ export interface UnaryExp extends Node {
 export interface BinaryExp extends Node {
   readonly type: "binary";
   readonly op: "+" | "-" | "*" | "/" | "^";
-  readonly a: Expression;
-  readonly b: Expression;
+  readonly arg1: Expression;
+  readonly arg2: Expression;
 }
 
 export interface LiteralExp extends Node {
@@ -90,12 +94,12 @@ export interface LiteralExp extends Node {
   readonly value: number;
 }
 
-export interface VarExp extends Node {
+export interface VarExp extends Node, HasId {
   readonly type: "var";
   readonly id: Identifier;
 }
 
-export interface FuncExp extends Node {
+export interface FuncExp extends Node, HasId {
   readonly type: "func";
   readonly id: Identifier;
   readonly args: readonly Expression[];
@@ -104,7 +108,7 @@ export interface FuncExp extends Node {
 export function equation(name: string, value: Expression): Equation {
   return {
     type: "equation",
-    name: { id: name },
+    id: { name },
     value,
   };
 }
