@@ -1,21 +1,21 @@
 import type { Op } from "../../circuit/ops";
 import { Device } from "../../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network";
-import { Props } from "../../circuit/props";
+import { Params } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 
-export interface VSourceProps {
+export interface VSourceParams {
   readonly V: number;
 }
 
 /**
  * Voltage source.
  */
-export class VSource extends Device<VSourceProps> {
+export class VSource extends Device<VSourceParams> {
   static override readonly id = "V";
   static override readonly numTerminals = 2;
-  static override readonly propsSchema = {
-    V: Props.number({ title: "voltage" }),
+  static override readonly paramsSchema = {
+    V: Params.number({ title: "voltage" }),
   };
 
   /** Positive terminal. */
@@ -25,8 +25,8 @@ export class VSource extends Device<VSourceProps> {
   /** Extra MNA branch. */
   private branch!: Branch;
 
-  constructor(name: string, [np, nn]: readonly Node[], props: VSourceProps) {
-    super(name, [np, nn], props);
+  constructor(name: string, [np, nn]: readonly Node[], params: VSourceParams) {
+    super(name, [np, nn], params);
     this.np = np;
     this.nn = nn;
   }
@@ -36,14 +36,14 @@ export class VSource extends Device<VSourceProps> {
   }
 
   override stamp(stamper: Stamper): void {
-    const { props, np, nn, branch } = this;
-    const { V } = props;
+    const { params, np, nn, branch } = this;
+    const { V } = params;
     stamper.stampVoltageSource(np, nn, branch, V);
   }
 
   override ops(): readonly Op[] {
-    const { props, branch } = this;
-    const { V } = props;
+    const { params, branch } = this;
+    const { V } = params;
     const current = branch.current;
     const power = V * current;
     return [

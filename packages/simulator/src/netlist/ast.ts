@@ -44,22 +44,22 @@ export interface Definition extends Node, HasId {
   readonly id: Identifier;
   readonly instanceId: Identifier | null;
   readonly nodes: readonly Identifier[];
-  readonly props: readonly Property[];
+  readonly params: readonly Parameter[];
 }
 
-export interface Property extends Node, HasId {
+export interface Parameter extends Node, HasId {
   readonly id: Identifier;
-  readonly value: PropertyValue;
+  readonly value: ParameterValue;
 }
 
-export type PropertyValue = StringPropertyValue | ExpPropertyValue;
+export type ParameterValue = StringParameterValue | ExpParameterValue;
 
-export interface StringPropertyValue {
+export interface StringParameterValue {
   readonly type: "string";
   readonly value: string;
 }
 
-export interface ExpPropertyValue {
+export interface ExpParameterValue {
   readonly type: "exp";
   readonly value: Expression;
 }

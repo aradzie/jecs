@@ -2,13 +2,13 @@ import { devices } from "../device";
 import type { Device, DeviceClass } from "./device";
 import { CircuitError } from "./error";
 import type { Node } from "./network";
-import { RawDeviceProps, validateProps } from "./props";
+import { RawDeviceParams, validateParams } from "./params";
 
 const deviceMap = new Map<string, DeviceClass>();
 
 export function registerDeviceClass(...deviceClasses: DeviceClass[]): void {
   for (const deviceClass of deviceClasses) {
-    const { id, numTerminals, propsSchema } = deviceClass;
+    const { id, numTerminals, paramsSchema } = deviceClass;
     if (id == null) {
       throw new CircuitError(
         `The [id] attribute is missing` + //
@@ -21,9 +21,9 @@ export function registerDeviceClass(...deviceClasses: DeviceClass[]): void {
           ` device class [${deviceClass}]`,
       );
     }
-    if (propsSchema == null) {
+    if (paramsSchema == null) {
       throw new CircuitError(
-        `The [propsSchema] attribute is missing` + //
+        `The [paramsSchema] attribute is missing` + //
           ` in device class [${deviceClass}]`,
       );
     }
@@ -46,28 +46,28 @@ export function createDevice(
   deviceClass: string | DeviceClass,
   name: string,
   nodes: readonly Node[],
-  rawProps: RawDeviceProps,
+  rawParams: RawDeviceParams,
 ): Device {
   if (typeof deviceClass === "string") {
     deviceClass = getDeviceClass(deviceClass);
   }
-  const { id, numTerminals, propsSchema } = deviceClass;
+  const { id, numTerminals, paramsSchema } = deviceClass;
   if (nodes.length !== numTerminals) {
     throw new CircuitError(
       `Error in device [${id}:${name}]: ` + //
         `Invalid number of nodes`,
     );
   }
-  let props;
+  let params;
   try {
-    props = validateProps(rawProps, propsSchema);
+    params = validateParams(rawParams, paramsSchema);
   } catch (err: any) {
     throw new CircuitError(
       `Error in device [${id}:${name}]: ` + //
         `${err.message}`,
     );
   }
-  return new deviceClass(name, nodes, props);
+  return new deviceClass(name, nodes, params);
 }
 
 registerDeviceClass(...devices);

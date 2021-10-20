@@ -1,6 +1,6 @@
-import type { RawDeviceProps } from "../circuit/props";
+import type { RawDeviceParams } from "../circuit/params";
 import type { BinaryExp, Equation, Expression, FuncExp, UnaryExp } from "./ast";
-import { builtins, equation, literalExp, Property } from "./ast";
+import { builtins, equation, literalExp, Parameter } from "./ast";
 import { callFunc } from "./functions";
 
 export class Variables {
@@ -20,9 +20,9 @@ export class Variables {
     this.equations.set(equation.id.name, equation);
   }
 
-  mapProps(props: readonly Property[]): RawDeviceProps {
-    const result: RawDeviceProps = {};
-    for (const { id, value } of props) {
+  mapParams(params: readonly Parameter[]): RawDeviceParams {
+    const result: RawDeviceParams = {};
+    for (const { id, value } of params) {
       switch (value.type) {
         case "string":
           result[id.name] = value.value;

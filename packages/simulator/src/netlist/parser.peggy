@@ -26,7 +26,7 @@ Item =
 Definition
   = id:Identifier instanceId:( ":" @Identifier )?
     _ nodes:NodeList
-    _ props:PropertyList
+    _ params:ParameterList
     _ ";"
     {
       return {
@@ -34,7 +34,7 @@ Definition
         id,
         instanceId,
         nodes,
-        props,
+        params,
       };
     }
 
@@ -45,15 +45,15 @@ NodeList
 NodeIdentifier
   = @Identifier !( _ "=" )
 
-PropertyList
-  = props:( _ @Property )*
-    { return props; }
+ParameterList
+  = params:( _ @Parameter )*
+    { return params; }
 
-Property
-  = id:Identifier _ "=" _ value:PropertyValue
+Parameter
+  = id:Identifier _ "=" _ value:ParameterValue
     { return { id, value }; }
 
-PropertyValue
+ParameterValue
   = value:String
     { return { type: "string", value }; }
   / value:Expression

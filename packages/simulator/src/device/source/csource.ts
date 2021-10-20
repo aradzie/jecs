@@ -1,21 +1,21 @@
 import type { Op } from "../../circuit/ops";
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
-import { Props } from "../../circuit/props";
+import { Params } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 
-export interface CSourceProps {
+export interface CSourceParams {
   readonly I: number;
 }
 
 /**
  * Current source.
  */
-export class CSource extends Device<CSourceProps> {
+export class CSource extends Device<CSourceParams> {
   static override readonly id = "I";
   static override readonly numTerminals = 2;
-  static override readonly propsSchema = {
-    I: Props.number({ title: "current" }),
+  static override readonly paramsSchema = {
+    I: Params.number({ title: "current" }),
   };
 
   /** Positive terminal. */
@@ -23,21 +23,21 @@ export class CSource extends Device<CSourceProps> {
   /** Negative terminal. */
   readonly nn: Node;
 
-  constructor(name: string, [np, nn]: readonly Node[], props: CSourceProps) {
-    super(name, [np, nn], props);
+  constructor(name: string, [np, nn]: readonly Node[], params: CSourceParams) {
+    super(name, [np, nn], params);
     this.np = np;
     this.nn = nn;
   }
 
   override stamp(stamper: Stamper): void {
-    const { props, np, nn } = this;
-    const { I } = props;
+    const { params, np, nn } = this;
+    const { I } = params;
     stamper.stampCurrentSource(np, nn, I);
   }
 
   override ops(): readonly Op[] {
-    const { props, np, nn } = this;
-    const { I } = props;
+    const { params, np, nn } = this;
+    const { I } = params;
     const voltage = np.voltage - nn.voltage;
     return [
       { name: "Vd", value: voltage, unit: Unit.VOLT },

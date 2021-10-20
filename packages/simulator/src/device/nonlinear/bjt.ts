@@ -1,12 +1,12 @@
 import type { Op } from "../../circuit/ops";
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
-import { Props } from "../../circuit/props";
+import { Params } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import { BjtPolarity, bjtSign, npn, PN, pnp } from "./semi";
 
-export interface BjtProps {
+export interface BjtParams {
   readonly polarity: BjtPolarity;
   readonly Temp: number;
   readonly Is: number;
@@ -26,43 +26,43 @@ interface BjtState {
 /**
  * Bipolar junction transistor, BJT.
  */
-export class Bjt extends Device<BjtProps, BjtState> {
+export class Bjt extends Device<BjtParams, BjtState> {
   static override readonly id = "BJT";
   static override readonly numTerminals = 3;
-  static override readonly propsSchema = {
-    polarity: Props.enum({
+  static override readonly paramsSchema = {
+    polarity: Params.enum({
       values: [npn, pnp],
       title: "transistor polarity",
     }),
-    Temp: Props.number({
+    Temp: Params.number({
       default: Temp,
       title: "device temperature",
     }),
-    Is: Props.number({
+    Is: Params.number({
       default: 1e-14,
       title: "saturation current",
     }),
-    Nf: Props.number({
+    Nf: Params.number({
       default: 1,
       title: "forward emission coefficient",
     }),
-    Nr: Props.number({
+    Nr: Params.number({
       default: 1,
       title: "reverse emission coefficient",
     }),
-    Vaf: Props.number({
+    Vaf: Params.number({
       default: 10,
       title: "forward Early voltage",
     }),
-    Var: Props.number({
+    Var: Params.number({
       default: 0,
       title: "reverse Early voltage",
     }),
-    Bf: Props.number({
+    Bf: Params.number({
       default: 100,
       title: "forward beta",
     }),
-    Br: Props.number({
+    Br: Params.number({
       default: 1,
       title: "reverse beta",
     }),
@@ -79,12 +79,12 @@ export class Bjt extends Device<BjtProps, BjtState> {
   /** The base-collector PN junction of BJT. */
   private readonly pnBc: PN;
 
-  constructor(name: string, [ne, nb, nc]: readonly Node[], props: BjtProps) {
-    super(name, [ne, nb, nc], props);
+  constructor(name: string, [ne, nb, nc]: readonly Node[], params: BjtParams) {
+    super(name, [ne, nb, nc], params);
     this.ne = ne;
     this.nb = nb;
     this.nc = nc;
-    const { Temp, Is, Nf, Nr } = this.props;
+    const { Temp, Is, Nf, Nr } = this.params;
     this.pnBe = new PN(Temp, Is, Nf);
     this.pnBc = new PN(Temp, Is, Nr);
   }
@@ -94,8 +94,8 @@ export class Bjt extends Device<BjtProps, BjtState> {
   }
 
   override stamp(stamper: Stamper, state: BjtState): void {
-    const { props, ne, nb, nc, pnBe, pnBc } = this;
-    const { polarity, Bf, Br } = props;
+    const { params, ne, nb, nc, pnBe, pnBc } = this;
+    const { polarity, Bf, Br } = params;
     const sign = bjtSign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);
@@ -134,8 +134,8 @@ export class Bjt extends Device<BjtProps, BjtState> {
   }
 
   override ops(): readonly Op[] {
-    const { props, ne, nb, nc, pnBe, pnBc } = this;
-    const { polarity, Bf, Br } = props;
+    const { params, ne, nb, nc, pnBe, pnBc } = this;
+    const { polarity, Bf, Br } = params;
     const sign = bjtSign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);

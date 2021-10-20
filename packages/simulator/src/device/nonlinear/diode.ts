@@ -1,12 +1,12 @@
 import type { Op } from "../../circuit/ops";
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
-import { Props } from "../../circuit/props";
+import { Params } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import { PN } from "./semi";
 
-export interface DiodeProps {
+export interface DiodeParams {
   readonly Temp: number;
   readonly Is: number;
   readonly N: number;
@@ -19,19 +19,19 @@ interface DiodeState {
 /**
  * Diode.
  */
-export class Diode extends Device<DiodeProps, DiodeState> {
+export class Diode extends Device<DiodeParams, DiodeState> {
   static override readonly id = "Diode";
   static override readonly numTerminals = 2;
-  static override readonly propsSchema = {
-    Temp: Props.number({
+  static override readonly paramsSchema = {
+    Temp: Params.number({
       default: Temp,
       title: "device temperature",
     }),
-    Is: Props.number({
+    Is: Params.number({
       default: 1e-14,
       title: "saturation current",
     }),
-    N: Props.number({
+    N: Params.number({
       default: 1,
       title: "emission coefficient",
     }),
@@ -44,11 +44,11 @@ export class Diode extends Device<DiodeProps, DiodeState> {
   /** The PN junction of diode. */
   readonly pn: PN;
 
-  constructor(name: string, [na, nc]: readonly Node[], props: DiodeProps) {
-    super(name, [na, nc], props);
+  constructor(name: string, [na, nc]: readonly Node[], params: DiodeParams) {
+    super(name, [na, nc], params);
     this.na = na;
     this.nc = nc;
-    const { Temp, Is, N } = this.props;
+    const { Temp, Is, N } = this.params;
     this.pn = new PN(Temp, Is, N);
   }
 

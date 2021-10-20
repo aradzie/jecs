@@ -1,12 +1,12 @@
 import type { Op } from "../../circuit/ops";
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
-import { Props } from "../../circuit/props";
+import { Params } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import { FetPolarity, fetSign, nfet, pfet } from "./semi";
 
-export interface MosfetProps {
+export interface MosfetParams {
   readonly polarity: FetPolarity;
   readonly Temp: number;
   readonly Vth: number;
@@ -18,27 +18,27 @@ export interface MosfetProps {
  * Metal–oxide–semiconductor field-effect transistor, MOSFET.
  * TODO Complete this device model.
  */
-export class Mosfet extends Device<MosfetProps> {
+export class Mosfet extends Device<MosfetParams> {
   static override readonly id = "MOSFET";
   static override readonly numTerminals = 3;
-  static override readonly propsSchema = {
-    polarity: Props.enum({
+  static override readonly paramsSchema = {
+    polarity: Params.enum({
       values: [nfet, pfet],
       title: "transistor polarity",
     }),
-    Temp: Props.number({
+    Temp: Params.number({
       default: Temp,
       title: "device temperature",
     }),
-    Vth: Props.number({
+    Vth: Params.number({
       default: 2,
       title: "threshold voltage",
     }),
-    beta: Props.number({
+    beta: Params.number({
       default: 0.02,
       title: "transconductance parameter",
     }),
-    lambda: Props.number({
+    lambda: Params.number({
       default: 0,
       title: "channel-length modulation parameter",
     }),
@@ -51,16 +51,20 @@ export class Mosfet extends Device<MosfetProps> {
   /** The source terminal. */
   readonly ns: Node;
 
-  constructor(name: string, [nd, ng, ns]: readonly Node[], props: MosfetProps) {
-    super(name, [nd, ng, ns], props);
+  constructor(
+    name: string,
+    [nd, ng, ns]: readonly Node[],
+    params: MosfetParams,
+  ) {
+    super(name, [nd, ng, ns], params);
     this.nd = nd;
     this.ng = ng;
     this.ns = ns;
   }
 
   override stamp(stamper: Stamper): void {
-    const { nd, ng, ns, props } = this;
-    const { polarity, Vth, beta, lambda } = props;
+    const { nd, ng, ns, params } = this;
+    const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity); // TODO
     const Vds = nd.voltage - ns.voltage;
     const Vgs = ng.voltage - ns.voltage;
@@ -105,8 +109,8 @@ export class Mosfet extends Device<MosfetProps> {
   }
 
   override ops(): readonly Op[] {
-    const { nd, ng, ns, props } = this;
-    const { polarity, Vth, beta, lambda } = props;
+    const { nd, ng, ns, params } = this;
+    const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity); // TODO
     const Vds = nd.voltage - ns.voltage;
     const Vgs = ng.voltage - ns.voltage;

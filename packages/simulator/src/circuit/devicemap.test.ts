@@ -25,6 +25,6 @@ test("create device", (t) => {
     () => {
       createDevice("V", "V1", [n1, n2], {});
     },
-    { message: "Error in device [V:V1]: Missing property [V]" },
+    { message: "Error in device [V:V1]: Missing parameter [V]" },
   );
 });

@@ -240,17 +240,17 @@ function peg$parse(input, options) {
   var peg$e28 = peg$classExpectation([" ", "\t", "\n", "\r"], false, false);
 
   var peg$f0 = function(items) { return { items }; };
-  var peg$f1 = function(id, instanceId, nodes, props) {
+  var peg$f1 = function(id, instanceId, nodes, params) {
         return {
           type: "definition",
           id,
           instanceId,
           nodes,
-          props,
+          params,
         };
       };
   var peg$f2 = function(ids) { return ids; };
-  var peg$f3 = function(props) { return props; };
+  var peg$f3 = function(params) { return params; };
   var peg$f4 = function(id, value) { return { id, value }; };
   var peg$f5 = function(value) { return { type: "string", value }; };
   var peg$f6 = function(value) { return { type: "exp", value }; };
@@ -501,7 +501,7 @@ function peg$parse(input, options) {
       s4 = peg$parseNodeList();
       if (s4 !== peg$FAILED) {
         s5 = peg$parse_();
-        s6 = peg$parsePropertyList();
+        s6 = peg$parseParameterList();
         s7 = peg$parse_();
         if (input.charCodeAt(peg$currPos) === 59) {
           s8 = peg$c1;
@@ -613,14 +613,14 @@ function peg$parse(input, options) {
     return s0;
   }
 
-  function peg$parsePropertyList() {
+  function peg$parseParameterList() {
     var s0, s1, s2, s3, s4;
 
     s0 = peg$currPos;
     s1 = [];
     s2 = peg$currPos;
     s3 = peg$parse_();
-    s4 = peg$parseProperty();
+    s4 = peg$parseParameter();
     if (s4 !== peg$FAILED) {
       s2 = s4;
     } else {
@@ -631,7 +631,7 @@ function peg$parse(input, options) {
       s1.push(s2);
       s2 = peg$currPos;
       s3 = peg$parse_();
-      s4 = peg$parseProperty();
+      s4 = peg$parseParameter();
       if (s4 !== peg$FAILED) {
         s2 = s4;
       } else {
@@ -646,7 +646,7 @@ function peg$parse(input, options) {
     return s0;
   }
 
-  function peg$parseProperty() {
+  function peg$parseParameter() {
     var s0, s1, s2, s3, s4, s5;
 
     s0 = peg$currPos;
@@ -662,7 +662,7 @@ function peg$parse(input, options) {
       }
       if (s3 !== peg$FAILED) {
         s4 = peg$parse_();
-        s5 = peg$parsePropertyValue();
+        s5 = peg$parseParameterValue();
         if (s5 !== peg$FAILED) {
           peg$savedPos = s0;
           s0 = peg$f4(s1, s5);
@@ -682,7 +682,7 @@ function peg$parse(input, options) {
     return s0;
   }
 
-  function peg$parsePropertyValue() {
+  function peg$parseParameterValue() {
     var s0, s1;
 
     s0 = peg$currPos;

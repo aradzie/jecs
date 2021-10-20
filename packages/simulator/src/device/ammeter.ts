@@ -9,7 +9,7 @@ import { Unit } from "../util/unit";
 export class Ammeter extends Device {
   static override readonly id = "Ammeter";
   static override readonly numTerminals = 2;
-  static override readonly propsSchema = {};
+  static override readonly paramsSchema = {};
 
   /** Positive terminal. */
   readonly np: Node;

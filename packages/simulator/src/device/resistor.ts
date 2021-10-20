@@ -1,21 +1,21 @@
 import type { Op } from "../circuit/ops";
 import { Device } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
-import { Props } from "../circuit/props";
+import { Params } from "../circuit/params";
 import { Unit } from "../util/unit";
 
-export interface ResistorProps {
+export interface ResistorParams {
   readonly R: number;
 }
 
 /**
  * Resistor.
  */
-export class Resistor extends Device<ResistorProps> {
+export class Resistor extends Device<ResistorParams> {
   static override readonly id = "R";
   static override readonly numTerminals = 2;
-  static override readonly propsSchema = {
-    R: Props.number({
+  static override readonly paramsSchema = {
+    R: Params.number({
       title: "resistance",
     }),
   };
@@ -25,21 +25,21 @@ export class Resistor extends Device<ResistorProps> {
   /** Second terminal. */
   readonly nb: Node;
 
-  constructor(name: string, [na, nb]: readonly Node[], props: ResistorProps) {
-    super(name, [na, nb], props);
+  constructor(name: string, [na, nb]: readonly Node[], params: ResistorParams) {
+    super(name, [na, nb], params);
     this.na = na;
     this.nb = nb;
   }
 
   override stamp(stamper: Stamper): void {
-    const { props, na, nb } = this;
-    const { R } = props;
+    const { params, na, nb } = this;
+    const { R } = params;
     stamper.stampConductance(na, nb, 1.0 / R);
   }
 
   override ops(): readonly Op[] {
-    const { props, na, nb } = this;
-    const { R } = props;
+    const { params, na, nb } = this;
+    const { R } = params;
     const voltage = na.voltage - nb.voltage;
     const current = voltage / R;
     const power = voltage * current;

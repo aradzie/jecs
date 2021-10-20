@@ -1,21 +1,21 @@
 import type { Op } from "../../circuit/ops";
 import { Device } from "../../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network";
-import { Props } from "../../circuit/props";
+import { Params } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 
-export interface VCCSourceProps {
+export interface VCCSourceParams {
   readonly gain: number;
 }
 
 /**
  * Voltage-controlled current source.
  */
-export class VCCSource extends Device<VCCSourceProps> {
+export class VCCSource extends Device<VCCSourceParams> {
   static override readonly id = "VCCS";
   static override readonly numTerminals = 4;
-  static override readonly propsSchema = {
-    gain: Props.number({ title: "gain" }),
+  static override readonly paramsSchema = {
+    gain: Params.number({ title: "gain" }),
   };
 
   /** Positive output terminal. */
@@ -32,9 +32,9 @@ export class VCCSource extends Device<VCCSourceProps> {
   constructor(
     name: string,
     [np, nn, ncp, ncn]: readonly Node[],
-    props: VCCSourceProps,
+    params: VCCSourceParams,
   ) {
-    super(name, [np, nn, ncp, ncn], props);
+    super(name, [np, nn, ncp, ncn], params);
     this.np = np;
     this.nn = nn;
     this.ncp = ncp;
@@ -46,8 +46,8 @@ export class VCCSource extends Device<VCCSourceProps> {
   }
 
   override stamp(stamper: Stamper): void {
-    const { props, np, nn, ncp, ncn, branch } = this;
-    const { gain } = props;
+    const { params, np, nn, ncp, ncn, branch } = this;
+    const { gain } = params;
     stamper.stampMatrix(np, branch, 1);
     stamper.stampMatrix(nn, branch, -1);
     stamper.stampMatrix(branch, ncp, gain);
