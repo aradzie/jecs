@@ -30,4 +30,4 @@ for (const xRl of points(100, 2000, 10)) {
   dataset.break();
 }
 
-dataset.save("amp");
+dataset.save("amp-bjt");
