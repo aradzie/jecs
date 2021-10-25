@@ -99,14 +99,10 @@ export class Bjt extends Device<BjtParams, BjtState> {
     const sign = bjtSign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);
-    const Vbe = (state.prevVbe = pnBe.limitVoltage(
-      sign * (nb.voltage - ne.voltage),
-      state.prevVbe,
-    ));
-    const Vbc = (state.prevVbc = pnBc.limitVoltage(
-      sign * (nb.voltage - nc.voltage),
-      state.prevVbc,
-    ));
+    const Vbe0 = nb.voltage - ne.voltage;
+    const Vbc0 = nb.voltage - nc.voltage;
+    const Vbe = (state.prevVbe = pnBe.limitVoltage(sign * Vbe0, state.prevVbe));
+    const Vbc = (state.prevVbc = pnBc.limitVoltage(sign * Vbc0, state.prevVbc));
     const Gf = pnBe.evalConductance(Vbe);
     const Gr = pnBc.evalConductance(Vbc);
     const If = pnBe.evalCurrent(Vbe);
