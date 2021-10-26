@@ -60,10 +60,7 @@ export class Diode extends Device<DiodeParams, DiodeState> {
     const { na, nc, pn } = this;
     const Vd0 = na.voltage - nc.voltage;
     const Vd = (state.prevVd = pn.limitVoltage(Vd0, state.prevVd));
-    const eqGd = pn.evalConductance(Vd);
-    const eqId = pn.evalCurrent(Vd) - eqGd * Vd;
-    stamper.stampConductance(na, nc, eqGd);
-    stamper.stampCurrentSource(na, nc, eqId);
+    pn.stamp(stamper, na, nc, Vd);
   }
 
   override ops(): readonly Op[] {

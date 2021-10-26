@@ -1,3 +1,4 @@
+import type { Node, Stamper } from "../../circuit/network";
 import { celsiusToKelvin } from "../../util/unit";
 import { k, q } from "../const";
 
@@ -87,5 +88,12 @@ export class PN {
       }
     }
     return voltage;
+  }
+
+  stamp(stamper: Stamper, na: Node, nc: Node, Vd: number): void {
+    const eqGd = this.evalConductance(Vd);
+    const eqId = this.evalCurrent(Vd) - eqGd * Vd;
+    stamper.stampConductance(na, nc, eqGd);
+    stamper.stampCurrentSource(na, nc, eqId);
   }
 }
