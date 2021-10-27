@@ -44,26 +44,26 @@ export class Mosfet extends Device<MosfetParams> {
     }),
   };
 
-  /** The drain terminal. */
-  readonly nd: Node;
-  /** The gate terminal. */
-  readonly ng: Node;
   /** The source terminal. */
   readonly ns: Node;
+  /** The gate terminal. */
+  readonly ng: Node;
+  /** The drain terminal. */
+  readonly nd: Node;
 
   constructor(
     name: string,
-    [nd, ng, ns]: readonly Node[],
+    [ns, ng, nd]: readonly Node[],
     params: MosfetParams,
   ) {
-    super(name, [nd, ng, ns], params);
-    this.nd = nd;
-    this.ng = ng;
+    super(name, [ns, ng, nd], params);
     this.ns = ns;
+    this.ng = ng;
+    this.nd = nd;
   }
 
   override stamp(stamper: Stamper): void {
-    const { nd, ng, ns, params } = this;
+    const { ns, ng, nd, params } = this;
     const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity); // TODO
     const Vds = nd.voltage - ns.voltage;
@@ -109,7 +109,7 @@ export class Mosfet extends Device<MosfetParams> {
   }
 
   override ops(): readonly Op[] {
-    const { nd, ng, ns, params } = this;
+    const { ns, ng, nd, params } = this;
     const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity); // TODO
     const Vds = nd.voltage - ns.voltage;
@@ -136,8 +136,8 @@ export class Mosfet extends Device<MosfetParams> {
       }
     }
     return [
-      { name: "Vds", value: Vds, unit: Unit.VOLT },
       { name: "Vgs", value: Vgs, unit: Unit.VOLT },
+      { name: "Vds", value: Vds, unit: Unit.VOLT },
       { name: "Ids", value: Ids, unit: Unit.AMPERE },
     ];
   }

@@ -4,7 +4,7 @@
 Ground g;
 V:VDS nd g V=5;
 V:VGS ng g V=0;
-JFET:DUT nd ng g polarity="nfet" Vth=-4;
+JFET:DUT g ng nd polarity="nfet" Vth=-4;
 ```
 
 ## Options
@@ -20,7 +20,7 @@ V(nd)=5V
 V(ng)=0V
 VDS{Vd=5V,I=-20mA,P=-100mW}
 VGS{Vd=0V,I=0A,P=0W}
-DUT{Vds=5V,Vgs=0V,Ids=20mA}
+DUT{Vgs=0V,Vds=5V,Ids=20mA}
 ```
 
 ---
@@ -31,7 +31,7 @@ DUT{Vds=5V,Vgs=0V,Ids=20mA}
 Ground g;
 V:VDS nd g V=5;
 V:VGS ng g V=-5;
-JFET:DUT nd ng g polarity="nfet" Vth=-4;
+JFET:DUT g ng nd polarity="nfet" Vth=-4;
 ```
 
 ## Options
@@ -47,7 +47,7 @@ V(nd)=5V
 V(ng)=-5V
 VDS{Vd=5V,I=0A,P=0W}
 VGS{Vd=-5V,I=0A,P=0W}
-DUT{Vds=5V,Vgs=-5V,Ids=0A}
+DUT{Vgs=-5V,Vds=5V,Ids=0A}
 ```
 
 ---
@@ -71,7 +71,7 @@ JFET nc g nc polarity="nfet" Vth=-4;
 ```text
 V(nc)=-700mV
 V1{Vd=700mV,I=-11.495mA,P=-8.047mW}
-JFET1{Vds=0V,Vgs=700mV,Ids=0A}
+JFET1{Vgs=700mV,Vds=0V,Ids=0A}
 ```
 
 ---
@@ -95,7 +95,7 @@ JFET nc g nc polarity="nfet" Vth=-4;
 ```text
 V(nc)=700mV
 V1{Vd=700mV,I=0A,P=0W}
-JFET1{Vds=0V,Vgs=-700mV,Ids=0A}
+JFET1{Vgs=-700mV,Vds=0V,Ids=0A}
 ```
 
 ---
@@ -119,7 +119,7 @@ JFET nc g nc polarity="pfet" Vth=4;
 ```text
 V(nc)=700mV
 V1{Vd=700mV,I=-11.495mA,P=-8.047mW}
-JFET1{Vds=0V,Vgs=-700mV,Ids=0A}
+JFET1{Vgs=-700mV,Vds=0V,Ids=0A}
 ```
 
 ---
@@ -143,5 +143,5 @@ JFET nc g nc polarity="pfet" Vth=4;
 ```text
 V(nc)=-700mV
 V1{Vd=700mV,I=0A,P=0W}
-JFET1{Vds=0V,Vgs=700mV,Ids=0A}
+JFET1{Vgs=700mV,Vds=0V,Ids=0A}
 ```

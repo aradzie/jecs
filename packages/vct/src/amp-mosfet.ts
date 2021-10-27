@@ -12,7 +12,7 @@ Ground g;
 V nr g V=10;
 V ng g V=$xVgs;
 R nr nd R=$xRl;
-MOSFET:Q1 nd ng g polarity="nfet";
+MOSFET:Q1 g ng nd polarity="nfet";
 `;
 const netlist = parse(input, {});
 

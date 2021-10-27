@@ -58,29 +58,29 @@ export class Jfet extends Device<JfetParams, JfetState> {
     }),
   };
 
-  /** The drain terminal. */
-  readonly nd: Node;
-  /** The gate terminal. */
-  readonly ng: Node;
   /** The source terminal. */
   readonly ns: Node;
+  /** The gate terminal. */
+  readonly ng: Node;
+  /** The drain terminal. */
+  readonly nd: Node;
   /** The gate-source PN junction of BJT. */
   private readonly pnGs: PN;
   /** The gate-drain PN junction of BJT. */
   private readonly pnGd: PN;
 
-  constructor(name: string, [nd, ng, ns]: readonly Node[], params: JfetParams) {
-    super(name, [nd, ng, ns], params);
-    this.nd = nd;
-    this.ng = ng;
+  constructor(name: string, [ns, ng, nd]: readonly Node[], params: JfetParams) {
+    super(name, [ns, ng, nd], params);
     this.ns = ns;
+    this.ng = ng;
+    this.nd = nd;
     const { Temp, Is, N } = this.params;
     this.pnGs = new PN(Temp, Is, N);
     this.pnGd = new PN(Temp, Is, N);
   }
 
   override stamp(stamper: Stamper, state: JfetState): void {
-    const { nd, ng, ns, params, pnGs, pnGd } = this;
+    const { ns, ng, nd, params, pnGs, pnGd } = this;
     const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity);
     const Vgs = (state.prevVgs = pnGs.limitVoltage(
@@ -176,7 +176,7 @@ export class Jfet extends Device<JfetParams, JfetState> {
   }
 
   override ops(): readonly Op[] {
-    const { nd, ng, ns, params, pnGs, pnGd } = this;
+    const { ns, ng, nd, params, pnGs, pnGd } = this;
     const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity);
     const Vgs = sign * (ng.voltage - ns.voltage);
@@ -222,8 +222,8 @@ export class Jfet extends Device<JfetParams, JfetState> {
     const Igs = pnGs.evalCurrent(Vgs);
     const Igd = pnGd.evalCurrent(Vgd);
     return [
-      { name: "Vds", value: sign * Vds, unit: Unit.VOLT },
       { name: "Vgs", value: sign * Vgs, unit: Unit.VOLT },
+      { name: "Vds", value: sign * Vds, unit: Unit.VOLT },
       { name: "Ids", value: sign * Ids, unit: Unit.AMPERE },
     ];
   }

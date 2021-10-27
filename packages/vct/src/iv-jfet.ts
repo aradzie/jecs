@@ -10,7 +10,7 @@ import { op } from "./util/ops";
 const input = `
 V nd g V=$xVds;
 V ng g V=$xVgs;
-JFET:DUT nd ng g polarity="nfet";
+JFET:DUT g ng nd polarity="nfet";
 `;
 const netlist = parse(input, {});
 
