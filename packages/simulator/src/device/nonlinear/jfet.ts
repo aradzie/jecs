@@ -109,19 +109,17 @@ export class Jfet extends Device<JfetParams, JfetState> {
         eqGm = 0;
       } else {
         const c0 = lambda * Vds;
-        const c1 = 1 + c0;
+        const c1 = beta * (1 + c0);
         if (Vgst <= Vds) {
           // Saturation region.
-          Ids = beta * c1 * Vgst * Vgst;
+          Ids = c1 * Vgst * Vgst;
           eqGds = beta * lambda * Vgst * Vgst;
-          eqGm = 2 * beta * c1 * Vgst;
+          eqGm = 2 * c1 * Vgst;
         } else {
           // Linear region.
-          Ids = beta * c1 * Vds * (Vgst + Vgst - Vds);
-          eqGds =
-            2 * beta * c1 * (Vgst - Vds) + //
-            beta * lambda * Vds * (Vgst + Vgst - Vds);
-          eqGm = 2 * beta * c1 * Vds;
+          Ids = c1 * Vds * (2 * Vgst - Vds);
+          eqGds = 2 * c1 * (Vgst - Vds) + beta * c0 * (2 * Vgst - Vds);
+          eqGm = 2 * c1 * Vds;
         }
       }
     } else {
@@ -134,19 +132,17 @@ export class Jfet extends Device<JfetParams, JfetState> {
         eqGm = 0;
       } else {
         const c0 = lambda * Vsd;
-        const c1 = 1 + c0;
+        const c1 = beta * (1 + c0);
         if (Vgdt <= Vsd) {
           // Saturation region.
-          Ids = -beta * c1 * Vgdt * Vgdt;
-          eqGds = beta * lambda * Vgdt * Vgdt + 2 * beta * c1 * Vgdt;
-          eqGm = -2 * beta * c1 * Vgdt;
+          Ids = -c1 * Vgdt * Vgdt;
+          eqGds = beta * lambda * Vgdt * Vgdt + 2 * c1 * Vgdt;
+          eqGm = -2 * c1 * Vgdt;
         } else {
           // Linear region.
-          Ids = -beta * c1 * Vsd * (Vgdt + Vgdt - Vsd);
-          eqGds =
-            2 * beta * c1 * Vgdt + //
-            beta * lambda * Vsd * (Vgdt + Vgdt - Vsd);
-          eqGm = -2 * beta * c1 * Vsd;
+          Ids = -c1 * Vsd * (2 * Vgdt - Vsd);
+          eqGds = 2 * c1 * Vgdt + beta * c0 * (2 * Vgdt - Vsd);
+          eqGm = -2 * c1 * Vsd;
         }
       }
     }
@@ -192,13 +188,13 @@ export class Jfet extends Device<JfetParams, JfetState> {
         Ids = 0;
       } else {
         const c0 = lambda * Vds;
-        const c1 = 1 + c0;
+        const c1 = beta * (1 + c0);
         if (Vgst <= Vds) {
           // Saturation region.
-          Ids = beta * c1 * Vgst * Vgst;
+          Ids = c1 * Vgst * Vgst;
         } else {
           // Linear region.
-          Ids = beta * c1 * Vds * (Vgst + Vgst - Vds);
+          Ids = c1 * Vds * (2 * Vgst - Vds);
         }
       }
     } else {
@@ -209,13 +205,13 @@ export class Jfet extends Device<JfetParams, JfetState> {
         Ids = 0;
       } else {
         const c0 = lambda * Vsd;
-        const c1 = 1 + c0;
+        const c1 = beta * (1 + c0);
         if (Vgdt <= Vsd) {
           // Saturation region.
-          Ids = -beta * c1 * Vgdt * Vgdt;
+          Ids = -c1 * Vgdt * Vgdt;
         } else {
           // Linear region.
-          Ids = -beta * c1 * Vsd * (Vgdt + Vgdt - Vsd);
+          Ids = -c1 * Vsd * (2 * Vgdt - Vsd);
         }
       }
     }
