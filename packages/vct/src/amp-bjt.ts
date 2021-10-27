@@ -2,6 +2,8 @@ import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist";
 import { parse } from "@jssim/simulator/lib/netlist/parser";
 import { Variables } from "@jssim/simulator/lib/netlist/variables";
 import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
+import { formatNumber } from "@jssim/simulator/lib/util/format";
+import { Unit } from "@jssim/simulator/lib/util/unit";
 import { Dataset, points } from "./util/dataset";
 import { op } from "./util/ops";
 
@@ -16,7 +18,8 @@ const netlist = parse(input, {});
 
 const dataset = new Dataset();
 
-for (const xRl of points(100, 2000, 10)) {
+for (const xRl of points(100, 2000, 5)) {
+  dataset.group(`Rl=${formatNumber(xRl, Unit.OHM)}`);
   for (const xVbe of points(0.5, 0.8, 100)) {
     const variables = new Variables();
     variables.setVariable("$xRl", xRl);
@@ -27,7 +30,6 @@ for (const xRl of points(100, 2000, 10)) {
     const nc = circuit.getNode("nc");
     dataset.add(op(q1, "Vbe"), nc.voltage);
   }
-  dataset.break();
 }
 
 dataset.save("amp-bjt");

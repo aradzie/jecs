@@ -19,21 +19,27 @@ export function* points(
 }
 
 export class Dataset {
-  private data: number[][] = [];
+  private data: string[] = [];
 
   add(...points: number[]): void {
-    this.data.push([...points]);
+    this.data.push(points.map((point) => point.toExponential(10)).join(" "));
+  }
+
+  group(title: string): void {
+    if (this.data.length > 0) {
+      this.data.push("");
+      this.data.push("");
+    }
+    this.data.push(`"${title}"`);
   }
 
   break(): void {
-    this.data.push([]);
+    this.data.push("");
   }
 
   save(name: string): void {
     const file = join(__dirname, "..", "..", "plot", `${name}.data`);
-    const content = this.data
-      .map((points) => points.map((point) => point.toExponential(10)).join(" "))
-      .join("\n");
+    const content = this.data.join("\n");
     writeFileSync(file, content, "utf-8");
   }
 }

@@ -2,19 +2,22 @@ import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist";
 import { parse } from "@jssim/simulator/lib/netlist/parser";
 import { Variables } from "@jssim/simulator/lib/netlist/variables";
 import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
+import { formatNumber } from "@jssim/simulator/lib/util/format";
+import { Unit } from "@jssim/simulator/lib/util/unit";
 import { Dataset, points } from "./util/dataset";
 import { op } from "./util/ops";
 
 const input = `
 V nd g V=$xVds;
 V ng g V=$xVgs;
-JFET:DUT nd ng g polarity="nfet" lambda=0.01;
+JFET:DUT nd ng g polarity="nfet";
 `;
 const netlist = parse(input, {});
 
 const dataset = new Dataset();
 
 for (const xVgs of points(0, -4, 5)) {
+  dataset.group(`Vgs=${formatNumber(xVgs, Unit.VOLT)}`);
   for (const xVds of points(0, 10, 100)) {
     const variables = new Variables();
     variables.setVariable("$xVds", xVds);
@@ -26,7 +29,6 @@ for (const xVgs of points(0, -4, 5)) {
     const Ids = op(ops, "Ids");
     dataset.add(Vds, Ids);
   }
-  dataset.break();
 }
 
 dataset.save("iv-jfet");
