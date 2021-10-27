@@ -1,0 +1,32 @@
+import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist";
+import { parse } from "@jssim/simulator/lib/netlist/parser";
+import { Variables } from "@jssim/simulator/lib/netlist/variables";
+import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
+import { Dataset, points } from "./util/dataset";
+import { op } from "./util/ops";
+
+const input = `
+V nd g V=$xVds;
+V ng g V=$xVgs;
+JFET:DUT nd ng g polarity="nfet" lambda=0.01;
+`;
+const netlist = parse(input, {});
+
+const dataset = new Dataset();
+
+for (const xVgs of points(0, -4, 5)) {
+  for (const xVds of points(0, 10, 100)) {
+    const variables = new Variables();
+    variables.setVariable("$xVds", xVds);
+    variables.setVariable("$xVgs", xVgs);
+    const circuit = parseNetlist(netlist, variables);
+    dcAnalysis(circuit);
+    const ops = circuit.getDevice("DUT").ops();
+    const Vds = op(ops, "Vds");
+    const Ids = op(ops, "Ids");
+    dataset.add(Vds, Ids);
+  }
+  dataset.break();
+}
+
+dataset.save("iv-jfet");
