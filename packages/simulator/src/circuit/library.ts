@@ -1,16 +1,17 @@
 import { devices } from "../device";
+import { NameMap } from "../util/map";
 import type { Device, DeviceClass } from "./device";
 import { CircuitError } from "./error";
 import type { Node } from "./network";
 import {
   DeviceModel,
-  Initializer,
   DeviceParams,
+  Initializer,
   validateParams,
 } from "./params";
 
 class Registration {
-  private static readonly map = new Map<string, Registration>();
+  private static readonly map = new NameMap<Registration>();
 
   static get(deviceClass: string | DeviceClass): Registration {
     const id = typeof deviceClass === "string" ? deviceClass : deviceClass.id;
@@ -54,7 +55,7 @@ class Registration {
 
   constructor(
     readonly deviceClass: DeviceClass,
-    readonly models: Map<string, DeviceParams> = new Map(),
+    readonly models: NameMap<DeviceParams> = new NameMap(),
   ) {}
 
   addModel(name: string, params: DeviceParams): void {

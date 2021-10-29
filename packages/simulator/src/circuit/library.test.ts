@@ -46,7 +46,7 @@ test("create device from model", (t) => {
     });
   }
   {
-    const dev = createDevice("BJT", "Q1", nodes, "NPN", { Temp: 100 });
+    const dev = createDevice("bjt", "Q1", nodes, "npn", { Temp: 100 });
     t.true(dev instanceof Bjt);
     t.like((dev as Bjt).params, {
       polarity: "npn",
@@ -54,7 +54,7 @@ test("create device from model", (t) => {
     });
   }
   {
-    const dev = createDevice("BJT", "Q1", nodes, { Temp: 100 }, "NPN");
+    const dev = createDevice("bjt", "Q1", nodes, { Temp: 100 }, "npn");
     t.true(dev instanceof Bjt);
     t.like((dev as Bjt).params, {
       polarity: "npn",
