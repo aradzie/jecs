@@ -1,5 +1,4 @@
 import type { Circuit } from "../circuit/circuit";
-import type { Device } from "../circuit/device";
 import { CircuitError } from "../circuit/error";
 import { Stamper } from "../circuit/network";
 import { solve } from "../math/gauss-elimination";

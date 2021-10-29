@@ -1,6 +1,6 @@
 import test from "ava";
 import { Circuit } from "./circuit";
-import { createDevice } from "./devicemap";
+import { createDevice } from "./library";
 
 test("create device", (t) => {
   const circuit = new Circuit();

@@ -1,5 +1,5 @@
-import type { Op } from "./ops";
 import type { Network, Node, Stamper } from "./network";
+import type { Op } from "./ops";
 import type { ParamsSchema } from "./params";
 
 // pin

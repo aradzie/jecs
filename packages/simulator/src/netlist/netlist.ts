@@ -1,6 +1,6 @@
 import { Circuit } from "../circuit/circuit";
 import type { DeviceClass } from "../circuit/device";
-import { createDevice, getDeviceClass } from "../circuit/devicemap";
+import { createDevice, getDeviceClass } from "../circuit/library";
 import type { Node } from "../circuit/network";
 import type { RawDeviceParams } from "../circuit/params";
 import { Ground } from "../device";
