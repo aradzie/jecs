@@ -23,6 +23,8 @@ export abstract class Device<ParamsT = unknown, StateT = unknown> {
   readonly nodes: Node[];
   readonly params: ParamsT;
 
+  state: StateT = this.getInitialState();
+
   constructor(name: string, nodes: readonly Node[], params: ParamsT) {
     this.name = name;
     this.nodes = [...nodes];
@@ -30,32 +32,38 @@ export abstract class Device<ParamsT = unknown, StateT = unknown> {
   }
 
   /**
-   * Circuit calls this method to let a device
-   * to allocate extra nodes and branches.
+   * Circuit calls this method to let a device to allocate extra nodes and
+   * branches.
    * @param network A network which contains allocated nodes and branches.
    */
   connect(network: Network): void {}
 
   /**
    * Returns a device state object which is shared between iterations.
-   * This allows running multiple analyses on the same circuit.
    */
   getInitialState(): StateT {
     return {} as StateT;
   }
 
   /**
-   * Circuit calls this method to let a device
-   * to stamp MNA matrix and RHS vector.
+   * Circuit calls this method to let a device to compute its state
+   * from the current node voltages and branch currents.
+   * @param state Device state which is saved between iterations.
+   */
+  eval(state: StateT): void {}
+
+  /**
+   * Circuit calls this method to let a device to stamp the MNA matrix
+   * with values obtained from the previously computed state.
    * @param stamper A stamper which updates MNA matrix and RHS vector.
    * @param state Device state which is saved between iterations.
    */
   stamp(stamper: Stamper, state: StateT): void {}
 
   /**
-   * Returns device operating points.
+   * Returns device operating points obtained from a previously computed state.
    */
-  ops(): readonly Op[] {
+  ops(state?: StateT): readonly Op[] {
     return [];
   }
 }

@@ -1,6 +1,6 @@
-import type { Op } from "../../circuit/ops";
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
+import type { Op } from "../../circuit/ops";
 import { Params } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
@@ -19,8 +19,22 @@ export interface BjtParams {
 }
 
 interface BjtState {
-  prevVbe: number;
-  prevVbc: number;
+  /** Base-emitter voltage. */
+  Vbe: number;
+  /** Base-collector voltage. */
+  Vbc: number;
+  /** Forward alpha. */
+  Af: number;
+  /** Reverse alpha. */
+  Ar: number;
+  /** Emitter current. */
+  Ie: number;
+  /** Collector current. */
+  Ic: number;
+  /** Forward transconductance. */
+  Gf: number;
+  /** Reverse transconductance. */
+  Gr: number;
 }
 
 /**
@@ -90,66 +104,95 @@ export class Bjt extends Device<BjtParams, BjtState> {
   }
 
   override getInitialState(): BjtState {
-    return { prevVbe: 0, prevVbc: 0 };
+    return {
+      Vbe: 0,
+      Vbc: 0,
+      Af: 0,
+      Ar: 0,
+      Ie: 0,
+      Ic: 0,
+      Gf: 0,
+      Gr: 0,
+    };
   }
 
-  override stamp(stamper: Stamper, state: BjtState): void {
+  override eval(state: BjtState): void {
     const { params, ne, nb, nc, pnBe, pnBc } = this;
     const { polarity, Bf, Br } = params;
     const sign = bjtSign(polarity);
-    const Af = Bf / (Bf + 1);
-    const Ar = Br / (Br + 1);
-    const Vbe0 = nb.voltage - ne.voltage;
-    const Vbc0 = nb.voltage - nc.voltage;
-    const Vbe = (state.prevVbe = pnBe.limitVoltage(sign * Vbe0, state.prevVbe));
-    const Vbc = (state.prevVbc = pnBc.limitVoltage(sign * Vbc0, state.prevVbc));
-    const Gf = pnBe.evalConductance(Vbe);
-    const Gr = pnBc.evalConductance(Vbc);
+    const Vbe = (state.Vbe = pnBe.limitVoltage(
+      sign * (nb.voltage - ne.voltage),
+      state.Vbe,
+    ));
+    const Vbc = (state.Vbc = pnBc.limitVoltage(
+      sign * (nb.voltage - nc.voltage),
+      state.Vbc,
+    ));
     const If = pnBe.evalCurrent(Vbe);
     const Ir = pnBc.evalCurrent(Vbc);
-    const Ie = Ar * Ir - If;
-    const Ic = Af * If - Ir;
+    const Af = (state.Af = Bf / (Bf + 1));
+    const Ar = (state.Ar = Br / (Br + 1));
+    state.Ie = Ar * Ir - If;
+    state.Ic = Af * If - Ir;
+    state.Gf = pnBe.evalConductance(Vbe);
+    state.Gr = pnBc.evalConductance(Vbc);
+  }
+
+  override stamp(
+    stamper: Stamper,
+    {
+      Vbe,
+      Vbc,
+      Af,
+      Ar,
+      Ie,
+      Ic,
+      Gf,
+      Gr, //
+    }: BjtState,
+  ): void {
+    const { params, ne, nb, nc } = this;
+    const { polarity } = params;
+    const sign = bjtSign(polarity);
     const eqGee = -Gf;
     const eqGcc = -Gr;
     const eqGec = Ar * Gr;
     const eqGce = Af * Gf;
-    const eqIe = Ie - eqGee * Vbe - eqGec * Vbc;
-    const eqIc = Ic - eqGce * Vbe - eqGcc * Vbc;
     stamper.stampMatrix(ne, ne, -eqGee);
     stamper.stampMatrix(ne, nc, -eqGec);
     stamper.stampMatrix(ne, nb, eqGec + eqGee);
-    stamper.stampRightSide(ne, sign * -eqIe);
     stamper.stampMatrix(nc, ne, -eqGce);
     stamper.stampMatrix(nc, nc, -eqGcc);
     stamper.stampMatrix(nc, nb, eqGce + eqGcc);
-    stamper.stampRightSide(nc, sign * -eqIc);
     stamper.stampMatrix(nb, ne, eqGce + eqGee);
     stamper.stampMatrix(nb, nc, eqGec + eqGcc);
     stamper.stampMatrix(nb, nb, -(eqGcc + eqGee + eqGce + eqGec));
-    stamper.stampRightSide(nb, sign * (eqIe + eqIc));
+    stamper.stampCurrentSource(ne, nb, sign * (Ie - eqGee * Vbe - eqGec * Vbc));
+    stamper.stampCurrentSource(nc, nb, sign * (Ic - eqGce * Vbe - eqGcc * Vbc));
   }
 
-  override ops(): readonly Op[] {
-    const { params, ne, nb, nc, pnBe, pnBc } = this;
-    const { polarity, Bf, Br } = params;
+  override ops(
+    {
+      Vbe,
+      Vbc,
+      Af,
+      Ar,
+      Ie,
+      Ic,
+      Gf,
+      Gr, //
+    }: BjtState = this.state,
+  ): readonly Op[] {
+    const { params } = this;
+    const { polarity } = params;
     const sign = bjtSign(polarity);
-    const Af = Bf / (Bf + 1);
-    const Ar = Br / (Br + 1);
-    const Vbe = sign * (nb.voltage - ne.voltage);
-    const Vbc = sign * (nb.voltage - nc.voltage);
-    const Vce = sign * (nc.voltage - ne.voltage);
-    const If = pnBe.evalCurrent(Vbe);
-    const Ir = pnBc.evalCurrent(Vbc);
-    const Ie = Ar * Ir - If;
-    const Ic = Af * If - Ir;
-    const Ib = -(Ie + Ic);
     return [
       { name: "Vbe", value: sign * Vbe, unit: Unit.VOLT },
       { name: "Vbc", value: sign * Vbc, unit: Unit.VOLT },
-      { name: "Vce", value: sign * Vce, unit: Unit.VOLT },
+      { name: "Vce", value: sign * (Vbe - Vbc), unit: Unit.VOLT },
       { name: "Ie", value: sign * Ie, unit: Unit.AMPERE },
       { name: "Ic", value: sign * Ic, unit: Unit.AMPERE },
-      { name: "Ib", value: sign * Ib, unit: Unit.AMPERE },
+      { name: "Ib", value: sign * -(Ie + Ic), unit: Unit.AMPERE },
     ];
   }
 }

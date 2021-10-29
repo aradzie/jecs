@@ -17,8 +17,28 @@ export interface JfetParams {
 }
 
 interface JfetState {
-  prevVgs: number;
-  prevVgd: number;
+  /** Gate-source diode voltage. */
+  Vgs: number;
+  /** Gate-source diode current. */
+  Igs: number;
+  /** Gate-source diode conductance. */
+  Ggs: number;
+  /** Gate-drain diode voltage. */
+  Vgd: number;
+  /** Gate-drain diode current. */
+  Igd: number;
+  /** Gate-drain diode conductance. */
+  Ggd: number;
+  /** Jfet drain-source voltage. */
+  Vds: number;
+  /** Jfet source-drain voltage. */
+  Vsd: number;
+  /** Jfet drain-source current. */
+  Ids: number;
+  /** Jfet drain-source conductance. */
+  Gds: number;
+  /** Jfet transconductance. */
+  Gm: number;
 }
 
 /**
@@ -79,61 +99,70 @@ export class Jfet extends Device<JfetParams, JfetState> {
     this.pnGd = new PN(Temp, Is, N);
   }
 
-  override stamp(stamper: Stamper, state: JfetState): void {
+  override getInitialState(): JfetState {
+    return {
+      Vgs: 0,
+      Igs: 0,
+      Ggs: 0,
+      Vgd: 0,
+      Igd: 0,
+      Ggd: 0,
+      Vds: 0,
+      Vsd: 0,
+      Ids: 0,
+      Gds: 0,
+      Gm: 0,
+    };
+  }
+
+  override eval(state: JfetState): void {
     const { ns, ng, nd, params, pnGs, pnGd } = this;
     const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity);
-    const Vgs = (state.prevVgs = pnGs.limitVoltage(
+
+    const Vgs = (state.Vgs = pnGs.limitVoltage(
       sign * (ng.voltage - ns.voltage),
-      state.prevVgs,
+      state.Vgs,
     ));
-    const Vgd = (state.prevVgd = pnGd.limitVoltage(
+    const Vgd = (state.Vgd = pnGd.limitVoltage(
       sign * (ng.voltage - nd.voltage),
-      state.prevVgd,
+      state.Vgd,
     ));
-    const Vds = Vgs - Vgd;
-    const Vsd = Vgd - Vgs;
 
     // DIODES
 
-    const Igs = pnGs.evalCurrent(Vgs);
-    const eqGgs = pnGs.evalConductance(Vgs);
-    const eqIgs = Igs - eqGgs * Vgs;
-    stamper.stampConductance(ng, ns, eqGgs);
-    stamper.stampCurrentSource(ng, ns, sign * eqIgs);
+    state.Igs = pnGs.evalCurrent(Vgs);
+    state.Ggs = pnGs.evalConductance(Vgs);
 
-    const Igd = pnGs.evalCurrent(Vgd);
-    const eqGgd = pnGs.evalConductance(Vgd);
-    const eqIgd = Igd - eqGgd * Vgd;
-    stamper.stampConductance(ng, nd, eqGgd);
-    stamper.stampCurrentSource(ng, nd, sign * eqIgd);
+    state.Igd = pnGs.evalCurrent(Vgd);
+    state.Ggd = pnGs.evalConductance(Vgd);
 
     // FET
 
-    let Ids;
-    let eqGds;
-    let eqGm;
-    if (Vds >= 0) {
+    const Vds = (state.Vds = Vgs - Vgd);
+    const Vsd = (state.Vsd = Vgd - Vgs);
+
+    if (Vgs >= Vgd) {
       // Normal mode.
       const Vgst = Vgs - Vth;
       if (Vgst <= 0) {
         // Cutoff region.
-        Ids = 0;
-        eqGds = 0;
-        eqGm = 0;
+        state.Ids = 0;
+        state.Gds = 0;
+        state.Gm = 0;
       } else {
         const c0 = lambda * Vds;
         const c1 = beta * (1 + c0);
         if (Vgst <= Vds) {
           // Saturation region.
-          Ids = c1 * Vgst * Vgst;
-          eqGds = beta * lambda * Vgst * Vgst;
-          eqGm = 2 * c1 * Vgst;
+          state.Ids = c1 * Vgst * Vgst;
+          state.Gds = beta * lambda * Vgst * Vgst;
+          state.Gm = 2 * c1 * Vgst;
         } else {
           // Linear region.
-          Ids = c1 * Vds * (2 * Vgst - Vds);
-          eqGds = 2 * c1 * (Vgst - Vds) + beta * c0 * (2 * Vgst - Vds);
-          eqGm = 2 * c1 * Vds;
+          state.Ids = c1 * Vds * (2 * Vgst - Vds);
+          state.Gds = 2 * c1 * (Vgst - Vds) + beta * c0 * (2 * Vgst - Vds);
+          state.Gm = 2 * c1 * Vds;
         }
       }
     } else {
@@ -141,81 +170,83 @@ export class Jfet extends Device<JfetParams, JfetState> {
       const Vgdt = Vgd - Vth;
       if (Vgdt <= 0) {
         // Cutoff region.
-        Ids = 0;
-        eqGds = 0;
-        eqGm = 0;
+        state.Ids = 0;
+        state.Gds = 0;
+        state.Gm = 0;
       } else {
         const c0 = lambda * Vsd;
         const c1 = beta * (1 + c0);
         if (Vgdt <= Vsd) {
           // Saturation region.
-          Ids = -c1 * Vgdt * Vgdt;
-          eqGds = beta * lambda * Vgdt * Vgdt + 2 * c1 * Vgdt;
-          eqGm = -2 * c1 * Vgdt;
+          state.Ids = -c1 * Vgdt * Vgdt;
+          state.Gds = beta * lambda * Vgdt * Vgdt + 2 * c1 * Vgdt;
+          state.Gm = -2 * c1 * Vgdt;
         } else {
           // Linear region.
-          Ids = -c1 * Vsd * (2 * Vgdt - Vsd);
-          eqGds = 2 * c1 * Vgdt + beta * c0 * (2 * Vgdt - Vsd);
-          eqGm = -2 * c1 * Vsd;
+          state.Ids = -c1 * Vsd * (2 * Vgdt - Vsd);
+          state.Gds = 2 * c1 * Vgdt + beta * c0 * (2 * Vgdt - Vsd);
+          state.Gm = -2 * c1 * Vsd;
         }
       }
     }
-    const eqIds = Ids - eqGds * Vds - eqGm * Vgs;
-
-    stamper.stampConductance(nd, ns, eqGds);
-    stamper.stampMatrix(nd, ng, eqGm);
-    stamper.stampMatrix(nd, ns, -eqGm);
-    stamper.stampMatrix(ns, ng, -eqGm);
-    stamper.stampMatrix(ns, ns, eqGm);
-    stamper.stampCurrentSource(nd, ns, sign * eqIds);
   }
 
-  override ops(): readonly Op[] {
-    const { ns, ng, nd, params, pnGs, pnGd } = this;
-    const { polarity, Vth, beta, lambda } = params;
+  override stamp(
+    stamper: Stamper,
+    {
+      Vgs,
+      Igs,
+      Ggs,
+      Vgd,
+      Igd,
+      Ggd,
+      Vds,
+      Vsd,
+      Ids,
+      Gds,
+      Gm, //
+    }: JfetState,
+  ): void {
+    const { ns, ng, nd, params } = this;
+    const { polarity } = params;
     const sign = fetSign(polarity);
-    const Vgs = sign * (ng.voltage - ns.voltage);
-    const Vgd = sign * (ng.voltage - nd.voltage);
-    const Vds = Vgs - Vgd;
-    const Vsd = Vgd - Vgs;
-    let Ids;
-    if (Vds >= 0) {
-      // Normal mode.
-      const Vgst = Vgs - Vth;
-      if (Vgst <= 0) {
-        // Cutoff region.
-        Ids = 0;
-      } else {
-        const c0 = lambda * Vds;
-        const c1 = beta * (1 + c0);
-        if (Vgst <= Vds) {
-          // Saturation region.
-          Ids = c1 * Vgst * Vgst;
-        } else {
-          // Linear region.
-          Ids = c1 * Vds * (2 * Vgst - Vds);
-        }
-      }
-    } else {
-      // Inverse mode.
-      const Vgdt = Vgd - Vth;
-      if (Vgdt <= 0) {
-        // Cutoff region.
-        Ids = 0;
-      } else {
-        const c0 = lambda * Vsd;
-        const c1 = beta * (1 + c0);
-        if (Vgdt <= Vsd) {
-          // Saturation region.
-          Ids = -c1 * Vgdt * Vgdt;
-        } else {
-          // Linear region.
-          Ids = -c1 * Vsd * (2 * Vgdt - Vsd);
-        }
-      }
-    }
-    const Igs = pnGs.evalCurrent(Vgs);
-    const Igd = pnGd.evalCurrent(Vgd);
+
+    // DIODES
+
+    stamper.stampConductance(ng, ns, Ggs);
+    stamper.stampCurrentSource(ng, ns, sign * (Igs - Ggs * Vgs));
+
+    stamper.stampConductance(ng, nd, Ggd);
+    stamper.stampCurrentSource(ng, nd, sign * (Igd - Ggd * Vgd));
+
+    // FET
+
+    stamper.stampConductance(nd, ns, Gds);
+    stamper.stampMatrix(nd, ng, Gm);
+    stamper.stampMatrix(nd, ns, -Gm);
+    stamper.stampMatrix(ns, ng, -Gm);
+    stamper.stampMatrix(ns, ns, Gm);
+    stamper.stampCurrentSource(nd, ns, sign * (Ids - Gds * Vds - Gm * Vgs));
+  }
+
+  override ops(
+    {
+      Vgs,
+      Igs,
+      Ggs,
+      Vgd,
+      Igd,
+      Ggd,
+      Vds,
+      Vsd,
+      Ids,
+      Gds,
+      Gm, //
+    }: JfetState = this.state,
+  ): readonly Op[] {
+    const { params } = this;
+    const { polarity } = params;
+    const sign = fetSign(polarity);
     return [
       { name: "Vgs", value: sign * Vgs, unit: Unit.VOLT },
       { name: "Vds", value: sign * Vds, unit: Unit.VOLT },

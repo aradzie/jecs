@@ -1,15 +1,18 @@
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
+import type { Op } from "../../circuit/ops";
 import { Params } from "../../circuit/params";
 
 export interface OpAmpParams {
   readonly gain: number;
 }
 
+interface OpAmpState {}
+
 /**
  * Ideal operational amplifier.
  */
-export class OpAmp extends Device<OpAmpParams> {
+export class OpAmp extends Device<OpAmpParams, OpAmpState> {
   static override readonly id = "OpAmp";
   static override readonly numTerminals = 3;
   static override readonly paramsSchema = {
@@ -27,5 +30,15 @@ export class OpAmp extends Device<OpAmpParams> {
     this.o = o;
   }
 
-  override stamp(stamper: Stamper): void {}
+  override getInitialState(): OpAmpState {
+    return {};
+  }
+
+  override eval(state: OpAmpState): void {}
+
+  override stamp(stamper: Stamper, state: OpAmpState): void {}
+
+  override ops(state: OpAmpState = this.state): readonly Op[] {
+    return [];
+  }
 }

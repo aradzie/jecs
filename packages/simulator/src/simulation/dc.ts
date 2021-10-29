@@ -33,20 +33,21 @@ export function dcAnalysis(
   const vector = vecMake(n);
   const prev = vecMake(n);
 
-  const deviceState = devices.map((device) => [
-    device,
-    device.getInitialState(),
-  ]) as [Device, unknown][];
-
   const stamper = new Stamper(matrix, vector);
 
   while (true) {
     ctl.nextIteration();
 
+    for (const device of devices) {
+      const { state } = device;
+      device.eval(state);
+    }
+
     matClear(matrix);
     vecClear(vector);
 
-    for (const [device, state] of deviceState) {
+    for (const device of devices) {
+      const { state } = device;
       device.stamp(stamper, state);
     }
 
@@ -59,5 +60,10 @@ export function dcAnalysis(
     }
 
     vecCopy(vector, prev);
+  }
+
+  for (const device of devices) {
+    const { state } = device;
+    device.eval(state);
   }
 }

@@ -7,8 +7,8 @@ import { Temp } from "../const";
 import {
   FetPolarity,
   fetSign,
-  fetVoltageGSGD,
   fetVoltageDS,
+  fetVoltageGSGD,
   nfet,
   pfet,
   PN,
@@ -25,11 +25,30 @@ export interface MosfetParams {
 }
 
 interface MosfetState {
-  prevVbs: number;
-  prevVbd: number;
-  prevVgs: number;
-  prevVgd: number;
-  prevVds: number;
+  /** Bulk-source diode voltage. */
+  Vbs: number;
+  /** Bulk-source diode current. */
+  Ibs: number;
+  /** Bulk-source diode conductance. */
+  Gbs: number;
+  /** Bulk-drain diode voltage. */
+  Vbd: number;
+  /** Bulk-drain diode current. */
+  Ibd: number;
+  /** Bulk-drain diode conductance. */
+  Gbd: number;
+  /** Mosfet gate-source voltage. */
+  Vgs: number;
+  /** Mosfet gate-drain voltage. */
+  Vgd: number;
+  /** Mosfet drain-source voltage. */
+  Vds: number;
+  /** Mosfet drain-source current. */
+  Ids: number;
+  /** Mosfet drain-source conductance. */
+  Gds: number;
+  /** Mosfet transconductance. */
+  Gm: number;
 }
 
 /**
@@ -99,176 +118,169 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
 
   override getInitialState(): MosfetState {
     return {
-      prevVbs: 0,
-      prevVbd: 0,
-      prevVgs: 0,
-      prevVgd: 0,
-      prevVds: 0,
+      Vbs: 0,
+      Ibs: 0,
+      Gbs: 0,
+      Vbd: 0,
+      Ibd: 0,
+      Gbd: 0,
+      Vgs: 0,
+      Vgd: 0,
+      Vds: 0,
+      Ids: 0,
+      Gds: 0,
+      Gm: 0,
     };
   }
 
-  override stamp(stamper: Stamper, state: MosfetState): void {
+  override eval(state: MosfetState): void {
     const { ns, ng, nd, nb, params, pnBs, pnBd } = this;
     const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity);
 
     // DIODES
 
-    const Vbs = (state.prevVbs = pnBs.limitVoltage(
+    const Vbs = (state.Vbs = pnBs.limitVoltage(
       sign * (nb.voltage - ns.voltage),
-      state.prevVbs,
+      state.Vbs,
     ));
-    const Vbd = (state.prevVbd = pnBd.limitVoltage(
+    state.Ibs = pnBs.evalCurrent(Vbs);
+    state.Gbs = pnBs.evalConductance(Vbs);
+
+    const Vbd = (state.Vbd = pnBd.limitVoltage(
       sign * (nb.voltage - nd.voltage),
-      state.prevVbd,
+      state.Vbd,
     ));
-
-    const Ibs = pnBs.evalCurrent(Vbs);
-    const eqGbs = pnBs.evalConductance(Vbs);
-    const eqIbs = Ibs - eqGbs * Vbs;
-    stamper.stampConductance(nb, ns, eqGbs);
-    stamper.stampCurrentSource(nb, ns, sign * eqIbs);
-
-    const Ibd = pnBs.evalCurrent(Vbd);
-    const eqGbd = pnBs.evalConductance(Vbd);
-    const eqIbd = Ibd - eqGbd * Vbd;
-    stamper.stampConductance(nb, nd, eqGbd);
-    stamper.stampCurrentSource(nb, nd, sign * eqIbd);
+    state.Ibd = pnBs.evalCurrent(Vbd);
+    state.Gbd = pnBs.evalConductance(Vbd);
 
     // FET
 
-    let Vgs = sign * (ng.voltage - ns.voltage);
-    let Vgd = sign * (ng.voltage - nd.voltage);
+    let Vgs = (state.Vgs = sign * (ng.voltage - ns.voltage));
+    let Vgd = (state.Vgd = sign * (ng.voltage - nd.voltage));
 
-    let Ids;
-    let eqGds;
-    let eqGm;
-    let eqIds;
     if (Vgs >= Vgd) {
-      Vgs = state.prevVgs = fetVoltageGSGD(Vgs, state.prevVgs, sign * Vth);
-      const Vds = (state.prevVds = fetVoltageDS(Vgs - Vgd, state.prevVds));
+      Vgs = state.Vgs = fetVoltageGSGD(Vgs, state.Vgs, sign * Vth);
+      const Vds = (state.Vds = fetVoltageDS(Vgs - Vgd, state.Vds));
 
       // Normal mode.
       const Vgst = Vgs - sign * Vth;
       if (Vgst <= 0) {
         // Cutoff region.
-        Ids = 0;
-        eqGds = 0;
-        eqGm = 0;
+        state.Ids = 0;
+        state.Gds = 0;
+        state.Gm = 0;
       } else {
         const c0 = lambda * Vds;
         const c1 = beta * (1 + c0);
         if (Vgst <= Vds) {
           // Saturation region.
-          Ids = (1 / 2) * c1 * Vgst * Vgst;
-          eqGds = (1 / 2) * beta * lambda * Vgst * Vgst;
-          eqGm = c1 * Vgst;
+          state.Ids = (1 / 2) * c1 * Vgst * Vgst;
+          state.Gds = (1 / 2) * beta * lambda * Vgst * Vgst;
+          state.Gm = c1 * Vgst;
         } else {
           // Linear region.
-          Ids = c1 * Vds * (Vgst - Vds / 2);
-          eqGds = c1 * (Vgst - Vds) + beta * c0 * (Vgst - Vds / 2);
-          eqGm = c1 * Vds;
+          state.Ids = c1 * Vds * (Vgst - Vds / 2);
+          state.Gds = c1 * (Vgst - Vds) + beta * c0 * (Vgst - Vds / 2);
+          state.Gm = c1 * Vds;
         }
       }
-      eqIds = Ids - eqGds * Vds - eqGm * Vgs;
-
-      stamper.stampConductance(nd, ns, eqGds);
-      stamper.stampMatrix(nd, ng, eqGm);
-      stamper.stampMatrix(nd, ns, -eqGm);
-      stamper.stampMatrix(ns, ng, -eqGm);
-      stamper.stampMatrix(ns, ns, eqGm);
-      stamper.stampCurrentSource(nd, ns, sign * eqIds);
     } else {
-      Vgd = state.prevVgd = fetVoltageGSGD(Vgd, state.prevVgd, sign * Vth);
-      const Vsd = -(state.prevVds = -fetVoltageDS(Vgd - Vgs, -state.prevVds));
+      Vgd = state.Vgd = fetVoltageGSGD(Vgd, state.Vgd, sign * Vth);
+      const Vsd = -(state.Vds = -fetVoltageDS(Vgd - Vgs, -state.Vds));
 
       // Inverse mode.
       const Vgdt = Vgd - sign * Vth;
       if (Vgdt <= 0) {
         // Cutoff region.
-        Ids = 0;
-        eqGds = 0;
-        eqGm = 0;
+        state.Ids = 0;
+        state.Gds = 0;
+        state.Gm = 0;
       } else {
         const c0 = lambda * Vsd;
         const c1 = beta * (1 + c0);
         if (Vgdt <= Vsd) {
           // Saturation region.
-          Ids = -(1 / 2) * c1 * Vgdt * Vgdt;
-          eqGds = (1 / 2) * beta * lambda * Vgdt * Vgdt;
-          eqGm = c1 * Vgdt;
+          state.Ids = -(1 / 2) * c1 * Vgdt * Vgdt;
+          state.Gds = (1 / 2) * beta * lambda * Vgdt * Vgdt;
+          state.Gm = c1 * Vgdt;
         } else {
           // Linear region.
-          Ids = -c1 * Vsd * (Vgdt - Vsd / 2);
-          eqGds = c1 * Vgdt + beta * c0 * (Vgdt - Vsd / 2);
-          eqGm = c1 * Vsd;
+          state.Ids = -c1 * Vsd * (Vgdt - Vsd / 2);
+          state.Gds = c1 * Vgdt + beta * c0 * (Vgdt - Vsd / 2);
+          state.Gm = c1 * Vsd;
         }
       }
-      eqIds = Ids + eqGds * Vsd - eqGm * Vgd;
-
-      stamper.stampConductance(nd, ns, eqGds);
-      stamper.stampMatrix(nd, ng, eqGm);
-      stamper.stampMatrix(nd, nd, -eqGm);
-      stamper.stampMatrix(ns, ng, -eqGm);
-      stamper.stampMatrix(ns, nd, eqGm);
-      stamper.stampCurrentSource(nd, ns, sign * eqIds);
     }
   }
 
-  override ops(): readonly Op[] {
-    const { ns, ng, nd, nb, params, pnBs, pnBd } = this;
-    const { polarity, Vth, beta, lambda } = params;
+  override stamp(
+    stamper: Stamper,
+    {
+      Vbs,
+      Ibs,
+      Gbs,
+      Vbd,
+      Ibd,
+      Gbd,
+      Vgs,
+      Vgd,
+      Vds,
+      Ids,
+      Gds,
+      Gm, //
+    }: MosfetState,
+  ): void {
+    const { ns, ng, nd, nb, params } = this;
+    const { polarity } = params;
     const sign = fetSign(polarity);
 
     // DIODES
 
-    const Vbs = sign * (nb.voltage - ns.voltage);
-    const Vbd = sign * (nb.voltage - nd.voltage);
-    const Ibs = pnBs.evalCurrent(Vbs);
-    const Ibd = pnBd.evalCurrent(Vbd);
+    stamper.stampConductance(nb, ns, Gbs);
+    stamper.stampCurrentSource(nb, ns, sign * (Ibs - Gbs * Vbs));
+
+    stamper.stampConductance(nb, nd, Gbd);
+    stamper.stampCurrentSource(nb, nd, sign * (Ibd - Gbd * Vbd));
 
     // FET
 
-    const Vgs = sign * (ng.voltage - ns.voltage);
-    const Vgd = sign * (ng.voltage - nd.voltage);
-    const Vds = Vgs - Vgd;
-    const Vsd = Vgd - Vgs;
-    let Ids;
     if (Vgs >= Vgd) {
-      // Normal mode.
-      const Vgst = Vgs - sign * Vth;
-      if (Vgst <= 0) {
-        // Cutoff region.
-        Ids = 0;
-      } else {
-        const c0 = lambda * Vds;
-        const c1 = beta * (1 + c0);
-        if (Vgst <= Vds) {
-          // Saturation region.
-          Ids = (1 / 2) * c1 * Vgst * Vgst;
-        } else {
-          // Linear region.
-          Ids = c1 * Vds * (Vgst - Vds / 2);
-        }
-      }
+      stamper.stampConductance(nd, ns, Gds);
+      stamper.stampMatrix(nd, ng, Gm);
+      stamper.stampMatrix(nd, ns, -Gm);
+      stamper.stampMatrix(ns, ng, -Gm);
+      stamper.stampMatrix(ns, ns, Gm);
+      stamper.stampCurrentSource(nd, ns, sign * (Ids - Gds * Vds - Gm * Vgs));
     } else {
-      // Inverse mode.
-      const Vgdt = Vgd - sign * Vth;
-      if (Vgdt <= 0) {
-        // Cutoff region.
-        Ids = 0;
-      } else {
-        const c0 = lambda * Vsd;
-        const c1 = beta * (1 + c0);
-        if (Vgdt <= Vsd) {
-          // Saturation region.
-          Ids = -(1 / 2) * c1 * Vgdt * Vgdt;
-        } else {
-          // Linear region.
-          Ids = -c1 * Vsd * (Vgdt - Vsd / 2);
-        }
-      }
+      stamper.stampConductance(nd, ns, Gds);
+      stamper.stampMatrix(nd, ng, Gm);
+      stamper.stampMatrix(nd, nd, -Gm);
+      stamper.stampMatrix(ns, ng, -Gm);
+      stamper.stampMatrix(ns, nd, Gm);
+      stamper.stampCurrentSource(nd, ns, sign * (Ids - Gds * Vds - Gm * Vgd));
     }
+  }
+
+  override ops(
+    {
+      Vbs,
+      Ibs,
+      Gbs,
+      Vbd,
+      Ibd,
+      Gbd,
+      Vgs,
+      Vgd,
+      Vds,
+      Ids,
+      Gds,
+      Gm,
+    }: MosfetState = this.state,
+  ): readonly Op[] {
+    const { params } = this;
+    const { polarity } = params;
+    const sign = fetSign(polarity);
     return [
       { name: "Vgs", value: sign * Vgs, unit: Unit.VOLT },
       { name: "Vds", value: sign * Vds, unit: Unit.VOLT },

@@ -1,6 +1,6 @@
-import type { Op } from "../../circuit/ops";
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
+import type { Op } from "../../circuit/ops";
 import { Params } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
@@ -13,7 +13,9 @@ export interface DiodeParams {
 }
 
 interface DiodeState {
-  prevVd: number;
+  Vd: number;
+  Id: number;
+  Gd: number;
 }
 
 /**
@@ -53,28 +55,44 @@ export class Diode extends Device<DiodeParams, DiodeState> {
   }
 
   override getInitialState(): DiodeState {
-    return { prevVd: 0 };
+    return {
+      Vd: 0,
+      Id: 0,
+      Gd: 0,
+    };
   }
 
-  override stamp(stamper: Stamper, state: DiodeState): void {
+  override eval(state: DiodeState): void {
     const { na, nc, pn } = this;
-    const Vd0 = na.voltage - nc.voltage;
-    const Vd = (state.prevVd = pn.limitVoltage(Vd0, state.prevVd));
-    const eqGd = pn.evalConductance(Vd);
-    const eqId = pn.evalCurrent(Vd) - eqGd * Vd;
-    stamper.stampConductance(na, nc, eqGd);
-    stamper.stampCurrentSource(na, nc, eqId);
+    const Vd = (state.Vd = pn.limitVoltage(na.voltage - nc.voltage, state.Vd));
+    state.Id = pn.evalCurrent(Vd);
+    state.Gd = pn.evalConductance(Vd);
   }
 
-  override ops(): readonly Op[] {
-    const { na, nc, pn } = this;
-    const voltage = na.voltage - nc.voltage;
-    const current = pn.evalCurrent(voltage);
-    const power = voltage * current;
+  override stamp(
+    stamper: Stamper,
+    {
+      Vd,
+      Id,
+      Gd, //
+    }: DiodeState,
+  ): void {
+    const { na, nc } = this;
+    stamper.stampConductance(na, nc, Gd);
+    stamper.stampCurrentSource(na, nc, Id - Gd * Vd);
+  }
+
+  override ops(
+    {
+      Vd,
+      Id,
+      Gd, //
+    }: DiodeState = this.state,
+  ): readonly Op[] {
     return [
-      { name: "Vd", value: voltage, unit: Unit.VOLT },
-      { name: "I", value: current, unit: Unit.AMPERE },
-      { name: "P", value: power, unit: Unit.WATT },
+      { name: "Vd", value: Vd, unit: Unit.VOLT },
+      { name: "I", value: Id, unit: Unit.AMPERE },
+      { name: "P", value: Vd * Id, unit: Unit.WATT },
     ];
   }
 }
