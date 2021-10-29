@@ -42,6 +42,7 @@ export type Item = Definition | Equation | Action;
 export interface Definition extends Node, HasId {
   readonly type: "definition";
   readonly id: Identifier;
+  readonly modelId: Identifier | null;
   readonly instanceId: Identifier | null;
   readonly nodes: readonly Identifier[];
   readonly params: readonly Parameter[];

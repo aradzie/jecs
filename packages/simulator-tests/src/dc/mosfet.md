@@ -4,7 +4,7 @@
 Ground g;
 V nd g V=15;
 V ng g V=10;
-MOSFET:DUT g ng nd g polarity="nfet" Is=0 Vth=2;
+MOSFET:DUT g ng nd g @nmos Is=0;
 ```
 
 ## Options
@@ -31,7 +31,7 @@ DUT{Vgs=10V,Vds=15V,Ids=640mA}
 Ground g;
 V ns g V=15;
 V ng g V=10;
-MOSFET:DUT ns ng g ns polarity="nfet" Is=0 Vth=2;
+MOSFET:DUT ns ng g ns @nmos Is=0;
 ```
 
 ## Options
@@ -57,7 +57,7 @@ DUT{Vgs=-5V,Vds=-15V,Ids=-640mA}
 ```text
 Ground g;
 V ns g V=0.7738435;
-MOSFET:DUT ns g g ns polarity="nfet" Vth=2;
+MOSFET:DUT ns g g ns @nmos;
 ```
 
 ## Options
@@ -81,7 +81,7 @@ DUT{Vgs=-773.844mV,Vds=-773.844mV,Ids=0A}
 ```text
 Ground g;
 V nd g V=0.7738435;
-MOSFET:DUT g nd nd g polarity="pfet" Vth=-2;
+MOSFET:DUT g nd nd g @pmos;
 ```
 
 ## Options

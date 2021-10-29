@@ -4,7 +4,7 @@
 Ground g;
 V nc g V=5;
 V nb g V=0.65;
-BJT:DUT g nb nc polarity="npn";
+BJT:DUT g nb nc @npn;
 ```
 
 ## Options
@@ -31,7 +31,7 @@ DUT{Vbe=650mV,Vbc=-4.35V,Vce=5V,Ie=-830.844μA,Ic=822.618μA,Ib=8.226μA}
 Ground g;
 V nc g V=5;
 I g nb I=0.0001;
-BJT:DUT g nb nc polarity="npn";
+BJT:DUT g nb nc @npn;
 ```
 
 ## Options
@@ -58,7 +58,7 @@ DUT{Vbe=714.574mV,Vbc=-4.285V,Vce=5V,Ie=-10.1mA,Ic=10mA,Ib=100μA}
 Ground g;
 V ne g V=5;
 V ne nb V=0.65;
-BJT:DUT ne nb g polarity="pnp";
+BJT:DUT ne nb g @pnp;
 ```
 
 ## Options
@@ -85,7 +85,7 @@ DUT{Vbe=-650mV,Vbc=4.35V,Vce=-5V,Ie=830.844μA,Ic=-822.618μA,Ib=-8.226μA}
 Ground g;
 V ne g V=5;
 I nb ne I=0.0001;
-BJT:DUT ne nb g polarity="pnp";
+BJT:DUT ne nb g @pnp;
 ```
 
 ## Options

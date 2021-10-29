@@ -26,17 +26,22 @@ Item =
 Definition
   = id:Identifier instanceId:( ":" @Identifier )?
     _ nodes:NodeList
+    _ modelId:ModelIdentifier?
     _ params:ParameterList
     _ ";"
     {
       return {
         type: "definition",
         id,
+        modelId,
         instanceId,
         nodes,
         params,
       };
     }
+
+ModelIdentifier
+  = "@" @Identifier
 
 NodeList
   = ids:( _ @NodeIdentifier )+

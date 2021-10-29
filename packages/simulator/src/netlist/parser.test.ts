@@ -11,6 +11,7 @@ test("parse definitions", (t) => {
         },
         instanceId: null,
         nodes: [{ name: "a" }, { name: "b" }],
+        modelId: null,
         params: [],
       },
     ],
@@ -27,6 +28,7 @@ test("parse definitions", (t) => {
           name: "R1",
         },
         nodes: [{ name: "a" }, { name: "b" }],
+        modelId: null,
         params: [],
       },
     ],
@@ -43,6 +45,7 @@ test("parse definitions", (t) => {
           name: "R1",
         },
         nodes: [{ name: "a" }, { name: "b" }],
+        modelId: null,
         params: [
           {
             id: {
@@ -72,6 +75,7 @@ test("parse definitions", (t) => {
           name: "R1",
         },
         nodes: [{ name: "a" }, { name: "b" }],
+        modelId: null,
         params: [
           {
             id: {
@@ -113,6 +117,7 @@ test("parse definitions", (t) => {
           name: "Q1",
         },
         nodes: [{ name: "e" }, { name: "b" }, { name: "c" }],
+        modelId: null,
         params: [
           {
             id: {

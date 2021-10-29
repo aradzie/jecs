@@ -112,7 +112,6 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
       title: "transistor polarity",
     }),
     Vth: Params.number({
-      default: 2.0,
       title: "threshold voltage",
     }),
     beta: Params.number({

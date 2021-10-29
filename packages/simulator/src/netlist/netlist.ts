@@ -2,7 +2,7 @@ import { Circuit } from "../circuit/circuit";
 import type { DeviceClass } from "../circuit/device";
 import { createDevice, getDeviceClass } from "../circuit/library";
 import type { Node } from "../circuit/network";
-import type { DeviceParams } from "../circuit/params";
+import type { DeviceParams, Initializer } from "../circuit/params";
 import { Ground } from "../device";
 import type { Definition, Identifier, Netlist } from "./ast";
 import { parse } from "./parser";
@@ -11,6 +11,7 @@ import { Variables } from "./variables";
 interface ExtDef {
   readonly item: Definition;
   readonly deviceClass: DeviceClass;
+  modelId: string | null;
   instanceId: string;
   nodes: Node[];
   params: DeviceParams;
@@ -28,15 +29,23 @@ export function parseNetlist(
 
   for (const item of input.items) {
     switch (item.type) {
-      case "equation":
+      case "equation": {
         variables.setEquation(item);
         break;
-      case "definition":
-        defs.push({
+      }
+      case "definition": {
+        const { id, modelId } = item;
+        const extDef = {
           item,
-          deviceClass: getDeviceClass(item.id.name),
-        } as ExtDef);
+          deviceClass: getDeviceClass(id.name),
+          modelId: null,
+        } as ExtDef;
+        if (modelId != null) {
+          extDef.modelId = modelId.name;
+        }
+        defs.push(extDef);
         break;
+      }
     }
   }
 
@@ -46,8 +55,15 @@ export function parseNetlist(
   mapNodes(circuit, defs);
   mapParams(variables, defs);
 
-  for (const { deviceClass, instanceId, nodes, params } of defs) {
-    circuit.addDevice(createDevice(deviceClass, instanceId, nodes, params));
+  for (const { deviceClass, modelId, instanceId, nodes, params } of defs) {
+    const initializer: Initializer[] = [];
+    if (modelId != null) {
+      initializer.push(modelId);
+    }
+    initializer.push(params);
+    circuit.addDevice(
+      createDevice(deviceClass, instanceId, nodes, ...initializer),
+    );
   }
 
   return circuit;

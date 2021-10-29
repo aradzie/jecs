@@ -7,7 +7,7 @@ import { op } from "./util/ops";
 
 const input = `
 V np g V=$xVd;
-Diode:DUT np g;
+Diode:DUT np g @diode;
 `;
 const netlist = parse(input, {});
 

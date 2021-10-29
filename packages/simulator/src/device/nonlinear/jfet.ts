@@ -82,15 +82,15 @@ export class Jfet extends Device<JfetParams, JfetState> {
       title: "transistor polarity",
     }),
     Vth: Params.number({
-      default: -4,
+      default: -2.0,
       title: "threshold voltage",
     }),
     beta: Params.number({
-      default: 0.00125,
+      default: 1e-4,
       title: "transconductance parameter",
     }),
     lambda: Params.number({
-      default: 0,
+      default: 0.0,
       title: "channel-length modulation parameter",
     }),
     Is: Params.number({

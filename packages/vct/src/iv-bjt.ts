@@ -10,7 +10,7 @@ import { op } from "./util/ops";
 const input = `
 V nc g V=$xVce;
 V nb g V=$xVbe;
-BJT:DUT g nb nc polarity="npn";
+BJT:DUT g nb nc @npn;
 `;
 const netlist = parse(input, {});
 
