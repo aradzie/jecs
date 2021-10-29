@@ -1,7 +1,7 @@
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
-import { Params } from "../../circuit/params";
+import { Params, ParamsItem } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import {
@@ -94,7 +94,10 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
 
   static override readonly id = "MOSFET";
   static override readonly numTerminals = 4;
-  static override readonly paramsSchema = {
+  static override readonly paramsSchema: Record<
+    keyof MosfetParams, //
+    ParamsItem
+  > = {
     polarity: Params.enum({
       values: [nfet, pfet],
       title: "transistor polarity",

@@ -1,7 +1,7 @@
-import type { Op } from "../circuit/ops";
 import { Device } from "../circuit/device";
 import { CircuitError } from "../circuit/error";
 import type { Network, Node } from "../circuit/network";
+import type { Op } from "../circuit/ops";
 import { Unit } from "../util/unit";
 
 export class Ground extends Device {

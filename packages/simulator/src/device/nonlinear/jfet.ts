@@ -1,7 +1,7 @@
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
-import { Params } from "../../circuit/params";
+import { Params, ParamsItem } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import { FetPolarity, fetSign, nfet, pfet, PN } from "./semi";
@@ -66,7 +66,10 @@ export class Jfet extends Device<JfetParams, JfetState> {
 
   static override readonly id = "JFET";
   static override readonly numTerminals = 3;
-  static override readonly paramsSchema = {
+  static override readonly paramsSchema: Record<
+    keyof JfetParams, //
+    ParamsItem
+  > = {
     polarity: Params.enum({
       values: [nfet, pfet],
       title: "transistor polarity",

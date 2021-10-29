@@ -1,6 +1,6 @@
-import type { Op } from "../circuit/ops";
 import { Device } from "../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../circuit/network";
+import type { Op } from "../circuit/ops";
 import { Unit } from "../util/unit";
 
 /**
