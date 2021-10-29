@@ -1,4 +1,3 @@
-import type { Node, Stamper } from "../../circuit/network";
 import { celsiusToKelvin } from "../../util/unit";
 import { k, q } from "../const";
 
@@ -31,12 +30,12 @@ export function fetSign(polarity: FetPolarity): number {
 }
 
 export class PN {
-  /** The temperature. */
-  readonly Temp: number;
   /** The reverse bias saturation current. */
   readonly Is: number;
   /** The emission coefficient. */
   readonly N: number;
+  /** The device temperature. */
+  readonly Temp: number;
   /** The thermal voltage. */
   readonly Vt: number;
   /** The inverse of thermal voltage. */
@@ -44,10 +43,10 @@ export class PN {
   /** The critical voltage. */
   readonly Vcrit: number;
 
-  constructor(Temp: number, Is: number, N: number) {
-    this.Temp = Temp;
+  constructor(Is: number, N: number, Temp: number) {
     this.Is = Is;
     this.N = N;
+    this.Temp = Temp;
     this.Vt = this.N * celsiusToKelvin(this.Temp) * (k / q);
     this.invVt = 1 / this.Vt;
     this.Vcrit = this.Vt * Math.log(this.Vt / Math.sqrt(2) / this.Is);

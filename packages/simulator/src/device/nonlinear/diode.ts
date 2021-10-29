@@ -7,9 +7,9 @@ import { Temp } from "../const";
 import { PN } from "./semi";
 
 export interface DiodeParams {
-  readonly Temp: number;
   readonly Is: number;
   readonly N: number;
+  readonly Temp: number;
 }
 
 interface DiodeState {
@@ -22,13 +22,15 @@ interface DiodeState {
  * Diode.
  */
 export class Diode extends Device<DiodeParams, DiodeState> {
+  static modelDiode = Object.freeze<DiodeParams>({
+    Is: 1e-14,
+    N: 1,
+    Temp,
+  });
+
   static override readonly id = "Diode";
   static override readonly numTerminals = 2;
   static override readonly paramsSchema = {
-    Temp: Params.number({
-      default: Temp,
-      title: "device temperature",
-    }),
     Is: Params.number({
       default: 1e-14,
       title: "saturation current",
@@ -36,6 +38,10 @@ export class Diode extends Device<DiodeParams, DiodeState> {
     N: Params.number({
       default: 1,
       title: "emission coefficient",
+    }),
+    Temp: Params.number({
+      default: Temp,
+      title: "device temperature",
     }),
   };
 
@@ -50,8 +56,8 @@ export class Diode extends Device<DiodeParams, DiodeState> {
     super(name, [na, nc], params);
     this.na = na;
     this.nc = nc;
-    const { Temp, Is, N } = this.params;
-    this.pn = new PN(Temp, Is, N);
+    const { Is, N, Temp } = this.params;
+    this.pn = new PN(Is, N, Temp);
   }
 
   override getInitialState(): DiodeState {

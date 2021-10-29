@@ -8,12 +8,12 @@ import { FetPolarity, fetSign, nfet, pfet, PN } from "./semi";
 
 export interface JfetParams {
   readonly polarity: FetPolarity;
-  readonly Temp: number;
   readonly Vth: number;
   readonly beta: number;
   readonly lambda: number;
   readonly Is: number;
   readonly N: number;
+  readonly Temp: number;
 }
 
 interface JfetState {
@@ -45,16 +45,31 @@ interface JfetState {
  * Junction field-effect transistor, JFET.
  */
 export class Jfet extends Device<JfetParams, JfetState> {
+  static modelNJfet = Object.freeze<JfetParams>({
+    polarity: "nfet",
+    Vth: -2.0,
+    beta: 1e-4,
+    lambda: 0.0,
+    Is: 1e-14,
+    N: 1,
+    Temp,
+  });
+  static modelPJfet = Object.freeze<JfetParams>({
+    polarity: "pfet",
+    Vth: -2.0,
+    beta: 1e-4,
+    lambda: 0.0,
+    Is: 1e-14,
+    N: 1,
+    Temp,
+  });
+
   static override readonly id = "JFET";
   static override readonly numTerminals = 3;
   static override readonly paramsSchema = {
     polarity: Params.enum({
       values: [nfet, pfet],
       title: "transistor polarity",
-    }),
-    Temp: Params.number({
-      default: Temp,
-      title: "device temperature",
     }),
     Vth: Params.number({
       default: -4,
@@ -76,6 +91,10 @@ export class Jfet extends Device<JfetParams, JfetState> {
       default: 1,
       title: "emission coefficient",
     }),
+    Temp: Params.number({
+      default: Temp,
+      title: "device temperature",
+    }),
   };
 
   /** The source terminal. */
@@ -94,9 +113,9 @@ export class Jfet extends Device<JfetParams, JfetState> {
     this.ns = ns;
     this.ng = ng;
     this.nd = nd;
-    const { Temp, Is, N } = this.params;
-    this.pnGs = new PN(Temp, Is, N);
-    this.pnGd = new PN(Temp, Is, N);
+    const { Is, N, Temp } = this.params;
+    this.pnGs = new PN(Is, N, Temp);
+    this.pnGd = new PN(Is, N, Temp);
   }
 
   override getInitialState(): JfetState {

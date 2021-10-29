@@ -16,12 +16,12 @@ import {
 
 export interface MosfetParams {
   readonly polarity: FetPolarity;
-  readonly Temp: number;
   readonly Vth: number;
   readonly beta: number;
   readonly lambda: number;
   readonly Is: number;
   readonly N: number;
+  readonly Temp: number;
 }
 
 interface MosfetState {
@@ -55,6 +55,43 @@ interface MosfetState {
  * Metal–oxide–semiconductor field-effect transistor, MOSFET.
  */
 export class Mosfet extends Device<MosfetParams, MosfetState> {
+  static modelEnhNMosfet = Object.freeze<MosfetParams>({
+    polarity: "nfet",
+    Vth: +2.0,
+    beta: 2e-2,
+    lambda: 0.0,
+    Is: 1e-14,
+    N: 1,
+    Temp,
+  });
+  static modelEnhPMosfet = Object.freeze<MosfetParams>({
+    polarity: "pfet",
+    Vth: -2.0,
+    beta: 2e-2,
+    lambda: 0.0,
+    Is: 1e-14,
+    N: 1,
+    Temp,
+  });
+  static modelDepNMosfet = Object.freeze<MosfetParams>({
+    polarity: "nfet",
+    Vth: -2.0,
+    beta: 2e-2,
+    lambda: 0.0,
+    Is: 1e-14,
+    N: 1,
+    Temp,
+  });
+  static modelDepPMosfet = Object.freeze<MosfetParams>({
+    polarity: "pfet",
+    Vth: +2.0,
+    beta: 2e-2,
+    lambda: 0.0,
+    Is: 1e-14,
+    N: 1,
+    Temp,
+  });
+
   static override readonly id = "MOSFET";
   static override readonly numTerminals = 4;
   static override readonly paramsSchema = {
@@ -62,20 +99,16 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
       values: [nfet, pfet],
       title: "transistor polarity",
     }),
-    Temp: Params.number({
-      default: Temp,
-      title: "device temperature",
-    }),
     Vth: Params.number({
-      default: 2,
+      default: 2.0,
       title: "threshold voltage",
     }),
     beta: Params.number({
-      default: 0.02,
+      default: 2e-2,
       title: "transconductance parameter",
     }),
     lambda: Params.number({
-      default: 0,
+      default: 0.0,
       title: "channel-length modulation parameter",
     }),
     Is: Params.number({
@@ -85,6 +118,10 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
     N: Params.number({
       default: 1,
       title: "emission coefficient",
+    }),
+    Temp: Params.number({
+      default: Temp,
+      title: "device temperature",
     }),
   };
 
@@ -111,9 +148,9 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
     this.ng = ng;
     this.nd = nd;
     this.nb = nb;
-    const { Temp, Is, N } = this.params;
-    this.pnBs = new PN(Temp, Is, N);
-    this.pnBd = new PN(Temp, Is, N);
+    const { Is, N, Temp } = this.params;
+    this.pnBs = new PN(Is, N, Temp);
+    this.pnBd = new PN(Is, N, Temp);
   }
 
   override getInitialState(): MosfetState {

@@ -8,14 +8,14 @@ import { BjtPolarity, bjtSign, npn, PN, pnp } from "./semi";
 
 export interface BjtParams {
   readonly polarity: BjtPolarity;
-  readonly Temp: number;
   readonly Is: number;
   readonly Nf: number;
   readonly Nr: number;
-  readonly Vaf: number;
-  readonly Var: number;
   readonly Bf: number;
   readonly Br: number;
+  readonly Vaf: number;
+  readonly Var: number;
+  readonly Temp: number;
 }
 
 interface BjtState {
@@ -41,16 +41,35 @@ interface BjtState {
  * Bipolar junction transistor, BJT.
  */
 export class Bjt extends Device<BjtParams, BjtState> {
+  static modelNpn = Object.freeze<BjtParams>({
+    polarity: "npn",
+    Is: 1e-14,
+    Nf: 1,
+    Nr: 1,
+    Bf: 100.0,
+    Br: 1.0,
+    Vaf: 100.0,
+    Var: 0.0,
+    Temp,
+  });
+  static modelPnp = Object.freeze<BjtParams>({
+    polarity: "pnp",
+    Is: 1e-14,
+    Nf: 1,
+    Nr: 1,
+    Bf: 100.0,
+    Br: 1.0,
+    Vaf: 10.0,
+    Var: 0.0,
+    Temp,
+  });
+
   static override readonly id = "BJT";
   static override readonly numTerminals = 3;
   static override readonly paramsSchema = {
     polarity: Params.enum({
       values: [npn, pnp],
       title: "transistor polarity",
-    }),
-    Temp: Params.number({
-      default: Temp,
-      title: "device temperature",
     }),
     Is: Params.number({
       default: 1e-14,
@@ -64,21 +83,25 @@ export class Bjt extends Device<BjtParams, BjtState> {
       default: 1,
       title: "reverse emission coefficient",
     }),
-    Vaf: Params.number({
-      default: 10,
-      title: "forward Early voltage",
-    }),
-    Var: Params.number({
-      default: 0,
-      title: "reverse Early voltage",
-    }),
     Bf: Params.number({
-      default: 100,
+      default: 100.0,
       title: "forward beta",
     }),
     Br: Params.number({
-      default: 1,
+      default: 1.0,
       title: "reverse beta",
+    }),
+    Vaf: Params.number({
+      default: 10.0,
+      title: "forward Early voltage",
+    }),
+    Var: Params.number({
+      default: 0.0,
+      title: "reverse Early voltage",
+    }),
+    Temp: Params.number({
+      default: Temp,
+      title: "device temperature",
     }),
   };
 
@@ -98,9 +121,9 @@ export class Bjt extends Device<BjtParams, BjtState> {
     this.ne = ne;
     this.nb = nb;
     this.nc = nc;
-    const { Temp, Is, Nf, Nr } = this.params;
-    this.pnBe = new PN(Temp, Is, Nf);
-    this.pnBc = new PN(Temp, Is, Nr);
+    const { Is, Nf, Nr, Temp } = this.params;
+    this.pnBe = new PN(Is, Nf, Temp);
+    this.pnBc = new PN(Is, Nr, Temp);
   }
 
   override getInitialState(): BjtState {
