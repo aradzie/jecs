@@ -11,6 +11,7 @@ import {
   fetVoltageDS,
   nfet,
   pfet,
+  PN,
 } from "./semi";
 
 export interface MosfetParams {
@@ -19,9 +20,13 @@ export interface MosfetParams {
   readonly Vth: number;
   readonly beta: number;
   readonly lambda: number;
+  readonly Is: number;
+  readonly N: number;
 }
 
 interface MosfetState {
+  prevVbs: number;
+  prevVbd: number;
   prevVgs: number;
   prevVgd: number;
   prevVds: number;
@@ -32,7 +37,7 @@ interface MosfetState {
  */
 export class Mosfet extends Device<MosfetParams, MosfetState> {
   static override readonly id = "MOSFET";
-  static override readonly numTerminals = 3;
+  static override readonly numTerminals = 4;
   static override readonly paramsSchema = {
     polarity: Params.enum({
       values: [nfet, pfet],
@@ -54,6 +59,14 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
       default: 0,
       title: "channel-length modulation parameter",
     }),
+    Is: Params.number({
+      default: 1e-14,
+      title: "saturation current",
+    }),
+    N: Params.number({
+      default: 1,
+      title: "emission coefficient",
+    }),
   };
 
   /** The source terminal. */
@@ -62,26 +75,70 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
   readonly ng: Node;
   /** The drain terminal. */
   readonly nd: Node;
+  /** The body terminal. */
+  readonly nb: Node;
+  /** The body-source PN junction of MOSFET. */
+  private readonly pnBs: PN;
+  /** The body-drain PN junction of MOSFET. */
+  private readonly pnBd: PN;
 
   constructor(
     name: string,
-    [ns, ng, nd]: readonly Node[],
+    [ns, ng, nd, nb]: readonly Node[],
     params: MosfetParams,
   ) {
-    super(name, [ns, ng, nd], params);
+    super(name, [ns, ng, nd, nb], params);
     this.ns = ns;
     this.ng = ng;
     this.nd = nd;
+    this.nb = nb;
+    const { Temp, Is, N } = this.params;
+    this.pnBs = new PN(Temp, Is, N);
+    this.pnBd = new PN(Temp, Is, N);
+  }
+
+  override getInitialState(): MosfetState {
+    return {
+      prevVbs: 0,
+      prevVbd: 0,
+      prevVgs: 0,
+      prevVgd: 0,
+      prevVds: 0,
+    };
   }
 
   override stamp(stamper: Stamper, state: MosfetState): void {
-    const { ns, ng, nd, params } = this;
+    const { ns, ng, nd, nb, params, pnBs, pnBd } = this;
     const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity);
-    let Vgs = sign * (ng.voltage - ns.voltage);
-    let Vgd = sign * (ng.voltage - nd.voltage);
+
+    // DIODES
+
+    const Vbs = (state.prevVbs = pnBs.limitVoltage(
+      sign * (nb.voltage - ns.voltage),
+      state.prevVbs,
+    ));
+    const Vbd = (state.prevVbd = pnBd.limitVoltage(
+      sign * (nb.voltage - nd.voltage),
+      state.prevVbd,
+    ));
+
+    const Ibs = pnBs.evalCurrent(Vbs);
+    const eqGbs = pnBs.evalConductance(Vbs);
+    const eqIbs = Ibs - eqGbs * Vbs;
+    stamper.stampConductance(nb, ns, eqGbs);
+    stamper.stampCurrentSource(nb, ns, sign * eqIbs);
+
+    const Ibd = pnBs.evalCurrent(Vbd);
+    const eqGbd = pnBs.evalConductance(Vbd);
+    const eqIbd = Ibd - eqGbd * Vbd;
+    stamper.stampConductance(nb, nd, eqGbd);
+    stamper.stampCurrentSource(nb, nd, sign * eqIbd);
 
     // FET
+
+    let Vgs = sign * (ng.voltage - ns.voltage);
+    let Vgd = sign * (ng.voltage - nd.voltage);
 
     let Ids;
     let eqGds;
@@ -156,16 +213,22 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
       stamper.stampMatrix(ns, nd, eqGm);
       stamper.stampCurrentSource(nd, ns, sign * eqIds);
     }
-
-    // DIODES
-
-    // TODO
   }
 
   override ops(): readonly Op[] {
-    const { ns, ng, nd, params } = this;
+    const { ns, ng, nd, nb, params, pnBs, pnBd } = this;
     const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity);
+
+    // DIODES
+
+    const Vbs = sign * (nb.voltage - ns.voltage);
+    const Vbd = sign * (nb.voltage - nd.voltage);
+    const Ibs = pnBs.evalCurrent(Vbs);
+    const Ibd = pnBd.evalCurrent(Vbd);
+
+    // FET
+
     const Vgs = sign * (ng.voltage - ns.voltage);
     const Vgd = sign * (ng.voltage - nd.voltage);
     const Vds = Vgs - Vgd;

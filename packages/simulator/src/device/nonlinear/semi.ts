@@ -89,13 +89,6 @@ export class PN {
     }
     return Vnew;
   }
-
-  stamp(stamper: Stamper, na: Node, nc: Node, Vd: number): void {
-    const eqGd = this.evalConductance(Vd);
-    const eqId = this.evalCurrent(Vd) - eqGd * Vd;
-    stamper.stampConductance(na, nc, eqGd);
-    stamper.stampCurrentSource(na, nc, eqId);
-  }
 }
 
 /**

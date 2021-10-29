@@ -64,9 +64,9 @@ export class Jfet extends Device<JfetParams, JfetState> {
   readonly ng: Node;
   /** The drain terminal. */
   readonly nd: Node;
-  /** The gate-source PN junction of BJT. */
+  /** The gate-source PN junction of JFET. */
   private readonly pnGs: PN;
-  /** The gate-drain PN junction of BJT. */
+  /** The gate-drain PN junction of JFET. */
   private readonly pnGd: PN;
 
   constructor(name: string, [ns, ng, nd]: readonly Node[], params: JfetParams) {
@@ -93,6 +93,20 @@ export class Jfet extends Device<JfetParams, JfetState> {
     ));
     const Vds = Vgs - Vgd;
     const Vsd = Vgd - Vgs;
+
+    // DIODES
+
+    const Igs = pnGs.evalCurrent(Vgs);
+    const eqGgs = pnGs.evalConductance(Vgs);
+    const eqIgs = Igs - eqGgs * Vgs;
+    stamper.stampConductance(ng, ns, eqGgs);
+    stamper.stampCurrentSource(ng, ns, sign * eqIgs);
+
+    const Igd = pnGs.evalCurrent(Vgd);
+    const eqGgd = pnGs.evalConductance(Vgd);
+    const eqIgd = Igd - eqGgd * Vgd;
+    stamper.stampConductance(ng, nd, eqGgd);
+    stamper.stampCurrentSource(ng, nd, sign * eqIgd);
 
     // FET
 
@@ -154,21 +168,6 @@ export class Jfet extends Device<JfetParams, JfetState> {
     stamper.stampMatrix(ns, ng, -eqGm);
     stamper.stampMatrix(ns, ns, eqGm);
     stamper.stampCurrentSource(nd, ns, sign * eqIds);
-
-    // DIODES
-
-    const Igs = pnGs.evalCurrent(Vgs);
-    const eqGgs = pnGs.evalConductance(Vgs);
-    const Igd = pnGs.evalCurrent(Vgd);
-    const eqGgd = pnGs.evalConductance(Vgd);
-
-    const eqIgs = Igs - eqGgs * Vgs;
-    const eqIgd = Igd - eqGgd * Vgd;
-
-    stamper.stampConductance(ng, ns, eqGgs);
-    stamper.stampConductance(ng, nd, eqGgd);
-    stamper.stampCurrentSource(ng, ns, sign * eqIgs);
-    stamper.stampCurrentSource(ng, nd, sign * eqIgd);
   }
 
   override ops(): readonly Op[] {
