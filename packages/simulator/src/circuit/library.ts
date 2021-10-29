@@ -2,12 +2,27 @@ import { devices } from "../device";
 import type { Device, DeviceClass } from "./device";
 import { CircuitError } from "./error";
 import type { Node } from "./network";
-import { RawDeviceParams, validateParams } from "./params";
+import {
+  DeviceModel,
+  Initializer,
+  DeviceParams,
+  validateParams,
+} from "./params";
 
-const deviceMap = new Map<string, DeviceClass>();
+class Registration {
+  private static readonly map = new Map<string, Registration>();
 
-export function registerDeviceClass(...deviceClasses: DeviceClass[]): void {
-  for (const deviceClass of deviceClasses) {
+  static get(deviceClass: string | DeviceClass): Registration {
+    const id = typeof deviceClass === "string" ? deviceClass : deviceClass.id;
+    const registration = Registration.map.get(id);
+    if (registration == null) {
+      throw new CircuitError(`Unknown device id [${id}]`);
+    } else {
+      return registration;
+    }
+  }
+
+  static add(deviceClass: DeviceClass): void {
     const { id, numTerminals, paramsSchema } = deviceClass;
     if (id == null) {
       throw new CircuitError(
@@ -27,47 +42,109 @@ export function registerDeviceClass(...deviceClasses: DeviceClass[]): void {
           ` in device class [${deviceClass}]`,
       );
     }
-    if (deviceMap.has(id)) {
+    if (Registration.map.has(id)) {
       throw new CircuitError(`Duplicate device id [${id}]`);
     }
-    deviceMap.set(id, deviceClass);
+    const registration = new Registration(deviceClass);
+    for (const [name, params] of deviceClass.getModels()) {
+      registration.addModel(name, params);
+    }
+    Registration.map.set(id, registration);
+  }
+
+  constructor(
+    readonly deviceClass: DeviceClass,
+    readonly models: Map<string, DeviceParams> = new Map(),
+  ) {}
+
+  addModel(name: string, params: DeviceParams): void {
+    this.models.set(name, { ...params });
+  }
+
+  getModel(name: string): DeviceParams {
+    const params = this.models.get(name);
+    if (params != null) {
+      return params;
+    } else {
+      throw new CircuitError(`Unknown model name [${name}]`);
+    }
+  }
+
+  listModels(): Iterable<DeviceModel> {
+    return this.models.entries();
+  }
+
+  createDevice(
+    name: string,
+    nodes: readonly Node[],
+    initializers: readonly Initializer[],
+  ): Device {
+    const { deviceClass } = this;
+    const { id, numTerminals, paramsSchema } = deviceClass;
+    if (nodes.length !== numTerminals) {
+      throw new CircuitError(
+        `Error in device [${id}:${name}]: ` + //
+          `Invalid number of nodes`,
+      );
+    }
+    let params: Record<string, number | string> = {};
+    for (const initializer of initializers) {
+      if (typeof initializer === "string") {
+        Object.assign(params, this.getModel(initializer));
+      } else {
+        Object.assign(params, initializer);
+      }
+    }
+    try {
+      params = validateParams(params, paramsSchema);
+    } catch (err: any) {
+      throw new CircuitError(
+        `Error in device [${id}:${name}]: ` + //
+          `${err.message}`,
+      );
+    }
+    return new deviceClass(name, nodes, params);
   }
 }
 
-export function getDeviceClass(id: string): DeviceClass {
-  const deviceClass = deviceMap.get(id) ?? null;
-  if (deviceClass == null) {
-    throw new CircuitError(`Unknown device id [${id}]`);
+export function registerDeviceClass(...deviceClasses: DeviceClass[]): void {
+  for (const deviceClass of deviceClasses) {
+    Registration.add(deviceClass);
   }
-  return deviceClass;
+}
+
+export function getDeviceClass(deviceClass: string | DeviceClass): DeviceClass {
+  return Registration.get(deviceClass).deviceClass;
+}
+
+export function addDeviceModel(
+  deviceClass: string | DeviceClass,
+  name: string,
+  params: DeviceParams,
+): void {
+  Registration.get(deviceClass).addModel(name, params);
+}
+
+export function getDeviceModel(
+  deviceClass: string | DeviceClass,
+  name: string,
+): DeviceParams | null {
+  return Registration.get(deviceClass).getModel(name);
+}
+
+export function listDeviceModels(
+  deviceClass: string | DeviceClass,
+): Iterable<DeviceModel> {
+  return Registration.get(deviceClass).listModels();
 }
 
 export function createDevice(
   deviceClass: string | DeviceClass,
   name: string,
   nodes: readonly Node[],
-  rawParams: RawDeviceParams,
+  ...initializers: readonly Initializer[]
 ): Device {
-  if (typeof deviceClass === "string") {
-    deviceClass = getDeviceClass(deviceClass);
-  }
-  const { id, numTerminals, paramsSchema } = deviceClass;
-  if (nodes.length !== numTerminals) {
-    throw new CircuitError(
-      `Error in device [${id}:${name}]: ` + //
-        `Invalid number of nodes`,
-    );
-  }
-  let params;
-  try {
-    params = validateParams(rawParams, paramsSchema);
-  } catch (err: any) {
-    throw new CircuitError(
-      `Error in device [${id}:${name}]: ` + //
-        `${err.message}`,
-    );
-  }
-  return new deviceClass(name, nodes, params);
+  return Registration.get(deviceClass).createDevice(name, nodes, initializers);
 }
 
 registerDeviceClass(...devices);

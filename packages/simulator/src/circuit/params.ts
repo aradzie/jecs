@@ -1,7 +1,5 @@
 import { CircuitError } from "./error";
 
-export type RawDeviceParams = Record<string, unknown>;
-
 export type ParamsSchema = Readonly<Record<string, ParamsItem>>;
 
 export type ParamsItem = NumberParamsItem | EnumParamsItem;
@@ -21,6 +19,12 @@ export type EnumParamsItem = {
   readonly title: string;
 };
 
+export type DeviceParams = Readonly<Record<string, unknown>>;
+
+export type DeviceModel = readonly [name: string, params: DeviceParams];
+
+export type Initializer = string | DeviceParams;
+
 export class Params {
   static number(item: Omit<NumberParamsItem, "type">): NumberParamsItem {
     return { type: "number", ...item };
@@ -32,17 +36,17 @@ export class Params {
 }
 
 export function validateParams<T extends Record<string, unknown>>(
-  rawParams: RawDeviceParams,
+  params: DeviceParams,
   schema: ParamsSchema,
 ): T {
-  const params: [string, unknown][] = [];
-  for (const name of Object.keys(rawParams)) {
+  const result: [string, unknown][] = [];
+  for (const name of Object.keys(params)) {
     if (!(name in schema)) {
       throw new CircuitError(`Unknown parameter [${name}]`);
     }
   }
   for (const [name, item] of Object.entries(schema)) {
-    const value = rawParams[name] ?? item.default ?? null;
+    const value = params[name] ?? item.default ?? null;
     if (value == null) {
       throw new CircuitError(`Missing parameter [${name}]`);
     }
@@ -86,7 +90,7 @@ export function validateParams<T extends Record<string, unknown>>(
         break;
       }
     }
-    params.push([name, value]);
+    result.push([name, value]);
   }
-  return Object.fromEntries(params) as T;
+  return Object.fromEntries(result) as T;
 }

@@ -1,6 +1,6 @@
 import type { Network, Node, Stamper } from "./network";
 import type { Op } from "./ops";
-import type { ParamsSchema } from "./params";
+import type { DeviceModel, ParamsSchema } from "./params";
 
 // pin
 // two-terminal, three-terminal, etc
@@ -8,27 +8,57 @@ import type { ParamsSchema } from "./params";
 // two-port
 
 export interface DeviceClass {
+  /** Unique device identifier. */
   readonly id: string;
+
+  /** The number of terminals in the device. */
   readonly numTerminals: number;
+
+  /** The schema of the device parameters. */
   readonly paramsSchema: ParamsSchema;
+
+  /**
+   * Device constructor.
+   * @param name Device name which is unique within a circuit.
+   * @param nodes Circuit nodes to which the device terminals are connected.
+   * @param params Device parameters.
+   */
   new (name: string, nodes: readonly Node[], params: any): Device;
+
+  /** Returns a list of device models. */
+  getModels(): readonly DeviceModel[];
 }
 
 export abstract class Device<ParamsT = unknown, StateT = unknown> {
+  /** Returns a list of built-in generic device models, if any. */
+  static getModels(): readonly DeviceModel[] {
+    return [];
+  }
+
+  /** Unique device identifier. */
   static readonly id: string;
+
+  /** The number of terminals in the device. */
   static readonly numTerminals: number;
+
+  /** The schema of the device parameters. */
   static readonly paramsSchema: ParamsSchema;
 
+  /** Unique device name. */
   readonly name: string;
-  readonly nodes: Node[];
+
+  /** The list of nodes to which the device terminals are connected. */
+  readonly nodes: readonly Node[];
+
+  /** The device parameters. */
   readonly params: ParamsT;
 
   state: StateT = this.getInitialState();
 
   constructor(name: string, nodes: readonly Node[], params: ParamsT) {
     this.name = name;
-    this.nodes = [...nodes];
-    this.params = { ...params };
+    this.nodes = nodes;
+    this.params = params;
   }
 
   /**

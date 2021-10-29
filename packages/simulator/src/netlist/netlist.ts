@@ -2,7 +2,7 @@ import { Circuit } from "../circuit/circuit";
 import type { DeviceClass } from "../circuit/device";
 import { createDevice, getDeviceClass } from "../circuit/library";
 import type { Node } from "../circuit/network";
-import type { RawDeviceParams } from "../circuit/params";
+import type { DeviceParams } from "../circuit/params";
 import { Ground } from "../device";
 import type { Definition, Identifier, Netlist } from "./ast";
 import { parse } from "./parser";
@@ -13,7 +13,7 @@ interface ExtDef {
   readonly deviceClass: DeviceClass;
   instanceId: string;
   nodes: Node[];
-  params: RawDeviceParams;
+  params: DeviceParams;
 }
 
 export function parseNetlist(

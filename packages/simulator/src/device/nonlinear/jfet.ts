@@ -1,7 +1,7 @@
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
-import { Params, ParamsItem } from "../../circuit/params";
+import { DeviceModel, Params, ParamsItem } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import { FetPolarity, fetSign, nfet, pfet, PN } from "./semi";
@@ -45,6 +45,13 @@ interface JfetState {
  * Junction field-effect transistor, JFET.
  */
 export class Jfet extends Device<JfetParams, JfetState> {
+  static override getModels(): readonly DeviceModel[] {
+    return [
+      ["NFET", Jfet.modelNJfet],
+      ["PFET", Jfet.modelPJfet],
+    ];
+  }
+
   static modelNJfet = Object.freeze<JfetParams>({
     polarity: "nfet",
     Vth: -2.0,

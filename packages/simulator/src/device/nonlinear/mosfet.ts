@@ -1,7 +1,7 @@
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
-import { Params, ParamsItem } from "../../circuit/params";
+import { DeviceModel, Params, ParamsItem } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import {
@@ -55,6 +55,15 @@ interface MosfetState {
  * Metal–oxide–semiconductor field-effect transistor, MOSFET.
  */
 export class Mosfet extends Device<MosfetParams, MosfetState> {
+  static override getModels(): readonly DeviceModel[] {
+    return [
+      ["NMOS", Mosfet.modelEnhNMosfet],
+      ["PMOS", Mosfet.modelEnhPMosfet],
+      ["DEPNMOS", Mosfet.modelDepNMosfet],
+      ["DEPPMOS", Mosfet.modelDepPMosfet],
+    ];
+  }
+
   static modelEnhNMosfet = Object.freeze<MosfetParams>({
     polarity: "nfet",
     Vth: +2.0,

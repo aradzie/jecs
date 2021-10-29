@@ -1,7 +1,7 @@
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
-import { Params, ParamsItem } from "../../circuit/params";
+import { DeviceModel, Params, ParamsItem } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import { PN } from "./semi";
@@ -22,6 +22,10 @@ interface DiodeState {
  * Diode.
  */
 export class Diode extends Device<DiodeParams, DiodeState> {
+  static override getModels(): readonly DeviceModel[] {
+    return [["Diode", Diode.modelDiode]];
+  }
+
   static modelDiode = Object.freeze<DiodeParams>({
     Is: 1e-14,
     N: 1,

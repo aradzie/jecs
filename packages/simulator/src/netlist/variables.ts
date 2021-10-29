@@ -1,4 +1,4 @@
-import type { RawDeviceParams } from "../circuit/params";
+import type { DeviceParams } from "../circuit/params";
 import type { BinaryExp, Equation, Expression, FuncExp, UnaryExp } from "./ast";
 import { builtins, equation, literalExp, Parameter } from "./ast";
 import { callFunc } from "./functions";
@@ -20,8 +20,8 @@ export class Variables {
     this.equations.set(equation.id.name, equation);
   }
 
-  mapParams(params: readonly Parameter[]): RawDeviceParams {
-    const result: RawDeviceParams = {};
+  mapParams(params: readonly Parameter[]): DeviceParams {
+    const result: Record<string, number | string> = {};
     for (const { id, value } of params) {
       switch (value.type) {
         case "string":

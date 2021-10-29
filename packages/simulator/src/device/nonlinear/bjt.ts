@@ -1,7 +1,7 @@
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
-import { Params, ParamsItem } from "../../circuit/params";
+import { DeviceModel, Params, ParamsItem } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import { BjtPolarity, bjtSign, npn, PN, pnp } from "./semi";
@@ -63,6 +63,13 @@ export class Bjt extends Device<BjtParams, BjtState> {
     Var: 0.0,
     Temp,
   });
+
+  static override getModels(): readonly DeviceModel[] {
+    return [
+      ["NPN", Bjt.modelNpn],
+      ["PNP", Bjt.modelPnp],
+    ];
+  }
 
   static override readonly id = "BJT";
   static override readonly numTerminals = 3;
