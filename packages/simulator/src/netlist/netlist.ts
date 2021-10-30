@@ -1,20 +1,17 @@
 import { Circuit } from "../circuit/circuit";
 import type { DeviceClass } from "../circuit/device";
+import { CircuitError } from "../circuit/error";
 import { createDevice, getDeviceClass, Initializer } from "../circuit/library";
 import type { Node } from "../circuit/network";
-import type { ParamValue } from "../circuit/params";
 import { Ground } from "../device";
-import type { Definition, Identifier, Netlist } from "./ast";
+import type { Definition, Netlist } from "./ast";
 import { parse } from "./parser";
 import { Variables } from "./variables";
 
-interface ExtDef {
+interface NamedItem {
   readonly item: Definition;
   readonly deviceClass: DeviceClass;
-  modelId: string | null;
   instanceId: string;
-  nodes: Node[];
-  params: Record<string, ParamValue>;
 }
 
 export function parseNetlist(
@@ -25,7 +22,9 @@ export function parseNetlist(
     input = parse(input);
   }
 
-  const defs: ExtDef[] = [];
+  const circuit = new Circuit();
+
+  // Pass: collect variables.
 
   for (const item of input.items) {
     switch (item.type) {
@@ -33,34 +32,68 @@ export function parseNetlist(
         variables.setEquation(item);
         break;
       }
+    }
+  }
+
+  // Pass: map nodes.
+
+  const { groundNode } = circuit;
+  const nodesMap = new Map<string, Node>([[groundNode.name, groundNode]]);
+  // Find ground nodes.
+  for (const item of input.items) {
+    switch (item.type) {
       case "definition": {
-        const { id, modelId } = item;
-        const extDef = {
-          item,
-          deviceClass: getDeviceClass(id.name),
-          modelId: null,
-        } as ExtDef;
-        if (modelId != null) {
-          extDef.modelId = modelId.name;
+        // Any node to which the Ground device is connected
+        // becomes the ground node.
+        if (item.id.name === Ground.id) {
+          for (const { name } of item.nodes) {
+            nodesMap.set(name, groundNode);
+          }
         }
-        defs.push(extDef);
+        break;
+      }
+    }
+  }
+  // Find the remaining nodes.
+  for (const item of input.items) {
+    switch (item.type) {
+      case "definition": {
+        for (const { name } of item.nodes) {
+          if (!nodesMap.has(name)) {
+            nodesMap.set(name, circuit.allocNode(name));
+          }
+        }
         break;
       }
     }
   }
 
-  const circuit = new Circuit();
+  // Pass: generate unique instance names.
 
-  assignInstanceIds(defs);
-  mapNodes(circuit, defs);
-  makeParams(variables, defs);
-
-  for (const { deviceClass, modelId, instanceId, nodes, params } of defs) {
-    const initializer: Initializer[] = [];
-    if (modelId != null) {
-      initializer.push(modelId);
+  const namedItems: NamedItem[] = [];
+  for (const item of input.items) {
+    switch (item.type) {
+      case "definition": {
+        namedItems.push({
+          item,
+          deviceClass: getDeviceClass(item.id.name),
+          instanceId: "",
+        });
+        break;
+      }
     }
-    initializer.push(params);
+  }
+  assignInstanceIds(namedItems);
+
+  // Pass: create devices.
+
+  for (const { item, deviceClass, instanceId } of namedItems) {
+    const nodes = item.nodes.map(({ name }) => nodesMap.get(name) as Node);
+    const initializer: Initializer[] = [];
+    if (item.modelId != null) {
+      initializer.push(item.modelId.name);
+    }
+    initializer.push(variables.makeParams(item.params));
     circuit.addDevice(
       createDevice(deviceClass, instanceId, nodes, ...initializer),
     );
@@ -69,73 +102,39 @@ export function parseNetlist(
   return circuit;
 }
 
-function assignInstanceIds(defs: readonly ExtDef[]): void {
-  const takenIds = new Set<string>();
+function assignInstanceIds(namedItems: readonly NamedItem[]): void {
+  const taken = new Set<string>();
 
   // Process named definitions.
-  for (const def of defs) {
-    const { item } = def;
+  for (const namedItem of namedItems) {
+    const { item } = namedItem;
     const { instanceId } = item;
     if (instanceId != null) {
-      takenIds.add(instanceId.name);
-      def.instanceId = instanceId.name;
+      const { name } = instanceId;
+      if (taken.has(name)) {
+        throw new CircuitError(`Duplicate instance name [${name}]`);
+      }
+      taken.add(name);
+      namedItem.instanceId = name;
     }
   }
 
   // Process anonymous definitions.
-  for (const def of defs) {
-    const { item } = def;
+  for (const namedItem of namedItems) {
+    const { item } = namedItem;
     const { instanceId } = item;
     if (instanceId == null) {
       let counter = 1;
-      let candidateId = "";
+      let name;
       while (true) {
-        candidateId = `${item.id.name}${counter}`;
-        if (!takenIds.has(candidateId)) {
+        name = `${item.id.name}${counter}`;
+        if (!taken.has(name)) {
           break;
         }
         counter += 1;
       }
-      takenIds.add(candidateId);
-      def.instanceId = candidateId;
+      taken.add(name);
+      namedItem.instanceId = name;
     }
-  }
-}
-
-function mapNodes(circuit: Circuit, defs: readonly ExtDef[]): void {
-  const { groundNode } = circuit;
-
-  const nodes = new Map<string, Node>([[groundNode.name, groundNode]]);
-  const mapper = ({ name }: Identifier): Node => {
-    let node = nodes.get(name);
-    if (node == null) {
-      nodes.set(name, (node = circuit.allocNode(name)));
-    }
-    return node;
-  };
-
-  // Find ground nodes.
-  let found = false;
-  for (const def of defs) {
-    const { item } = def;
-    if (item.id.name === Ground.id) {
-      found = true;
-      for (const node of item.nodes) {
-        nodes.set(node.name, groundNode);
-      }
-    } else {
-      found = found || item.nodes.some(({ name }) => name === groundNode.name);
-    }
-  }
-
-  // Allocate and assign nodes.
-  for (const def of defs) {
-    def.nodes = def.item.nodes.map(mapper);
-  }
-}
-
-function makeParams(variables: Variables, defs: ExtDef[]): void {
-  for (const def of defs) {
-    def.params = variables.makeParams(def.item.params);
   }
 }
