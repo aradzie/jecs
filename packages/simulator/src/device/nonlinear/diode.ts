@@ -1,7 +1,8 @@
 import { Device } from "../../circuit/device";
+import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
-import { DeviceModel, Params, ParamsItem } from "../../circuit/params";
+import { Params, ParamsSchema } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import { PN } from "./semi";
@@ -34,10 +35,7 @@ export class Diode extends Device<DiodeParams, DiodeState> {
 
   static override readonly id = "Diode";
   static override readonly numTerminals = 2;
-  static override readonly paramsSchema: Record<
-    keyof DiodeParams, //
-    ParamsItem
-  > = {
+  static override readonly paramsSchema: ParamsSchema<DiodeParams> = {
     Is: Params.number({
       default: 1e-14,
       title: "saturation current",

@@ -1,7 +1,7 @@
 import { Device } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
 import type { Op } from "../circuit/ops";
-import { Params, ParamsItem } from "../circuit/params";
+import { Params, ParamsSchema } from "../circuit/params";
 import { Unit } from "../util/unit";
 
 export interface ResistorParams {
@@ -14,10 +14,7 @@ export interface ResistorParams {
 export class Resistor extends Device<ResistorParams> {
   static override readonly id = "R";
   static override readonly numTerminals = 2;
-  static override readonly paramsSchema: Record<
-    keyof ResistorParams, //
-    ParamsItem
-  > = {
+  static override readonly paramsSchema: ParamsSchema<ResistorParams> = {
     R: Params.number({
       title: "resistance",
     }),

@@ -1,53 +1,70 @@
 import test from "ava";
-import { Params, validateParams } from "./params";
+import { Params, ParamsMap } from "./params";
 
 test("validate device params", (t) => {
-  t.notThrows(() => {
-    validateParams({}, {});
-  });
-  t.notThrows(() => {
-    validateParams(
-      { v: 1 },
-      {
-        v: Params.number({ title: "haha" }),
-      },
-    );
-  });
-  t.notThrows(() => {
-    validateParams(
-      {},
-      {
-        v: Params.number({ default: 1, title: "haha" }),
-      },
-    );
-  });
-  t.throws(
-    () => {
-      validateParams(
-        {},
-        {
-          v: Params.number({ title: "haha" }),
-        },
-      );
-    },
-    { message: "Missing parameter [v]" },
-  );
-  t.throws(
-    () => {
-      validateParams({ x: 0 }, {});
-    },
-    { message: "Unknown parameter [x]" },
+  t.deepEqual(new ParamsMap({}).build(), {});
+  t.deepEqual(
+    new ParamsMap({
+      V: Params.number({ title: "value" }),
+    })
+      .setAll({ v: 1 })
+      .build(),
+    { V: 1 },
   );
   t.deepEqual(
-    validateParams(
-      {},
-      {
-        v: Params.number({
-          default: 1,
-          title: "haha",
-        }),
-      },
-    ),
-    { v: 1 },
+    new ParamsMap({
+      V: Params.number({ default: 1, title: "value" }),
+    }).build(),
+    { V: 1 },
+  );
+  t.throws(
+    () => {
+      new ParamsMap({}).setAll({ x: 0 });
+    },
+    { message: `Unknown parameter [x]` },
+  );
+  t.throws(
+    () => {
+      new ParamsMap({
+        V: Params.number({ title: "value" }),
+      }).setAll({ v: "omg" });
+    },
+    {
+      message:
+        `Invalid value for parameter [V], ` + //
+        `expected a number, got "omg"`,
+    },
+  );
+  t.throws(
+    () => {
+      new ParamsMap({
+        V: Params.enum({ values: ["one", "two"], title: "value" }),
+      }).setAll({ v: 1 });
+    },
+    {
+      message:
+        `Invalid value for parameter [V], ` + //
+        `expected a string, got 1`,
+    },
+  );
+  t.throws(
+    () => {
+      new ParamsMap({
+        V: Params.enum({ values: ["one", "two"], title: "value" }),
+      }).setAll({ v: "zero" });
+    },
+    {
+      message:
+        `Invalid value for parameter [V], ` + //
+        `expected one of {"one", "two"}, got "zero"`,
+    },
+  );
+  t.throws(
+    () => {
+      new ParamsMap({
+        V: Params.number({ title: "value" }),
+      }).build();
+    },
+    { message: `Missing parameter [V]` },
   );
 });

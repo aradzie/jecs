@@ -1,7 +1,7 @@
 import { Device } from "../../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
-import { Params, ParamsItem } from "../../circuit/params";
+import { Params, ParamsSchema } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 
 export interface CCCSourceParams {
@@ -14,10 +14,7 @@ export interface CCCSourceParams {
 export class CCCSource extends Device<CCCSourceParams> {
   static override readonly id = "CCCS";
   static override readonly numTerminals = 4;
-  static override readonly paramsSchema: Record<
-    keyof CCCSourceParams, //
-    ParamsItem
-  > = {
+  static override readonly paramsSchema: ParamsSchema<CCCSourceParams> = {
     gain: Params.number({ title: "gain" }),
   };
 

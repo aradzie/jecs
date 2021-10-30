@@ -1,7 +1,7 @@
 import { Device } from "../../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
-import { Params, ParamsItem } from "../../circuit/params";
+import { Params, ParamsSchema } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 
 export interface VCCSourceParams {
@@ -14,10 +14,7 @@ export interface VCCSourceParams {
 export class VCCSource extends Device<VCCSourceParams> {
   static override readonly id = "VCCS";
   static override readonly numTerminals = 4;
-  static override readonly paramsSchema: Record<
-    keyof VCCSourceParams, //
-    ParamsItem
-  > = {
+  static override readonly paramsSchema: ParamsSchema<VCCSourceParams> = {
     gain: Params.number({ title: "gain" }),
   };
 

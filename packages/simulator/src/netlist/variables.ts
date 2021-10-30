@@ -20,8 +20,8 @@ export class Variables {
     this.equations.set(equation.id.name, equation);
   }
 
-  mapParams(params: readonly Parameter[]): DeviceParams {
-    const result: Record<string, number | string> = {};
+  makeParams(params: readonly Parameter[]): DeviceParams {
+    const result = {} as DeviceParams;
     for (const { id, value } of params) {
       switch (value.type) {
         case "string":
@@ -29,6 +29,7 @@ export class Variables {
           break;
         case "exp":
           result[id.name] = this.evalExp(value.value);
+          break;
       }
     }
     return result;

@@ -3,12 +3,13 @@ import { NameMap } from "../util/map";
 import type { Device, DeviceClass } from "./device";
 import { CircuitError } from "./error";
 import type { Node } from "./network";
-import {
-  DeviceModel,
-  DeviceParams,
-  Initializer,
-  validateParams,
-} from "./params";
+import { DeviceParams, ParamsMap, ParamsSchema } from "./params";
+
+export type ModelName = string;
+
+export type DeviceModel = [name: ModelName, params: DeviceParams];
+
+export type Initializer = ModelName | DeviceParams;
 
 class Registration {
   private static readonly map = new NameMap<Registration>();
@@ -82,29 +83,41 @@ class Registration {
   ): Device {
     const { deviceClass } = this;
     const { id, numTerminals, paramsSchema } = deviceClass;
+
     if (nodes.length !== numTerminals) {
       throw new CircuitError(
         `Error in device [${id}:${name}]: ` + //
           `Invalid number of nodes`,
       );
     }
-    let params: Record<string, number | string> = {};
-    for (const initializer of initializers) {
-      if (typeof initializer === "string") {
-        Object.assign(params, this.getModel(initializer));
-      } else {
-        Object.assign(params, initializer);
-      }
-    }
+
+    let params: DeviceParams;
+
     try {
-      params = validateParams(params, paramsSchema);
+      params = this.makeParams(paramsSchema, initializers);
     } catch (err: any) {
       throw new CircuitError(
         `Error in device [${id}:${name}]: ` + //
-          `${err.message}`,
+          err.message,
       );
     }
+
     return new deviceClass(name, nodes, params);
+  }
+
+  private makeParams(
+    paramsSchema: ParamsSchema,
+    initializers: readonly Initializer[],
+  ) {
+    const paramsMap = new ParamsMap(paramsSchema);
+    for (const initializer of initializers) {
+      if (typeof initializer === "string") {
+        paramsMap.setAll(this.getModel(initializer));
+      } else {
+        paramsMap.setAll(initializer);
+      }
+    }
+    return paramsMap.build();
   }
 }
 

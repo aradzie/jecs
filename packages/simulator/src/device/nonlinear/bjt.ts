@@ -1,7 +1,8 @@
 import { Device } from "../../circuit/device";
+import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
-import { DeviceModel, Params, ParamsItem } from "../../circuit/params";
+import { Params, ParamsSchema } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import { BjtPolarity, bjtSign, npn, PN, pnp } from "./semi";
@@ -48,7 +49,7 @@ export class Bjt extends Device<BjtParams, BjtState> {
     Nr: 1,
     Bf: 100.0,
     Br: 1.0,
-    Vaf: 100.0,
+    Vaf: 10.0,
     Var: 0.0,
     Temp,
   });
@@ -73,10 +74,7 @@ export class Bjt extends Device<BjtParams, BjtState> {
 
   static override readonly id = "BJT";
   static override readonly numTerminals = 3;
-  static override readonly paramsSchema: Record<
-    keyof BjtParams, //
-    ParamsItem
-  > = {
+  static override readonly paramsSchema: ParamsSchema<BjtParams> = {
     polarity: Params.enum({
       values: [npn, pnp],
       title: "transistor polarity",

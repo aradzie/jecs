@@ -1,6 +1,7 @@
+import type { DeviceModel } from "./library";
 import type { Network, Node, Stamper } from "./network";
 import type { Op } from "./ops";
-import type { DeviceModel, ParamsSchema } from "./params";
+import type { ParamsSchema } from "./params";
 
 // pin
 // two-terminal, three-terminal, etc

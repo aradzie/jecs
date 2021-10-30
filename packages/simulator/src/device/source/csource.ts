@@ -1,7 +1,7 @@
 import { Device } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
-import { Params, ParamsItem } from "../../circuit/params";
+import { Params, ParamsSchema } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 
 export interface CSourceParams {
@@ -14,10 +14,7 @@ export interface CSourceParams {
 export class CSource extends Device<CSourceParams> {
   static override readonly id = "I";
   static override readonly numTerminals = 2;
-  static override readonly paramsSchema: Record<
-    keyof CSourceParams, //
-    ParamsItem
-  > = {
+  static override readonly paramsSchema: ParamsSchema<CSourceParams> = {
     I: Params.number({ title: "current" }),
   };
 

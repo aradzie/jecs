@@ -1,7 +1,7 @@
 import { Device } from "../../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
-import { Params, ParamsItem } from "../../circuit/params";
+import { Params, ParamsSchema } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 
 export interface CCVSourceParams {
@@ -14,10 +14,7 @@ export interface CCVSourceParams {
 export class CCVSource extends Device<CCVSourceParams> {
   static override readonly id = "CCVS";
   static override readonly numTerminals = 4;
-  static override readonly paramsSchema: Record<
-    keyof CCVSourceParams, //
-    ParamsItem
-  > = {
+  static override readonly paramsSchema: ParamsSchema<CCVSourceParams> = {
     gain: Params.number({ title: "gain" }),
   };
 

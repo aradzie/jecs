@@ -1,8 +1,8 @@
 import { Circuit } from "../circuit/circuit";
 import type { DeviceClass } from "../circuit/device";
-import { createDevice, getDeviceClass } from "../circuit/library";
+import { createDevice, getDeviceClass, Initializer } from "../circuit/library";
 import type { Node } from "../circuit/network";
-import type { DeviceParams, Initializer } from "../circuit/params";
+import type { ParamValue } from "../circuit/params";
 import { Ground } from "../device";
 import type { Definition, Identifier, Netlist } from "./ast";
 import { parse } from "./parser";
@@ -14,7 +14,7 @@ interface ExtDef {
   modelId: string | null;
   instanceId: string;
   nodes: Node[];
-  params: DeviceParams;
+  params: Record<string, ParamValue>;
 }
 
 export function parseNetlist(
@@ -53,7 +53,7 @@ export function parseNetlist(
 
   assignInstanceIds(defs);
   mapNodes(circuit, defs);
-  mapParams(variables, defs);
+  makeParams(variables, defs);
 
   for (const { deviceClass, modelId, instanceId, nodes, params } of defs) {
     const initializer: Initializer[] = [];
@@ -134,8 +134,8 @@ function mapNodes(circuit: Circuit, defs: readonly ExtDef[]): void {
   }
 }
 
-function mapParams(variables: Variables, defs: ExtDef[]): void {
+function makeParams(variables: Variables, defs: ExtDef[]): void {
   for (const def of defs) {
-    def.params = variables.mapParams(def.item.params);
+    def.params = variables.makeParams(def.item.params);
   }
 }

@@ -1,7 +1,7 @@
 import { Device } from "../../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
-import { Params, ParamsItem } from "../../circuit/params";
+import { Params, ParamsSchema } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 
 export interface VSourceParams {
@@ -14,10 +14,7 @@ export interface VSourceParams {
 export class VSource extends Device<VSourceParams> {
   static override readonly id = "V";
   static override readonly numTerminals = 2;
-  static override readonly paramsSchema: Record<
-    keyof VSourceParams, //
-    ParamsItem
-  > = {
+  static override readonly paramsSchema: ParamsSchema<VSourceParams> = {
     V: Params.number({ title: "voltage" }),
   };
 

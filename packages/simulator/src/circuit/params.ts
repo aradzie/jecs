@@ -1,10 +1,10 @@
 import { CircuitError } from "./error";
 
-export type ParamsSchema = Readonly<Record<string, ParamsItem>>;
+export type ParamsSchema<T = any> = Record<keyof T, Param>;
 
-export type ParamsItem = NumberParamsItem | EnumParamsItem;
+export type Param = NumberParam | EnumParam;
 
-export type NumberParamsItem = {
+export type NumberParam = {
   readonly type: "number";
   readonly default?: number;
   readonly min?: number;
@@ -12,63 +12,79 @@ export type NumberParamsItem = {
   readonly title: string;
 };
 
-export type EnumParamsItem = {
+export type EnumParam = {
   readonly type: "enum";
   readonly values: readonly string[];
   readonly default?: string;
   readonly title: string;
 };
 
-export type DeviceParams = Readonly<Record<string, unknown>>;
+export type ParamValue = number | string;
 
-export type DeviceModel = readonly [name: string, params: DeviceParams];
-
-export type Initializer = string | DeviceParams;
+export type DeviceParams = Record<string, ParamValue>;
 
 export class Params {
-  static number(item: Omit<NumberParamsItem, "type">): NumberParamsItem {
+  static number(item: Omit<NumberParam, "type">): NumberParam {
     return { type: "number", ...item };
   }
 
-  static enum(item: Omit<EnumParamsItem, "type">): EnumParamsItem {
+  static enum(item: Omit<EnumParam, "type">): EnumParam {
     return { type: "enum", ...item };
   }
 }
 
-export function validateParams<T extends Record<string, unknown>>(
-  params: DeviceParams,
-  schema: ParamsSchema,
-): T {
-  const result: [string, unknown][] = [];
-  for (const name of Object.keys(params)) {
-    if (!(name in schema)) {
-      throw new CircuitError(`Unknown parameter [${name}]`);
+type NamedParam = {
+  readonly name: string;
+  readonly param: Param;
+};
+
+export class ParamsMap {
+  private readonly schema = new Map<string, NamedParam>();
+  private readonly values = new Map<string, ParamValue>();
+
+  constructor(schema: ParamsSchema) {
+    for (const [name, param] of Object.entries(schema)) {
+      this.schema.set(name.toLowerCase(), { name, param });
+      if (param.default != null) {
+        this.values.set(name, param.default);
+      }
     }
   }
-  for (const [name, item] of Object.entries(schema)) {
-    const value = params[name] ?? item.default ?? null;
-    if (value == null) {
-      throw new CircuitError(`Missing parameter [${name}]`);
+
+  setAll(values: DeviceParams): this {
+    for (const [name, value] of Object.entries(values)) {
+      this.set(name, value);
     }
-    switch (item.type) {
+    return this;
+  }
+
+  set(anyName: string, value: ParamValue): this {
+    const namedParam = this.schema.get(anyName.toLowerCase());
+    if (namedParam == null) {
+      throw new CircuitError(`Unknown parameter [${anyName}]`);
+    }
+    const { name, param } = namedParam;
+    switch (param.type) {
       case "number": {
         if (typeof value !== "number") {
           throw new CircuitError(
             `Invalid value for parameter [${name}], ` +
-              `expected number, got ${typeof value}`,
+              `expected a number, got ${quote(value)}`,
           );
         }
-        const { min, max } = item;
+        const { min, max } = param;
         if (typeof min === "number" && value < min) {
           throw new CircuitError(
             `Invalid value for parameter [${name}], ` +
-              `expected value larger than or equal to ${min}`,
+              `expected a value larger than or equal to ${min}, ` +
+              `got ${quote(value)}`,
           );
         }
         if (typeof max === "number" && value > max) {
           throw new CircuitError(
             `Invalid value for parameter [${name}], ` +
-              `expected value less than or equal to ${max}`,
+              `expected a value less than or equal to ${max}, ` +
+              `got ${quote(value)}`,
           );
         }
         break;
@@ -77,20 +93,43 @@ export function validateParams<T extends Record<string, unknown>>(
         if (typeof value !== "string") {
           throw new CircuitError(
             `Invalid value for parameter [${name}], ` +
-              `expected string, got ${typeof value}`,
+              `expected a string, got ${quote(value)}`,
           );
         }
-        const { values } = item;
+        const { values } = param;
         if (!values.includes(value)) {
           throw new CircuitError(
             `Invalid value for parameter [${name}], ` +
-              `expected one of ${values.map((v) => `"${v}"`).join(", ")}`,
+              `expected one of {${values.map((v) => quote(v)).join(", ")}}, ` +
+              `got ${quote(value)}`,
           );
         }
         break;
       }
     }
-    result.push([name, value]);
+    this.values.set(name, value);
+    return this;
   }
-  return Object.fromEntries(result) as T;
+
+  build(): DeviceParams {
+    const result = {} as DeviceParams;
+    for (const { name } of this.schema.values()) {
+      const value = this.values.get(name);
+      if (value == null) {
+        throw new CircuitError(`Missing parameter [${name}]`);
+      }
+      result[name] = value;
+    }
+    return result;
+  }
+}
+
+function quote(value: unknown): string {
+  switch (typeof value) {
+    case "string":
+      return `"${value}"`;
+    case "number":
+      return String(value);
+  }
+  return `[${value}]`;
 }
