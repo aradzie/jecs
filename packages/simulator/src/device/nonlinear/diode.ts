@@ -38,16 +38,16 @@ export class Diode extends Device<DiodeParams, DiodeState> {
   static override readonly paramsSchema: ParamsSchema<DiodeParams> = {
     Is: Params.number({
       default: 1e-14,
+      min: 0,
       title: "saturation current",
     }),
     N: Params.number({
       default: 1,
+      min: 1e-3,
+      max: 100,
       title: "emission coefficient",
     }),
-    Temp: Params.number({
-      default: Temp,
-      title: "device temperature",
-    }),
+    Temp: Params.Temp,
   };
 
   /** The anode terminal. */

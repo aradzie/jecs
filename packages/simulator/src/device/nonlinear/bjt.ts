@@ -81,36 +81,42 @@ export class Bjt extends Device<BjtParams, BjtState> {
     }),
     Is: Params.number({
       default: 1e-14,
+      min: 0,
       title: "saturation current",
     }),
     Nf: Params.number({
       default: 1,
+      min: 1e-3,
+      max: 100,
       title: "forward emission coefficient",
     }),
     Nr: Params.number({
       default: 1,
+      min: 1e-3,
+      max: 100,
       title: "reverse emission coefficient",
     }),
     Bf: Params.number({
       default: 100.0,
+      min: 1e-3,
       title: "forward beta",
     }),
     Br: Params.number({
       default: 1.0,
+      min: 1e-3,
       title: "reverse beta",
     }),
     Vaf: Params.number({
       default: 10.0,
+      min: 0,
       title: "forward Early voltage",
     }),
     Var: Params.number({
       default: 0.0,
+      min: 0,
       title: "reverse Early voltage",
     }),
-    Temp: Params.number({
-      default: Temp,
-      title: "device temperature",
-    }),
+    Temp: Params.Temp,
   };
 
   /** The emitter terminal. */

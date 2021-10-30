@@ -81,28 +81,32 @@ export class Jfet extends Device<JfetParams, JfetState> {
     }),
     Vth: Params.number({
       default: -2.0,
+      min: -100,
+      max: +100,
       title: "threshold voltage",
     }),
     beta: Params.number({
       default: 1e-4,
+      min: 1e-6,
       title: "transconductance parameter",
     }),
     lambda: Params.number({
       default: 0.0,
+      min: 0,
       title: "channel-length modulation parameter",
     }),
     Is: Params.number({
       default: 1e-14,
+      min: 0,
       title: "saturation current",
     }),
     N: Params.number({
       default: 1,
+      min: 1e-3,
+      max: 100,
       title: "emission coefficient",
     }),
-    Temp: Params.number({
-      default: Temp,
-      title: "device temperature",
-    }),
+    Temp: Params.Temp,
   };
 
   /** The source terminal. */

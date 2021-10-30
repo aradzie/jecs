@@ -111,27 +111,31 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
     }),
     Vth: Params.number({
       title: "threshold voltage",
+      min: -100,
+      max: +100,
     }),
     beta: Params.number({
       default: 2e-2,
+      min: 1e-6,
       title: "transconductance parameter",
     }),
     lambda: Params.number({
       default: 0.0,
+      min: 0,
       title: "channel-length modulation parameter",
     }),
     Is: Params.number({
       default: 1e-14,
+      min: 0,
       title: "saturation current",
     }),
     N: Params.number({
       default: 1,
+      min: 1e-3,
+      max: 100,
       title: "emission coefficient",
     }),
-    Temp: Params.number({
-      default: Temp,
-      title: "device temperature",
-    }),
+    Temp: Params.Temp,
   };
 
   /** The source terminal. */

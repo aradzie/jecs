@@ -1,3 +1,4 @@
+import { Temp } from "../device/const";
 import { CircuitError } from "./error";
 
 export type ParamsSchema<T = any> = Record<keyof T, Param>;
@@ -6,16 +7,23 @@ export type Param = NumberParam | EnumParam;
 
 export type NumberParam = {
   readonly type: "number";
+  /** The default value of this parameter. */
   readonly default?: number;
+  /** The minimal allowed value of this parameter. */
   readonly min?: number;
+  /** The maximal allowed value of this parameter. */
   readonly max?: number;
+  /** Parameter description. */
   readonly title: string;
 };
 
 export type EnumParam = {
   readonly type: "enum";
+  /** The set of allowed values. */
   readonly values: readonly string[];
+  /** The default value of this parameter. */
   readonly default?: string;
+  /** Parameter description. */
   readonly title: string;
 };
 
@@ -24,13 +32,22 @@ export type ParamValue = number | string;
 export type DeviceParams = Record<string, ParamValue>;
 
 export class Params {
+  /** Creates a new number parameter schema from the given options. */
   static number(item: Omit<NumberParam, "type">): NumberParam {
     return { type: "number", ...item };
   }
 
+  /** Creates a new enum parameter schema from the given options. */
   static enum(item: Omit<EnumParam, "type">): EnumParam {
     return { type: "enum", ...item };
   }
+
+  /** The device temperature parameter. */
+  static Temp = Params.number({
+    default: Temp,
+    min: -273.15, // Absolute zero.
+    title: "device temperature",
+  });
 }
 
 type NamedParam = {
@@ -38,6 +55,9 @@ type NamedParam = {
   readonly param: Param;
 };
 
+/**
+ * A helper class to build and validate device parameters.
+ */
 export class ParamsMap {
   private readonly schema = new Map<string, NamedParam>();
   private readonly values = new Map<string, ParamValue>();
