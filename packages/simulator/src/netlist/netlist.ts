@@ -4,11 +4,12 @@ import { CircuitError } from "../circuit/error";
 import { createDevice, getDeviceClass, Initializer } from "../circuit/library";
 import type { Node } from "../circuit/network";
 import { Ground } from "../device";
+import { NameMap } from "../util/map";
 import type { Definition, Netlist } from "./ast";
 import { parse } from "./parser";
 import { Variables } from "./variables";
 
-interface NamedItem {
+interface DefinitionItem {
   readonly item: Definition;
   readonly deviceClass: DeviceClass;
   instanceId: string;
@@ -24,7 +25,9 @@ export function parseNetlist(
 
   const circuit = new Circuit();
 
-  // Pass: collect variables.
+  const definitionItems: DefinitionItem[] = [];
+
+  // Pass: collect equations and definitions.
 
   for (const item of input.items) {
     switch (item.type) {
@@ -32,49 +35,8 @@ export function parseNetlist(
         variables.setEquation(item);
         break;
       }
-    }
-  }
-
-  // Pass: map nodes.
-
-  const { groundNode } = circuit;
-  const nodesMap = new Map<string, Node>([[groundNode.name, groundNode]]);
-  // Find ground nodes.
-  for (const item of input.items) {
-    switch (item.type) {
       case "definition": {
-        // Any node to which the Ground device is connected
-        // becomes the ground node.
-        if (item.id.name === Ground.id) {
-          for (const { name } of item.nodes) {
-            nodesMap.set(name, groundNode);
-          }
-        }
-        break;
-      }
-    }
-  }
-  // Find the remaining nodes.
-  for (const item of input.items) {
-    switch (item.type) {
-      case "definition": {
-        for (const { name } of item.nodes) {
-          if (!nodesMap.has(name)) {
-            nodesMap.set(name, circuit.allocNode(name));
-          }
-        }
-        break;
-      }
-    }
-  }
-
-  // Pass: generate unique instance names.
-
-  const namedItems: NamedItem[] = [];
-  for (const item of input.items) {
-    switch (item.type) {
-      case "definition": {
-        namedItems.push({
+        definitionItems.push({
           item,
           deviceClass: getDeviceClass(item.id.name),
           instanceId: "",
@@ -83,11 +45,18 @@ export function parseNetlist(
       }
     }
   }
-  assignInstanceIds(namedItems);
+
+  // Pass: generate unique instance names.
+
+  assignInstanceIds(definitionItems);
+
+  // Pass: collect nodes.
+
+  const nodesMap = collectNodes(circuit, definitionItems);
 
   // Pass: create devices.
 
-  for (const { item, deviceClass, instanceId } of namedItems) {
+  for (const { item, deviceClass, instanceId } of definitionItems) {
     const nodes = item.nodes.map(({ name }) => nodesMap.get(name) as Node);
     const initializer: Initializer[] = [];
     if (item.modelId != null) {
@@ -102,39 +71,73 @@ export function parseNetlist(
   return circuit;
 }
 
-function assignInstanceIds(namedItems: readonly NamedItem[]): void {
+function assignInstanceIds(definitionItems: readonly DefinitionItem[]): void {
   const taken = new Set<string>();
 
   // Process named definitions.
-  for (const namedItem of namedItems) {
-    const { item } = namedItem;
+  for (const definitionItem of definitionItems) {
+    const { item } = definitionItem;
     const { instanceId } = item;
     if (instanceId != null) {
       const { name } = instanceId;
-      if (taken.has(name)) {
+      const lcName = name.toLowerCase();
+      if (taken.has(lcName)) {
         throw new CircuitError(`Duplicate instance name [${name}]`);
       }
-      taken.add(name);
-      namedItem.instanceId = name;
+      taken.add(lcName);
+      definitionItem.instanceId = name;
     }
   }
 
   // Process anonymous definitions.
-  for (const namedItem of namedItems) {
-    const { item } = namedItem;
+  for (const definitionItem of definitionItems) {
+    const { item } = definitionItem;
     const { instanceId } = item;
     if (instanceId == null) {
       let counter = 1;
       let name;
+      let lcName;
       while (true) {
         name = `${item.id.name}${counter}`;
-        if (!taken.has(name)) {
+        lcName = name.toLowerCase();
+        if (!taken.has(lcName)) {
           break;
         }
         counter += 1;
       }
-      taken.add(name);
-      namedItem.instanceId = name;
+      taken.add(lcName);
+      definitionItem.instanceId = name;
     }
   }
+}
+
+function collectNodes(
+  circuit: Circuit,
+  definitionItems: readonly DefinitionItem[],
+): NameMap<Node> {
+  const { groundNode } = circuit;
+  const nodesMap = new NameMap<Node>([[groundNode.name, groundNode]]);
+
+  // Find ground nodes.
+  // Any node to which the Ground device is connected becomes the ground node.
+  for (const { item, deviceClass } of definitionItems) {
+    if (deviceClass === Ground) {
+      for (const { name } of item.nodes) {
+        nodesMap.set(name, groundNode);
+      }
+    }
+  }
+
+  // Find the remaining, non-ground nodes.
+  for (const { item, deviceClass } of definitionItems) {
+    for (const { name } of item.nodes) {
+      if (deviceClass !== Ground) {
+        if (!nodesMap.has(name)) {
+          nodesMap.set(name, circuit.allocNode(name));
+        }
+      }
+    }
+  }
+
+  return nodesMap;
 }

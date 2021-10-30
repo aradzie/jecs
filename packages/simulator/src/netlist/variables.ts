@@ -1,10 +1,11 @@
 import type { DeviceParams } from "../circuit/params";
+import { NameMap } from "../util/map";
 import type { BinaryExp, Equation, Expression, FuncExp, UnaryExp } from "./ast";
 import { builtins, equation, literalExp, Parameter } from "./ast";
 import { callFunc } from "./functions";
 
 export class Variables {
-  private equations = new Map<string, Equation>();
+  private equations = new NameMap<Equation>();
 
   constructor() {
     for (const builtin of builtins) {

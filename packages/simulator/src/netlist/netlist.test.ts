@@ -4,9 +4,9 @@ import { parse } from "./parser";
 
 test("parse netlist text", (t) => {
   const circuit = parseNetlist(`
-Ground ng;
-V:V1 np ng V=5;
-R:R1 np ng R=1000;
+ground NG;
+v:V1 np ng v=5;
+r:R1 Np Ng r=1000;
 `);
 
   t.is(circuit.nodes.length, 2);
