@@ -98,8 +98,11 @@ export abstract class Device<ParamsT = unknown> {
    * Circuit calls this method to let a device to compute its state
    * from the current node voltages and branch currents.
    * @param state Device state which is saved between iterations.
+   * @param final Whether this is a final evaluation step, which is performed after last iteration.
+   *              At the final evaluation step devices should compute output parameters.
+   *              Non-linear devices should disable damping.
    */
-  eval(state: DeviceState): void {}
+  eval(state: DeviceState, final: boolean): void {}
 
   /**
    * Circuit calls this method to let a device to stamp the MNA matrix

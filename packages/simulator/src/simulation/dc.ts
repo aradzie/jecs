@@ -1,5 +1,5 @@
 import type { Circuit } from "../circuit/circuit";
-import type { DeviceClass } from "../circuit/device";
+import type { Device, DeviceClass } from "../circuit/device";
 import { Stamper } from "../circuit/network";
 import { solve } from "../math/gauss-elimination";
 import { matClear, matMake, vecClear, vecCopy, vecMake } from "../math/matrix";
@@ -8,7 +8,27 @@ import { SimulationError } from "./error";
 import type { Options } from "./options";
 import { defaultOptions } from "./options";
 
-export function dcAnalysis(circuit: Circuit, userOptions: Partial<Options> = {}): void {
+export type Output = readonly DeviceOutput[];
+
+export type DeviceOutput = readonly [
+  // Device class identifier.
+  deviceId: string,
+  // Device instance identifier.
+  id: string,
+  // The list of device output parameters.
+  values: readonly DeviceValue[],
+];
+
+export type DeviceValue = readonly [
+  // Parameter name.
+  name: string,
+  // Parameter unit.
+  unit: string,
+  // Parameter value.
+  value: number,
+];
+
+export function dcAnalysis(circuit: Circuit, userOptions: Partial<Options> = {}): Output {
   const options = Object.freeze<Options>({ ...defaultOptions, ...userOptions });
   const { nodes, devices } = circuit;
 
@@ -17,8 +37,8 @@ export function dcAnalysis(circuit: Circuit, userOptions: Partial<Options> = {})
   }
 
   for (const device of devices) {
-    const { stateParams } = device.constructor as DeviceClass;
-    device.state = vecMake(stateParams.length);
+    const deviceClass = device.constructor as DeviceClass;
+    device.state = vecMake(deviceClass.stateParams.length);
   }
 
   const controller = new Controller();
@@ -31,16 +51,12 @@ export function dcAnalysis(circuit: Circuit, userOptions: Partial<Options> = {})
   const stamper = new Stamper(matrix, vector);
 
   for (const iteration of controller) {
-    for (const device of devices) {
-      const { state } = device;
-      device.eval(state);
-    }
-
     matClear(matrix);
     vecClear(vector);
 
     for (const device of devices) {
       const { state } = device;
+      device.eval(state, false);
       device.stamp(stamper, state);
     }
 
@@ -55,10 +71,7 @@ export function dcAnalysis(circuit: Circuit, userOptions: Partial<Options> = {})
     vecCopy(vector, prevVector);
   }
 
-  for (const device of devices) {
-    const { state } = device;
-    device.eval(state);
-  }
+  return makeOutput(devices);
 }
 
 class Controller implements Iterable<number> {
@@ -70,4 +83,21 @@ class Controller implements Iterable<number> {
     }
     throw new SimulationError(`Simulation did not converge`);
   }
+}
+
+function makeOutput(devices: readonly Device[]): Output {
+  const output: DeviceOutput[] = [];
+
+  for (const device of devices) {
+    const { state } = device;
+    device.eval(state, true);
+
+    const deviceClass = device.constructor as DeviceClass;
+    const values = deviceClass.stateParams.outputs.map(
+      ({ index, name, unit }) => [name, unit, state[index]] as DeviceValue,
+    );
+    output.push([deviceClass.id, device.name, values]);
+  }
+
+  return output;
 }
