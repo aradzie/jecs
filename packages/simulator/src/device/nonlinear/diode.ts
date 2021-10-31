@@ -1,4 +1,4 @@
-import { Device } from "../../circuit/device";
+import { Device, DeviceState } from "../../circuit/device";
 import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
@@ -23,7 +23,7 @@ const enum S {
 /**
  * Diode.
  */
-export class Diode extends Device<DiodeParams, Float64Array> {
+export class Diode extends Device<DiodeParams> {
   static override getModels(): readonly DeviceModel[] {
     return [["Diode", Diode.modelDiode]];
   }
@@ -66,24 +66,24 @@ export class Diode extends Device<DiodeParams, Float64Array> {
     this.pn = new PN(Is, N, Temp);
   }
 
-  override getInitialState(): Float64Array {
+  override getInitialState(): DeviceState {
     return new Float64Array(S._Size_);
   }
 
-  override eval(state: Float64Array): void {
+  override eval(state: DeviceState): void {
     const { na, nc, pn } = this;
     const Vd = (state[S.Vd] = pn.limitVoltage(na.voltage - nc.voltage, state[S.Vd]));
     state[S.Id] = pn.evalCurrent(Vd);
     state[S.Gd] = pn.evalConductance(Vd);
   }
 
-  override stamp(stamper: Stamper, [Vd, Id, Gd]: Float64Array): void {
+  override stamp(stamper: Stamper, [Vd, Id, Gd]: DeviceState): void {
     const { na, nc } = this;
     stamper.stampConductance(na, nc, Gd);
     stamper.stampCurrentSource(na, nc, Id - Gd * Vd);
   }
 
-  override ops([VdX, Id, Gd]: Float64Array = this.state): readonly Op[] {
+  override ops([VdX, Id, Gd]: DeviceState = this.state): readonly Op[] {
     const { na, nc } = this;
     const Vd = na.voltage - nc.voltage;
     return [

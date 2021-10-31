@@ -3,11 +3,6 @@ import type { Network, Node, Stamper } from "./network";
 import type { Op } from "./ops";
 import type { ParamsSchema } from "./params";
 
-// pin
-// two-terminal, three-terminal, etc
-// one-port
-// two-port
-
 export interface DeviceClass {
   /** Unique device identifier. */
   readonly id: string;
@@ -30,7 +25,14 @@ export interface DeviceClass {
   getModels(): readonly DeviceModel[];
 }
 
-export abstract class Device<ParamsT = unknown, StateT = unknown> {
+/**
+ * Device states are kept in typed arrays.
+ */
+export type DeviceState = Float64Array;
+
+const emptyState = new Float64Array();
+
+export abstract class Device<ParamsT = unknown> {
   /** Returns a list of built-in generic device models, if any. */
   static getModels(): readonly DeviceModel[] {
     return [];
@@ -54,7 +56,7 @@ export abstract class Device<ParamsT = unknown, StateT = unknown> {
   /** The device parameters. */
   readonly params: ParamsT;
 
-  state: StateT = this.getInitialState();
+  state: DeviceState = this.getInitialState();
 
   constructor(name: string, nodes: readonly Node[], params: ParamsT) {
     this.name = name;
@@ -72,8 +74,8 @@ export abstract class Device<ParamsT = unknown, StateT = unknown> {
   /**
    * Returns a device state object which is shared between iterations.
    */
-  getInitialState(): StateT {
-    return {} as StateT;
+  getInitialState(): DeviceState {
+    return emptyState;
   }
 
   /**
@@ -81,7 +83,7 @@ export abstract class Device<ParamsT = unknown, StateT = unknown> {
    * from the current node voltages and branch currents.
    * @param state Device state which is saved between iterations.
    */
-  eval(state: StateT): void {}
+  eval(state: DeviceState): void {}
 
   /**
    * Circuit calls this method to let a device to stamp the MNA matrix
@@ -89,12 +91,12 @@ export abstract class Device<ParamsT = unknown, StateT = unknown> {
    * @param stamper A stamper which updates MNA matrix and RHS vector.
    * @param state Device state which is saved between iterations.
    */
-  stamp(stamper: Stamper, state: StateT): void {}
+  stamp(stamper: Stamper, state: DeviceState): void {}
 
   /**
    * Returns device operating points obtained from a previously computed state.
    */
-  ops(state?: StateT): readonly Op[] {
+  ops(state?: DeviceState): readonly Op[] {
     return [];
   }
 }

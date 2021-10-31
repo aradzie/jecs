@@ -1,4 +1,4 @@
-import { Device } from "../../circuit/device";
+import { Device, DeviceState } from "../../circuit/device";
 import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
@@ -42,7 +42,7 @@ const enum S {
 /**
  * Bipolar junction transistor, BJT.
  */
-export class Bjt extends Device<BjtParams, Float64Array> {
+export class Bjt extends Device<BjtParams> {
   static modelNpn = Object.freeze<BjtParams>({
     polarity: "npn",
     Is: 1e-14,
@@ -141,11 +141,11 @@ export class Bjt extends Device<BjtParams, Float64Array> {
     this.pnBc = new PN(Is, Nr, Temp);
   }
 
-  override getInitialState(): Float64Array {
+  override getInitialState(): DeviceState {
     return new Float64Array(S._Size_);
   }
 
-  override eval(state: Float64Array): void {
+  override eval(state: DeviceState): void {
     const { ne, nb, nc, pnBe, params, pnBc } = this;
     const { polarity, Bf, Br } = params;
     const sign = bjtSign(polarity);
@@ -161,7 +161,7 @@ export class Bjt extends Device<BjtParams, Float64Array> {
     state[S.Gr] = pnBc.evalConductance(Vbc);
   }
 
-  override stamp(stamper: Stamper, [Vbe, Vbc, Af, Ar, Ie, Ic, Gf, Gr]: Float64Array): void {
+  override stamp(stamper: Stamper, [Vbe, Vbc, Af, Ar, Ie, Ic, Gf, Gr]: DeviceState): void {
     const { ne, nb, nc, params } = this;
     const { polarity } = params;
     const sign = bjtSign(polarity);
@@ -182,7 +182,7 @@ export class Bjt extends Device<BjtParams, Float64Array> {
     stamper.stampCurrentSource(nc, nb, sign * (Ic - eqGce * Vbe - eqGcc * Vbc));
   }
 
-  override ops([VbeX, VbcX, Af, Ar, Ie, Ic, Gf, Gr]: Float64Array = this.state): readonly Op[] {
+  override ops([VbeX, VbcX, Af, Ar, Ie, Ic, Gf, Gr]: DeviceState = this.state): readonly Op[] {
     const { ne, nb, nc, params } = this;
     const { polarity } = params;
     const sign = bjtSign(polarity);

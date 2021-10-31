@@ -1,4 +1,4 @@
-import { Device } from "../../circuit/device";
+import { Device, DeviceState } from "../../circuit/device";
 import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
@@ -46,7 +46,7 @@ const enum S {
 /**
  * Junction field-effect transistor, JFET.
  */
-export class Jfet extends Device<JfetParams, Float64Array> {
+export class Jfet extends Device<JfetParams> {
   static override getModels(): readonly DeviceModel[] {
     return [
       ["NFET", Jfet.modelNJfet],
@@ -131,11 +131,11 @@ export class Jfet extends Device<JfetParams, Float64Array> {
     this.pnGd = new PN(Is, N, Temp);
   }
 
-  override getInitialState(): Float64Array {
+  override getInitialState(): DeviceState {
     return new Float64Array(S._Size_);
   }
 
-  override eval(state: Float64Array): void {
+  override eval(state: DeviceState): void {
     const { ns, ng, nd, params, pnGs, pnGd } = this;
     const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity);
@@ -207,7 +207,7 @@ export class Jfet extends Device<JfetParams, Float64Array> {
 
   override stamp(
     stamper: Stamper,
-    [Vgs, Igs, Ggs, Vgd, Igd, Ggd, Vds, Vsd, Ids, Gds, Gm]: Float64Array,
+    [Vgs, Igs, Ggs, Vgd, Igd, Ggd, Vds, Vsd, Ids, Gds, Gm]: DeviceState,
   ): void {
     const { ns, ng, nd, params } = this;
     const { polarity } = params;
@@ -232,7 +232,7 @@ export class Jfet extends Device<JfetParams, Float64Array> {
   }
 
   override ops(
-    [VgsX, Igs, Ggs, VgdX, Igd, Ggd, VdsX, VsdX, Ids, Gds, Gm]: Float64Array = this.state,
+    [VgsX, Igs, Ggs, VgdX, Igd, Ggd, VdsX, VsdX, Ids, Gds, Gm]: DeviceState = this.state,
   ): readonly Op[] {
     const { ns, ng, nd, params } = this;
     const { polarity } = params;

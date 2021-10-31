@@ -1,4 +1,4 @@
-import { Device } from "../../circuit/device";
+import { Device, DeviceState } from "../../circuit/device";
 import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
@@ -48,7 +48,7 @@ const enum S {
 /**
  * Metal–oxide–semiconductor field-effect transistor, MOSFET.
  */
-export class Mosfet extends Device<MosfetParams, Float64Array> {
+export class Mosfet extends Device<MosfetParams> {
   static override getModels(): readonly DeviceModel[] {
     return [
       ["NMOS", Mosfet.modelEnhNMosfet],
@@ -155,11 +155,11 @@ export class Mosfet extends Device<MosfetParams, Float64Array> {
     this.pnBd = new PN(Is, N, Temp);
   }
 
-  override getInitialState(): Float64Array {
+  override getInitialState(): DeviceState {
     return new Float64Array(S._Size_);
   }
 
-  override eval(state: Float64Array): void {
+  override eval(state: DeviceState): void {
     const { ns, ng, nd, nb, params, pnBs, pnBd } = this;
     const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity);
@@ -236,7 +236,7 @@ export class Mosfet extends Device<MosfetParams, Float64Array> {
 
   override stamp(
     stamper: Stamper,
-    [Vbs, Ibs, Gbs, Vbd, Ibd, Gbd, Vgs, Vgd, Vds, Ids, Gds, Gm]: Float64Array,
+    [Vbs, Ibs, Gbs, Vbd, Ibd, Gbd, Vgs, Vgd, Vds, Ids, Gds, Gm]: DeviceState,
   ): void {
     const { ns, ng, nd, nb, params } = this;
     const { polarity } = params;
@@ -270,7 +270,7 @@ export class Mosfet extends Device<MosfetParams, Float64Array> {
   }
 
   override ops(
-    [Vbs, Ibs, Gbs, Vbd, Ibd, Gbd, VgsX, VgdX, VdsX, Ids, Gds, Gm]: Float64Array = this.state,
+    [Vbs, Ibs, Gbs, Vbd, Ibd, Gbd, VgsX, VgdX, VdsX, Ids, Gds, Gm]: DeviceState = this.state,
   ): readonly Op[] {
     const { ns, ng, nd, params } = this;
     const { polarity } = params;
