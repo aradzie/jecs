@@ -19,29 +19,30 @@ export interface BjtParams {
   readonly Temp: number;
 }
 
-interface BjtState {
+const enum S {
   /** Base-emitter voltage. */
-  Vbe: number;
+  Vbe,
   /** Base-collector voltage. */
-  Vbc: number;
+  Vbc,
   /** Forward alpha. */
-  Af: number;
+  Af,
   /** Reverse alpha. */
-  Ar: number;
+  Ar,
   /** Emitter current. */
-  Ie: number;
+  Ie,
   /** Collector current. */
-  Ic: number;
+  Ic,
   /** Forward transconductance. */
-  Gf: number;
+  Gf,
   /** Reverse transconductance. */
-  Gr: number;
+  Gr,
+  _Size_,
 }
 
 /**
  * Bipolar junction transistor, BJT.
  */
-export class Bjt extends Device<BjtParams, BjtState> {
+export class Bjt extends Device<BjtParams, Float64Array> {
   static modelNpn = Object.freeze<BjtParams>({
     polarity: "npn",
     Is: 1e-14,
@@ -140,54 +141,27 @@ export class Bjt extends Device<BjtParams, BjtState> {
     this.pnBc = new PN(Is, Nr, Temp);
   }
 
-  override getInitialState(): BjtState {
-    return {
-      Vbe: 0,
-      Vbc: 0,
-      Af: 0,
-      Ar: 0,
-      Ie: 0,
-      Ic: 0,
-      Gf: 0,
-      Gr: 0,
-    };
+  override getInitialState(): Float64Array {
+    return new Float64Array(S._Size_);
   }
 
-  override eval(state: BjtState): void {
+  override eval(state: Float64Array): void {
     const { ne, nb, nc, pnBe, params, pnBc } = this;
     const { polarity, Bf, Br } = params;
     const sign = bjtSign(polarity);
-    const Vbe = (state.Vbe = pnBe.limitVoltage(
-      sign * (nb.voltage - ne.voltage),
-      state.Vbe,
-    ));
-    const Vbc = (state.Vbc = pnBc.limitVoltage(
-      sign * (nb.voltage - nc.voltage),
-      state.Vbc,
-    ));
+    const Vbe = (state[S.Vbe] = pnBe.limitVoltage(sign * (nb.voltage - ne.voltage), state[S.Vbe]));
+    const Vbc = (state[S.Vbc] = pnBc.limitVoltage(sign * (nb.voltage - nc.voltage), state[S.Vbc]));
     const If = pnBe.evalCurrent(Vbe);
     const Ir = pnBc.evalCurrent(Vbc);
-    const Af = (state.Af = Bf / (Bf + 1));
-    const Ar = (state.Ar = Br / (Br + 1));
-    state.Ie = Ar * Ir - If;
-    state.Ic = Af * If - Ir;
-    state.Gf = pnBe.evalConductance(Vbe);
-    state.Gr = pnBc.evalConductance(Vbc);
+    const Af = (state[S.Af] = Bf / (Bf + 1));
+    const Ar = (state[S.Ar] = Br / (Br + 1));
+    state[S.Ie] = Ar * Ir - If;
+    state[S.Ic] = Af * If - Ir;
+    state[S.Gf] = pnBe.evalConductance(Vbe);
+    state[S.Gr] = pnBc.evalConductance(Vbc);
   }
 
-  override stamp(
-    stamper: Stamper,
-    {
-      Vbe,
-      Vbc,
-      Af,
-      Ar,
-      Ie,
-      Ic,
-      Gf,
-      Gr, //
-    }: BjtState,
-  ): void {
+  override stamp(stamper: Stamper, [Vbe, Vbc, Af, Ar, Ie, Ic, Gf, Gr]: Float64Array): void {
     const { ne, nb, nc, params } = this;
     const { polarity } = params;
     const sign = bjtSign(polarity);
@@ -208,18 +182,7 @@ export class Bjt extends Device<BjtParams, BjtState> {
     stamper.stampCurrentSource(nc, nb, sign * (Ic - eqGce * Vbe - eqGcc * Vbc));
   }
 
-  override ops(
-    {
-      // Vbe,
-      // Vbc,
-      Af,
-      Ar,
-      Ie,
-      Ic,
-      Gf,
-      Gr, //
-    }: BjtState = this.state,
-  ): readonly Op[] {
+  override ops([VbeX, VbcX, Af, Ar, Ie, Ic, Gf, Gr]: Float64Array = this.state): readonly Op[] {
     const { ne, nb, nc, params } = this;
     const { polarity } = params;
     const sign = bjtSign(polarity);

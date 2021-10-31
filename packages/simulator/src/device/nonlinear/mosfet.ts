@@ -5,14 +5,7 @@ import type { Op } from "../../circuit/ops";
 import { Params, ParamsSchema } from "../../circuit/params";
 import { Unit } from "../../util/unit";
 import { Temp } from "../const";
-import {
-  FetPolarity,
-  fetSign,
-  limitMosfetVoltage,
-  nfet,
-  pfet,
-  PN,
-} from "./semi";
+import { FetPolarity, fetSign, limitMosfetVoltage, nfet, pfet, PN } from "./semi";
 
 export interface MosfetParams {
   readonly polarity: FetPolarity;
@@ -24,37 +17,38 @@ export interface MosfetParams {
   readonly Temp: number;
 }
 
-interface MosfetState {
+const enum S {
   /** Bulk-source diode voltage. */
-  Vbs: number;
+  Vbs,
   /** Bulk-source diode current. */
-  Ibs: number;
+  Ibs,
   /** Bulk-source diode conductance. */
-  Gbs: number;
+  Gbs,
   /** Bulk-drain diode voltage. */
-  Vbd: number;
+  Vbd,
   /** Bulk-drain diode current. */
-  Ibd: number;
+  Ibd,
   /** Bulk-drain diode conductance. */
-  Gbd: number;
+  Gbd,
   /** Mosfet gate-source voltage. */
-  Vgs: number;
+  Vgs,
   /** Mosfet gate-drain voltage. */
-  Vgd: number;
+  Vgd,
   /** Mosfet drain-source voltage. */
-  Vds: number;
+  Vds,
   /** Mosfet drain-source current. */
-  Ids: number;
+  Ids,
   /** Mosfet drain-source conductance. */
-  Gds: number;
+  Gds,
   /** Mosfet transconductance. */
-  Gm: number;
+  Gm,
+  _Size_,
 }
 
 /**
  * Metal–oxide–semiconductor field-effect transistor, MOSFET.
  */
-export class Mosfet extends Device<MosfetParams, MosfetState> {
+export class Mosfet extends Device<MosfetParams, Float64Array> {
   static override getModels(): readonly DeviceModel[] {
     return [
       ["NMOS", Mosfet.modelEnhNMosfet],
@@ -150,11 +144,7 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
   /** The body-drain PN junction of MOSFET. */
   private readonly pnBd: PN;
 
-  constructor(
-    name: string,
-    [ns, ng, nd, nb]: readonly Node[],
-    params: MosfetParams,
-  ) {
+  constructor(name: string, [ns, ng, nd, nb]: readonly Node[], params: MosfetParams) {
     super(name, [ns, ng, nd, nb], params);
     this.ns = ns;
     this.ng = ng;
@@ -165,99 +155,80 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
     this.pnBd = new PN(Is, N, Temp);
   }
 
-  override getInitialState(): MosfetState {
-    return {
-      Vbs: 0,
-      Ibs: 0,
-      Gbs: 0,
-      Vbd: 0,
-      Ibd: 0,
-      Gbd: 0,
-      Vgs: 0,
-      Vgd: 0,
-      Vds: 0,
-      Ids: 0,
-      Gds: 0,
-      Gm: 0,
-    };
+  override getInitialState(): Float64Array {
+    return new Float64Array(S._Size_);
   }
 
-  override eval(state: MosfetState): void {
+  override eval(state: Float64Array): void {
     const { ns, ng, nd, nb, params, pnBs, pnBd } = this;
     const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity);
 
     // DIODES
 
-    const Vbs = (state.Vbs = pnBs.limitVoltage(
-      sign * (nb.voltage - ns.voltage),
-      state.Vbs,
-    ));
-    state.Ibs = pnBs.evalCurrent(Vbs);
-    state.Gbs = pnBs.evalConductance(Vbs);
+    const Vbs = (state[S.Vbs] = pnBs.limitVoltage(sign * (nb.voltage - ns.voltage), state[S.Vbs]));
+    state[S.Ibs] = pnBs.evalCurrent(Vbs);
+    state[S.Gbs] = pnBs.evalConductance(Vbs);
 
-    const Vbd = (state.Vbd = pnBd.limitVoltage(
-      sign * (nb.voltage - nd.voltage),
-      state.Vbd,
-    ));
-    state.Ibd = pnBs.evalCurrent(Vbd);
-    state.Gbd = pnBs.evalConductance(Vbd);
+    const Vbd = (state[S.Vbd] = pnBd.limitVoltage(sign * (nb.voltage - nd.voltage), state[S.Vbd]));
+    state[S.Ibd] = pnBs.evalCurrent(Vbd);
+    state[S.Gbd] = pnBs.evalConductance(Vbd);
 
     // FET
 
-    let Vgs = (state.Vgs = sign * (ng.voltage - ns.voltage));
-    let Vgd = (state.Vgd = sign * (ng.voltage - nd.voltage));
+    let Vgs = (state[S.Vgs] = sign * (ng.voltage - ns.voltage));
+    let Vgd = (state[S.Vgd] = sign * (ng.voltage - nd.voltage));
 
     if (Vgs >= Vgd) {
-      Vgs = state.Vgs = limitMosfetVoltage(Vgs, state.Vgs);
-      const Vds = (state.Vds = limitMosfetVoltage(Vgs - Vgd, state.Vds));
+      Vgs = state[S.Vgs] = limitMosfetVoltage(Vgs, state[S.Vgs]);
+      const Vds = (state[S.Vds] = limitMosfetVoltage(Vgs - Vgd, state[S.Vds]));
 
       // Normal mode.
       const Vgst = Vgs - sign * Vth;
       if (Vgst <= 0) {
         // Cutoff region.
-        state.Ids = 0;
-        state.Gds = 0;
-        state.Gm = 0;
+        state[S.Ids] = 0;
+        state[S.Gds] = 0;
+        state[S.Gm] = 0;
       } else {
         const c0 = lambda * Vds;
         const c1 = beta * (1 + c0);
         if (Vgst <= Vds) {
           // Saturation region.
-          state.Ids = (1 / 2) * c1 * Vgst * Vgst;
-          state.Gds = (1 / 2) * beta * lambda * Vgst * Vgst;
-          state.Gm = c1 * Vgst;
+          state[S.Ids] = (1 / 2) * c1 * Vgst * Vgst;
+          state[S.Gds] = (1 / 2) * beta * lambda * Vgst * Vgst;
+          state[S.Gm] = c1 * Vgst;
         } else {
           // Linear region.
-          state.Ids = c1 * Vds * (Vgst - Vds / 2);
-          state.Gds = c1 * (Vgst - Vds) + beta * c0 * (Vgst - Vds / 2);
-          state.Gm = c1 * Vds;
+          state[S.Ids] = c1 * Vds * (Vgst - Vds / 2);
+          state[S.Gds] = c1 * (Vgst - Vds) + beta * c0 * (Vgst - Vds / 2);
+          state[S.Gm] = c1 * Vds;
         }
       }
     } else {
-      Vgd = state.Vgd = limitMosfetVoltage(Vgd, state.Vgd);
-      const Vsd = -(state.Vds = -limitMosfetVoltage(Vgd - Vgs, -state.Vds));
+      Vgd = state[S.Vgd] = limitMosfetVoltage(Vgd, state[S.Vgd]);
+      const Vsd = -(state[S.Vds] = -limitMosfetVoltage(Vgd - Vgs, -state[S.Vds]));
 
       // Inverse mode.
       const Vgdt = Vgd - sign * Vth;
       if (Vgdt <= 0) {
         // Cutoff region.
-        state.Ids = 0;
-        state.Gds = 0;
-        state.Gm = 0;
+        state[S.Ids] = 0;
+        state[S.Gds] = 0;
+        state[S.Gm] = 0;
       } else {
         const c0 = lambda * Vsd;
         const c1 = beta * (1 + c0);
         if (Vgdt <= Vsd) {
           // Saturation region.
-          state.Ids = -(1 / 2) * c1 * Vgdt * Vgdt;
-          state.Gds = (1 / 2) * beta * lambda * Vgdt * Vgdt;
-          state.Gm = c1 * Vgdt;
+          state[S.Ids] = -(1 / 2) * c1 * Vgdt * Vgdt;
+          state[S.Gds] = (1 / 2) * beta * lambda * Vgdt * Vgdt;
+          state[S.Gm] = c1 * Vgdt;
         } else {
           // Linear region.
-          state.Ids = -c1 * Vsd * (Vgdt - Vsd / 2);
-          state.Gds = c1 * Vgdt + beta * c0 * (Vgdt - Vsd / 2);
-          state.Gm = c1 * Vsd;
+          state[S.Ids] = -c1 * Vsd * (Vgdt - Vsd / 2);
+          state[S.Gds] = c1 * Vgdt + beta * c0 * (Vgdt - Vsd / 2);
+          state[S.Gm] = c1 * Vsd;
         }
       }
     }
@@ -265,20 +236,7 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
 
   override stamp(
     stamper: Stamper,
-    {
-      Vbs,
-      Ibs,
-      Gbs,
-      Vbd,
-      Ibd,
-      Gbd,
-      Vgs,
-      Vgd,
-      Vds,
-      Ids,
-      Gds,
-      Gm, //
-    }: MosfetState,
+    [Vbs, Ibs, Gbs, Vbd, Ibd, Gbd, Vgs, Vgd, Vds, Ids, Gds, Gm]: Float64Array,
   ): void {
     const { ns, ng, nd, nb, params } = this;
     const { polarity } = params;
@@ -312,20 +270,7 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
   }
 
   override ops(
-    {
-      Vbs,
-      Ibs,
-      Gbs,
-      Vbd,
-      Ibd,
-      Gbd,
-      // Vgs,
-      // Vgd,
-      // Vds,
-      Ids,
-      Gds,
-      Gm,
-    }: MosfetState = this.state,
+    [Vbs, Ibs, Gbs, Vbd, Ibd, Gbd, VgsX, VgdX, VdsX, Ids, Gds, Gm]: Float64Array = this.state,
   ): readonly Op[] {
     const { ns, ng, nd, params } = this;
     const { polarity } = params;

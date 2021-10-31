@@ -7,7 +7,7 @@ export interface OpAmpParams {
   readonly gain: number;
 }
 
-interface OpAmpState {}
+type OpAmpState = Float64Array;
 
 /**
  * Ideal operational amplifier.
@@ -31,7 +31,7 @@ export class OpAmp extends Device<OpAmpParams, OpAmpState> {
   }
 
   override getInitialState(): OpAmpState {
-    return {};
+    return new Float64Array();
   }
 
   override eval(state: OpAmpState): void {}

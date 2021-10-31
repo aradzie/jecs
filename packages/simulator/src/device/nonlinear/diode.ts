@@ -13,16 +13,17 @@ export interface DiodeParams {
   readonly Temp: number;
 }
 
-interface DiodeState {
-  Vd: number;
-  Id: number;
-  Gd: number;
+const enum S {
+  Vd,
+  Id,
+  Gd,
+  _Size_,
 }
 
 /**
  * Diode.
  */
-export class Diode extends Device<DiodeParams, DiodeState> {
+export class Diode extends Device<DiodeParams, Float64Array> {
   static override getModels(): readonly DeviceModel[] {
     return [["Diode", Diode.modelDiode]];
   }
@@ -65,41 +66,24 @@ export class Diode extends Device<DiodeParams, DiodeState> {
     this.pn = new PN(Is, N, Temp);
   }
 
-  override getInitialState(): DiodeState {
-    return {
-      Vd: 0,
-      Id: 0,
-      Gd: 0,
-    };
+  override getInitialState(): Float64Array {
+    return new Float64Array(S._Size_);
   }
 
-  override eval(state: DiodeState): void {
+  override eval(state: Float64Array): void {
     const { na, nc, pn } = this;
-    const Vd = (state.Vd = pn.limitVoltage(na.voltage - nc.voltage, state.Vd));
-    state.Id = pn.evalCurrent(Vd);
-    state.Gd = pn.evalConductance(Vd);
+    const Vd = (state[S.Vd] = pn.limitVoltage(na.voltage - nc.voltage, state[S.Vd]));
+    state[S.Id] = pn.evalCurrent(Vd);
+    state[S.Gd] = pn.evalConductance(Vd);
   }
 
-  override stamp(
-    stamper: Stamper,
-    {
-      Vd,
-      Id,
-      Gd, //
-    }: DiodeState,
-  ): void {
+  override stamp(stamper: Stamper, [Vd, Id, Gd]: Float64Array): void {
     const { na, nc } = this;
     stamper.stampConductance(na, nc, Gd);
     stamper.stampCurrentSource(na, nc, Id - Gd * Vd);
   }
 
-  override ops(
-    {
-      // Vd,
-      Id,
-      Gd, //
-    }: DiodeState = this.state,
-  ): readonly Op[] {
+  override ops([VdX, Id, Gd]: Float64Array = this.state): readonly Op[] {
     const { na, nc } = this;
     const Vd = na.voltage - nc.voltage;
     return [

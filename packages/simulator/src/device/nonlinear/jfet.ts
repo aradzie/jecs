@@ -17,35 +17,36 @@ export interface JfetParams {
   readonly Temp: number;
 }
 
-interface JfetState {
+const enum S {
   /** Gate-source diode voltage. */
-  Vgs: number;
+  Vgs,
   /** Gate-source diode current. */
-  Igs: number;
+  Igs,
   /** Gate-source diode conductance. */
-  Ggs: number;
+  Ggs,
   /** Gate-drain diode voltage. */
-  Vgd: number;
+  Vgd,
   /** Gate-drain diode current. */
-  Igd: number;
+  Igd,
   /** Gate-drain diode conductance. */
-  Ggd: number;
+  Ggd,
   /** Jfet drain-source voltage. */
-  Vds: number;
+  Vds,
   /** Jfet source-drain voltage. */
-  Vsd: number;
+  Vsd,
   /** Jfet drain-source current. */
-  Ids: number;
+  Ids,
   /** Jfet drain-source conductance. */
-  Gds: number;
+  Gds,
   /** Jfet transconductance. */
-  Gm: number;
+  Gm,
+  _Size_,
 }
 
 /**
  * Junction field-effect transistor, JFET.
  */
-export class Jfet extends Device<JfetParams, JfetState> {
+export class Jfet extends Device<JfetParams, Float64Array> {
   static override getModels(): readonly DeviceModel[] {
     return [
       ["NFET", Jfet.modelNJfet],
@@ -130,70 +131,52 @@ export class Jfet extends Device<JfetParams, JfetState> {
     this.pnGd = new PN(Is, N, Temp);
   }
 
-  override getInitialState(): JfetState {
-    return {
-      Vgs: 0,
-      Igs: 0,
-      Ggs: 0,
-      Vgd: 0,
-      Igd: 0,
-      Ggd: 0,
-      Vds: 0,
-      Vsd: 0,
-      Ids: 0,
-      Gds: 0,
-      Gm: 0,
-    };
+  override getInitialState(): Float64Array {
+    return new Float64Array(S._Size_);
   }
 
-  override eval(state: JfetState): void {
+  override eval(state: Float64Array): void {
     const { ns, ng, nd, params, pnGs, pnGd } = this;
     const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity);
 
-    const Vgs = (state.Vgs = pnGs.limitVoltage(
-      sign * (ng.voltage - ns.voltage),
-      state.Vgs,
-    ));
-    const Vgd = (state.Vgd = pnGd.limitVoltage(
-      sign * (ng.voltage - nd.voltage),
-      state.Vgd,
-    ));
+    const Vgs = (state[S.Vgs] = pnGs.limitVoltage(sign * (ng.voltage - ns.voltage), state[S.Vgs]));
+    const Vgd = (state[S.Vgd] = pnGd.limitVoltage(sign * (ng.voltage - nd.voltage), state[S.Vgd]));
 
     // DIODES
 
-    state.Igs = pnGs.evalCurrent(Vgs);
-    state.Ggs = pnGs.evalConductance(Vgs);
+    state[S.Igs] = pnGs.evalCurrent(Vgs);
+    state[S.Ggs] = pnGs.evalConductance(Vgs);
 
-    state.Igd = pnGs.evalCurrent(Vgd);
-    state.Ggd = pnGs.evalConductance(Vgd);
+    state[S.Igd] = pnGs.evalCurrent(Vgd);
+    state[S.Ggd] = pnGs.evalConductance(Vgd);
 
     // FET
 
-    const Vds = (state.Vds = Vgs - Vgd);
-    const Vsd = (state.Vsd = Vgd - Vgs);
+    const Vds = (state[S.Vds] = Vgs - Vgd);
+    const Vsd = (state[S.Vsd] = Vgd - Vgs);
 
     if (Vgs >= Vgd) {
       // Normal mode.
       const Vgst = Vgs - Vth;
       if (Vgst <= 0) {
         // Cutoff region.
-        state.Ids = 0;
-        state.Gds = 0;
-        state.Gm = 0;
+        state[S.Ids] = 0;
+        state[S.Gds] = 0;
+        state[S.Gm] = 0;
       } else {
         const c0 = lambda * Vds;
         const c1 = beta * (1 + c0);
         if (Vgst <= Vds) {
           // Saturation region.
-          state.Ids = c1 * Vgst * Vgst;
-          state.Gds = beta * lambda * Vgst * Vgst;
-          state.Gm = 2 * c1 * Vgst;
+          state[S.Ids] = c1 * Vgst * Vgst;
+          state[S.Gds] = beta * lambda * Vgst * Vgst;
+          state[S.Gm] = 2 * c1 * Vgst;
         } else {
           // Linear region.
-          state.Ids = c1 * Vds * (2 * Vgst - Vds);
-          state.Gds = 2 * c1 * (Vgst - Vds) + beta * c0 * (2 * Vgst - Vds);
-          state.Gm = 2 * c1 * Vds;
+          state[S.Ids] = c1 * Vds * (2 * Vgst - Vds);
+          state[S.Gds] = 2 * c1 * (Vgst - Vds) + beta * c0 * (2 * Vgst - Vds);
+          state[S.Gm] = 2 * c1 * Vds;
         }
       }
     } else {
@@ -201,22 +184,22 @@ export class Jfet extends Device<JfetParams, JfetState> {
       const Vgdt = Vgd - Vth;
       if (Vgdt <= 0) {
         // Cutoff region.
-        state.Ids = 0;
-        state.Gds = 0;
-        state.Gm = 0;
+        state[S.Ids] = 0;
+        state[S.Gds] = 0;
+        state[S.Gm] = 0;
       } else {
         const c0 = lambda * Vsd;
         const c1 = beta * (1 + c0);
         if (Vgdt <= Vsd) {
           // Saturation region.
-          state.Ids = -c1 * Vgdt * Vgdt;
-          state.Gds = beta * lambda * Vgdt * Vgdt + 2 * c1 * Vgdt;
-          state.Gm = -2 * c1 * Vgdt;
+          state[S.Ids] = -c1 * Vgdt * Vgdt;
+          state[S.Gds] = beta * lambda * Vgdt * Vgdt + 2 * c1 * Vgdt;
+          state[S.Gm] = -2 * c1 * Vgdt;
         } else {
           // Linear region.
-          state.Ids = -c1 * Vsd * (2 * Vgdt - Vsd);
-          state.Gds = 2 * c1 * Vgdt + beta * c0 * (2 * Vgdt - Vsd);
-          state.Gm = -2 * c1 * Vsd;
+          state[S.Ids] = -c1 * Vsd * (2 * Vgdt - Vsd);
+          state[S.Gds] = 2 * c1 * Vgdt + beta * c0 * (2 * Vgdt - Vsd);
+          state[S.Gm] = -2 * c1 * Vsd;
         }
       }
     }
@@ -224,19 +207,7 @@ export class Jfet extends Device<JfetParams, JfetState> {
 
   override stamp(
     stamper: Stamper,
-    {
-      Vgs,
-      Igs,
-      Ggs,
-      Vgd,
-      Igd,
-      Ggd,
-      Vds,
-      Vsd,
-      Ids,
-      Gds,
-      Gm, //
-    }: JfetState,
+    [Vgs, Igs, Ggs, Vgd, Igd, Ggd, Vds, Vsd, Ids, Gds, Gm]: Float64Array,
   ): void {
     const { ns, ng, nd, params } = this;
     const { polarity } = params;
@@ -261,19 +232,7 @@ export class Jfet extends Device<JfetParams, JfetState> {
   }
 
   override ops(
-    {
-      // Vgs,
-      Igs,
-      Ggs,
-      // Vgd,
-      Igd,
-      Ggd,
-      // Vds,
-      // Vsd,
-      Ids,
-      Gds,
-      Gm, //
-    }: JfetState = this.state,
+    [VgsX, Igs, Ggs, VgdX, Igd, Ggd, VdsX, VsdX, Ids, Gds, Gm]: Float64Array = this.state,
   ): readonly Op[] {
     const { ns, ng, nd, params } = this;
     const { polarity } = params;
