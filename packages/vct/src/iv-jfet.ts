@@ -10,15 +10,15 @@ import { op } from "./util/ops";
 const input = `
 V nd g V=$xVds;
 V ng g V=$xVgs;
-JFET:DUT g ng nd @nfet;
+JFET:DUT g ng nd @nfet beta=0.001;
 `;
 const netlist = parse(input, {});
 
 const dataset = new Dataset();
 
-for (const xVgs of points(0, -4, 5)) {
+for (const xVgs of points(-1.5, 0, 5)) {
   dataset.group(`Vgs=${formatNumber(xVgs, Unit.VOLT)}`);
-  for (const xVds of points(0, 10, 100)) {
+  for (const xVds of points(0, 3, 100)) {
     const variables = new Variables();
     variables.setVariable("$xVds", xVds);
     variables.setVariable("$xVgs", xVgs);

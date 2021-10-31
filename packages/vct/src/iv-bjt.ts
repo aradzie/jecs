@@ -16,9 +16,9 @@ const netlist = parse(input, {});
 
 const dataset = new Dataset();
 
-for (const xVbe of points(0.6, 0.65, 5)) {
+for (const xVbe of points(0.625, 0.65, 5)) {
   dataset.group(`Vbe=${formatNumber(xVbe, Unit.VOLT)}`);
-  for (const xVce of points(0, 1, 100)) {
+  for (const xVce of points(0, 0.3, 100)) {
     const variables = new Variables();
     variables.setVariable("$xVce", xVce);
     variables.setVariable("$xVbe", xVbe);

@@ -1,7 +1,7 @@
 set term svg size 600, 400 dynamic
 set output "amp-mosfet.svg"
-set title "MOSFET Amplifier"
 set xlabel "Vgs / V"
+set border 0
 set grid lw 1
 set border lw 1
 set format y "%g"

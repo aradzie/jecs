@@ -13,7 +13,7 @@ const netlist = parse(input, {});
 
 const dataset = new Dataset();
 
-for (const xVd of points(0, 1, 100)) {
+for (const xVd of points(0.5, 0.9, 100)) {
   const variables = new Variables();
   variables.setVariable("$xVd", xVd);
   const circuit = parseNetlist(netlist, variables);

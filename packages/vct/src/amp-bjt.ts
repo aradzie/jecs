@@ -18,7 +18,7 @@ const netlist = parse(input, {});
 
 const dataset = new Dataset();
 
-for (const xRl of points(100, 2000, 5)) {
+for (const xRl of points(2000, 100, 5)) {
   dataset.group(`Rl=${formatNumber(xRl, Unit.OHM)}`);
   for (const xVbe of points(0.5, 0.8, 100)) {
     const variables = new Variables();
