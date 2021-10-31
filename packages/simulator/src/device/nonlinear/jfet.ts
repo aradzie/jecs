@@ -262,24 +262,28 @@ export class Jfet extends Device<JfetParams, JfetState> {
 
   override ops(
     {
-      Vgs,
+      // Vgs,
       Igs,
       Ggs,
-      Vgd,
+      // Vgd,
       Igd,
       Ggd,
-      Vds,
-      Vsd,
+      // Vds,
+      // Vsd,
       Ids,
       Gds,
       Gm, //
     }: JfetState = this.state,
   ): readonly Op[] {
-    const { params } = this;
+    const { ns, ng, nd, params } = this;
     const { polarity } = params;
     const sign = fetSign(polarity);
+    const Vgs = sign * (ng.voltage - ns.voltage);
+    const Vgd = sign * (ng.voltage - nd.voltage);
+    const Vds = sign * (nd.voltage - ns.voltage);
     return [
       { name: "Vgs", value: sign * Vgs, unit: Unit.VOLT },
+      { name: "Vgd", value: sign * Vgd, unit: Unit.VOLT },
       { name: "Vds", value: sign * Vds, unit: Unit.VOLT },
       { name: "Ids", value: sign * Ids, unit: Unit.AMPERE },
     ];

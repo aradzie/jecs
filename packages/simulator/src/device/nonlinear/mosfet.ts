@@ -8,8 +8,7 @@ import { Temp } from "../const";
 import {
   FetPolarity,
   fetSign,
-  fetVoltageDS,
-  fetVoltageGSGD,
+  limitMosfetVoltage,
   nfet,
   pfet,
   PN,
@@ -210,8 +209,8 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
     let Vgd = (state.Vgd = sign * (ng.voltage - nd.voltage));
 
     if (Vgs >= Vgd) {
-      Vgs = state.Vgs = fetVoltageGSGD(Vgs, state.Vgs, sign * Vth);
-      const Vds = (state.Vds = fetVoltageDS(Vgs - Vgd, state.Vds));
+      Vgs = state.Vgs = limitMosfetVoltage(Vgs, state.Vgs);
+      const Vds = (state.Vds = limitMosfetVoltage(Vgs - Vgd, state.Vds));
 
       // Normal mode.
       const Vgst = Vgs - sign * Vth;
@@ -236,8 +235,8 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
         }
       }
     } else {
-      Vgd = state.Vgd = fetVoltageGSGD(Vgd, state.Vgd, sign * Vth);
-      const Vsd = -(state.Vds = -fetVoltageDS(Vgd - Vgs, -state.Vds));
+      Vgd = state.Vgd = limitMosfetVoltage(Vgd, state.Vgd);
+      const Vsd = -(state.Vds = -limitMosfetVoltage(Vgd - Vgs, -state.Vds));
 
       // Inverse mode.
       const Vgdt = Vgd - sign * Vth;
@@ -320,19 +319,23 @@ export class Mosfet extends Device<MosfetParams, MosfetState> {
       Vbd,
       Ibd,
       Gbd,
-      Vgs,
-      Vgd,
-      Vds,
+      // Vgs,
+      // Vgd,
+      // Vds,
       Ids,
       Gds,
       Gm,
     }: MosfetState = this.state,
   ): readonly Op[] {
-    const { params } = this;
+    const { ns, ng, nd, params } = this;
     const { polarity } = params;
     const sign = fetSign(polarity);
+    const Vgs = sign * (ng.voltage - ns.voltage);
+    const Vgd = sign * (ng.voltage - nd.voltage);
+    const Vds = sign * (nd.voltage - ns.voltage);
     return [
       { name: "Vgs", value: sign * Vgs, unit: Unit.VOLT },
+      { name: "Vgd", value: sign * Vgd, unit: Unit.VOLT },
       { name: "Vds", value: sign * Vds, unit: Unit.VOLT },
       { name: "Ids", value: sign * Ids, unit: Unit.AMPERE },
     ];

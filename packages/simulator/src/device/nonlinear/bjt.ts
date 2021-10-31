@@ -154,7 +154,7 @@ export class Bjt extends Device<BjtParams, BjtState> {
   }
 
   override eval(state: BjtState): void {
-    const { params, ne, nb, nc, pnBe, pnBc } = this;
+    const { ne, nb, nc, pnBe, params, pnBc } = this;
     const { polarity, Bf, Br } = params;
     const sign = bjtSign(polarity);
     const Vbe = (state.Vbe = pnBe.limitVoltage(
@@ -188,7 +188,7 @@ export class Bjt extends Device<BjtParams, BjtState> {
       Gr, //
     }: BjtState,
   ): void {
-    const { params, ne, nb, nc } = this;
+    const { ne, nb, nc, params } = this;
     const { polarity } = params;
     const sign = bjtSign(polarity);
     const eqGee = -Gf;
@@ -210,8 +210,8 @@ export class Bjt extends Device<BjtParams, BjtState> {
 
   override ops(
     {
-      Vbe,
-      Vbc,
+      // Vbe,
+      // Vbc,
       Af,
       Ar,
       Ie,
@@ -220,9 +220,11 @@ export class Bjt extends Device<BjtParams, BjtState> {
       Gr, //
     }: BjtState = this.state,
   ): readonly Op[] {
-    const { params } = this;
+    const { ne, nb, nc, params } = this;
     const { polarity } = params;
     const sign = bjtSign(polarity);
+    const Vbe = sign * (nb.voltage - ne.voltage);
+    const Vbc = sign * (nb.voltage - nc.voltage);
     return [
       { name: "Vbe", value: sign * Vbe, unit: Unit.VOLT },
       { name: "Vbc", value: sign * Vbc, unit: Unit.VOLT },

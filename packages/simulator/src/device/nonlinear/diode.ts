@@ -95,11 +95,13 @@ export class Diode extends Device<DiodeParams, DiodeState> {
 
   override ops(
     {
-      Vd,
+      // Vd,
       Id,
       Gd, //
     }: DiodeState = this.state,
   ): readonly Op[] {
+    const { na, nc } = this;
+    const Vd = na.voltage - nc.voltage;
     return [
       { name: "Vd", value: Vd, unit: Unit.VOLT },
       { name: "I", value: Id, unit: Unit.AMPERE },

@@ -91,85 +91,15 @@ export class PN {
 }
 
 /**
- * Limits gate-source or gate-drain voltage changes to help convergence.
- * @param Vnew Tne current GS or GD voltage.
- * @param Vold Tne previous GS or GD voltage.
- * @param Vth
+ * Limits voltage changes on MOSFET terminals to help convergence.
  */
-export function fetVoltageGSGD(
-  Vnew: number,
-  Vold: number,
-  Vth: number,
-): number {
-  const Vtsthi = Math.abs(2 * (Vold - Vth)) + 2.0;
-  const Vtstlo = Vtsthi / 2;
-  const Vdelta = Vnew - Vold;
-  if (Vold >= Vth) {
-    /* FET is on */
-    if (Vold >= Vth + 3.5) {
-      if (Vdelta <= 0) {
-        /* going off */
-        if (Vnew >= Vth + 3.5) {
-          if (-Vdelta > Vtstlo) {
-            Vnew = Vold - Vtstlo;
-          }
-        } else {
-          Vnew = Math.max(Vnew, Vth + 2);
-        }
-      } else {
-        /* staying on */
-        if (Vdelta >= Vtsthi) {
-          Vnew = Vold + Vtsthi;
-        }
-      }
-    } else {
-      /* middle region */
-      if (Vdelta <= 0) {
-        /* decreasing */
-        Vnew = Math.max(Vnew, Vth - 0.5);
-      } else {
-        /* increasing */
-        Vnew = Math.min(Vnew, Vth + 4);
-      }
-    }
-  } else {
-    /* FET is off */
-    if (Vdelta <= 0) {
-      /* staying off */
-      if (-Vdelta > Vtsthi) {
-        Vnew = Vold - Vtsthi;
-      }
-    } else {
-      /* going on */
-      if (Vnew <= Vth + 0.5) {
-        if (Vdelta > Vtstlo) {
-          Vnew = Vold + Vtstlo;
-        }
-      } else {
-        Vnew = Vth + 0.5;
-      }
-    }
-  }
-  return Vnew;
-}
-
-/**
- * Limits drain-source voltage changes to help convergence.
- * @param Vnew
- * @param Vold
- */
-export function fetVoltageDS(Vnew: number, Vold: number): number {
-  if (Vold >= 3.5) {
+export function limitMosfetVoltage(Vnew: number, Vold: number): number {
+  const d = 0.5;
+  if (Math.abs(Vnew - Vold) > d) {
     if (Vnew > Vold) {
-      Vnew = Math.min(Vnew, 3 * Vold + 2);
-    } else if (Vnew < 3.5) {
-      Vnew = Math.max(Vnew, 2.0);
-    }
-  } else {
-    if (Vnew > Vold) {
-      Vnew = Math.min(Vnew, 4.0);
+      return Vold + d;
     } else {
-      Vnew = Math.max(Vnew, -0.5);
+      return Vold - d;
     }
   }
   return Vnew;
