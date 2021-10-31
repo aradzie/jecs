@@ -1,11 +1,7 @@
 import { writeFileSync } from "fs";
 import { join } from "path";
 
-export function* points(
-  start: number,
-  end: number,
-  n: number,
-): Iterable<number> {
+export function* points(start: number, end: number, n: number): Iterable<number> {
   if (n < 1) {
     throw new TypeError();
   }

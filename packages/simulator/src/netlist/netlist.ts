@@ -15,10 +15,7 @@ interface DefinitionItem {
   instanceId: string;
 }
 
-export function parseNetlist(
-  input: string | Netlist,
-  variables = new Variables(),
-): Circuit {
+export function parseNetlist(input: string | Netlist, variables = new Variables()): Circuit {
   if (typeof input === "string") {
     input = parse(input);
   }
@@ -63,9 +60,7 @@ export function parseNetlist(
       initializer.push(item.modelId.name);
     }
     initializer.push(variables.makeParams(item.params));
-    circuit.addDevice(
-      createDevice(deviceClass, instanceId, nodes, ...initializer),
-    );
+    circuit.addDevice(createDevice(deviceClass, instanceId, nodes, ...initializer));
   }
 
   return circuit;
@@ -111,10 +106,7 @@ function assignInstanceIds(definitionItems: readonly DefinitionItem[]): void {
   }
 }
 
-function collectNodes(
-  circuit: Circuit,
-  definitionItems: readonly DefinitionItem[],
-): NameMap<Node> {
+function collectNodes(circuit: Circuit, definitionItems: readonly DefinitionItem[]): NameMap<Node> {
   const { groundNode } = circuit;
   const nodesMap = new NameMap<Node>([[groundNode.name, groundNode]]);
 

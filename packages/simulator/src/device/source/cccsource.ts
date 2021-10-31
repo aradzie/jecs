@@ -29,11 +29,7 @@ export class CCCSource extends Device<CCCSourceParams> {
   /** Extra MNA branch. */
   private branch!: Branch;
 
-  constructor(
-    name: string,
-    [np, nn, ncp, ncn]: readonly Node[],
-    params: CCCSourceParams,
-  ) {
+  constructor(name: string, [np, nn, ncp, ncn]: readonly Node[], params: CCCSourceParams) {
     super(name, [np, nn, ncp, ncn], params);
     this.np = np;
     this.nn = nn;

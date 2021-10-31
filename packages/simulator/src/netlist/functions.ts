@@ -1,9 +1,6 @@
 import { NameMap } from "../util/map";
 
-export type Func = readonly [
-  func: (...args: number[]) => number,
-  numArgs: number,
-];
+export type Func = readonly [func: (...args: number[]) => number, numArgs: number];
 
 const funcDefs = new NameMap<Func>([
   ["abs", [Math.abs, 1]],
@@ -32,10 +29,7 @@ export function callFunc(name: string, args: number[]): number {
   }
   const [func, numArgs] = funcDef;
   const { length } = args;
-  if (
-    (numArgs === 0 && length === 0) ||
-    (numArgs !== 0 && length !== numArgs)
-  ) {
+  if ((numArgs === 0 && length === 0) || (numArgs !== 0 && length !== numArgs)) {
     throw new TypeError(`Wrong number of arguments to function [${name}]`);
   }
   switch (length) {

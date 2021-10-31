@@ -18,9 +18,7 @@ export class Ground extends Device {
 
   override connect(network: Network): void {
     if (this.n !== network.groundNode) {
-      throw new CircuitError(
-        `The ground device must be connected to the ground node.`,
-      );
+      throw new CircuitError(`The ground device must be connected to the ground node.`);
     }
   }
 

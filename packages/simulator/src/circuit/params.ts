@@ -88,21 +88,21 @@ export class ParamsMap {
       case "number": {
         if (typeof value !== "number") {
           throw new CircuitError(
-            `Invalid value for parameter [${name}], ` +
+            `Invalid value for parameter [${name}], ` + //
               `expected a number, got ${quote(value)}`,
           );
         }
         const { min, max } = param;
         if (typeof min === "number" && value < min) {
           throw new CircuitError(
-            `Invalid value for parameter [${name}], ` +
+            `Invalid value for parameter [${name}], ` + //
               `expected a value larger than or equal to ${min}, ` +
               `got ${quote(value)}`,
           );
         }
         if (typeof max === "number" && value > max) {
           throw new CircuitError(
-            `Invalid value for parameter [${name}], ` +
+            `Invalid value for parameter [${name}], ` + //
               `expected a value less than or equal to ${max}, ` +
               `got ${quote(value)}`,
           );
@@ -112,14 +112,14 @@ export class ParamsMap {
       case "enum": {
         if (typeof value !== "string") {
           throw new CircuitError(
-            `Invalid value for parameter [${name}], ` +
+            `Invalid value for parameter [${name}], ` + //
               `expected a string, got ${quote(value)}`,
           );
         }
         const { values } = param;
         if (!values.includes(value)) {
           throw new CircuitError(
-            `Invalid value for parameter [${name}], ` +
+            `Invalid value for parameter [${name}], ` + //
               `expected one of {${values.map((v) => quote(v)).join(", ")}}, ` +
               `got ${quote(value)}`,
           );

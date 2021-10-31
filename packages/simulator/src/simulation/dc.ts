@@ -7,10 +7,7 @@ import { SimulationError } from "./error";
 import type { Options } from "./options";
 import { defaultOptions } from "./options";
 
-export function dcAnalysis(
-  circuit: Circuit,
-  userOptions: Partial<Options> = {},
-): void {
+export function dcAnalysis(circuit: Circuit, userOptions: Partial<Options> = {}): void {
   const options = Object.freeze<Options>({ ...defaultOptions, ...userOptions });
   const { nodes, devices } = circuit;
 

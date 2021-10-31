@@ -80,11 +80,7 @@ export function vecCopy(src: VectorLike, dst: Vector): void {
   dst.set(src);
 }
 
-export function swapRows<T>(
-  m: { [index: number]: T },
-  a: number,
-  b: number,
-): void {
+export function swapRows<T>(m: { [index: number]: T }, a: number, b: number): void {
   const t = m[a];
   m[a] = m[b];
   m[b] = t;

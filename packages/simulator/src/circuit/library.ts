@@ -76,11 +76,7 @@ class Registration {
     return this.models.entries();
   }
 
-  createDevice(
-    name: string,
-    nodes: readonly Node[],
-    initializers: readonly Initializer[],
-  ): Device {
+  createDevice(name: string, nodes: readonly Node[], initializers: readonly Initializer[]): Device {
     const { deviceClass } = this;
     const { id, numTerminals, paramsSchema } = deviceClass;
 
@@ -105,10 +101,7 @@ class Registration {
     return new deviceClass(name, nodes, params);
   }
 
-  private makeParams(
-    paramsSchema: ParamsSchema,
-    initializers: readonly Initializer[],
-  ) {
+  private makeParams(paramsSchema: ParamsSchema, initializers: readonly Initializer[]) {
     const paramsMap = new ParamsMap(paramsSchema);
     for (const initializer of initializers) {
       if (typeof initializer === "string") {
@@ -146,9 +139,7 @@ export function getDeviceModel(
   return Registration.get(deviceClass).getModel(name);
 }
 
-export function listDeviceModels(
-  deviceClass: string | DeviceClass,
-): Iterable<DeviceModel> {
+export function listDeviceModels(deviceClass: string | DeviceClass): Iterable<DeviceModel> {
   return Registration.get(deviceClass).listModels();
 }
 

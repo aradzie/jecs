@@ -29,11 +29,7 @@ export class VCCSource extends Device<VCCSourceParams> {
   /** Extra MNA branch. */
   private branch!: Branch;
 
-  constructor(
-    name: string,
-    [np, nn, ncp, ncn]: readonly Node[],
-    params: VCCSourceParams,
-  ) {
+  constructor(name: string, [np, nn, ncp, ncn]: readonly Node[], params: VCCSourceParams) {
     super(name, [np, nn, ncp, ncn], params);
     this.np = np;
     this.nn = nn;
