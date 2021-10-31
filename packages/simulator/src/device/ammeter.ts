@@ -1,4 +1,4 @@
-import { Device } from "../circuit/device";
+import { Device, StateParams } from "../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../circuit/network";
 import type { Op } from "../circuit/ops";
 import { Unit } from "../util/unit";
@@ -10,6 +10,10 @@ export class Ammeter extends Device {
   static override readonly id = "Ammeter";
   static override readonly numTerminals = 2;
   static override readonly paramsSchema = {};
+  static override readonly stateParams: StateParams = {
+    length: 0,
+    outputs: [],
+  };
 
   /** Positive terminal. */
   readonly np: Node;

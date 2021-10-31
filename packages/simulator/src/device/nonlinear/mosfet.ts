@@ -1,4 +1,4 @@
-import { Device, DeviceState } from "../../circuit/device";
+import { Device, DeviceState, StateParams } from "../../circuit/device";
 import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
@@ -130,6 +130,16 @@ export class Mosfet extends Device<MosfetParams> {
     }),
     Temp: Params.Temp,
   };
+  static override readonly stateParams: StateParams = {
+    length: S._Size_,
+    outputs: [
+      { index: S.Vgs, name: "Vgs", unit: "V" },
+      { index: S.Vgd, name: "Vgd", unit: "V" },
+      { index: S.Vds, name: "Vds", unit: "V" },
+      { index: S.Ids, name: "Ids", unit: "A" },
+      { index: S.Gm, name: "gm", unit: "A/V" },
+    ],
+  };
 
   /** The source terminal. */
   readonly ns: Node;
@@ -153,10 +163,6 @@ export class Mosfet extends Device<MosfetParams> {
     const { Is, N, Temp } = this.params;
     this.pnBs = new PN(Is, N, Temp);
     this.pnBd = new PN(Is, N, Temp);
-  }
-
-  override getInitialState(): DeviceState {
-    return new Float64Array(S._Size_);
   }
 
   override eval(state: DeviceState): void {

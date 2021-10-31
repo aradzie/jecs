@@ -1,4 +1,4 @@
-import { Device } from "../../circuit/device";
+import { Device, StateParams } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
 import { Params, ParamsSchema } from "../../circuit/params";
@@ -16,6 +16,10 @@ export class CSource extends Device<CSourceParams> {
   static override readonly numTerminals = 2;
   static override readonly paramsSchema: ParamsSchema<CSourceParams> = {
     I: Params.number({ title: "current" }),
+  };
+  static override readonly stateParams: StateParams = {
+    length: 0,
+    outputs: [],
   };
 
   /** Positive terminal. */

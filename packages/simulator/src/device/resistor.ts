@@ -1,4 +1,4 @@
-import { Device } from "../circuit/device";
+import { Device, StateParams } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
 import type { Op } from "../circuit/ops";
 import { Params, ParamsSchema } from "../circuit/params";
@@ -18,6 +18,10 @@ export class Resistor extends Device<ResistorParams> {
     R: Params.number({
       title: "resistance",
     }),
+  };
+  static override readonly stateParams: StateParams = {
+    length: 0,
+    outputs: [],
   };
 
   /** First terminal. */

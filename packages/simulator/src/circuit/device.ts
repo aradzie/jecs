@@ -10,8 +10,11 @@ export interface DeviceClass {
   /** The number of terminals in the device. */
   readonly numTerminals: number;
 
-  /** The schema of the device parameters. */
+  /** Schema of the device parameters. */
   readonly paramsSchema: ParamsSchema;
+
+  /** Schema of the device state vector. */
+  readonly stateParams: StateParams;
 
   /**
    * Device constructor.
@@ -30,6 +33,22 @@ export interface DeviceClass {
  */
 export type DeviceState = Float64Array;
 
+export interface OutputParameter {
+  /** Element index. */
+  readonly index: number;
+  /** Output parameter name. */
+  readonly name: string;
+  /** Output parameter unit. */
+  readonly unit: string;
+}
+
+export interface StateParams {
+  /** Length of the state vector. */
+  readonly length: number;
+  /** Output parameters from the state vector. */
+  readonly outputs: readonly OutputParameter[];
+}
+
 const emptyState = new Float64Array();
 
 export abstract class Device<ParamsT = unknown> {
@@ -44,8 +63,11 @@ export abstract class Device<ParamsT = unknown> {
   /** The number of terminals in the device. */
   static readonly numTerminals: number;
 
-  /** The schema of the device parameters. */
+  /** Schema of the device parameters. */
   static readonly paramsSchema: ParamsSchema;
+
+  /** Schema of the device state vector. */
+  static readonly stateParams: StateParams;
 
   /** Unique device name. */
   readonly name: string;
@@ -56,7 +78,8 @@ export abstract class Device<ParamsT = unknown> {
   /** The device parameters. */
   readonly params: ParamsT;
 
-  state: DeviceState = this.getInitialState();
+  // TODO Externalize this state.
+  state: DeviceState = emptyState;
 
   constructor(name: string, nodes: readonly Node[], params: ParamsT) {
     this.name = name;
@@ -70,13 +93,6 @@ export abstract class Device<ParamsT = unknown> {
    * @param network A network which contains allocated nodes and branches.
    */
   connect(network: Network): void {}
-
-  /**
-   * Returns a device state object which is shared between iterations.
-   */
-  getInitialState(): DeviceState {
-    return emptyState;
-  }
 
   /**
    * Circuit calls this method to let a device to compute its state

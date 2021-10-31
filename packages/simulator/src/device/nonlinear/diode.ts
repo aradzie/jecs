@@ -1,4 +1,4 @@
-import { Device, DeviceState } from "../../circuit/device";
+import { Device, DeviceState, StateParams } from "../../circuit/device";
 import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
@@ -50,6 +50,14 @@ export class Diode extends Device<DiodeParams> {
     }),
     Temp: Params.Temp,
   };
+  static override readonly stateParams: StateParams = {
+    length: S._Size_,
+    outputs: [
+      { index: S.Vd, name: "Vd", unit: "V" },
+      { index: S.Id, name: "Id", unit: "A" },
+      { index: S.Gd, name: "Gd", unit: "A/V" },
+    ],
+  };
 
   /** The anode terminal. */
   readonly na: Node;
@@ -64,10 +72,6 @@ export class Diode extends Device<DiodeParams> {
     this.nc = nc;
     const { Is, N, Temp } = this.params;
     this.pn = new PN(Is, N, Temp);
-  }
-
-  override getInitialState(): DeviceState {
-    return new Float64Array(S._Size_);
   }
 
   override eval(state: DeviceState): void {

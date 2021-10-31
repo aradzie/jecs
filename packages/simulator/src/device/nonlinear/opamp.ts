@@ -1,4 +1,4 @@
-import { Device, DeviceState } from "../../circuit/device";
+import { Device, DeviceState, StateParams } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
 import { Params } from "../../circuit/params";
@@ -16,6 +16,10 @@ export class OpAmp extends Device<OpAmpParams> {
   static override readonly paramsSchema = {
     gain: Params.number({ title: "gain" }),
   };
+  static override readonly stateParams: StateParams = {
+    length: 0,
+    outputs: [],
+  };
 
   readonly a: Node;
   readonly b: Node;
@@ -26,10 +30,6 @@ export class OpAmp extends Device<OpAmpParams> {
     this.a = a;
     this.b = b;
     this.o = o;
-  }
-
-  override getInitialState(): DeviceState {
-    return new Float64Array();
   }
 
   override eval(state: DeviceState): void {}

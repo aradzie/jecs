@@ -1,4 +1,4 @@
-import { Device, DeviceState } from "../../circuit/device";
+import { Device, DeviceState, StateParams } from "../../circuit/device";
 import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
@@ -119,6 +119,17 @@ export class Bjt extends Device<BjtParams> {
     }),
     Temp: Params.Temp,
   };
+  static override readonly stateParams: StateParams = {
+    length: S._Size_,
+    outputs: [
+      { index: S.Vbe, name: "Vbe", unit: "V" },
+      { index: S.Vbc, name: "Vbc", unit: "V" },
+      //{ index: S.Vce, name: "Vce", unit: "V" },
+      { index: S.Ie, name: "Ie", unit: "A" },
+      { index: S.Ic, name: "Ic", unit: "A" },
+      //{ index: S.Ib, name: "Ib", unit: "A" },
+    ],
+  };
 
   /** The emitter terminal. */
   readonly ne: Node;
@@ -139,10 +150,6 @@ export class Bjt extends Device<BjtParams> {
     const { Is, Nf, Nr, Temp } = this.params;
     this.pnBe = new PN(Is, Nf, Temp);
     this.pnBc = new PN(Is, Nr, Temp);
-  }
-
-  override getInitialState(): DeviceState {
-    return new Float64Array(S._Size_);
   }
 
   override eval(state: DeviceState): void {

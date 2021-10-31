@@ -1,4 +1,4 @@
-import { Device } from "../../circuit/device";
+import { Device, StateParams } from "../../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
 import { Params, ParamsSchema } from "../../circuit/params";
@@ -16,6 +16,10 @@ export class VCVSource extends Device<VCVSourceParams> {
   static override readonly numTerminals = 4;
   static override readonly paramsSchema: ParamsSchema<VCVSourceParams> = {
     gain: Params.number({ title: "gain" }),
+  };
+  static override readonly stateParams: StateParams = {
+    length: 0,
+    outputs: [],
   };
 
   /** Positive output terminal. */
