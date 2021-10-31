@@ -1,42 +1,33 @@
 import type { Circuit } from "../circuit/circuit";
-import { CircuitError } from "../circuit/error";
 import { Stamper } from "../circuit/network";
 import { solve } from "../math/gauss-elimination";
 import { matClear, matMake, vecClear, vecCopy, vecMake } from "../math/matrix";
 import { converged } from "./convergence";
+import { SimulationError } from "./error";
 import type { Options } from "./options";
 import { defaultOptions } from "./options";
-
-export class Controller {
-  iterationCount = 0;
-
-  nextIteration(): void {
-    this.iterationCount += 1;
-  }
-}
 
 export function dcAnalysis(
   circuit: Circuit,
   userOptions: Partial<Options> = {},
-  ctl = new Controller(),
 ): void {
   const options = Object.freeze<Options>({ ...defaultOptions, ...userOptions });
   const { nodes, devices } = circuit;
 
   if (devices.length === 0) {
-    throw new CircuitError(`Empty circuit`);
+    throw new SimulationError(`Empty circuit`);
   }
+
+  const controller = new Controller();
 
   const n = nodes.length;
   const matrix = matMake(n, n);
   const vector = vecMake(n);
-  const prev = vecMake(n);
+  const prevVector = vecMake(n);
 
   const stamper = new Stamper(matrix, vector);
 
-  while (true) {
-    ctl.nextIteration();
-
+  for (const iteration of controller) {
     for (const device of devices) {
       const { state } = device;
       device.eval(state);
@@ -54,15 +45,26 @@ export function dcAnalysis(
 
     circuit.updateNodes(vector);
 
-    if (ctl.iterationCount > 1 && converged(options, nodes, prev, vector)) {
+    if (iteration > 1 && converged(options, nodes, prevVector, vector)) {
       break;
     }
 
-    vecCopy(vector, prev);
+    vecCopy(vector, prevVector);
   }
 
   for (const device of devices) {
     const { state } = device;
     device.eval(state);
+  }
+}
+
+class Controller implements Iterable<number> {
+  iteration = 0;
+
+  *[Symbol.iterator](): IterableIterator<number> {
+    for (this.iteration = 0; this.iteration < 100; this.iteration += 1) {
+      yield this.iteration;
+    }
+    throw new SimulationError(`Simulation did not converge`);
   }
 }
