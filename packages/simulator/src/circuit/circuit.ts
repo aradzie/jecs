@@ -5,9 +5,9 @@ import { Branch, groundNode, Network, Node } from "./network";
 
 export class Circuit implements Network {
   readonly #nodes: (Node | Branch)[] = [];
-  readonly #nodesByName = new Map<string, Node>();
+  readonly #nodesById = new Map<string, Node>();
   readonly #devices: Device[] = [];
-  readonly #devicesByName = new Map<string, Device>();
+  readonly #devicesById = new Map<string, Device>();
 
   get groundNode(): Node {
     return groundNode;
@@ -21,12 +21,12 @@ export class Circuit implements Network {
     return this.#devices;
   }
 
-  allocNode(name: string): Node {
-    if (this.#nodesByName.has(name)) {
-      throw new CircuitError(`Duplicate node name [${name}]`);
+  allocNode(id: string): Node {
+    if (this.#nodesById.has(id)) {
+      throw new CircuitError(`Duplicate node [${id}]`);
     }
-    const node = new Node(this.#nodes.length, name);
-    this.#nodesByName.set(node.name, node);
+    const node = new Node(this.#nodes.length, id);
+    this.#nodesById.set(node.id, node);
     this.#nodes.push(node);
     return node;
   }
@@ -39,28 +39,28 @@ export class Circuit implements Network {
 
   addDevice(...devices: readonly Device[]): void {
     for (const device of devices) {
-      const { name } = device;
-      if (this.#devicesByName.has(name)) {
-        throw new CircuitError(`Duplicate device name [${name}]`);
+      const { id } = device;
+      if (this.#devicesById.has(id)) {
+        throw new CircuitError(`Duplicate device instance [${id}]`);
       }
       this.#devices.push(device);
-      this.#devicesByName.set(device.name, device);
+      this.#devicesById.set(device.id, device);
       device.connect(this);
     }
   }
 
-  getNode(name: string): Node {
-    const node = this.#nodesByName.get(name);
+  getNode(id: string): Node {
+    const node = this.#nodesById.get(id);
     if (node == null) {
-      throw new CircuitError(`Unknown node [${name}]`);
+      throw new CircuitError(`Unknown node [${id}]`);
     }
     return node;
   }
 
-  getDevice(name: string): Device {
-    const device = this.#devicesByName.get(name);
+  getDevice(id: string): Device {
+    const device = this.#devicesById.get(id);
     if (device == null) {
-      throw new CircuitError(`Unknown device [${name}]`);
+      throw new CircuitError(`Unknown device instance [${id}]`);
     }
     return device;
   }

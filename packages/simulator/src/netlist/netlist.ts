@@ -43,7 +43,7 @@ export function parseNetlist(input: string | Netlist, variables = new Variables(
     }
   }
 
-  // Pass: generate unique instance names.
+  // Pass: generate unique instance ids.
 
   assignInstanceIds(definitionItems);
 
@@ -77,7 +77,7 @@ function assignInstanceIds(definitionItems: readonly DefinitionItem[]): void {
       const { name } = instanceId;
       const lcName = name.toLowerCase();
       if (taken.has(lcName)) {
-        throw new CircuitError(`Duplicate instance name [${name}]`);
+        throw new CircuitError(`Duplicate instance [${name}]`);
       }
       taken.add(lcName);
       definitionItem.instanceId = name;
@@ -108,7 +108,7 @@ function assignInstanceIds(definitionItems: readonly DefinitionItem[]): void {
 
 function collectNodes(circuit: Circuit, definitionItems: readonly DefinitionItem[]): NameMap<Node> {
   const { groundNode } = circuit;
-  const nodesMap = new NameMap<Node>([[groundNode.name, groundNode]]);
+  const nodesMap = new NameMap<Node>([[groundNode.id, groundNode]]);
 
   // Find ground nodes.
   // Any node to which the Ground device is connected becomes the ground node.

@@ -11,9 +11,9 @@ export interface Network {
 
   /**
    * Adds a new voltage node to the MNA matrix.
-   * @param name Unique node name.
+   * @param id Unique node id.
    */
-  allocNode(name: string): Node;
+  allocNode(id: string): Node;
 
   /**
    * Adds a new current branch to the MNA matrix.
@@ -34,22 +34,22 @@ export class Node {
   readonly index: number;
 
   /**
-   * Arbitrary node name.
+   * Unique node id.
    */
-  readonly name: string;
+  readonly id: string;
 
   /**
    * Computed node voltage.
    */
   voltage = 0;
 
-  constructor(index: number, name: string) {
+  constructor(index: number, id: string) {
     this.index = index;
-    this.name = name;
+    this.id = id;
   }
 
   toString(): string {
-    return `Node[${this.name}]`;
+    return `Node[${this.id}]`;
   }
 }
 

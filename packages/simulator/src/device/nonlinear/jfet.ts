@@ -131,8 +131,8 @@ export class Jfet extends Device<JfetParams> {
   /** The gate-drain PN junction of JFET. */
   private readonly pnGd: PN;
 
-  constructor(name: string, [ns, ng, nd]: readonly Node[], params: JfetParams) {
-    super(name, [ns, ng, nd], params);
+  constructor(id: string, [ns, ng, nd]: readonly Node[], params: JfetParams) {
+    super(id, [ns, ng, nd], params);
     this.ns = ns;
     this.ng = ng;
     this.nd = nd;

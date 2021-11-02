@@ -154,8 +154,8 @@ export class Mosfet extends Device<MosfetParams> {
   /** The body-drain PN junction of MOSFET. */
   private readonly pnBd: PN;
 
-  constructor(name: string, [ns, ng, nd, nb]: readonly Node[], params: MosfetParams) {
-    super(name, [ns, ng, nd, nb], params);
+  constructor(id: string, [ns, ng, nd, nb]: readonly Node[], params: MosfetParams) {
+    super(id, [ns, ng, nd, nb], params);
     this.ns = ns;
     this.ng = ng;
     this.nd = nd;

@@ -142,8 +142,8 @@ export class Bjt extends Device<BjtParams> {
   /** The base-collector PN junction of BJT. */
   private readonly pnBc: PN;
 
-  constructor(name: string, [ne, nb, nc]: readonly Node[], params: BjtParams) {
-    super(name, [ne, nb, nc], params);
+  constructor(id: string, [ne, nb, nc]: readonly Node[], params: BjtParams) {
+    super(id, [ne, nb, nc], params);
     this.ne = ne;
     this.nb = nb;
     this.nc = nc;

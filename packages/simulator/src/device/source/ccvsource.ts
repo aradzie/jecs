@@ -35,8 +35,8 @@ export class CCVSource extends Device<CCVSourceParams> {
   /** Extra MNA branch. */
   private branch2!: Branch;
 
-  constructor(name: string, [np, nn, ncp, ncn]: readonly Node[], params: CCVSourceParams) {
-    super(name, [np, nn, ncp, ncn], params);
+  constructor(id: string, [np, nn, ncp, ncn]: readonly Node[], params: CCVSourceParams) {
+    super(id, [np, nn, ncp, ncn], params);
     this.np = np;
     this.nn = nn;
     this.ncp = ncp;

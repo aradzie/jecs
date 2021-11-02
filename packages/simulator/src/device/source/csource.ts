@@ -27,8 +27,8 @@ export class CSource extends Device<CSourceParams> {
   /** Negative terminal. */
   readonly nn: Node;
 
-  constructor(name: string, [np, nn]: readonly Node[], params: CSourceParams) {
-    super(name, [np, nn], params);
+  constructor(id: string, [np, nn]: readonly Node[], params: CSourceParams) {
+    super(id, [np, nn], params);
     this.np = np;
     this.nn = nn;
   }

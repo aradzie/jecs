@@ -45,7 +45,7 @@ class Registration {
       );
     }
     if (Registration.map.has(id)) {
-      throw new CircuitError(`Duplicate device id [${id}]`);
+      throw new CircuitError(`Duplicate device [${id}]`);
     }
     const registration = new Registration(deviceClass);
     for (const [name, params] of deviceClass.getModels()) {
@@ -68,7 +68,7 @@ class Registration {
     if (params != null) {
       return params;
     } else {
-      throw new CircuitError(`Unknown model name [${name}]`);
+      throw new CircuitError(`Unknown model [${name}]`);
     }
   }
 
@@ -76,13 +76,17 @@ class Registration {
     return this.models.entries();
   }
 
-  createDevice(name: string, nodes: readonly Node[], initializers: readonly Initializer[]): Device {
+  createDevice(
+    instanceId: string,
+    nodes: readonly Node[],
+    initializers: readonly Initializer[],
+  ): Device {
     const { deviceClass } = this;
     const { id, numTerminals, paramsSchema } = deviceClass;
 
     if (nodes.length !== numTerminals) {
       throw new CircuitError(
-        `Error in device [${id}:${name}]: ` + //
+        `Error in device [${id}:${instanceId}]: ` + //
           `Invalid number of nodes`,
       );
     }
@@ -93,12 +97,12 @@ class Registration {
       params = this.makeParams(paramsSchema, initializers);
     } catch (err: any) {
       throw new CircuitError(
-        `Error in device [${id}:${name}]: ` + //
+        `Error in device [${id}:${instanceId}]: ` + //
           err.message,
       );
     }
 
-    return new deviceClass(name, nodes, params);
+    return new deviceClass(instanceId, nodes, params);
   }
 
   private makeParams(paramsSchema: ParamsSchema, initializers: readonly Initializer[]) {
@@ -126,17 +130,17 @@ export function getDeviceClass(deviceClass: string | DeviceClass): DeviceClass {
 
 export function addDeviceModel(
   deviceClass: string | DeviceClass,
-  name: string,
+  modelName: string,
   params: DeviceParams,
 ): void {
-  Registration.get(deviceClass).addModel(name, params);
+  Registration.get(deviceClass).addModel(modelName, params);
 }
 
 export function getDeviceModel(
   deviceClass: string | DeviceClass,
-  name: string,
+  modelName: string,
 ): DeviceParams | null {
-  return Registration.get(deviceClass).getModel(name);
+  return Registration.get(deviceClass).getModel(modelName);
 }
 
 export function listDeviceModels(deviceClass: string | DeviceClass): Iterable<DeviceModel> {
@@ -145,11 +149,11 @@ export function listDeviceModels(deviceClass: string | DeviceClass): Iterable<De
 
 export function createDevice(
   deviceClass: string | DeviceClass,
-  name: string,
+  instanceId: string,
   nodes: readonly Node[],
   ...initializers: readonly Initializer[]
 ): Device {
-  return Registration.get(deviceClass).createDevice(name, nodes, initializers);
+  return Registration.get(deviceClass).createDevice(instanceId, nodes, initializers);
 }
 
 registerDeviceClass(...devices);

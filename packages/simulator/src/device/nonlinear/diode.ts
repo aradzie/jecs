@@ -66,8 +66,8 @@ export class Diode extends Device<DiodeParams> {
   /** The PN junction of diode. */
   readonly pn: PN;
 
-  constructor(name: string, [na, nc]: readonly Node[], params: DiodeParams) {
-    super(name, [na, nc], params);
+  constructor(id: string, [na, nc]: readonly Node[], params: DiodeParams) {
+    super(id, [na, nc], params);
     this.na = na;
     this.nc = nc;
     const { Is, N, Temp } = this.params;

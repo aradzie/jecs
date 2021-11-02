@@ -18,11 +18,11 @@ export interface DeviceClass {
 
   /**
    * Device constructor.
-   * @param name Device name which is unique within a circuit.
+   * @param id Unique device instance identifier.
    * @param nodes Circuit nodes to which the device terminals are connected.
    * @param params Device parameters.
    */
-  new (name: string, nodes: readonly Node[], params: any): Device;
+  new (id: string, nodes: readonly Node[], params: any): Device;
 
   /** Returns a list of device models. */
   getModels(): readonly DeviceModel[];
@@ -69,8 +69,8 @@ export abstract class Device<ParamsT = unknown> {
   /** Schema of the device state vector. */
   static readonly stateParams: StateParams;
 
-  /** Unique device name. */
-  readonly name: string;
+  /** Unique device instance identifier. */
+  readonly id: string;
 
   /** The list of nodes to which the device terminals are connected. */
   readonly nodes: readonly Node[];
@@ -81,8 +81,8 @@ export abstract class Device<ParamsT = unknown> {
   // TODO Externalize this state.
   state: DeviceState = emptyState;
 
-  constructor(name: string, nodes: readonly Node[], params: ParamsT) {
-    this.name = name;
+  constructor(id: string, nodes: readonly Node[], params: ParamsT) {
+    this.id = id;
     this.nodes = nodes;
     this.params = params;
   }

@@ -29,8 +29,8 @@ export class VSource extends Device<VSourceParams> {
   /** Extra MNA branch. */
   private branch!: Branch;
 
-  constructor(name: string, [np, nn]: readonly Node[], params: VSourceParams) {
-    super(name, [np, nn], params);
+  constructor(id: string, [np, nn]: readonly Node[], params: VSourceParams) {
+    super(id, [np, nn], params);
     this.np = np;
     this.nn = nn;
   }

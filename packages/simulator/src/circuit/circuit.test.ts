@@ -15,7 +15,7 @@ test("alloc node", (t) => {
     () => {
       circuit.allocNode("N1");
     },
-    { message: "Duplicate node name [N1]" },
+    { message: "Duplicate node [N1]" },
   );
 
   t.deepEqual(circuit.nodes, [n1]);
@@ -37,7 +37,7 @@ test("add device", (t) => {
     () => {
       circuit.addDevice(r);
     },
-    { message: "Duplicate device name [R1]" },
+    { message: "Duplicate device instance [R1]" },
   );
 
   t.deepEqual(circuit.devices, [r]);

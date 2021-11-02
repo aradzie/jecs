@@ -29,8 +29,8 @@ export class Resistor extends Device<ResistorParams> {
   /** Second terminal. */
   readonly nb: Node;
 
-  constructor(name: string, [na, nb]: readonly Node[], params: ResistorParams) {
-    super(name, [na, nb], params);
+  constructor(id: string, [na, nb]: readonly Node[], params: ResistorParams) {
+    super(id, [na, nb], params);
     this.na = na;
     this.nb = nb;
   }

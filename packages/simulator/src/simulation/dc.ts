@@ -96,7 +96,7 @@ function makeOutput(devices: readonly Device[]): Output {
     const values = deviceClass.stateParams.outputs.map(
       ({ index, name, unit }) => [name, unit, state[index]] as DeviceValue,
     );
-    output.push([deviceClass.id, device.name, values]);
+    output.push([deviceClass.id, device.id, values]);
   }
 
   return output;

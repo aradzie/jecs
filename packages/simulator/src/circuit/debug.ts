@@ -8,7 +8,7 @@ export function dumpCircuit(circuit: Circuit): string[] {
   const lines: string[] = [];
   for (const node of circuit.nodes) {
     if (node instanceof Node) {
-      lines.push(`V(${node.name})=${formatNumber(node.voltage, Unit.VOLT)}`);
+      lines.push(`V(${node.id})=${formatNumber(node.voltage, Unit.VOLT)}`);
       continue;
     }
   }
@@ -20,7 +20,7 @@ export function dumpCircuit(circuit: Circuit): string[] {
     for (const { name, value, unit } of device.ops()) {
       items.push(`${name}=${formatNumber(value, unit)}`);
     }
-    lines.push(`${device.name}{${items.join(",")}}`);
+    lines.push(`${device.id}{${items.join(",")}}`);
   }
   return lines;
 }

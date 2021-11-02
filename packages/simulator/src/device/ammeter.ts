@@ -22,8 +22,8 @@ export class Ammeter extends Device {
   /** Extra MNA branch. */
   private branch!: Branch;
 
-  constructor(name: string, [np, nn]: readonly Node[]) {
-    super(name, [np, nn], {});
+  constructor(id: string, [np, nn]: readonly Node[]) {
+    super(id, [np, nn], {});
     this.np = np;
     this.nn = nn;
   }
