@@ -1,4 +1,4 @@
-import { Device, StateParams } from "../circuit/device";
+import { Device, DeviceState, StateParams } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
 import type { Op } from "../circuit/ops";
 import { Params, ParamsSchema } from "../circuit/params";
@@ -6,6 +6,15 @@ import { Unit } from "../util/unit";
 
 export interface ResistorParams {
   readonly R: number;
+}
+
+const enum S {
+  R,
+  G,
+  V,
+  I,
+  P,
+  _Size_,
 }
 
 /**
@@ -20,8 +29,12 @@ export class Resistor extends Device<ResistorParams> {
     }),
   };
   static override readonly stateParams: StateParams = {
-    length: 0,
-    outputs: [],
+    length: S._Size_,
+    outputs: [
+      { index: S.V, name: "V", unit: "V" },
+      { index: S.I, name: "I", unit: "A" },
+      { index: S.P, name: "P", unit: "W" },
+    ],
   };
 
   /** First terminal. */
@@ -35,18 +48,26 @@ export class Resistor extends Device<ResistorParams> {
     this.nb = nb;
   }
 
-  override stamp(stamper: Stamper): void {
-    const { params, na, nb } = this;
+  override eval(state: DeviceState, final: boolean): void {
+    const { na, nb, params } = this;
     const { R } = params;
-    stamper.stampConductance(na, nb, 1.0 / R);
-  }
-
-  override ops(): readonly Op[] {
-    const { params, na, nb } = this;
-    const { R } = params;
+    const G = 1 / R;
     const V = na.voltage - nb.voltage;
     const I = V / R;
     const P = V * I;
+    state[S.R] = R;
+    state[S.G] = G;
+    state[S.V] = V;
+    state[S.I] = I;
+    state[S.P] = P;
+  }
+
+  override stamp(stamper: Stamper, [R, G, Vd, I, P]: DeviceState): void {
+    const { na, nb } = this;
+    stamper.stampConductance(na, nb, G);
+  }
+
+  override ops([R, G, V, I, P]: DeviceState = this.state): readonly Op[] {
     return [
       { name: "V", value: V, unit: Unit.VOLT },
       { name: "I", value: I, unit: Unit.AMPERE },

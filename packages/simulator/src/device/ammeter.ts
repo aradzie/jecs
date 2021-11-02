@@ -1,7 +1,13 @@
-import { Device, StateParams } from "../circuit/device";
+import { Device, DeviceState, StateParams } from "../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../circuit/network";
 import type { Op } from "../circuit/ops";
 import { Unit } from "../util/unit";
+
+const enum S {
+  /** Current through probe. */
+  I,
+  _Size_,
+}
 
 /**
  * Ammeter.
@@ -11,8 +17,10 @@ export class Ammeter extends Device {
   static override readonly numTerminals = 2;
   static override readonly paramsSchema = {};
   static override readonly stateParams: StateParams = {
-    length: 0,
-    outputs: [],
+    length: S._Size_,
+    outputs: [
+      { index: S.I, name: "I", unit: "A" }, //
+    ],
   };
 
   /** Positive terminal. */
@@ -32,14 +40,17 @@ export class Ammeter extends Device {
     this.branch = network.allocBranch(this.np, this.nn);
   }
 
+  override eval(state: DeviceState, final: boolean): void {
+    const { branch } = this;
+    state[S.I] = branch.current;
+  }
+
   override stamp(stamper: Stamper): void {
     const { np, nn, branch } = this;
     stamper.stampVoltageSource(np, nn, branch, 0);
   }
 
-  override ops(): readonly Op[] {
-    const { branch } = this;
-    const I = branch.current;
+  override ops([I]: DeviceState = this.state): readonly Op[] {
     return [
       { name: "I", value: I, unit: Unit.AMPERE }, //
     ];

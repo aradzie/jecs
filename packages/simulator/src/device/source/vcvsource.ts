@@ -1,4 +1,4 @@
-import { Device, StateParams } from "../../circuit/device";
+import { Device, DeviceState, StateParams } from "../../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
 import { Params, ParamsSchema } from "../../circuit/params";
@@ -6,6 +6,13 @@ import { Unit } from "../../util/unit";
 
 export interface VCVSourceParams {
   readonly gain: number;
+}
+
+const enum S {
+  V,
+  I,
+  P,
+  _Size_,
 }
 
 /**
@@ -18,8 +25,12 @@ export class VCVSource extends Device<VCVSourceParams> {
     gain: Params.number({ title: "gain" }),
   };
   static override readonly stateParams: StateParams = {
-    length: 0,
-    outputs: [],
+    length: S._Size_,
+    outputs: [
+      { index: S.V, name: "V", unit: "V" },
+      { index: S.I, name: "I", unit: "A" },
+      { index: S.P, name: "P", unit: "W" },
+    ],
   };
 
   /** Positive output terminal. */
@@ -45,6 +56,16 @@ export class VCVSource extends Device<VCVSourceParams> {
     this.branch = network.allocBranch(this.np, this.nn);
   }
 
+  override eval(state: DeviceState, final: boolean): void {
+    const { np, nn, branch } = this;
+    const V = np.voltage - nn.voltage;
+    const I = branch.current;
+    const P = V * I;
+    state[S.V] = V;
+    state[S.I] = I;
+    state[S.P] = P;
+  }
+
   override stamp(stamper: Stamper): void {
     const { np, nn, ncp, ncn, branch, params } = this;
     const { gain } = params;
@@ -53,11 +74,7 @@ export class VCVSource extends Device<VCVSourceParams> {
     stamper.stampMatrix(branch, ncn, gain);
   }
 
-  override ops(): readonly Op[] {
-    const { np, nn, branch } = this;
-    const V = np.voltage - nn.voltage;
-    const I = branch.current;
-    const P = V * I;
+  override ops([V, I, P]: DeviceState = this.state): readonly Op[] {
     return [
       { name: "V", value: V, unit: Unit.VOLT },
       { name: "I", value: I, unit: Unit.AMPERE },

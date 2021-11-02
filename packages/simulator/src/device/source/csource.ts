@@ -1,4 +1,4 @@
-import { Device, StateParams } from "../../circuit/device";
+import { Device, DeviceState, StateParams } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
 import type { Op } from "../../circuit/ops";
 import { Params, ParamsSchema } from "../../circuit/params";
@@ -6,6 +6,13 @@ import { Unit } from "../../util/unit";
 
 export interface CSourceParams {
   readonly I: number;
+}
+
+const enum S {
+  I,
+  V,
+  P,
+  _Size_,
 }
 
 /**
@@ -18,8 +25,12 @@ export class CSource extends Device<CSourceParams> {
     I: Params.number({ title: "current" }),
   };
   static override readonly stateParams: StateParams = {
-    length: 0,
-    outputs: [],
+    length: S._Size_,
+    outputs: [
+      { index: S.I, name: "I", unit: "A" },
+      { index: S.V, name: "V", unit: "V" },
+      { index: S.P, name: "P", unit: "W" },
+    ],
   };
 
   /** Positive terminal. */
@@ -33,17 +44,23 @@ export class CSource extends Device<CSourceParams> {
     this.nn = nn;
   }
 
+  override eval(state: DeviceState, final: boolean): void {
+    const { params, np, nn } = this;
+    const { I } = params;
+    const V = np.voltage - nn.voltage;
+    const P = V * I;
+    state[S.I] = I;
+    state[S.V] = V;
+    state[S.P] = P;
+  }
+
   override stamp(stamper: Stamper): void {
     const { params, np, nn } = this;
     const { I } = params;
     stamper.stampCurrentSource(np, nn, I);
   }
 
-  override ops(): readonly Op[] {
-    const { params, np, nn } = this;
-    const { I } = params;
-    const V = np.voltage - nn.voltage;
-    const P = V * I;
+  override ops([I, V, P]: DeviceState = this.state): readonly Op[] {
     return [
       { name: "I", value: I, unit: Unit.AMPERE },
       { name: "V", value: V, unit: Unit.VOLT },

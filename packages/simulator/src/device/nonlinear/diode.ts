@@ -75,23 +75,28 @@ export class Diode extends Device<DiodeParams> {
     this.pn = new PN(Is, N, Temp);
   }
 
-  override eval(state: DeviceState): void {
+  override eval(state: DeviceState, final: boolean): void {
     const { na, nc, pn } = this;
-    const Vd = (state[S.V] = pn.limitVoltage(na.voltage - nc.voltage, state[S.V]));
-    state[S.I] = pn.evalCurrent(Vd);
-    state[S.G] = pn.evalConductance(Vd);
-  }
-
-  override stamp(stamper: Stamper, [Vd, Id, Gd]: DeviceState): void {
-    const { na, nc } = this;
-    stamper.stampConductance(na, nc, Gd);
-    stamper.stampCurrentSource(na, nc, Id - Gd * Vd);
-  }
-
-  override ops([VX, I, G]: DeviceState = this.state): readonly Op[] {
-    const { na, nc } = this;
-    const V = na.voltage - nc.voltage;
+    let V = na.voltage - nc.voltage;
+    if (!final) {
+      V = pn.limitVoltage(V, state[S.V]);
+    }
+    const I = pn.evalCurrent(V);
+    const G = pn.evalConductance(V);
     const P = V * I;
+    state[S.V] = V;
+    state[S.I] = I;
+    state[S.G] = G;
+    state[S.P] = P;
+  }
+
+  override stamp(stamper: Stamper, [V, I, G, P]: DeviceState): void {
+    const { na, nc } = this;
+    stamper.stampConductance(na, nc, G);
+    stamper.stampCurrentSource(na, nc, I - G * V);
+  }
+
+  override ops([V, I, G, P]: DeviceState = this.state): readonly Op[] {
     return [
       { name: "V", value: V, unit: Unit.VOLT },
       { name: "I", value: I, unit: Unit.AMPERE },

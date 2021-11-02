@@ -114,6 +114,7 @@ export abstract class Device<ParamsT = unknown> {
 
   /**
    * Returns device operating points obtained from a previously computed state.
+   * @deprecated
    */
   ops(state?: DeviceState): readonly Op[] {
     return [];
