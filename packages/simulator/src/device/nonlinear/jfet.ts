@@ -3,7 +3,17 @@ import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import { Params, ParamsSchema } from "../../circuit/params";
 import { Temp } from "../const";
-import { FetPolarity, fetSign, nfet, pfet, PN } from "./semi";
+import {
+  FetPolarity,
+  fetSign,
+  nfet,
+  pfet,
+  pnConductance,
+  pnCurrent,
+  pnVcrit,
+  pnVoltage,
+  pnVt,
+} from "./semi";
 
 export interface JfetParams {
   readonly polarity: FetPolarity;
@@ -124,24 +134,19 @@ export class Jfet extends Device<JfetParams> {
   readonly ng: Node;
   /** The drain terminal. */
   readonly nd: Node;
-  /** The gate-source PN junction of JFET. */
-  private readonly pnGs: PN;
-  /** The gate-drain PN junction of JFET. */
-  private readonly pnGd: PN;
 
   constructor(id: string, [ns, ng, nd]: readonly Node[], params: JfetParams) {
     super(id, [ns, ng, nd], params);
     this.ns = ns;
     this.ng = ng;
     this.nd = nd;
-    const { Is, N, Temp } = this.params;
-    this.pnGs = new PN(Is, N, Temp);
-    this.pnGd = new PN(Is, N, Temp);
   }
 
   override eval(state: DeviceState, final: boolean): void {
-    const { params, ns, ng, nd, pnGs, pnGd } = this;
-    const { polarity, Vth, beta, lambda } = params;
+    const { params, ns, ng, nd } = this;
+    const { polarity, Vth, beta, lambda, Is, N, Temp } = params;
+    const Vt = N * pnVt(Temp);
+    const Vcrit = pnVcrit(Is, Vt);
     const pol = fetSign(polarity);
 
     // VOLTAGES
@@ -149,17 +154,17 @@ export class Jfet extends Device<JfetParams> {
     let Vgs = pol * (ng.voltage - ns.voltage);
     let Vgd = pol * (ng.voltage - nd.voltage);
     if (!final) {
-      Vgs = pnGs.limitVoltage(Vgs, pol * state[S.Vgs]);
-      Vgd = pnGd.limitVoltage(Vgd, pol * state[S.Vgd]);
+      Vgs = pnVoltage(Vgs, pol * state[S.Vgs], Vt, Vcrit);
+      Vgd = pnVoltage(Vgd, pol * state[S.Vgd], Vt, Vcrit);
     }
     const Vds = Vgs - Vgd;
 
     // DIODES
 
-    const Igs = pnGs.evalCurrent(Vgs);
-    const Ggs = pnGs.evalConductance(Vgs);
-    const Igd = pnGs.evalCurrent(Vgd);
-    const Ggd = pnGs.evalConductance(Vgd);
+    const Igs = pnCurrent(Vgs, Is, Vt);
+    const Ggs = pnConductance(Vgs, Is, Vt);
+    const Igd = pnCurrent(Vgd, Is, Vt);
+    const Ggd = pnConductance(Vgd, Is, Vt);
 
     // FET
 

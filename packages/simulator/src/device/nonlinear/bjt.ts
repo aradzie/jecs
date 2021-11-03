@@ -3,7 +3,17 @@ import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import { Params, ParamsSchema } from "../../circuit/params";
 import { Temp } from "../const";
-import { BjtPolarity, bjtSign, npn, PN, pnp } from "./semi";
+import {
+  BjtPolarity,
+  bjtSign,
+  npn,
+  pnConductance,
+  pnCurrent,
+  pnp,
+  pnVcrit,
+  pnVoltage,
+  pnVt,
+} from "./semi";
 
 export interface BjtParams {
   readonly polarity: BjtPolarity;
@@ -140,39 +150,34 @@ export class Bjt extends Device<BjtParams> {
   readonly nb: Node;
   /** The collector terminal. */
   readonly nc: Node;
-  /** The base-emitter PN junction of BJT. */
-  private readonly pnBe: PN;
-  /** The base-collector PN junction of BJT. */
-  private readonly pnBc: PN;
 
   constructor(id: string, [ne, nb, nc]: readonly Node[], params: BjtParams) {
     super(id, [ne, nb, nc], params);
     this.ne = ne;
     this.nb = nb;
     this.nc = nc;
-    const { Is, Nf, Nr, Temp } = this.params;
-    this.pnBe = new PN(Is, Nf, Temp);
-    this.pnBc = new PN(Is, Nr, Temp);
   }
 
   override eval(state: DeviceState, final: boolean): void {
-    const { params, ne, nb, nc, pnBe, pnBc } = this;
-    const { polarity, Bf, Br } = params;
+    const { params, ne, nb, nc } = this;
+    const { polarity, Bf, Br, Is, Nf, Nr, Temp } = params;
+    const Vtf = Nf * pnVt(Temp);
+    const Vtr = Nr * pnVt(Temp);
     const pol = bjtSign(polarity);
     let Vbe = pol * (nb.voltage - ne.voltage);
     let Vbc = pol * (nb.voltage - nc.voltage);
     if (!final) {
-      Vbe = pnBe.limitVoltage(Vbe, pol * state[S.Vbe]);
-      Vbc = pnBc.limitVoltage(Vbc, pol * state[S.Vbc]);
+      Vbe = pnVoltage(Vbe, pol * state[S.Vbe], Vtf, pnVcrit(Is, Vtf));
+      Vbc = pnVoltage(Vbc, pol * state[S.Vbc], Vtr, pnVcrit(Is, Vtr));
     }
-    const If = pnBe.evalCurrent(Vbe);
-    const Ir = pnBc.evalCurrent(Vbc);
+    const If = pnCurrent(Vbe, Is, Vtf);
+    const Ir = pnCurrent(Vbc, Is, Vtr);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);
     const Ie = Ar * Ir - If;
     const Ic = Af * If - Ir;
-    const Gf = pnBe.evalConductance(Vbe);
-    const Gr = pnBc.evalConductance(Vbc);
+    const Gf = pnConductance(Vbe, Is, Vtf);
+    const Gr = pnConductance(Vbc, Is, Vtr);
     state[S.pol] = pol;
     state[S.Vbe] = pol * Vbe;
     state[S.Vbc] = pol * Vbc;

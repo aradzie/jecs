@@ -3,7 +3,7 @@ import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import { Params, ParamsSchema } from "../../circuit/params";
 import { Temp } from "../const";
-import { PN } from "./semi";
+import { pnConductance, pnCurrent, pnVcrit, pnVoltage, pnVt } from "./semi";
 
 export interface DiodeParams {
   readonly Is: number;
@@ -62,25 +62,24 @@ export class Diode extends Device<DiodeParams> {
   readonly na: Node;
   /** The cathode terminal. */
   readonly nc: Node;
-  /** The PN junction of diode. */
-  readonly pn: PN;
 
   constructor(id: string, [na, nc]: readonly Node[], params: DiodeParams) {
     super(id, [na, nc], params);
     this.na = na;
     this.nc = nc;
-    const { Is, N, Temp } = this.params;
-    this.pn = new PN(Is, N, Temp);
   }
 
   override eval(state: DeviceState, final: boolean): void {
-    const { na, nc, pn } = this;
+    const { na, nc, params } = this;
+    const { Is, N, Temp } = params;
+    const Vt = N * pnVt(Temp);
+    const Vcrit = pnVcrit(Is, Vt);
     let V = na.voltage - nc.voltage;
     if (!final) {
-      V = pn.limitVoltage(V, state[S.V]);
+      V = pnVoltage(V, state[S.V], Vt, Vcrit);
     }
-    const I = pn.evalCurrent(V);
-    const G = pn.evalConductance(V);
+    const I = pnCurrent(V, Is, Vt);
+    const G = pnConductance(V, Is, Vt);
     const P = V * I;
     state[S.V] = V;
     state[S.I] = I;

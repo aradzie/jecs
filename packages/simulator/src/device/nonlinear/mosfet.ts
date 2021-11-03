@@ -3,7 +3,18 @@ import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import { Params, ParamsSchema } from "../../circuit/params";
 import { Temp } from "../const";
-import { FetPolarity, fetSign, limitMosfetVoltage, nfet, pfet, PN } from "./semi";
+import {
+  FetPolarity,
+  fetSign,
+  mosfetVoltage,
+  nfet,
+  pfet,
+  pnConductance,
+  pnCurrent,
+  pnVcrit,
+  pnVoltage,
+  pnVt,
+} from "./semi";
 
 export interface MosfetParams {
   readonly polarity: FetPolarity;
@@ -149,10 +160,6 @@ export class Mosfet extends Device<MosfetParams> {
   readonly nd: Node;
   /** The body terminal. */
   readonly nb: Node;
-  /** The body-source PN junction of MOSFET. */
-  private readonly pnBs: PN;
-  /** The body-drain PN junction of MOSFET. */
-  private readonly pnBd: PN;
 
   constructor(id: string, [ns, ng, nd, nb]: readonly Node[], params: MosfetParams) {
     super(id, [ns, ng, nd, nb], params);
@@ -160,14 +167,13 @@ export class Mosfet extends Device<MosfetParams> {
     this.ng = ng;
     this.nd = nd;
     this.nb = nb;
-    const { Is, N, Temp } = this.params;
-    this.pnBs = new PN(Is, N, Temp);
-    this.pnBd = new PN(Is, N, Temp);
   }
 
   override eval(state: DeviceState, final: boolean): void {
-    const { params, ns, ng, nd, nb, pnBs, pnBd } = this;
-    const { polarity, Vth, beta, lambda } = params;
+    const { params, ns, ng, nd, nb } = this;
+    const { polarity, Vth, beta, lambda, Is, N, Temp } = params;
+    const Vt = N * pnVt(Temp);
+    const Vcrit = pnVcrit(Is, Vt);
     const pol = fetSign(polarity);
 
     let Vbs = pol * (nb.voltage - ns.voltage);
@@ -176,23 +182,23 @@ export class Mosfet extends Device<MosfetParams> {
     let Vgd = (state[S.Vgd] = pol * (ng.voltage - nd.voltage));
     let Vds = Vgs - Vgd;
     if (!final) {
-      Vbs = pnBs.limitVoltage(Vbs, pol * state[S.Vbs]);
-      Vbd = pnBd.limitVoltage(Vbd, pol * state[S.Vbd]);
+      Vbs = pnVoltage(Vbs, pol * state[S.Vbs], Vt, Vcrit);
+      Vbd = pnVoltage(Vbd, pol * state[S.Vbd], Vt, Vcrit);
       if (Vds > 0) {
-        Vgs = limitMosfetVoltage(Vgs, pol * state[S.Vgs]);
-        Vds = limitMosfetVoltage(Vgs - Vgd, pol * state[S.Vds]);
+        Vgs = mosfetVoltage(Vgs, pol * state[S.Vgs]);
+        Vds = mosfetVoltage(Vgs - Vgd, pol * state[S.Vds]);
       } else {
-        Vgd = limitMosfetVoltage(Vgd, pol * state[S.Vgd]);
-        Vds = limitMosfetVoltage(Vgs - Vgd, pol * state[S.Vds]);
+        Vgd = mosfetVoltage(Vgd, pol * state[S.Vgd]);
+        Vds = mosfetVoltage(Vgs - Vgd, pol * state[S.Vds]);
       }
     }
 
     // DIODES
 
-    const Ibs = pnBs.evalCurrent(Vbs);
-    const Gbs = pnBs.evalConductance(Vbs);
-    const Ibd = pnBs.evalCurrent(Vbd);
-    const Gbd = pnBs.evalConductance(Vbd);
+    const Ibs = pnCurrent(Vbs, Is, Vt);
+    const Gbs = pnConductance(Vbs, Is, Vt);
+    const Ibd = pnCurrent(Vbd, Is, Vt);
+    const Gbd = pnConductance(Vbd, Is, Vt);
 
     // FET
 

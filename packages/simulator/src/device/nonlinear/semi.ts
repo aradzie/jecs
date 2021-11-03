@@ -29,71 +29,84 @@ export function fetSign(polarity: FetPolarity): number {
   }
 }
 
-export class PN {
-  /** The reverse bias saturation current. */
-  readonly Is: number;
-  /** The emission coefficient. */
-  readonly N: number;
-  /** The device temperature. */
-  readonly Temp: number;
-  /** The thermal voltage. */
-  readonly Vt: number;
-  /** The inverse of thermal voltage. */
-  readonly invVt: number;
-  /** The critical voltage. */
-  readonly Vcrit: number;
+/**
+ * Returns thermal voltage.
+ * @param Temp Device temperature.
+ */
+export function pnVt(Temp: number): number {
+  return celsiusToKelvin(Temp) * (k / q);
+}
 
-  constructor(Is: number, N: number, Temp: number) {
-    this.Is = Is;
-    this.N = N;
-    this.Temp = Temp;
-    this.Vt = this.N * celsiusToKelvin(this.Temp) * (k / q);
-    this.invVt = 1 / this.Vt;
-    this.Vcrit = this.Vt * Math.log(this.Vt / Math.sqrt(2) / this.Is);
-  }
+/**
+ * Returns critical voltage.
+ * @param Is Saturation current.
+ * @param Vt Thermal voltage.
+ */
+export function pnVcrit(Is: number, Vt: number): number {
+  return Vt * Math.log(Vt / Math.sqrt(2) / Is);
+}
 
-  evalCurrent(V: number): number {
-    if (V >= 0) {
-      const { Is, invVt } = this;
-      return Is * (Math.exp(invVt * V) - 1);
-    } else {
-      return 0;
-    }
-  }
-
-  evalConductance(V: number): number {
-    if (V >= 0) {
-      const { Is, invVt } = this;
-      return invVt * Is * Math.exp(invVt * V);
-    } else {
-      return 0;
-    }
-  }
-
-  limitVoltage(Vnew: number, Vold: number): number {
-    if (Vnew >= 0) {
-      const { Vt, Vcrit } = this;
-      if (Vnew > Vcrit && Math.abs(Vnew - Vold) > 2 * Vt) {
-        if (Vold > 0) {
-          const x = (Vnew - Vold) / Vt;
-          if (x > 0) {
-            Vnew = Vold + Vt * (2 + Math.log(x - 2));
-          } else {
-            Vnew = Vold - Vt * (2 + Math.log(2 - x));
-          }
-        } else {
-          Vnew = Vcrit;
-        }
-      }
-    }
-    return Vnew;
+/**
+ * Returns PN junction current.
+ * @param V Junction voltage.
+ * @param Is Saturation current.
+ * @param Vt Thermal voltage.
+ */
+export function pnCurrent(V: number, Is: number, Vt: number): number {
+  if (V >= 0) {
+    const invVt = 1 / Vt;
+    return Is * (Math.exp(invVt * V) - 1);
+  } else {
+    return 0;
   }
 }
 
 /**
- * Limits voltage changes on MOSFET terminals to help convergence.
+ * Returns PN junction conductance.
+ * @param V Junction voltage.
+ * @param Is Saturation current.
+ * @param Vt Thermal voltage.
  */
-export function limitMosfetVoltage(Vnew: number, Vold: number): number {
+export function pnConductance(V: number, Is: number, Vt: number): number {
+  if (V >= 0) {
+    const invVt = 1 / Vt;
+    return invVt * Is * Math.exp(invVt * V);
+  } else {
+    return 0;
+  }
+}
+
+/**
+ * Limits voltage changes on PN junction to help convergence.
+ * @param Vnew New voltage.
+ * @param Vold Old voltage.
+ * @param Vt Thermal voltage.
+ * @param Vcrit Critical voltage.
+ */
+export function pnVoltage(Vnew: number, Vold: number, Vt: number, Vcrit: number): number {
+  if (Vnew >= 0) {
+    if (Vnew > Vcrit && Math.abs(Vnew - Vold) > 2 * Vt) {
+      if (Vold > 0) {
+        const x = (Vnew - Vold) / Vt;
+        if (x > 0) {
+          Vnew = Vold + Vt * (2 + Math.log(x - 2));
+        } else {
+          Vnew = Vold - Vt * (2 + Math.log(2 - x));
+        }
+      } else {
+        Vnew = Vcrit;
+      }
+    }
+  }
+  return Vnew;
+}
+
+/**
+ * Limits voltage changes on MOSFET terminals to help convergence.
+ * @param Vnew New voltage.
+ * @param Vold Old voltage.
+ */
+export function mosfetVoltage(Vnew: number, Vold: number): number {
   const d = 0.5;
   if (Math.abs(Vnew - Vold) > d) {
     if (Vnew > Vold) {
