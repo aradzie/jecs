@@ -39,9 +39,9 @@ export class Ammeter extends Device {
 
   override ops(): readonly Op[] {
     const { branch } = this;
-    const current = branch.current;
+    const I = branch.current;
     return [
-      { name: "I", value: current, unit: Unit.AMPERE }, //
+      { name: "I", value: I, unit: Unit.AMPERE }, //
     ];
   }
 }

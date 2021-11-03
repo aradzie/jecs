@@ -56,11 +56,13 @@ export class CCCSource extends Device<CCCSourceParams> {
   override ops(): readonly Op[] {
     const { params, np, nn, branch } = this;
     const { gain } = params;
-    const voltage = np.voltage - nn.voltage;
-    const current = branch.current * gain;
+    const I = branch.current * gain;
+    const V = np.voltage - nn.voltage;
+    const P = V * I;
     return [
-      { name: "Vd", value: voltage, unit: Unit.VOLT },
-      { name: "I", value: current, unit: Unit.AMPERE },
+      { name: "I", value: I, unit: Unit.AMPERE },
+      { name: "V", value: V, unit: Unit.VOLT },
+      { name: "P", value: P, unit: Unit.WATT },
     ];
   }
 }

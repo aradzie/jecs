@@ -12,7 +12,7 @@ R nc na R=1000;
 ```text
 V(nb)=5V
 V(nc)=5V
-V1{Vd=5V,I=-5mA,P=-25mW}
+V1{V=5V,I=-5mA,P=-25mW}
 DUT{I=5mA}
-R1{Vd=5V,I=5mA,P=25mW}
+R1{V=5V,I=5mA,P=25mW}
 ```

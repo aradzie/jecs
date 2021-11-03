@@ -153,7 +153,7 @@ export class Bjt extends Device<BjtParams> {
   }
 
   override eval(state: DeviceState): void {
-    const { ne, nb, nc, pnBe, params, pnBc } = this;
+    const { params, ne, nb, nc, pnBe, pnBc } = this;
     const { polarity, Bf, Br } = params;
     const sign = bjtSign(polarity);
     const Vbe = (state[S.Vbe] = pnBe.limitVoltage(sign * (nb.voltage - ne.voltage), state[S.Vbe]));

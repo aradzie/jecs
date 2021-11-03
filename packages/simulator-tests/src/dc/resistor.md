@@ -9,8 +9,8 @@ R:DUT np g R=1000;
 
 ```text
 V(np)=5V
-V1{Vd=5V,I=-5mA,P=-25mW}
-DUT{Vd=5V,I=5mA,P=25mW}
+V1{V=5V,I=-5mA,P=-25mW}
+DUT{V=5V,I=5mA,P=25mW}
 ```
 
 ---
@@ -26,6 +26,6 @@ R:DUT np g R=-1000;
 
 ```text
 V(np)=5V
-V1{Vd=5V,I=5mA,P=25mW}
-DUT{Vd=5V,I=-5mA,P=-25mW}
+V1{V=5V,I=5mA,P=25mW}
+DUT{V=5V,I=-5mA,P=-25mW}
 ```

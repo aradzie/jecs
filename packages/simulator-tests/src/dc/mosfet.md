@@ -18,8 +18,8 @@ MOSFET:DUT g ng nd g @nmos Is=0;
 ```text
 V(nd)=15V
 V(ng)=10V
-V1{Vd=15V,I=-640mA,P=-9.6W}
-V2{Vd=10V,I=0A,P=0W}
+V1{V=15V,I=-640mA,P=-9.6W}
+V2{V=10V,I=0A,P=0W}
 DUT{Vgs=10V,Vgd=-5V,Vds=15V,Ids=640mA}
 ```
 
@@ -45,8 +45,8 @@ MOSFET:DUT ns ng g ns @nmos Is=0;
 ```text
 V(ns)=15V
 V(ng)=10V
-V1{Vd=15V,I=-640mA,P=-9.6W}
-V2{Vd=10V,I=0A,P=0W}
+V1{V=15V,I=-640mA,P=-9.6W}
+V2{V=10V,I=0A,P=0W}
 DUT{Vgs=-5V,Vgd=10V,Vds=-15V,Ids=-640mA}
 ```
 
@@ -70,7 +70,7 @@ MOSFET:DUT ns g g ns @nmos;
 
 ```text
 V(ns)=773.844mV
-V1{Vd=773.844mV,I=-100mA,P=-77.384mW}
+V1{V=773.844mV,I=-100mA,P=-77.384mW}
 DUT{Vgs=-773.844mV,Vgd=0V,Vds=-773.844mV,Ids=0A}
 ```
 
@@ -94,6 +94,6 @@ MOSFET:DUT g nd nd g @pmos;
 
 ```text
 V(nd)=773.844mV
-V1{Vd=773.844mV,I=-100mA,P=-77.384mW}
+V1{V=773.844mV,I=-100mA,P=-77.384mW}
 DUT{Vgs=773.844mV,Vgd=0V,Vds=773.844mV,Ids=0A}
 ```

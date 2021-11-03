@@ -19,9 +19,9 @@ for (const xVd of points(0.5, 0.9, 100)) {
   const circuit = parseNetlist(netlist, variables);
   dcAnalysis(circuit);
   const ops = circuit.getDevice("DUT").ops();
-  const Vd = op(ops, "Vd");
-  const Id = op(ops, "I");
-  dataset.add(Vd, Id);
+  const V = op(ops, "V");
+  const I = op(ops, "I");
+  dataset.add(V, I);
 }
 
 dataset.save("iv-diode");

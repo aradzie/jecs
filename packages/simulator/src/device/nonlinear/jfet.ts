@@ -142,7 +142,7 @@ export class Jfet extends Device<JfetParams> {
   }
 
   override eval(state: DeviceState): void {
-    const { ns, ng, nd, params, pnGs, pnGd } = this;
+    const { params, ns, ng, nd, pnGs, pnGd } = this;
     const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity);
 

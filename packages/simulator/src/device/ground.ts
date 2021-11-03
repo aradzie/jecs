@@ -2,7 +2,6 @@ import { Device, StateParams } from "../circuit/device";
 import { CircuitError } from "../circuit/error";
 import type { Network, Node } from "../circuit/network";
 import type { Op } from "../circuit/ops";
-import { Unit } from "../util/unit";
 
 export class Ground extends Device {
   static override readonly id = "Ground";
@@ -27,8 +26,6 @@ export class Ground extends Device {
   }
 
   override ops(): readonly Op[] {
-    return [
-      { name: "V", value: this.n.voltage, unit: Unit.VOLT }, //
-    ];
+    return [];
   }
 }

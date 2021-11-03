@@ -10,6 +10,6 @@ R np nn R=1000;
 
 ```text
 V(np)=5V
-DUT{Vd=5V,I=-5mA,P=-25mW}
-R1{Vd=5V,I=5mA,P=25mW}
+DUT{V=5V,I=-5mA,P=-25mW}
+R1{V=5V,I=5mA,P=25mW}
 ```

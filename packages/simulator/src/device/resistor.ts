@@ -44,13 +44,13 @@ export class Resistor extends Device<ResistorParams> {
   override ops(): readonly Op[] {
     const { params, na, nb } = this;
     const { R } = params;
-    const voltage = na.voltage - nb.voltage;
-    const current = voltage / R;
-    const power = voltage * current;
+    const V = na.voltage - nb.voltage;
+    const I = V / R;
+    const P = V * I;
     return [
-      { name: "Vd", value: voltage, unit: Unit.VOLT },
-      { name: "I", value: current, unit: Unit.AMPERE },
-      { name: "P", value: power, unit: Unit.WATT },
+      { name: "V", value: V, unit: Unit.VOLT },
+      { name: "I", value: I, unit: Unit.AMPERE },
+      { name: "P", value: P, unit: Unit.WATT },
     ];
   }
 }

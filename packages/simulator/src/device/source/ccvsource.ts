@@ -58,13 +58,13 @@ export class CCVSource extends Device<CCVSourceParams> {
 
   override ops(): readonly Op[] {
     const { np, nn, branch1 } = this;
-    const voltage = np.voltage - nn.voltage;
-    const current = branch1.current;
-    const power = voltage * current;
+    const V = np.voltage - nn.voltage;
+    const I = branch1.current;
+    const P = V * I;
     return [
-      { name: "Vd", value: voltage, unit: Unit.VOLT },
-      { name: "I", value: current, unit: Unit.AMPERE },
-      { name: "P", value: power, unit: Unit.WATT },
+      { name: "V", value: V, unit: Unit.VOLT },
+      { name: "I", value: I, unit: Unit.AMPERE },
+      { name: "P", value: P, unit: Unit.WATT },
     ];
   }
 }

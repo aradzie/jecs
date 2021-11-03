@@ -42,10 +42,12 @@ export class CSource extends Device<CSourceParams> {
   override ops(): readonly Op[] {
     const { params, np, nn } = this;
     const { I } = params;
-    const voltage = np.voltage - nn.voltage;
+    const V = np.voltage - nn.voltage;
+    const P = V * I;
     return [
-      { name: "Vd", value: voltage, unit: Unit.VOLT },
       { name: "I", value: I, unit: Unit.AMPERE },
+      { name: "V", value: V, unit: Unit.VOLT },
+      { name: "P", value: P, unit: Unit.WATT },
     ];
   }
 }

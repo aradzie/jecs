@@ -48,12 +48,12 @@ export class VSource extends Device<VSourceParams> {
   override ops(): readonly Op[] {
     const { params, branch } = this;
     const { V } = params;
-    const current = branch.current;
-    const power = V * current;
+    const I = branch.current;
+    const P = V * I;
     return [
-      { name: "Vd", value: V, unit: Unit.VOLT },
-      { name: "I", value: current, unit: Unit.AMPERE },
-      { name: "P", value: power, unit: Unit.WATT },
+      { name: "V", value: V, unit: Unit.VOLT },
+      { name: "I", value: I, unit: Unit.AMPERE },
+      { name: "P", value: P, unit: Unit.WATT },
     ];
   }
 }

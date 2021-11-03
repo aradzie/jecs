@@ -13,7 +13,7 @@ R nop non R=10;
 ```text
 V(ncp)=0V
 V(nop)=10V
-I1{Vd=0V,I=-1A}
-DUT{Vd=10V,I=-1A,P=-10W}
-R1{Vd=10V,I=1A,P=10W}
+I1{I=-1A,V=0V,P=0W}
+DUT{V=10V,I=-1A,P=-10W}
+R1{V=10V,I=1A,P=10W}
 ```

@@ -166,7 +166,7 @@ export class Mosfet extends Device<MosfetParams> {
   }
 
   override eval(state: DeviceState): void {
-    const { ns, ng, nd, nb, params, pnBs, pnBd } = this;
+    const { params, ns, ng, nd, nb, pnBs, pnBd } = this;
     const { polarity, Vth, beta, lambda } = params;
     const sign = fetSign(polarity);
 

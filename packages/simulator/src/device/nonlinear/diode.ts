@@ -14,9 +14,10 @@ export interface DiodeParams {
 }
 
 const enum S {
-  Vd,
-  Id,
-  Gd,
+  V,
+  I,
+  G,
+  P,
   _Size_,
 }
 
@@ -53,9 +54,9 @@ export class Diode extends Device<DiodeParams> {
   static override readonly stateParams: StateParams = {
     length: S._Size_,
     outputs: [
-      { index: S.Vd, name: "Vd", unit: "V" },
-      { index: S.Id, name: "Id", unit: "A" },
-      { index: S.Gd, name: "Gd", unit: "A/V" },
+      { index: S.V, name: "V", unit: "V" },
+      { index: S.I, name: "I", unit: "A" },
+      { index: S.P, name: "P", unit: "W" },
     ],
   };
 
@@ -76,9 +77,9 @@ export class Diode extends Device<DiodeParams> {
 
   override eval(state: DeviceState): void {
     const { na, nc, pn } = this;
-    const Vd = (state[S.Vd] = pn.limitVoltage(na.voltage - nc.voltage, state[S.Vd]));
-    state[S.Id] = pn.evalCurrent(Vd);
-    state[S.Gd] = pn.evalConductance(Vd);
+    const Vd = (state[S.V] = pn.limitVoltage(na.voltage - nc.voltage, state[S.V]));
+    state[S.I] = pn.evalCurrent(Vd);
+    state[S.G] = pn.evalConductance(Vd);
   }
 
   override stamp(stamper: Stamper, [Vd, Id, Gd]: DeviceState): void {
@@ -87,13 +88,14 @@ export class Diode extends Device<DiodeParams> {
     stamper.stampCurrentSource(na, nc, Id - Gd * Vd);
   }
 
-  override ops([VdX, Id, Gd]: DeviceState = this.state): readonly Op[] {
+  override ops([VX, I, G]: DeviceState = this.state): readonly Op[] {
     const { na, nc } = this;
-    const Vd = na.voltage - nc.voltage;
+    const V = na.voltage - nc.voltage;
+    const P = V * I;
     return [
-      { name: "Vd", value: Vd, unit: Unit.VOLT },
-      { name: "I", value: Id, unit: Unit.AMPERE },
-      { name: "P", value: Vd * Id, unit: Unit.WATT },
+      { name: "V", value: V, unit: Unit.VOLT },
+      { name: "I", value: I, unit: Unit.AMPERE },
+      { name: "P", value: P, unit: Unit.WATT },
     ];
   }
 }
