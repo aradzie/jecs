@@ -1,4 +1,5 @@
 import { Device, DeviceState, StateParams } from "../circuit/device";
+import { CircuitError } from "../circuit/error";
 import type { Node, Stamper } from "../circuit/network";
 import { Params, ParamsSchema } from "../circuit/params";
 
@@ -7,7 +8,6 @@ export interface ResistorParams {
 }
 
 const enum S {
-  R,
   G,
   V,
   I,
@@ -40,21 +40,29 @@ export class Resistor extends Device<ResistorParams> {
   /** Second terminal. */
   readonly nb: Node;
 
-  constructor(id: string, [na, nb]: readonly Node[], params: ResistorParams) {
+  constructor(
+    id: string, //
+    [na, nb]: readonly Node[],
+    params: ResistorParams | null = null,
+  ) {
     super(id, [na, nb], params);
     this.na = na;
     this.nb = nb;
   }
 
+  override deriveState({ R }: ResistorParams, state: DeviceState): void {
+    if (R === 0) {
+      throw new CircuitError(`Zero valued resistor`);
+    }
+    state[S.G] = 1 / R;
+  }
+
   override eval(state: DeviceState, final: boolean): void {
-    const { na, nb, params } = this;
-    const { R } = params;
-    const G = 1 / R;
+    const { na, nb } = this;
+    const G = state[S.G];
     const V = na.voltage - nb.voltage;
-    const I = V / R;
+    const I = V * G;
     const P = V * I;
-    state[S.R] = R;
-    state[S.G] = G;
     state[S.V] = V;
     state[S.I] = I;
     state[S.P] = P;

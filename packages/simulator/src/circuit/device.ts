@@ -48,8 +48,6 @@ export interface StateParams {
   readonly ops: readonly OutputParam[];
 }
 
-const emptyState = new Float64Array();
-
 export abstract class Device<ParamsT = unknown> {
   /** Returns a list of built-in generic device models, if any. */
   static getModels(): readonly DeviceModel[] {
@@ -74,21 +72,31 @@ export abstract class Device<ParamsT = unknown> {
   /** The list of nodes to which the device terminals are connected. */
   readonly nodes: readonly Node[];
 
-  /** The device parameters. */
-  readonly params: ParamsT;
+  /** Vector with device state variables. */
+  state: DeviceState;
 
-  // TODO Externalize this state.
-  state: DeviceState = emptyState;
+  /** Device parameters. */
+  params: ParamsT | null = null;
 
-  constructor(id: string, nodes: readonly Node[], params: ParamsT) {
+  constructor(id: string, nodes: readonly Node[], params: ParamsT | null = null) {
     this.id = id;
     this.nodes = nodes;
-    this.params = params;
+    const { stateParams } = this.getDeviceClass();
+    this.state = new Float64Array(stateParams.length);
+    if (params != null) {
+      this.setParams(params);
+    }
   }
 
   getDeviceClass(): DeviceClass {
     return this.constructor as DeviceClass;
   }
+
+  setParams(params: ParamsT): void {
+    this.deriveState((this.params = params), this.state);
+  }
+
+  deriveState(params: ParamsT, state: DeviceState): void {}
 
   /**
    * Circuit calls this method to let a device to allocate extra nodes and

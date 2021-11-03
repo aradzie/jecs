@@ -12,6 +12,10 @@ export interface DiodeParams {
 }
 
 const enum S {
+  Is,
+  N,
+  Vt,
+  Vcrit,
   V,
   I,
   G,
@@ -63,17 +67,28 @@ export class Diode extends Device<DiodeParams> {
   /** The cathode terminal. */
   readonly nc: Node;
 
-  constructor(id: string, [na, nc]: readonly Node[], params: DiodeParams) {
+  constructor(id: string, [na, nc]: readonly Node[], params: DiodeParams | null = null) {
     super(id, [na, nc], params);
     this.na = na;
     this.nc = nc;
   }
 
-  override eval(state: DeviceState, final: boolean): void {
-    const { na, nc, params } = this;
-    const { Is, N, Temp } = params;
+  override deriveState(
+    { Is, N, Temp }: DiodeParams, //
+    state: DeviceState,
+  ): void {
     const Vt = N * pnVt(Temp);
     const Vcrit = pnVcrit(Is, Vt);
+    state[S.Is] = Is;
+    state[S.Vt] = Vt;
+    state[S.Vcrit] = Vcrit;
+  }
+
+  override eval(state: DeviceState, final: boolean): void {
+    const { na, nc } = this;
+    const Is = state[S.Is];
+    const Vt = state[S.Vt];
+    const Vcrit = state[S.Vcrit];
     let V = na.voltage - nc.voltage;
     if (!final) {
       V = pnVoltage(V, state[S.V], Vt, Vcrit);

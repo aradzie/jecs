@@ -38,7 +38,11 @@ export class VSource extends Device<VSourceParams> {
   /** Extra MNA branch. */
   private branch!: Branch;
 
-  constructor(id: string, [np, nn]: readonly Node[], params: VSourceParams) {
+  constructor(
+    id: string, //
+    [np, nn]: readonly Node[],
+    params: VSourceParams | null = null,
+  ) {
     super(id, [np, nn], params);
     this.np = np;
     this.nn = nn;
@@ -48,12 +52,15 @@ export class VSource extends Device<VSourceParams> {
     this.branch = network.allocBranch(this.np, this.nn);
   }
 
+  override deriveState({ V }: VSourceParams, state: DeviceState): void {
+    state[S.V] = V;
+  }
+
   override eval(state: DeviceState, final: boolean): void {
-    const { params, branch } = this;
-    const { V } = params;
+    const { branch } = this;
+    const V = state[S.V];
     const I = branch.current;
     const P = V * I;
-    state[S.V] = V;
     state[S.I] = I;
     state[S.P] = P;
   }

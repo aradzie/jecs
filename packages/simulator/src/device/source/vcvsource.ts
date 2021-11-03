@@ -7,6 +7,7 @@ export interface VCVSourceParams {
 }
 
 const enum S {
+  gain,
   V,
   I,
   P,
@@ -42,7 +43,11 @@ export class VCVSource extends Device<VCVSourceParams> {
   /** Extra MNA branch. */
   private branch!: Branch;
 
-  constructor(id: string, [np, nn, ncp, ncn]: readonly Node[], params: VCVSourceParams) {
+  constructor(
+    id: string, //
+    [np, nn, ncp, ncn]: readonly Node[],
+    params: VCVSourceParams | null = null,
+  ) {
     super(id, [np, nn, ncp, ncn], params);
     this.np = np;
     this.nn = nn;
@@ -52,6 +57,10 @@ export class VCVSource extends Device<VCVSourceParams> {
 
   override connect(network: Network): void {
     this.branch = network.allocBranch(this.np, this.nn);
+  }
+
+  override deriveState({ gain }: VCVSourceParams, state: DeviceState): void {
+    state[S.gain] = gain;
   }
 
   override eval(state: DeviceState, final: boolean): void {
@@ -64,9 +73,9 @@ export class VCVSource extends Device<VCVSourceParams> {
     state[S.P] = P;
   }
 
-  override stamp(stamper: Stamper): void {
-    const { np, nn, ncp, ncn, branch, params } = this;
-    const { gain } = params;
+  override stamp(stamper: Stamper, state: DeviceState): void {
+    const { np, nn, ncp, ncn, branch } = this;
+    const gain = state[S.gain];
     stamper.stampVoltageSource(np, nn, branch, 0);
     stamper.stampMatrix(branch, ncp, -gain);
     stamper.stampMatrix(branch, ncn, gain);

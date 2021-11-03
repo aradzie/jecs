@@ -36,25 +36,32 @@ export class CSource extends Device<CSourceParams> {
   /** Negative terminal. */
   readonly nn: Node;
 
-  constructor(id: string, [np, nn]: readonly Node[], params: CSourceParams) {
+  constructor(
+    id: string, //
+    [np, nn]: readonly Node[],
+    params: CSourceParams | null = null,
+  ) {
     super(id, [np, nn], params);
     this.np = np;
     this.nn = nn;
   }
 
+  override deriveState({ I }: CSourceParams, state: DeviceState): void {
+    state[S.I] = I;
+  }
+
   override eval(state: DeviceState, final: boolean): void {
-    const { params, np, nn } = this;
-    const { I } = params;
+    const { np, nn } = this;
+    const I = state[S.I];
     const V = np.voltage - nn.voltage;
     const P = V * I;
-    state[S.I] = I;
     state[S.V] = V;
     state[S.P] = P;
   }
 
-  override stamp(stamper: Stamper): void {
-    const { params, np, nn } = this;
-    const { I } = params;
+  override stamp(stamper: Stamper, state: DeviceState): void {
+    const { np, nn } = this;
+    const I = state[S.I];
     stamper.stampCurrentSource(np, nn, I);
   }
 }

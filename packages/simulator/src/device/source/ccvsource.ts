@@ -7,6 +7,7 @@ export interface CCVSourceParams {
 }
 
 const enum S {
+  gain,
   V,
   I,
   P,
@@ -44,7 +45,11 @@ export class CCVSource extends Device<CCVSourceParams> {
   /** Extra MNA branch. */
   private branch2!: Branch;
 
-  constructor(id: string, [np, nn, ncp, ncn]: readonly Node[], params: CCVSourceParams) {
+  constructor(
+    id: string, //
+    [np, nn, ncp, ncn]: readonly Node[],
+    params: CCVSourceParams | null = null,
+  ) {
     super(id, [np, nn, ncp, ncn], params);
     this.np = np;
     this.nn = nn;
@@ -57,6 +62,10 @@ export class CCVSource extends Device<CCVSourceParams> {
     this.branch2 = network.allocBranch(this.ncp, this.ncn);
   }
 
+  override deriveState({ gain }: CCVSourceParams, state: DeviceState): void {
+    state[S.gain] = gain;
+  }
+
   override eval(state: DeviceState, final: boolean): void {
     const { np, nn, branch1 } = this;
     const V = np.voltage - nn.voltage;
@@ -67,9 +76,9 @@ export class CCVSource extends Device<CCVSourceParams> {
     state[S.P] = P;
   }
 
-  override stamp(stamper: Stamper): void {
-    const { params, np, nn, branch1, ncp, ncn, branch2 } = this;
-    const { gain } = params;
+  override stamp(stamper: Stamper, state: DeviceState): void {
+    const { np, nn, branch1, ncp, ncn, branch2 } = this;
+    const gain = state[S.gain];
     stamper.stampVoltageSource(np, nn, branch1, 0);
     stamper.stampVoltageSource(ncp, ncn, branch2, 0);
     stamper.stampMatrix(branch1, branch2, -gain);

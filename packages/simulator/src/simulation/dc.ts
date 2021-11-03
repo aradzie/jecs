@@ -1,5 +1,5 @@
 import type { Circuit } from "../circuit/circuit";
-import type { Device, DeviceClass } from "../circuit/device";
+import type { Device } from "../circuit/device";
 import { Stamper } from "../circuit/network";
 import { solve } from "../math/gauss-elimination";
 import { matClear, matMake, vecClear, vecCopy, vecMake } from "../math/matrix";
@@ -34,11 +34,6 @@ export function dcAnalysis(circuit: Circuit, userOptions: Partial<Options> = {})
 
   if (devices.length === 0) {
     throw new SimulationError(`Empty circuit`);
-  }
-
-  for (const device of devices) {
-    const deviceClass = device.constructor as DeviceClass;
-    device.state = vecMake(deviceClass.stateParams.length);
   }
 
   const controller = new Controller();

@@ -28,6 +28,18 @@ export interface JfetParams {
 const enum S {
   /** Device polarity, +1 for nfet, -1 for pfet. */
   pol,
+  /** Threshold voltage. */
+  Vth,
+  /** Transconductance parameter. */
+  beta,
+  /** Channel-length modulation parameter. */
+  lambda,
+  /** Saturation current. */
+  Is,
+  /** Thermal voltage. */
+  Vt,
+  /** Critical voltage. */
+  Vcrit,
   /** Gate-source diode voltage. */
   Vgs,
   /** Gate-source diode current. */
@@ -135,19 +147,38 @@ export class Jfet extends Device<JfetParams> {
   /** The drain terminal. */
   readonly nd: Node;
 
-  constructor(id: string, [ns, ng, nd]: readonly Node[], params: JfetParams) {
+  constructor(id: string, [ns, ng, nd]: readonly Node[], params: JfetParams | null = null) {
     super(id, [ns, ng, nd], params);
     this.ns = ns;
     this.ng = ng;
     this.nd = nd;
   }
 
-  override eval(state: DeviceState, final: boolean): void {
-    const { params, ns, ng, nd } = this;
-    const { polarity, Vth, beta, lambda, Is, N, Temp } = params;
+  override deriveState(
+    { polarity, Vth, beta, lambda, Is, N, Temp }: JfetParams, //
+    state: DeviceState,
+  ): void {
+    const pol = fetSign(polarity);
     const Vt = N * pnVt(Temp);
     const Vcrit = pnVcrit(Is, Vt);
-    const pol = fetSign(polarity);
+    state[S.pol] = pol;
+    state[S.Vth] = Vth;
+    state[S.beta] = beta;
+    state[S.lambda] = lambda;
+    state[S.Is] = Is;
+    state[S.Vt] = Vt;
+    state[S.Vcrit] = Vcrit;
+  }
+
+  override eval(state: DeviceState, final: boolean): void {
+    const { ns, ng, nd } = this;
+    const pol = state[S.pol];
+    const Vth = state[S.Vth];
+    const beta = state[S.beta];
+    const lambda = state[S.lambda];
+    const Is = state[S.Is];
+    const Vt = state[S.Vt];
+    const Vcrit = state[S.Vcrit];
 
     // VOLTAGES
 

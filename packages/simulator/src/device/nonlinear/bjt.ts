@@ -17,11 +17,11 @@ import {
 
 export interface BjtParams {
   readonly polarity: BjtPolarity;
+  readonly Bf: number;
+  readonly Br: number;
   readonly Is: number;
   readonly Nf: number;
   readonly Nr: number;
-  readonly Bf: number;
-  readonly Br: number;
   readonly Vaf: number;
   readonly Var: number;
   readonly Temp: number;
@@ -30,16 +30,26 @@ export interface BjtParams {
 const enum S {
   /** Device polarity, +1 for npn, -1 for pnp. */
   pol,
+  /** Forward alpha. */
+  Af,
+  /** Reverse alpha. */
+  Ar,
+  /** Saturation current. */
+  Is,
+  /** Base-emitter thermal voltage. */
+  Vtf,
+  /** Base-collector thermal voltage. */
+  Vtr,
+  /** Base-emitter critical voltage. */
+  Vcritf,
+  /** Base-collector critical voltage. */
+  Vcritr,
   /** Base-emitter voltage. */
   Vbe,
   /** Base-collector voltage. */
   Vbc,
   /** Collector-emitter voltage. */
   Vce,
-  /** Forward alpha. */
-  Af,
-  /** Reverse alpha. */
-  Ar,
   /** Emitter current. */
   Ie,
   /** Collector current. */
@@ -58,22 +68,22 @@ const enum S {
 export class Bjt extends Device<BjtParams> {
   static modelNpn = Object.freeze<BjtParams>({
     polarity: "npn",
+    Bf: 100.0,
+    Br: 1.0,
     Is: 1e-14,
     Nf: 1,
     Nr: 1,
-    Bf: 100.0,
-    Br: 1.0,
     Vaf: 10.0,
     Var: 0.0,
     Temp,
   });
   static modelPnp = Object.freeze<BjtParams>({
     polarity: "pnp",
+    Bf: 100.0,
+    Br: 1.0,
     Is: 1e-14,
     Nf: 1,
     Nr: 1,
-    Bf: 100.0,
-    Br: 1.0,
     Vaf: 10.0,
     Var: 0.0,
     Temp,
@@ -93,6 +103,16 @@ export class Bjt extends Device<BjtParams> {
       values: [npn, pnp],
       title: "transistor polarity",
     }),
+    Bf: Params.number({
+      default: 100.0,
+      min: 1e-3,
+      title: "forward beta",
+    }),
+    Br: Params.number({
+      default: 1.0,
+      min: 1e-3,
+      title: "reverse beta",
+    }),
     Is: Params.number({
       default: 1e-14,
       min: 0,
@@ -109,16 +129,6 @@ export class Bjt extends Device<BjtParams> {
       min: 1e-3,
       max: 100,
       title: "reverse emission coefficient",
-    }),
-    Bf: Params.number({
-      default: 100.0,
-      min: 1e-3,
-      title: "forward beta",
-    }),
-    Br: Params.number({
-      default: 1.0,
-      min: 1e-3,
-      title: "reverse beta",
     }),
     Vaf: Params.number({
       default: 10.0,
@@ -151,29 +161,52 @@ export class Bjt extends Device<BjtParams> {
   /** The collector terminal. */
   readonly nc: Node;
 
-  constructor(id: string, [ne, nb, nc]: readonly Node[], params: BjtParams) {
+  constructor(id: string, [ne, nb, nc]: readonly Node[], params: BjtParams | null = null) {
     super(id, [ne, nb, nc], params);
     this.ne = ne;
     this.nb = nb;
     this.nc = nc;
   }
 
-  override eval(state: DeviceState, final: boolean): void {
-    const { params, ne, nb, nc } = this;
-    const { polarity, Bf, Br, Is, Nf, Nr, Temp } = params;
+  override deriveState(
+    { polarity, Bf, Br, Is, Nf, Nr, Vaf, Var, Temp }: BjtParams, //
+    state: DeviceState,
+  ): void {
+    const pol = bjtSign(polarity);
+    const Af = Bf / (Bf + 1);
+    const Ar = Br / (Br + 1);
     const Vtf = Nf * pnVt(Temp);
     const Vtr = Nr * pnVt(Temp);
-    const pol = bjtSign(polarity);
+    const Vcritf = pnVcrit(Is, Vtf);
+    const Vcritr = pnVcrit(Is, Vtr);
+    state[S.pol] = pol;
+    state[S.Af] = Af;
+    state[S.Ar] = Ar;
+    state[S.Is] = Is;
+    state[S.Vtf] = Vtf;
+    state[S.Vtr] = Vtr;
+    state[S.Vcritf] = Vcritf;
+    state[S.Vcritr] = Vcritr;
+  }
+
+  override eval(state: DeviceState, final: boolean): void {
+    const { ne, nb, nc } = this;
+    const pol = state[S.pol];
+    const Af = state[S.Af];
+    const Ar = state[S.Ar];
+    const Is = state[S.Is];
+    const Vtf = state[S.Vtf];
+    const Vtr = state[S.Vtr];
+    const Vcritf = state[S.Vcritf];
+    const Vcritr = state[S.Vcritr];
     let Vbe = pol * (nb.voltage - ne.voltage);
     let Vbc = pol * (nb.voltage - nc.voltage);
     if (!final) {
-      Vbe = pnVoltage(Vbe, pol * state[S.Vbe], Vtf, pnVcrit(Is, Vtf));
-      Vbc = pnVoltage(Vbc, pol * state[S.Vbc], Vtr, pnVcrit(Is, Vtr));
+      Vbe = pnVoltage(Vbe, pol * state[S.Vbe], Vtf, Vcritf);
+      Vbc = pnVoltage(Vbc, pol * state[S.Vbc], Vtr, Vcritr);
     }
     const If = pnCurrent(Vbe, Is, Vtf);
     const Ir = pnCurrent(Vbc, Is, Vtr);
-    const Af = Bf / (Bf + 1);
-    const Ar = Br / (Br + 1);
     const Ie = Ar * Ir - If;
     const Ic = Af * If - Ir;
     const Gf = pnConductance(Vbe, Is, Vtf);
@@ -182,8 +215,6 @@ export class Bjt extends Device<BjtParams> {
     state[S.Vbe] = pol * Vbe;
     state[S.Vbc] = pol * Vbc;
     state[S.Vce] = pol * (Vbe - Vbc);
-    state[S.Af] = Af;
-    state[S.Ar] = Ar;
     state[S.Ie] = pol * Ie;
     state[S.Ic] = pol * Ic;
     state[S.Ib] = pol * -(Ie + Ic);
@@ -194,10 +225,10 @@ export class Bjt extends Device<BjtParams> {
   override stamp(stamper: Stamper, state: DeviceState): void {
     const { ne, nb, nc } = this;
     const pol = state[S.pol];
-    const Vbe = state[S.Vbe];
-    const Vbc = state[S.Vbc];
     const Af = state[S.Af];
     const Ar = state[S.Ar];
+    const Vbe = state[S.Vbe];
+    const Vbc = state[S.Vbc];
     const Ie = state[S.Ie];
     const Ic = state[S.Ic];
     const Gf = state[S.Gf];
