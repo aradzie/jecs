@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@jssim/simulator-tests",
+  "name": "@jssim/tests",
   "version": "1.0.0",
   "description": "A simulator of electronic circuits.",
   "author": "Aliaksandr Radzivanovich",
