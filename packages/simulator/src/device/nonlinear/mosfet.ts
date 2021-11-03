@@ -165,79 +165,109 @@ export class Mosfet extends Device<MosfetParams> {
     this.pnBd = new PN(Is, N, Temp);
   }
 
-  override eval(state: DeviceState): void {
+  override eval(state: DeviceState, final: boolean): void {
     const { params, ns, ng, nd, nb, pnBs, pnBd } = this;
     const { polarity, Vth, beta, lambda } = params;
-    const sign = fetSign(polarity);
+    const pol = fetSign(polarity);
+
+    let Vbs = pol * (nb.voltage - ns.voltage);
+    let Vbd = pol * (nb.voltage - nd.voltage);
+    let Vgs = (state[S.Vgs] = pol * (ng.voltage - ns.voltage));
+    let Vgd = (state[S.Vgd] = pol * (ng.voltage - nd.voltage));
+    let Vds = Vgs - Vgd;
+    if (!final) {
+      Vbs = pnBs.limitVoltage(Vbs, pol * state[S.Vbs]);
+      Vbd = pnBd.limitVoltage(Vbd, pol * state[S.Vbd]);
+      if (Vds > 0) {
+        Vgs = limitMosfetVoltage(Vgs, pol * state[S.Vgs]);
+        Vds = limitMosfetVoltage(Vgs - Vgd, pol * state[S.Vds]);
+      } else {
+        Vgd = limitMosfetVoltage(Vgd, pol * state[S.Vgd]);
+        Vds = limitMosfetVoltage(Vgs - Vgd, pol * state[S.Vds]);
+      }
+    }
 
     // DIODES
 
-    const Vbs = (state[S.Vbs] = pnBs.limitVoltage(sign * (nb.voltage - ns.voltage), state[S.Vbs]));
-    state[S.Ibs] = pnBs.evalCurrent(Vbs);
-    state[S.Gbs] = pnBs.evalConductance(Vbs);
-
-    const Vbd = (state[S.Vbd] = pnBd.limitVoltage(sign * (nb.voltage - nd.voltage), state[S.Vbd]));
-    state[S.Ibd] = pnBs.evalCurrent(Vbd);
-    state[S.Gbd] = pnBs.evalConductance(Vbd);
+    const Ibs = pnBs.evalCurrent(Vbs);
+    const Gbs = pnBs.evalConductance(Vbs);
+    const Ibd = pnBs.evalCurrent(Vbd);
+    const Gbd = pnBs.evalConductance(Vbd);
 
     // FET
 
-    let Vgs = (state[S.Vgs] = sign * (ng.voltage - ns.voltage));
-    let Vgd = (state[S.Vgd] = sign * (ng.voltage - nd.voltage));
-
-    if (Vgs >= Vgd) {
-      Vgs = state[S.Vgs] = limitMosfetVoltage(Vgs, state[S.Vgs]);
-      const Vds = (state[S.Vds] = limitMosfetVoltage(Vgs - Vgd, state[S.Vds]));
-
+    let Ids;
+    let Gds;
+    let Gm;
+    if (Vds > 0) {
       // Normal mode.
-      const Vgst = Vgs - sign * Vth;
+      const Vgst = Vgs - pol * Vth;
       if (Vgst <= 0) {
         // Cutoff region.
-        state[S.Ids] = 0;
-        state[S.Gds] = 0;
-        state[S.Gm] = 0;
+        Ids = 0;
+        Gds = 0;
+        Gm = 0;
       } else {
         const c0 = lambda * Vds;
         const c1 = beta * (1 + c0);
         if (Vgst <= Vds) {
           // Saturation region.
-          state[S.Ids] = (1 / 2) * c1 * Vgst * Vgst;
-          state[S.Gds] = (1 / 2) * beta * lambda * Vgst * Vgst;
-          state[S.Gm] = c1 * Vgst;
+          Ids = (1 / 2) * c1 * Vgst * Vgst;
+          Gds = (1 / 2) * beta * lambda * Vgst * Vgst;
+          Gm = c1 * Vgst;
         } else {
           // Linear region.
-          state[S.Ids] = c1 * Vds * (Vgst - Vds / 2);
-          state[S.Gds] = c1 * (Vgst - Vds) + beta * c0 * (Vgst - Vds / 2);
-          state[S.Gm] = c1 * Vds;
+          Ids = c1 * Vds * (Vgst - Vds / 2);
+          Gds = c1 * (Vgst - Vds) + beta * c0 * (Vgst - Vds / 2);
+          Gm = c1 * Vds;
         }
       }
     } else {
-      Vgd = state[S.Vgd] = limitMosfetVoltage(Vgd, state[S.Vgd]);
-      const Vsd = -(state[S.Vds] = -limitMosfetVoltage(Vgd - Vgs, -state[S.Vds]));
-
       // Inverse mode.
-      const Vgdt = Vgd - sign * Vth;
+      const Vgdt = Vgd - pol * Vth;
       if (Vgdt <= 0) {
         // Cutoff region.
-        state[S.Ids] = 0;
-        state[S.Gds] = 0;
-        state[S.Gm] = 0;
+        Ids = 0;
+        Gds = 0;
+        Gm = 0;
       } else {
+        const Vsd = -Vds;
         const c0 = lambda * Vsd;
         const c1 = beta * (1 + c0);
         if (Vgdt <= Vsd) {
           // Saturation region.
-          state[S.Ids] = -(1 / 2) * c1 * Vgdt * Vgdt;
-          state[S.Gds] = (1 / 2) * beta * lambda * Vgdt * Vgdt;
-          state[S.Gm] = c1 * Vgdt;
+          Ids = -(1 / 2) * c1 * Vgdt * Vgdt;
+          Gds = (1 / 2) * beta * lambda * Vgdt * Vgdt;
+          Gm = c1 * Vgdt;
         } else {
           // Linear region.
-          state[S.Ids] = -c1 * Vsd * (Vgdt - Vsd / 2);
-          state[S.Gds] = c1 * Vgdt + beta * c0 * (Vgdt - Vsd / 2);
-          state[S.Gm] = c1 * Vsd;
+          Ids = -c1 * Vsd * (Vgdt - Vsd / 2);
+          Gds = c1 * Vgdt + beta * c0 * (Vgdt - Vsd / 2);
+          Gm = c1 * Vsd;
         }
       }
     }
+
+    // VOLTAGES
+
+    state[S.Vbs] = pol * Vbs;
+    state[S.Vbd] = pol * Vbd;
+    state[S.Vgs] = pol * Vgs;
+    state[S.Vgd] = pol * Vgd;
+    state[S.Vds] = pol * Vds;
+
+    // DIODES
+
+    state[S.Ibs] = pol * Ibs;
+    state[S.Gbs] = Gbs;
+    state[S.Ibd] = pol * Ibd;
+    state[S.Gbd] = Gbd;
+
+    // FET
+
+    state[S.Ids] = pol * Ids;
+    state[S.Gds] = Gds;
+    state[S.Gm] = Gm;
   }
 
   override stamp(
@@ -246,49 +276,43 @@ export class Mosfet extends Device<MosfetParams> {
   ): void {
     const { ns, ng, nd, nb, params } = this;
     const { polarity } = params;
-    const sign = fetSign(polarity);
+    const pol = fetSign(polarity);
 
     // DIODES
 
     stamper.stampConductance(nb, ns, Gbs);
-    stamper.stampCurrentSource(nb, ns, sign * (Ibs - Gbs * Vbs));
+    stamper.stampCurrentSource(nb, ns, pol * (pol * Ibs - pol * Gbs * Vbs));
 
     stamper.stampConductance(nb, nd, Gbd);
-    stamper.stampCurrentSource(nb, nd, sign * (Ibd - Gbd * Vbd));
+    stamper.stampCurrentSource(nb, nd, pol * (pol * Ibd - pol * Gbd * Vbd));
 
     // FET
 
-    if (Vgs >= Vgd) {
+    if (pol * Vds > 0) {
       stamper.stampConductance(nd, ns, Gds);
       stamper.stampMatrix(nd, ng, Gm);
       stamper.stampMatrix(nd, ns, -Gm);
       stamper.stampMatrix(ns, ng, -Gm);
       stamper.stampMatrix(ns, ns, Gm);
-      stamper.stampCurrentSource(nd, ns, sign * (Ids - Gds * Vds - Gm * Vgs));
+      stamper.stampCurrentSource(nd, ns, pol * (pol * Ids - pol * Gds * Vds - pol * Gm * Vgs));
     } else {
       stamper.stampConductance(nd, ns, Gds);
       stamper.stampMatrix(nd, ng, Gm);
       stamper.stampMatrix(nd, nd, -Gm);
       stamper.stampMatrix(ns, ng, -Gm);
       stamper.stampMatrix(ns, nd, Gm);
-      stamper.stampCurrentSource(nd, ns, sign * (Ids - Gds * Vds - Gm * Vgd));
+      stamper.stampCurrentSource(nd, ns, pol * (pol * Ids - pol * Gds * Vds - pol * Gm * Vgd));
     }
   }
 
   override ops(
-    [Vbs, Ibs, Gbs, Vbd, Ibd, Gbd, VgsX, VgdX, VdsX, Ids, Gds, Gm]: DeviceState = this.state,
+    [Vbs, Ibs, Gbs, Vbd, Ibd, Gbd, Vgs, Vgd, Vds, Ids, Gds, Gm]: DeviceState = this.state,
   ): readonly Op[] {
-    const { ns, ng, nd, params } = this;
-    const { polarity } = params;
-    const sign = fetSign(polarity);
-    const Vgs = sign * (ng.voltage - ns.voltage);
-    const Vgd = sign * (ng.voltage - nd.voltage);
-    const Vds = sign * (nd.voltage - ns.voltage);
     return [
-      { name: "Vgs", value: sign * Vgs, unit: Unit.VOLT },
-      { name: "Vgd", value: sign * Vgd, unit: Unit.VOLT },
-      { name: "Vds", value: sign * Vds, unit: Unit.VOLT },
-      { name: "Ids", value: sign * Ids, unit: Unit.AMPERE },
+      { name: "Vgs", value: Vgs, unit: Unit.VOLT },
+      { name: "Vgd", value: Vgd, unit: Unit.VOLT },
+      { name: "Vds", value: Vds, unit: Unit.VOLT },
+      { name: "Ids", value: Ids, unit: Unit.AMPERE },
     ];
   }
 }
