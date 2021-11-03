@@ -24,7 +24,7 @@ export class VCCSource extends Device<VCCSourceParams> {
   };
   static override readonly stateParams: StateParams = {
     length: S._Size_,
-    outputs: [
+    ops: [
       { index: S.I, name: "I", unit: "A" },
       { index: S.V, name: "V", unit: "V" },
       { index: S.P, name: "P", unit: "W" },

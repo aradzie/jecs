@@ -92,8 +92,8 @@ function makeOutput(devices: readonly Device[]): Output {
     const { state } = device;
     device.eval(state, true);
 
-    const deviceClass = device.constructor as DeviceClass;
-    const values = deviceClass.stateParams.outputs.map(
+    const deviceClass = device.getDeviceClass();
+    const values = deviceClass.stateParams.ops.map(
       ({ index, name, unit }) => [name, unit, state[index]] as DeviceValue,
     );
     output.push([deviceClass.id, device.id, values]);

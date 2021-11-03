@@ -51,7 +51,7 @@ export class Diode extends Device<DiodeParams> {
   };
   static override readonly stateParams: StateParams = {
     length: S._Size_,
-    outputs: [
+    ops: [
       { index: S.V, name: "V", unit: "V" },
       { index: S.I, name: "I", unit: "A" },
       { index: S.P, name: "P", unit: "W" },

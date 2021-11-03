@@ -122,7 +122,7 @@ export class Bjt extends Device<BjtParams> {
   };
   static override readonly stateParams: StateParams = {
     length: S._Size_,
-    outputs: [
+    ops: [
       { index: S.Vbe, name: "Vbe", unit: "V" },
       { index: S.Vbc, name: "Vbc", unit: "V" },
       { index: S.Vce, name: "Vce", unit: "V" },

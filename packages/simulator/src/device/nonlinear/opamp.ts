@@ -17,7 +17,7 @@ export class OpAmp extends Device<OpAmpParams> {
   };
   static override readonly stateParams: StateParams = {
     length: 0,
-    outputs: [],
+    ops: [],
   };
 
   readonly a: Node;

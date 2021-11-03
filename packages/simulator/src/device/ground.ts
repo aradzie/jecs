@@ -8,7 +8,7 @@ export class Ground extends Device {
   static override readonly paramsSchema = {};
   static override readonly stateParams: StateParams = {
     length: 0,
-    outputs: [],
+    ops: [],
   };
 
   readonly n: Node;

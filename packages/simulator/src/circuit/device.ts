@@ -45,7 +45,7 @@ export interface StateParams {
   /** Length of the state vector. */
   readonly length: number;
   /** Output parameters from the state vector. */
-  readonly outputs: readonly OutputParam[];
+  readonly ops: readonly OutputParam[];
 }
 
 const emptyState = new Float64Array();
@@ -86,6 +86,10 @@ export abstract class Device<ParamsT = unknown> {
     this.params = params;
   }
 
+  getDeviceClass(): DeviceClass {
+    return this.constructor as DeviceClass;
+  }
+
   /**
    * Circuit calls this method to let a device to allocate extra nodes and
    * branches.
@@ -115,8 +119,8 @@ export abstract class Device<ParamsT = unknown> {
    * Returns value of an output parameter with the given name.
    */
   op(name: string): number {
-    const { stateParams } = this.constructor as DeviceClass;
-    for (const op of stateParams.outputs) {
+    const { stateParams } = this.getDeviceClass();
+    for (const op of stateParams.ops) {
       if (name === op.name) {
         return this.state[op.index];
       }

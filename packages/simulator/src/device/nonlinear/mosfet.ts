@@ -130,7 +130,7 @@ export class Mosfet extends Device<MosfetParams> {
   };
   static override readonly stateParams: StateParams = {
     length: S._Size_,
-    outputs: [
+    ops: [
       { index: S.Vgs, name: "Vgs", unit: "V" },
       { index: S.Vgd, name: "Vgd", unit: "V" },
       { index: S.Vds, name: "Vds", unit: "V" },
