@@ -276,24 +276,24 @@ export class Jfet extends Device<JfetParams> {
   override stamp(stamper: Stamper, state: DeviceState): void {
     const { ns, ng, nd } = this;
     const pol = state[S.pol];
-    const Vgs = state[S.Vgs];
-    const Igs = state[S.Igs];
+    const Vgs = pol * state[S.Vgs];
+    const Igs = pol * state[S.Igs];
     const Ggs = state[S.Ggs];
-    const Vgd = state[S.Vgd];
-    const Igd = state[S.Igd];
+    const Vgd = pol * state[S.Vgd];
+    const Igd = pol * state[S.Igd];
     const Ggd = state[S.Gds];
-    const Vds = state[S.Vds];
-    const Ids = state[S.Ids];
+    const Vds = pol * state[S.Vds];
+    const Ids = pol * state[S.Ids];
     const Gds = state[S.Gds];
     const Gm = state[S.Gm];
 
     // DIODES
 
     stamper.stampConductance(ng, ns, Ggs);
-    stamper.stampCurrentSource(ng, ns, pol * (pol * Igs - pol * Ggs * Vgs));
+    stamper.stampCurrentSource(ng, ns, pol * (Igs - Ggs * Vgs));
 
     stamper.stampConductance(ng, nd, Ggd);
-    stamper.stampCurrentSource(ng, nd, pol * (pol * Igd - pol * Ggd * Vgd));
+    stamper.stampCurrentSource(ng, nd, pol * (Igd - Ggd * Vgd));
 
     // FET
 
@@ -302,6 +302,6 @@ export class Jfet extends Device<JfetParams> {
     stamper.stampMatrix(nd, ns, -Gm);
     stamper.stampMatrix(ns, ng, -Gm);
     stamper.stampMatrix(ns, ns, Gm);
-    stamper.stampCurrentSource(nd, ns, pol * (pol * Ids - pol * Gds * Vds - pol * Gm * Vgs));
+    stamper.stampCurrentSource(nd, ns, pol * (Ids - Gds * Vds - Gm * Vgs));
   }
 }

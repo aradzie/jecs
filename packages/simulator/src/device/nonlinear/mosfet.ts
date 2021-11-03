@@ -312,43 +312,43 @@ export class Mosfet extends Device<MosfetParams> {
   override stamp(stamper: Stamper, state: DeviceState): void {
     const { ns, ng, nd, nb } = this;
     const pol = state[S.pol];
-    const Vbs = state[S.Vbs];
-    const Ibs = state[S.Ibs];
+    const Vbs = pol * state[S.Vbs];
+    const Ibs = pol * state[S.Ibs];
     const Gbs = state[S.Gbs];
-    const Vbd = state[S.Vbd];
-    const Ibd = state[S.Ibd];
+    const Vbd = pol * state[S.Vbd];
+    const Ibd = pol * state[S.Ibd];
     const Gbd = state[S.Gbd];
-    const Vgs = state[S.Vgs];
-    const Vgd = state[S.Vgd];
-    const Vds = state[S.Vds];
-    const Ids = state[S.Ids];
+    const Vgs = pol * state[S.Vgs];
+    const Vgd = pol * state[S.Vgd];
+    const Vds = pol * state[S.Vds];
+    const Ids = pol * state[S.Ids];
     const Gds = state[S.Gds];
     const Gm = state[S.Gm];
 
     // DIODES
 
     stamper.stampConductance(nb, ns, Gbs);
-    stamper.stampCurrentSource(nb, ns, pol * (pol * Ibs - pol * Gbs * Vbs));
+    stamper.stampCurrentSource(nb, ns, pol * (Ibs - Gbs * Vbs));
 
     stamper.stampConductance(nb, nd, Gbd);
-    stamper.stampCurrentSource(nb, nd, pol * (pol * Ibd - pol * Gbd * Vbd));
+    stamper.stampCurrentSource(nb, nd, pol * (Ibd - Gbd * Vbd));
 
     // FET
 
-    if (pol * Vds > 0) {
+    if (Vds > 0) {
       stamper.stampConductance(nd, ns, Gds);
       stamper.stampMatrix(nd, ng, Gm);
       stamper.stampMatrix(nd, ns, -Gm);
       stamper.stampMatrix(ns, ng, -Gm);
       stamper.stampMatrix(ns, ns, Gm);
-      stamper.stampCurrentSource(nd, ns, pol * (pol * Ids - pol * Gds * Vds - pol * Gm * Vgs));
+      stamper.stampCurrentSource(nd, ns, pol * (Ids - Gds * Vds - Gm * Vgs));
     } else {
       stamper.stampConductance(nd, ns, Gds);
       stamper.stampMatrix(nd, ng, Gm);
       stamper.stampMatrix(nd, nd, -Gm);
       stamper.stampMatrix(ns, ng, -Gm);
       stamper.stampMatrix(ns, nd, Gm);
-      stamper.stampCurrentSource(nd, ns, pol * (pol * Ids - pol * Gds * Vds - pol * Gm * Vgd));
+      stamper.stampCurrentSource(nd, ns, pol * (Ids - Gds * Vds - Gm * Vgd));
     }
   }
 }

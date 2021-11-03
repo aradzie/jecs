@@ -227,10 +227,10 @@ export class Bjt extends Device<BjtParams> {
     const pol = state[S.pol];
     const Af = state[S.Af];
     const Ar = state[S.Ar];
-    const Vbe = state[S.Vbe];
-    const Vbc = state[S.Vbc];
-    const Ie = state[S.Ie];
-    const Ic = state[S.Ic];
+    const Vbe = pol * state[S.Vbe];
+    const Vbc = pol * state[S.Vbc];
+    const Ie = pol * state[S.Ie];
+    const Ic = pol * state[S.Ic];
     const Gf = state[S.Gf];
     const Gr = state[S.Gr];
     const eqGee = -Gf;
@@ -246,7 +246,7 @@ export class Bjt extends Device<BjtParams> {
     stamper.stampMatrix(nb, ne, eqGce + eqGee);
     stamper.stampMatrix(nb, nc, eqGec + eqGcc);
     stamper.stampMatrix(nb, nb, -(eqGcc + eqGee + eqGce + eqGec));
-    stamper.stampCurrentSource(ne, nb, pol * (pol * Ie - pol * eqGee * Vbe - pol * eqGec * Vbc));
-    stamper.stampCurrentSource(nc, nb, pol * (pol * Ic - pol * eqGce * Vbe - pol * eqGcc * Vbc));
+    stamper.stampCurrentSource(ne, nb, pol * (Ie - eqGee * Vbe - eqGec * Vbc));
+    stamper.stampCurrentSource(nc, nb, pol * (Ic - eqGce * Vbe - eqGcc * Vbc));
   }
 }
