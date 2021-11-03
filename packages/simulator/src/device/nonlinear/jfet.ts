@@ -251,8 +251,6 @@ export class Jfet extends Device<JfetParams> {
       }
     }
 
-    state[S.pol] = pol;
-
     // VOLTAGES
 
     state[S.Vgs] = pol * Vgs;

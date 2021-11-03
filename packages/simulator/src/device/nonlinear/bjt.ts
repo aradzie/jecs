@@ -211,7 +211,6 @@ export class Bjt extends Device<BjtParams> {
     const Ic = Af * If - Ir;
     const Gf = pnConductance(Vbe, Is, Vtf);
     const Gr = pnConductance(Vbc, Is, Vtr);
-    state[S.pol] = pol;
     state[S.Vbe] = pol * Vbe;
     state[S.Vbc] = pol * Vbc;
     state[S.Vce] = pol * (Vbe - Vbc);

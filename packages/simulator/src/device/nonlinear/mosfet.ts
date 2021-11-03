@@ -285,8 +285,6 @@ export class Mosfet extends Device<MosfetParams> {
       }
     }
 
-    state[S.pol] = pol;
-
     // VOLTAGES
 
     state[S.Vbs] = pol * Vbs;
