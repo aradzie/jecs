@@ -1,6 +1,5 @@
 import type { DeviceModel } from "./library";
 import type { Network, Node, Stamper } from "./network";
-import type { Op } from "./ops";
 import type { ParamsSchema } from "./params";
 
 export interface DeviceClass {
@@ -33,7 +32,7 @@ export interface DeviceClass {
  */
 export type DeviceState = Float64Array;
 
-export interface OutputParameter {
+export interface OutputParam {
   /** Element index. */
   readonly index: number;
   /** Output parameter name. */
@@ -46,7 +45,7 @@ export interface StateParams {
   /** Length of the state vector. */
   readonly length: number;
   /** Output parameters from the state vector. */
-  readonly outputs: readonly OutputParameter[];
+  readonly outputs: readonly OutputParam[];
 }
 
 const emptyState = new Float64Array();
@@ -113,10 +112,15 @@ export abstract class Device<ParamsT = unknown> {
   stamp(stamper: Stamper, state: DeviceState): void {}
 
   /**
-   * Returns device operating points obtained from a previously computed state.
-   * @deprecated
+   * Returns value of an output parameter with the given name.
    */
-  ops(state?: DeviceState): readonly Op[] {
-    return [];
+  op(name: string): number {
+    const { stateParams } = this.constructor as DeviceClass;
+    for (const op of stateParams.outputs) {
+      if (name === op.name) {
+        return this.state[op.index];
+      }
+    }
+    throw new TypeError(`Unknown output param [${name}]`);
   }
 }

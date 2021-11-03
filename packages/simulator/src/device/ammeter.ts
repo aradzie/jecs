@@ -1,7 +1,5 @@
 import { Device, DeviceState, StateParams } from "../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../circuit/network";
-import type { Op } from "../circuit/ops";
-import { Unit } from "../util/unit";
 
 const enum S {
   /** Current through probe. */
@@ -48,11 +46,5 @@ export class Ammeter extends Device {
   override stamp(stamper: Stamper): void {
     const { np, nn, branch } = this;
     stamper.stampVoltageSource(np, nn, branch, 0);
-  }
-
-  override ops([I]: DeviceState = this.state): readonly Op[] {
-    return [
-      { name: "I", value: I, unit: Unit.AMPERE }, //
-    ];
   }
 }

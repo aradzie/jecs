@@ -1,9 +1,7 @@
 import { Device, DeviceState, StateParams } from "../../circuit/device";
 import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
-import type { Op } from "../../circuit/ops";
 import { Params, ParamsSchema } from "../../circuit/params";
-import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import { PN } from "./semi";
 
@@ -94,13 +92,5 @@ export class Diode extends Device<DiodeParams> {
     const { na, nc } = this;
     stamper.stampConductance(na, nc, G);
     stamper.stampCurrentSource(na, nc, I - G * V);
-  }
-
-  override ops([V, I, G, P]: DeviceState = this.state): readonly Op[] {
-    return [
-      { name: "V", value: V, unit: Unit.VOLT },
-      { name: "I", value: I, unit: Unit.AMPERE },
-      { name: "P", value: P, unit: Unit.WATT },
-    ];
   }
 }

@@ -5,7 +5,6 @@ import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
 import { formatNumber } from "@jssim/simulator/lib/util/format";
 import { Unit } from "@jssim/simulator/lib/util/unit";
 import { Dataset, points } from "./util/dataset";
-import { op } from "./util/ops";
 
 const input = `
 Ground g;
@@ -26,9 +25,9 @@ for (const xRl of points(2000, 100, 5)) {
     variables.setVariable("$xVbe", xVbe);
     const circuit = parseNetlist(netlist, variables);
     dcAnalysis(circuit);
-    const q1 = circuit.getDevice("Q1").ops();
+    const q1 = circuit.getDevice("Q1");
     const nc = circuit.getNode("nc");
-    dataset.add(op(q1, "Vbe"), nc.voltage);
+    dataset.add(q1.op("Vbe"), nc.voltage);
   }
 }
 

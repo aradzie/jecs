@@ -2,6 +2,7 @@ import { Ground } from "../device";
 import { formatNumber } from "../util/format";
 import { Unit } from "../util/unit";
 import type { Circuit } from "./circuit";
+import type { DeviceClass } from "./device";
 import { Node } from "./network";
 
 export function dumpCircuit(circuit: Circuit): string[] {
@@ -9,7 +10,6 @@ export function dumpCircuit(circuit: Circuit): string[] {
   for (const node of circuit.nodes) {
     if (node instanceof Node) {
       lines.push(`V(${node.id})=${formatNumber(node.voltage, Unit.VOLT)}`);
-      continue;
     }
   }
   for (const device of circuit.devices) {
@@ -17,8 +17,9 @@ export function dumpCircuit(circuit: Circuit): string[] {
       continue;
     }
     const items: string[] = [];
-    for (const { name, value, unit } of device.ops()) {
-      items.push(`${name}=${formatNumber(value, unit)}`);
+    const { stateParams } = device.constructor as DeviceClass;
+    for (const op of stateParams.outputs) {
+      items.push(`${op.name}=${formatNumber(device.state[op.index], op.unit)}`);
     }
     lines.push(`${device.id}{${items.join(",")}}`);
   }

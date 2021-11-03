@@ -5,7 +5,6 @@ import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
 import { formatNumber } from "@jssim/simulator/lib/util/format";
 import { Unit } from "@jssim/simulator/lib/util/unit";
 import { Dataset, points } from "./util/dataset";
-import { op } from "./util/ops";
 
 const input = `
 V nd g V=$xVds;
@@ -24,9 +23,9 @@ for (const xVgs of points(-1.5, 0, 5)) {
     variables.setVariable("$xVgs", xVgs);
     const circuit = parseNetlist(netlist, variables);
     dcAnalysis(circuit);
-    const ops = circuit.getDevice("DUT").ops();
-    const Vds = op(ops, "Vds");
-    const Ids = op(ops, "Ids");
+    const dut = circuit.getDevice("DUT");
+    const Vds = dut.op("Vds");
+    const Ids = dut.op("Ids");
     dataset.add(Vds, Ids);
   }
 }

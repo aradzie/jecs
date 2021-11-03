@@ -14,7 +14,10 @@ export enum Unit {
   WATT,
 }
 
-export function getUnitSymbol(unit: Unit): string {
+export function getUnitSymbol(unit: string | Unit): string {
+  if (typeof unit === "string") {
+    return unit;
+  }
   switch (unit) {
     case Unit.UNITLESS:
       return "";

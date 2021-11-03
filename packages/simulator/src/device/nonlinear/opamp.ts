@@ -1,6 +1,5 @@
 import { Device, DeviceState, StateParams } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
-import type { Op } from "../../circuit/ops";
 import { Params } from "../../circuit/params";
 
 export interface OpAmpParams {
@@ -35,8 +34,4 @@ export class OpAmp extends Device<OpAmpParams> {
   override eval(state: DeviceState): void {}
 
   override stamp(stamper: Stamper, state: DeviceState): void {}
-
-  override ops(state: DeviceState = this.state): readonly Op[] {
-    return [];
-  }
 }

@@ -1,9 +1,7 @@
 import { Device, DeviceState, StateParams } from "../../circuit/device";
 import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
-import type { Op } from "../../circuit/ops";
 import { Params, ParamsSchema } from "../../circuit/params";
-import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import { FetPolarity, fetSign, limitMosfetVoltage, nfet, pfet, PN } from "./semi";
 
@@ -137,7 +135,7 @@ export class Mosfet extends Device<MosfetParams> {
       { index: S.Vgd, name: "Vgd", unit: "V" },
       { index: S.Vds, name: "Vds", unit: "V" },
       { index: S.Ids, name: "Ids", unit: "A" },
-      { index: S.Gm, name: "gm", unit: "A/V" },
+      // { index: S.Gm, name: "gm", unit: "A/V" },
     ],
   };
 
@@ -303,16 +301,5 @@ export class Mosfet extends Device<MosfetParams> {
       stamper.stampMatrix(ns, nd, Gm);
       stamper.stampCurrentSource(nd, ns, pol * (pol * Ids - pol * Gds * Vds - pol * Gm * Vgd));
     }
-  }
-
-  override ops(
-    [Vbs, Ibs, Gbs, Vbd, Ibd, Gbd, Vgs, Vgd, Vds, Ids, Gds, Gm]: DeviceState = this.state,
-  ): readonly Op[] {
-    return [
-      { name: "Vgs", value: Vgs, unit: Unit.VOLT },
-      { name: "Vgd", value: Vgd, unit: Unit.VOLT },
-      { name: "Vds", value: Vds, unit: Unit.VOLT },
-      { name: "Ids", value: Ids, unit: Unit.AMPERE },
-    ];
   }
 }

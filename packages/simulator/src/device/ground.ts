@@ -1,7 +1,6 @@
 import { Device, StateParams } from "../circuit/device";
 import { CircuitError } from "../circuit/error";
 import type { Network, Node } from "../circuit/network";
-import type { Op } from "../circuit/ops";
 
 export class Ground extends Device {
   static override readonly id = "Ground";
@@ -23,9 +22,5 @@ export class Ground extends Device {
     if (this.n !== network.groundNode) {
       throw new CircuitError(`The ground device must be connected to the ground node.`);
     }
-  }
-
-  override ops(): readonly Op[] {
-    return [];
   }
 }

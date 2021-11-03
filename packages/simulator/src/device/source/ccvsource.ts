@@ -1,8 +1,6 @@
 import { Device, DeviceState, StateParams } from "../../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network";
-import type { Op } from "../../circuit/ops";
 import { Params, ParamsSchema } from "../../circuit/params";
-import { Unit } from "../../util/unit";
 
 export interface CCVSourceParams {
   readonly gain: number;
@@ -75,13 +73,5 @@ export class CCVSource extends Device<CCVSourceParams> {
     stamper.stampVoltageSource(np, nn, branch1, 0);
     stamper.stampVoltageSource(ncp, ncn, branch2, 0);
     stamper.stampMatrix(branch1, branch2, -gain);
-  }
-
-  override ops([V, I, P]: DeviceState = this.state): readonly Op[] {
-    return [
-      { name: "V", value: V, unit: Unit.VOLT },
-      { name: "I", value: I, unit: Unit.AMPERE },
-      { name: "P", value: P, unit: Unit.WATT },
-    ];
   }
 }

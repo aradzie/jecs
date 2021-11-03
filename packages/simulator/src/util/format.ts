@@ -1,6 +1,6 @@
 import { getUnitSymbol, Unit } from "./unit";
 
-export function formatNumber(v: number, unit = Unit.UNITLESS): string {
+export function formatNumber(v: number, unit: string | Unit = Unit.UNITLESS): string {
   const unitName = getUnitSymbol(unit);
   const a = Math.abs(v);
   if (a < 1e-15) {

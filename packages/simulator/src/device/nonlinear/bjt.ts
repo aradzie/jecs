@@ -1,9 +1,7 @@
 import { Device, DeviceState, StateParams } from "../../circuit/device";
 import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
-import type { Op } from "../../circuit/ops";
 import { Params, ParamsSchema } from "../../circuit/params";
-import { Unit } from "../../util/unit";
 import { Temp } from "../const";
 import { BjtPolarity, bjtSign, npn, PN, pnp } from "./semi";
 
@@ -204,18 +202,5 @@ export class Bjt extends Device<BjtParams> {
     stamper.stampMatrix(nb, nb, -(eqGcc + eqGee + eqGce + eqGec));
     stamper.stampCurrentSource(ne, nb, pol * (pol * Ie - pol * eqGee * Vbe - pol * eqGec * Vbc));
     stamper.stampCurrentSource(nc, nb, pol * (pol * Ic - pol * eqGce * Vbe - pol * eqGcc * Vbc));
-  }
-
-  override ops(
-    [Vbe, Vbc, Vce, Af, Ar, Ie, Ic, Ib, Gf, Gr]: DeviceState = this.state,
-  ): readonly Op[] {
-    return [
-      { name: "Vbe", value: Vbe, unit: Unit.VOLT },
-      { name: "Vbc", value: Vbc, unit: Unit.VOLT },
-      { name: "Vce", value: Vce, unit: Unit.VOLT },
-      { name: "Ie", value: Ie, unit: Unit.AMPERE },
-      { name: "Ic", value: Ic, unit: Unit.AMPERE },
-      { name: "Ib", value: Ib, unit: Unit.AMPERE },
-    ];
   }
 }

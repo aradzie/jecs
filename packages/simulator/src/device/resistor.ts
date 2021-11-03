@@ -1,8 +1,6 @@
 import { Device, DeviceState, StateParams } from "../circuit/device";
 import type { Node, Stamper } from "../circuit/network";
-import type { Op } from "../circuit/ops";
 import { Params, ParamsSchema } from "../circuit/params";
-import { Unit } from "../util/unit";
 
 export interface ResistorParams {
   readonly R: number;
@@ -65,13 +63,5 @@ export class Resistor extends Device<ResistorParams> {
   override stamp(stamper: Stamper, [R, G, Vd, I, P]: DeviceState): void {
     const { na, nb } = this;
     stamper.stampConductance(na, nb, G);
-  }
-
-  override ops([R, G, V, I, P]: DeviceState = this.state): readonly Op[] {
-    return [
-      { name: "V", value: V, unit: Unit.VOLT },
-      { name: "I", value: I, unit: Unit.AMPERE },
-      { name: "P", value: P, unit: Unit.WATT },
-    ];
   }
 }

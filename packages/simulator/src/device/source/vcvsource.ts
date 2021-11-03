@@ -1,8 +1,6 @@
 import { Device, DeviceState, StateParams } from "../../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network";
-import type { Op } from "../../circuit/ops";
 import { Params, ParamsSchema } from "../../circuit/params";
-import { Unit } from "../../util/unit";
 
 export interface VCVSourceParams {
   readonly gain: number;
@@ -72,13 +70,5 @@ export class VCVSource extends Device<VCVSourceParams> {
     stamper.stampVoltageSource(np, nn, branch, 0);
     stamper.stampMatrix(branch, ncp, -gain);
     stamper.stampMatrix(branch, ncn, gain);
-  }
-
-  override ops([V, I, P]: DeviceState = this.state): readonly Op[] {
-    return [
-      { name: "V", value: V, unit: Unit.VOLT },
-      { name: "I", value: I, unit: Unit.AMPERE },
-      { name: "P", value: P, unit: Unit.WATT },
-    ];
   }
 }

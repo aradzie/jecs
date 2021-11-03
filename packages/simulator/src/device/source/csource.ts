@@ -1,8 +1,6 @@
 import { Device, DeviceState, StateParams } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
-import type { Op } from "../../circuit/ops";
 import { Params, ParamsSchema } from "../../circuit/params";
-import { Unit } from "../../util/unit";
 
 export interface CSourceParams {
   readonly I: number;
@@ -58,13 +56,5 @@ export class CSource extends Device<CSourceParams> {
     const { params, np, nn } = this;
     const { I } = params;
     stamper.stampCurrentSource(np, nn, I);
-  }
-
-  override ops([I, V, P]: DeviceState = this.state): readonly Op[] {
-    return [
-      { name: "I", value: I, unit: Unit.AMPERE },
-      { name: "V", value: V, unit: Unit.VOLT },
-      { name: "P", value: P, unit: Unit.WATT },
-    ];
   }
 }
