@@ -125,7 +125,7 @@ function collectNodes(circuit: Circuit, definitionItems: readonly DefinitionItem
     for (const { name } of item.nodes) {
       if (deviceClass !== Ground) {
         if (!nodesMap.has(name)) {
-          nodesMap.set(name, circuit.allocNode(name));
+          nodesMap.set(name, circuit.makeNode(name));
         }
       }
     }

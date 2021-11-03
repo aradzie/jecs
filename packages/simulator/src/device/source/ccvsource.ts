@@ -58,8 +58,8 @@ export class CCVSource extends Device<CCVSourceParams> {
   }
 
   override connect(network: Network): void {
-    this.branch1 = network.allocBranch(this.np, this.nn);
-    this.branch2 = network.allocBranch(this.ncp, this.ncn);
+    this.branch1 = network.makeBranch(this.np, this.nn);
+    this.branch2 = network.makeBranch(this.ncp, this.ncn);
   }
 
   override deriveState({ gain }: CCVSourceParams, state: DeviceState): void {

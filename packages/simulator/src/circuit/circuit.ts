@@ -21,7 +21,7 @@ export class Circuit implements Network {
     return this.#devices;
   }
 
-  allocNode(id: string): Node {
+  makeNode(id: string): Node {
     if (this.#nodesById.has(id)) {
       throw new CircuitError(`Duplicate node [${id}]`);
     }
@@ -31,7 +31,7 @@ export class Circuit implements Network {
     return node;
   }
 
-  allocBranch(a: Node, b: Node): Branch {
+  makeBranch(a: Node, b: Node): Branch {
     const branch = new Branch(this.#nodes.length, a, b);
     this.#nodes.push(branch);
     return branch;

@@ -13,14 +13,14 @@ export interface Network {
    * Adds a new voltage node to the MNA matrix.
    * @param id Unique node id.
    */
-  allocNode(id: string): Node;
+  makeNode(id: string): Node;
 
   /**
    * Adds a new current branch to the MNA matrix.
    * @param a A first node connected with the branch.
    * @param b A second node connected with the branch.
    */
-  allocBranch(a: Node, b: Node): Branch;
+  makeBranch(a: Node, b: Node): Branch;
 }
 
 /**

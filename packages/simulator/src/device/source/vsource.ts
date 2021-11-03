@@ -49,7 +49,7 @@ export class VSource extends Device<VSourceParams> {
   }
 
   override connect(network: Network): void {
-    this.branch = network.allocBranch(this.np, this.nn);
+    this.branch = network.makeBranch(this.np, this.nn);
   }
 
   override deriveState({ V }: VSourceParams, state: DeviceState): void {

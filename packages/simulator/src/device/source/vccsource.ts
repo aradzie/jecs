@@ -56,7 +56,7 @@ export class VCCSource extends Device<VCCSourceParams> {
   }
 
   override connect(network: Network): void {
-    this.branch = network.allocBranch(this.np, this.nn);
+    this.branch = network.makeBranch(this.np, this.nn);
   }
 
   override deriveState({ gain }: VCCSourceParams, state: DeviceState): void {

@@ -6,8 +6,8 @@ import { createDevice } from "./library";
 
 test("create device", (t) => {
   const circuit = new Circuit();
-  const n1 = circuit.allocNode("N1");
-  const n2 = circuit.allocNode("N2");
+  const n1 = circuit.makeNode("N1");
+  const n2 = circuit.makeNode("N2");
   t.notThrows(() => {
     createDevice("V", "V1", [n1, n2], { V: 1 });
   });
@@ -33,9 +33,9 @@ test("create device", (t) => {
 
 test("create device from model", (t) => {
   const circuit = new Circuit();
-  const n1 = circuit.allocNode("N1");
-  const n2 = circuit.allocNode("N2");
-  const n3 = circuit.allocNode("N3");
+  const n1 = circuit.makeNode("N1");
+  const n2 = circuit.makeNode("N2");
+  const n3 = circuit.makeNode("N3");
   const nodes = [n1, n2, n3];
   {
     const dev = createDevice("BJT", "Q1", nodes, "NPN");

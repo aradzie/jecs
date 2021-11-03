@@ -2,18 +2,18 @@ import test from "ava";
 import { Resistor } from "../device";
 import { Circuit } from "./circuit";
 
-test("alloc node", (t) => {
+test("make node", (t) => {
   const circuit = new Circuit();
 
   t.deepEqual(circuit.nodes, []);
 
-  const n1 = circuit.allocNode("N1");
+  const n1 = circuit.makeNode("N1");
 
   t.deepEqual(circuit.nodes, [n1]);
 
   t.throws(
     () => {
-      circuit.allocNode("N1");
+      circuit.makeNode("N1");
     },
     { message: "Duplicate node [N1]" },
   );
@@ -23,8 +23,8 @@ test("alloc node", (t) => {
 
 test("add device", (t) => {
   const circuit = new Circuit();
-  const n1 = circuit.allocNode("N1");
-  const n2 = circuit.allocNode("N2");
+  const n1 = circuit.makeNode("N1");
+  const n2 = circuit.makeNode("N2");
   const r = new Resistor("R1", [n1, n2], { R: 100 });
 
   t.deepEqual(circuit.devices, []);

@@ -56,7 +56,7 @@ export class CCCSource extends Device<CCCSourceParams> {
   }
 
   override connect(network: Network): void {
-    this.branch = network.allocBranch(this.ncp, this.ncn);
+    this.branch = network.makeBranch(this.ncp, this.ncn);
   }
 
   override deriveState({ gain }: CCCSourceParams, state: DeviceState): void {

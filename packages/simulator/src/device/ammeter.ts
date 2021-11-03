@@ -35,7 +35,7 @@ export class Ammeter extends Device {
   }
 
   override connect(network: Network): void {
-    this.branch = network.allocBranch(this.np, this.nn);
+    this.branch = network.makeBranch(this.np, this.nn);
   }
 
   override eval(state: DeviceState, final: boolean): void {
