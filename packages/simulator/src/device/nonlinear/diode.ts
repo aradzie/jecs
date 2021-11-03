@@ -88,8 +88,11 @@ export class Diode extends Device<DiodeParams> {
     state[S.P] = P;
   }
 
-  override stamp(stamper: Stamper, [V, I, G, P]: DeviceState): void {
+  override stamp(stamper: Stamper, state: DeviceState): void {
     const { na, nc } = this;
+    const V = state[S.V];
+    const I = state[S.I];
+    const G = state[S.G];
     stamper.stampConductance(na, nc, G);
     stamper.stampCurrentSource(na, nc, I - G * V);
   }

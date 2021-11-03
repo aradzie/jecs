@@ -18,6 +18,8 @@ export interface BjtParams {
 }
 
 const enum S {
+  /** Device polarity, +1 for npn, -1 for pnp. */
+  pol,
   /** Base-emitter voltage. */
   Vbe,
   /** Base-collector voltage. */
@@ -171,6 +173,7 @@ export class Bjt extends Device<BjtParams> {
     const Ic = Af * If - Ir;
     const Gf = pnBe.evalConductance(Vbe);
     const Gr = pnBc.evalConductance(Vbc);
+    state[S.pol] = pol;
     state[S.Vbe] = pol * Vbe;
     state[S.Vbc] = pol * Vbc;
     state[S.Vce] = pol * (Vbe - Vbc);
@@ -183,10 +186,17 @@ export class Bjt extends Device<BjtParams> {
     state[S.Gr] = Gr;
   }
 
-  override stamp(stamper: Stamper, [Vbe, Vbc, Vce, Af, Ar, Ie, Ic, Ib, Gf, Gr]: DeviceState): void {
-    const { ne, nb, nc, params } = this;
-    const { polarity } = params;
-    const pol = bjtSign(polarity);
+  override stamp(stamper: Stamper, state: DeviceState): void {
+    const { ne, nb, nc } = this;
+    const pol = state[S.pol];
+    const Vbe = state[S.Vbe];
+    const Vbc = state[S.Vbc];
+    const Af = state[S.Af];
+    const Ar = state[S.Ar];
+    const Ie = state[S.Ie];
+    const Ic = state[S.Ic];
+    const Gf = state[S.Gf];
+    const Gr = state[S.Gr];
     const eqGee = -Gf;
     const eqGcc = -Gr;
     const eqGec = Ar * Gr;

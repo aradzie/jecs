@@ -60,8 +60,9 @@ export class Resistor extends Device<ResistorParams> {
     state[S.P] = P;
   }
 
-  override stamp(stamper: Stamper, [R, G, Vd, I, P]: DeviceState): void {
+  override stamp(stamper: Stamper, state: DeviceState): void {
     const { na, nb } = this;
+    const G = state[S.G];
     stamper.stampConductance(na, nb, G);
   }
 }

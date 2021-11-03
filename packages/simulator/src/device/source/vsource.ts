@@ -58,8 +58,9 @@ export class VSource extends Device<VSourceParams> {
     state[S.P] = P;
   }
 
-  override stamp(stamper: Stamper, [V, I, P]: DeviceState): void {
+  override stamp(stamper: Stamper, state: DeviceState): void {
     const { np, nn, branch } = this;
+    const V = state[S.V];
     stamper.stampVoltageSource(np, nn, branch, V);
   }
 }

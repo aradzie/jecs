@@ -16,6 +16,8 @@ export interface JfetParams {
 }
 
 const enum S {
+  /** Device polarity, +1 for nfet, -1 for pfet. */
+  pol,
   /** Gate-source diode voltage. */
   Vgs,
   /** Gate-source diode current. */
@@ -213,6 +215,8 @@ export class Jfet extends Device<JfetParams> {
       }
     }
 
+    state[S.pol] = pol;
+
     // VOLTAGES
 
     state[S.Vgs] = pol * Vgs;
@@ -233,13 +237,19 @@ export class Jfet extends Device<JfetParams> {
     state[S.Gm] = Gm;
   }
 
-  override stamp(
-    stamper: Stamper,
-    [Vgs, Igs, Ggs, Vgd, Igd, Ggd, Vds, Ids, Gds, Gm]: DeviceState,
-  ): void {
-    const { ns, ng, nd, params } = this;
-    const { polarity } = params;
-    const pol = fetSign(polarity);
+  override stamp(stamper: Stamper, state: DeviceState): void {
+    const { ns, ng, nd } = this;
+    const pol = state[S.pol];
+    const Vgs = state[S.Vgs];
+    const Igs = state[S.Igs];
+    const Ggs = state[S.Ggs];
+    const Vgd = state[S.Vgd];
+    const Igd = state[S.Igd];
+    const Ggd = state[S.Gds];
+    const Vds = state[S.Vds];
+    const Ids = state[S.Ids];
+    const Gds = state[S.Gds];
+    const Gm = state[S.Gm];
 
     // DIODES
 

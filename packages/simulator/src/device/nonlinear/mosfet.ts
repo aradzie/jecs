@@ -16,6 +16,8 @@ export interface MosfetParams {
 }
 
 const enum S {
+  /** Device polarity, +1 for nfet, -1 for pfet. */
+  pol,
   /** Bulk-source diode voltage. */
   Vbs,
   /** Bulk-source diode current. */
@@ -246,6 +248,8 @@ export class Mosfet extends Device<MosfetParams> {
       }
     }
 
+    state[S.pol] = pol;
+
     // VOLTAGES
 
     state[S.Vbs] = pol * Vbs;
@@ -268,13 +272,21 @@ export class Mosfet extends Device<MosfetParams> {
     state[S.Gm] = Gm;
   }
 
-  override stamp(
-    stamper: Stamper,
-    [Vbs, Ibs, Gbs, Vbd, Ibd, Gbd, Vgs, Vgd, Vds, Ids, Gds, Gm]: DeviceState,
-  ): void {
-    const { ns, ng, nd, nb, params } = this;
-    const { polarity } = params;
-    const pol = fetSign(polarity);
+  override stamp(stamper: Stamper, state: DeviceState): void {
+    const { ns, ng, nd, nb } = this;
+    const pol = state[S.pol];
+    const Vbs = state[S.Vbs];
+    const Ibs = state[S.Ibs];
+    const Gbs = state[S.Gbs];
+    const Vbd = state[S.Vbd];
+    const Ibd = state[S.Ibd];
+    const Gbd = state[S.Gbd];
+    const Vgs = state[S.Vgs];
+    const Vgd = state[S.Vgd];
+    const Vds = state[S.Vds];
+    const Ids = state[S.Ids];
+    const Gds = state[S.Gds];
+    const Gm = state[S.Gm];
 
     // DIODES
 
