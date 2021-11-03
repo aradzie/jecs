@@ -24,6 +24,8 @@ const enum S {
   Vbe,
   /** Base-collector voltage. */
   Vbc,
+  /** Collector-emitter voltage. */
+  Vce,
   /** Forward alpha. */
   Af,
   /** Reverse alpha. */
@@ -32,6 +34,7 @@ const enum S {
   Ie,
   /** Collector current. */
   Ic,
+  /** Base current. */ Ib,
   /** Forward transconductance. */
   Gf,
   /** Reverse transconductance. */
@@ -124,10 +127,10 @@ export class Bjt extends Device<BjtParams> {
     outputs: [
       { index: S.Vbe, name: "Vbe", unit: "V" },
       { index: S.Vbc, name: "Vbc", unit: "V" },
-      //{ index: S.Vce, name: "Vce", unit: "V" },
+      { index: S.Vce, name: "Vce", unit: "V" },
       { index: S.Ie, name: "Ie", unit: "A" },
       { index: S.Ic, name: "Ic", unit: "A" },
-      //{ index: S.Ib, name: "Ib", unit: "A" },
+      { index: S.Ib, name: "Ib", unit: "A" },
     ],
   };
 
@@ -152,26 +155,40 @@ export class Bjt extends Device<BjtParams> {
     this.pnBc = new PN(Is, Nr, Temp);
   }
 
-  override eval(state: DeviceState): void {
+  override eval(state: DeviceState, final: boolean): void {
     const { params, ne, nb, nc, pnBe, pnBc } = this;
     const { polarity, Bf, Br } = params;
-    const sign = bjtSign(polarity);
-    const Vbe = (state[S.Vbe] = pnBe.limitVoltage(sign * (nb.voltage - ne.voltage), state[S.Vbe]));
-    const Vbc = (state[S.Vbc] = pnBc.limitVoltage(sign * (nb.voltage - nc.voltage), state[S.Vbc]));
+    const pol = bjtSign(polarity);
+    let Vbe = pol * (nb.voltage - ne.voltage);
+    let Vbc = pol * (nb.voltage - nc.voltage);
+    if (!final) {
+      Vbe = pnBe.limitVoltage(Vbe, pol * state[S.Vbe]);
+      Vbc = pnBc.limitVoltage(Vbc, pol * state[S.Vbc]);
+    }
     const If = pnBe.evalCurrent(Vbe);
     const Ir = pnBc.evalCurrent(Vbc);
-    const Af = (state[S.Af] = Bf / (Bf + 1));
-    const Ar = (state[S.Ar] = Br / (Br + 1));
-    state[S.Ie] = Ar * Ir - If;
-    state[S.Ic] = Af * If - Ir;
-    state[S.Gf] = pnBe.evalConductance(Vbe);
-    state[S.Gr] = pnBc.evalConductance(Vbc);
+    const Af = Bf / (Bf + 1);
+    const Ar = Br / (Br + 1);
+    const Ie = Ar * Ir - If;
+    const Ic = Af * If - Ir;
+    const Gf = pnBe.evalConductance(Vbe);
+    const Gr = pnBc.evalConductance(Vbc);
+    state[S.Vbe] = pol * Vbe;
+    state[S.Vbc] = pol * Vbc;
+    state[S.Vce] = pol * (Vbe - Vbc);
+    state[S.Af] = Af;
+    state[S.Ar] = Ar;
+    state[S.Ie] = pol * Ie;
+    state[S.Ic] = pol * Ic;
+    state[S.Ib] = pol * -(Ie + Ic);
+    state[S.Gf] = Gf;
+    state[S.Gr] = Gr;
   }
 
-  override stamp(stamper: Stamper, [Vbe, Vbc, Af, Ar, Ie, Ic, Gf, Gr]: DeviceState): void {
+  override stamp(stamper: Stamper, [Vbe, Vbc, Vce, Af, Ar, Ie, Ic, Ib, Gf, Gr]: DeviceState): void {
     const { ne, nb, nc, params } = this;
     const { polarity } = params;
-    const sign = bjtSign(polarity);
+    const pol = bjtSign(polarity);
     const eqGee = -Gf;
     const eqGcc = -Gr;
     const eqGec = Ar * Gr;
@@ -185,23 +202,20 @@ export class Bjt extends Device<BjtParams> {
     stamper.stampMatrix(nb, ne, eqGce + eqGee);
     stamper.stampMatrix(nb, nc, eqGec + eqGcc);
     stamper.stampMatrix(nb, nb, -(eqGcc + eqGee + eqGce + eqGec));
-    stamper.stampCurrentSource(ne, nb, sign * (Ie - eqGee * Vbe - eqGec * Vbc));
-    stamper.stampCurrentSource(nc, nb, sign * (Ic - eqGce * Vbe - eqGcc * Vbc));
+    stamper.stampCurrentSource(ne, nb, pol * (pol * Ie - pol * eqGee * Vbe - pol * eqGec * Vbc));
+    stamper.stampCurrentSource(nc, nb, pol * (pol * Ic - pol * eqGce * Vbe - pol * eqGcc * Vbc));
   }
 
-  override ops([VbeX, VbcX, Af, Ar, Ie, Ic, Gf, Gr]: DeviceState = this.state): readonly Op[] {
-    const { ne, nb, nc, params } = this;
-    const { polarity } = params;
-    const sign = bjtSign(polarity);
-    const Vbe = sign * (nb.voltage - ne.voltage);
-    const Vbc = sign * (nb.voltage - nc.voltage);
+  override ops(
+    [Vbe, Vbc, Vce, Af, Ar, Ie, Ic, Ib, Gf, Gr]: DeviceState = this.state,
+  ): readonly Op[] {
     return [
-      { name: "Vbe", value: sign * Vbe, unit: Unit.VOLT },
-      { name: "Vbc", value: sign * Vbc, unit: Unit.VOLT },
-      { name: "Vce", value: sign * (Vbe - Vbc), unit: Unit.VOLT },
-      { name: "Ie", value: sign * Ie, unit: Unit.AMPERE },
-      { name: "Ic", value: sign * Ic, unit: Unit.AMPERE },
-      { name: "Ib", value: sign * -(Ie + Ic), unit: Unit.AMPERE },
+      { name: "Vbe", value: Vbe, unit: Unit.VOLT },
+      { name: "Vbc", value: Vbc, unit: Unit.VOLT },
+      { name: "Vce", value: Vce, unit: Unit.VOLT },
+      { name: "Ie", value: Ie, unit: Unit.AMPERE },
+      { name: "Ic", value: Ic, unit: Unit.AMPERE },
+      { name: "Ib", value: Ib, unit: Unit.AMPERE },
     ];
   }
 }
