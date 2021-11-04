@@ -1,4 +1,4 @@
-import type { Vector } from "../math/types";
+import type { Vector } from "@jssim/math/lib/types";
 import type { Device } from "./device";
 import { CircuitError } from "./error";
 import { Branch, groundNode, Network, Node } from "./network";

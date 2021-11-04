@@ -1,5 +1,5 @@
-import { MathError } from "../math/error";
-import type { Matrix, Vector } from "../math/types";
+import { MathError } from "@jssim/math/lib/error";
+import type { Matrix, Vector } from "@jssim/math/lib/types";
 
 const { isFinite } = Number;
 

@@ -1,5 +1,5 @@
 {
-  "name": "@jssim/simulator",
+  "name": "@jssim/math",
   "version": "1.0.0",
   "description": "A simulator of electronic circuits.",
   "author": "Aliaksandr Radzivanovich",
@@ -24,12 +24,9 @@
     "test": "ava"
   },
   "dependencies": {
-    "tslib": "^2.3.1",
-    "@jssim/math": "*"
+    "tslib": "^2.3.1"
   },
-  "devDependencies": {
-    "peggy": "^1.2.0"
-  },
+  "devDependencies": {},
   "ava": {
     "extensions": [
       "ts",

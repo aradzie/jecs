@@ -1,5 +1,5 @@
+import type { Vector } from "@jssim/math/lib/types";
 import { Branch, Node } from "../circuit/network";
-import type { Vector } from "../math/types";
 import type { Options } from "./options";
 
 export function converged(

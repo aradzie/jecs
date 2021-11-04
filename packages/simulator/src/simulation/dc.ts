@@ -1,8 +1,8 @@
+import { solve } from "@jssim/math/lib/gauss-elimination";
+import { matClear, matMake, vecClear, vecCopy, vecMake } from "@jssim/math/lib/matrix";
 import type { Circuit } from "../circuit/circuit";
 import type { Device } from "../circuit/device";
 import { Stamper } from "../circuit/network";
-import { solve } from "../math/gauss-elimination";
-import { matClear, matMake, vecClear, vecCopy, vecMake } from "../math/matrix";
 import { converged } from "./convergence";
 import { SimulationError } from "./error";
 import type { Options } from "./options";
