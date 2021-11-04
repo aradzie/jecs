@@ -68,13 +68,13 @@ export class Circuit implements Network {
   updateNodes(x: Vector): void {
     for (let i = 0; i < this.#nodes.length; i++) {
       const node = this.#nodes[i];
-      if (node instanceof Node) {
-        node.voltage = x[i];
-        continue;
-      }
-      if (node instanceof Branch) {
-        node.current = x[i];
-        continue;
+      switch (node.type) {
+        case "node":
+          node.voltage = x[i];
+          break;
+        case "branch":
+          node.current = x[i];
+          break;
       }
     }
   }

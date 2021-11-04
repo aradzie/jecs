@@ -27,6 +27,8 @@ export interface Network {
  * Circuit's node.
  */
 export class Node {
+  readonly type = "node" as const;
+
   /**
    * Node index in the MNA matrix.
    * Ground node has index -1 and is not a part of the MNA matrix.
@@ -57,6 +59,8 @@ export class Node {
  * Circuit's branch.
  */
 export class Branch {
+  readonly type = "branch" as const;
+
   /**
    * Branch index in the MNA matrix.
    */
