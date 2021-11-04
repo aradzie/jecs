@@ -3,7 +3,7 @@ import type { Network, Node, Stamper } from "./network";
 import type { ParamsSchema } from "./params";
 
 export interface DeviceClass {
-  /** Unique device identifier. */
+  /** Unique device class identifier. */
   readonly id: string;
 
   /** The number of terminals in the device. */
@@ -54,7 +54,7 @@ export abstract class Device<ParamsT = unknown> {
     return [];
   }
 
-  /** Unique device identifier. */
+  /** Unique device class identifier. */
   static readonly id: string;
 
   /** The number of terminals in the device. */

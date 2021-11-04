@@ -15,43 +15,25 @@ class Registration {
   private static readonly map = new NameMap<Registration>();
 
   static get(deviceClass: string | DeviceClass): Registration {
-    const id = typeof deviceClass === "string" ? deviceClass : deviceClass.id;
-    const registration = Registration.map.get(id);
+    const classId = typeof deviceClass === "string" ? deviceClass : deviceClass.id;
+    const registration = Registration.map.get(classId);
     if (registration == null) {
-      throw new CircuitError(`Unknown device id [${id}]`);
+      throw new CircuitError(`Unknown device class [${classId}]`);
     } else {
       return registration;
     }
   }
 
   static add(deviceClass: DeviceClass): void {
-    const { id, numTerminals, paramsSchema } = deviceClass;
-    if (id == null) {
-      throw new CircuitError(
-        `The [id] attribute is missing` + //
-          ` in device class [${deviceClass}]`,
-      );
-    }
-    if (numTerminals == null) {
-      throw new CircuitError(
-        `The [numTerminals] attribute is missing in` + //
-          ` device class [${deviceClass}]`,
-      );
-    }
-    if (paramsSchema == null) {
-      throw new CircuitError(
-        `The [paramsSchema] attribute is missing` + //
-          ` in device class [${deviceClass}]`,
-      );
-    }
-    if (Registration.map.has(id)) {
-      throw new CircuitError(`Duplicate device [${id}]`);
+    const { id: classId } = deviceClass;
+    if (Registration.map.has(classId)) {
+      throw new CircuitError(`Duplicate device class [${classId}]`);
     }
     const registration = new Registration(deviceClass);
     for (const [name, params] of deviceClass.getModels()) {
       registration.addModel(name, params);
     }
-    Registration.map.set(id, registration);
+    Registration.map.set(classId, registration);
   }
 
   constructor(
@@ -82,11 +64,11 @@ class Registration {
     initializers: readonly Initializer[],
   ): Device {
     const { deviceClass } = this;
-    const { id, numTerminals, paramsSchema } = deviceClass;
+    const { id: classId, numTerminals, paramsSchema } = deviceClass;
 
     if (nodes.length !== numTerminals) {
       throw new CircuitError(
-        `Error in device [${id}:${instanceId}]: ` + //
+        `Error in device [${classId}:${instanceId}]: ` + //
           `Invalid number of nodes`,
       );
     }
@@ -97,7 +79,7 @@ class Registration {
       params = this.makeParams(paramsSchema, initializers);
     } catch (err: any) {
       throw new CircuitError(
-        `Error in device [${id}:${instanceId}]: ` + //
+        `Error in device [${classId}:${instanceId}]: ` + //
           err.message,
       );
     }

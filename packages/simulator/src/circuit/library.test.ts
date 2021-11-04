@@ -15,7 +15,7 @@ test("create device", (t) => {
     () => {
       createDevice("X", "X1", [], {});
     },
-    { message: "Unknown device id [X]" },
+    { message: "Unknown device class [X]" },
   );
   t.throws(
     () => {
