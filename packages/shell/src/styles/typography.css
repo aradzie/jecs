@@ -1,0 +1,121 @@
+:root {
+  --text-color: #26243d;
+  --link-color: #0041b3;
+  --header-color: #0d2a3a;
+  --background-color: #f1f1f1;
+  --separator-color: #bec1c2;
+  --font-family: Arial, sans-serif;
+}
+
+html {
+  font-family: var(--font-family);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+body {
+  background-color: var(--background-color);
+}
+
+a {
+  color: var(--link-color);
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: none;
+}
+
+a:focus {
+  outline: 1px dotted var(--text-color);
+}
+
+h1,
+h2,
+h3,
+p {
+  font-weight: normal;
+  font-style: normal;
+  text-align: left;
+  text-decoration: none;
+}
+
+h1 {
+  margin: 1rem 0;
+  padding: 0;
+  font-size: 2rem;
+  line-height: 1.6;
+}
+
+h2 {
+  margin: 0.8rem 0;
+  padding: 0;
+  font-size: 1.6rem;
+  line-height: 1.6;
+}
+
+h3 {
+  margin: 0.6rem 0;
+  padding: 0;
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+p {
+  margin: 1rem 0;
+  padding: 0;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+li {
+  text-align: left;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--header-color);
+}
+
+figure {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--separator-color);
+}
+
+figcaption {
+  margin: 1rem 0;
+  padding: 0;
+  text-align: center;
+}
+
+figure > figcaption:first-child {
+  margin-top: 0;
+}
+
+figure > figcaption:last-child {
+  margin-bottom: 0;
+}
+
+blockquote {
+  margin: 1rem 2rem;
+  padding: 0;
+  border-left: 1px solid var(--separator-color);
+}
+
+dt {
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+  font-style: normal;
+  line-height: 1.6;
+  text-align: left;
+}
+
+dd {
+  margin: 0 0 0 2rem;
+  padding: 0;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1.6;
+  text-align: left;
+}
