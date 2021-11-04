@@ -58,6 +58,10 @@ module.exports = {
         test: /\/assets\//,
         type: "asset/resource",
       },
+      {
+        test: /\.txt$/i,
+        type: "asset/source",
+      },
     ],
   },
   devtool: "source-map",
