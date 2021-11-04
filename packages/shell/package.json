@@ -23,7 +23,8 @@
     "clean": "rm -fr {lib,build}",
     "compile": "tsc",
     "test": "ava",
-    "build": "webpack"
+    "build": "webpack",
+    "publish": "gh-pages -d build"
   },
   "dependencies": {
     "@jssim/simulator": "*",
@@ -35,6 +36,7 @@
     "@types/react": "^17.0.34",
     "@types/react-dom": "^17.0.11",
     "css-loader": "^6.5.1",
+    "gh-pages": "^3.2.3",
     "html-webpack-plugin": "^5.5.0",
     "source-map-loader": "^3.0.0",
     "style-loader": "^3.3.1",
