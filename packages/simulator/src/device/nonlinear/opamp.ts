@@ -24,7 +24,11 @@ export class OpAmp extends Device<OpAmpParams> {
   readonly b: Node;
   readonly o: Node;
 
-  constructor(id: string, [a, b, o]: readonly Node[], params: OpAmpParams | null = null) {
+  constructor(
+    id: string, //
+    [a, b, o]: readonly Node[],
+    params: OpAmpParams | null = null,
+  ) {
     super(id, [a, b, o], params);
     this.a = a;
     this.b = b;

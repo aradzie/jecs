@@ -147,7 +147,11 @@ export class Jfet extends Device<JfetParams> {
   /** The drain terminal. */
   readonly nd: Node;
 
-  constructor(id: string, [ns, ng, nd]: readonly Node[], params: JfetParams | null = null) {
+  constructor(
+    id: string, //
+    [ns, ng, nd]: readonly Node[],
+    params: JfetParams | null = null,
+  ) {
     super(id, [ns, ng, nd], params);
     this.ns = ns;
     this.ng = ng;

@@ -54,7 +54,8 @@ const enum S {
   Ie,
   /** Collector current. */
   Ic,
-  /** Base current. */ Ib,
+  /** Base current. */
+  Ib,
   /** Forward transconductance. */
   Gf,
   /** Reverse transconductance. */
@@ -161,7 +162,11 @@ export class Bjt extends Device<BjtParams> {
   /** The collector terminal. */
   readonly nc: Node;
 
-  constructor(id: string, [ne, nb, nc]: readonly Node[], params: BjtParams | null = null) {
+  constructor(
+    id: string, //
+    [ne, nb, nc]: readonly Node[],
+    params: BjtParams | null = null,
+  ) {
     super(id, [ne, nb, nc], params);
     this.ne = ne;
     this.nb = nb;

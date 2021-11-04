@@ -173,7 +173,11 @@ export class Mosfet extends Device<MosfetParams> {
   /** The body terminal. */
   readonly nb: Node;
 
-  constructor(id: string, [ns, ng, nd, nb]: readonly Node[], params: MosfetParams | null = null) {
+  constructor(
+    id: string, //
+    [ns, ng, nd, nb]: readonly Node[],
+    params: MosfetParams | null = null,
+  ) {
     super(id, [ns, ng, nd, nb], params);
     this.ns = ns;
     this.ng = ng;
@@ -311,14 +315,14 @@ export class Mosfet extends Device<MosfetParams> {
     const { ns, ng, nd, nb } = this;
     const pol = state[S.pol];
     const Vbs = pol * state[S.Vbs];
-    const Ibs = pol * state[S.Ibs];
-    const Gbs = state[S.Gbs];
     const Vbd = pol * state[S.Vbd];
-    const Ibd = pol * state[S.Ibd];
-    const Gbd = state[S.Gbd];
     const Vgs = pol * state[S.Vgs];
     const Vgd = pol * state[S.Vgd];
     const Vds = pol * state[S.Vds];
+    const Ibs = pol * state[S.Ibs];
+    const Gbs = state[S.Gbs];
+    const Ibd = pol * state[S.Ibd];
+    const Gbd = state[S.Gbd];
     const Ids = pol * state[S.Ids];
     const Gds = state[S.Gds];
     const Gm = state[S.Gm];

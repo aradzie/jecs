@@ -67,7 +67,11 @@ export class Diode extends Device<DiodeParams> {
   /** The cathode terminal. */
   readonly nc: Node;
 
-  constructor(id: string, [na, nc]: readonly Node[], params: DiodeParams | null = null) {
+  constructor(
+    id: string, //
+    [na, nc]: readonly Node[],
+    params: DiodeParams | null = null,
+  ) {
     super(id, [na, nc], params);
     this.na = na;
     this.nc = nc;
