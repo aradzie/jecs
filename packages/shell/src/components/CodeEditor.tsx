@@ -7,6 +7,7 @@ import React, {
   MouseEvent,
   ReactNode,
 } from "react";
+import styles0 from "./CodeEditor.css";
 
 type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
   // Props for the component.
@@ -22,7 +23,7 @@ type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> &
   onKeyDown?: (ev: KeyboardEvent<HTMLTextAreaElement>) => void;
 };
 
-type State = {};
+type State = Record<string, unknown>;
 
 export class CodeEditor extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
@@ -54,7 +55,7 @@ export class CodeEditor extends React.Component<Props, State> {
 
     return (
       <div
-        className="CodeEditor"
+        className={styles0.CodeEditor}
         {...rest}
         style={{
           ...styles.container,
@@ -62,7 +63,7 @@ export class CodeEditor extends React.Component<Props, State> {
         }}
       >
         <textarea
-          className="CodeEditor__textArea"
+          className={styles0.CodeEditor__textArea}
           ref={(el) => (this._input = el)}
           style={{
             ...styles.editor,
@@ -79,7 +80,7 @@ export class CodeEditor extends React.Component<Props, State> {
           spellCheck={false}
         />
         <pre
-          className="CodeEditor__pre"
+          className={styles0.CodeEditor__pre}
           aria-hidden="true"
           style={{
             ...styles.editor,
@@ -95,15 +96,17 @@ export class CodeEditor extends React.Component<Props, State> {
 const styles = {
   container: {
     position: "relative",
-    width: "500px",
-    height: "500px",
+    width: "100%",
+    height: "100%",
     textAlign: "left",
     boxSizing: "border-box",
-    margin: "1rem",
+    margin: 0,
     padding: 0,
-    border: "1px solid gray",
+    border: "none",
     overflow: "hidden",
     fontFamily: "monospace",
+    fontStyle: "1rem",
+    lineHeight: "1.2rem",
   } as CSSProperties,
   editor: {
     margin: 0,

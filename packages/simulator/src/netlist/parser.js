@@ -181,9 +181,7 @@ peg$SyntaxError.buildMessage = function (expected, found) {
 
       default:
         return (
-          descriptions.slice(0, -1).join(", ") +
-          ", or " +
-          descriptions[descriptions.length - 1]
+          descriptions.slice(0, -1).join(", ") + ", or " + descriptions[descriptions.length - 1]
         );
     }
   }
@@ -192,13 +190,7 @@ peg$SyntaxError.buildMessage = function (expected, found) {
     return found ? '"' + literalEscape(found) + '"' : "end of input";
   }
 
-  return (
-    "Expected " +
-    describeExpected(expected) +
-    " but " +
-    describeFound(found) +
-    " found."
-  );
+  return "Expected " + describeExpected(expected) + " but " + describeFound(found) + " found.";
 };
 
 function peg$parse(input, options) {
@@ -253,16 +245,8 @@ function peg$parse(input, options) {
   var peg$e13 = peg$literalExpectation(")", false);
   var peg$e14 = peg$otherExpectation("variable");
   var peg$e15 = peg$literalExpectation("$", false);
-  var peg$e16 = peg$classExpectation(
-    ["_", ["a", "z"], ["A", "Z"]],
-    false,
-    false,
-  );
-  var peg$e17 = peg$classExpectation(
-    ["_", ["a", "z"], ["A", "Z"], ["0", "9"]],
-    false,
-    false,
-  );
+  var peg$e16 = peg$classExpectation(["_", ["a", "z"], ["A", "Z"]], false, false);
+  var peg$e17 = peg$classExpectation(["_", ["a", "z"], ["A", "Z"], ["0", "9"]], false, false);
   var peg$e18 = peg$otherExpectation("identifier");
   var peg$e19 = peg$literalExpectation('"', false);
   var peg$e20 = peg$literalExpectation("\n", false);
@@ -349,9 +333,7 @@ function peg$parse(input, options) {
 
   if ("startRule" in options) {
     if (!(options.startRule in peg$startRuleFunctions)) {
-      throw new Error(
-        "Can't start parsing from rule \"" + options.startRule + '".',
-      );
+      throw new Error("Can't start parsing from rule \"" + options.startRule + '".');
     }
 
     peg$startRuleFunction = peg$startRuleFunctions[options.startRule];
@@ -378,10 +360,7 @@ function peg$parse(input, options) {
   }
 
   function expected(description, location) {
-    location =
-      location !== undefined
-        ? location
-        : peg$computeLocation(peg$savedPos, peg$currPos);
+    location = location !== undefined ? location : peg$computeLocation(peg$savedPos, peg$currPos);
 
     throw peg$buildStructuredError(
       [peg$otherExpectation(description)],
@@ -391,10 +370,7 @@ function peg$parse(input, options) {
   }
 
   function error(message, location) {
-    location =
-      location !== undefined
-        ? location
-        : peg$computeLocation(peg$savedPos, peg$currPos);
+    location = location !== undefined ? location : peg$computeLocation(peg$savedPos, peg$currPos);
 
     throw peg$buildSimpleError(message, location);
   }
