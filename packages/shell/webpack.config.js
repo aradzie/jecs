@@ -1,5 +1,8 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const path = require("path");
+const APP_DIR = path.resolve(__dirname, "./src");
+const MONACO_DIR = path.resolve(__dirname, "./node_modules/monaco-editor");
 
 const mode = process.env.NODE_ENV || "production";
 
@@ -47,6 +50,7 @@ module.exports = {
       },
       {
         test: /\.css$/i,
+        include: APP_DIR,
         use: [
           {
             loader: "style-loader",
@@ -65,6 +69,18 @@ module.exports = {
         ],
       },
       {
+        test: /\.css$/,
+        include: MONACO_DIR,
+        use: [
+          {
+            loader: "style-loader",
+          },
+          {
+            loader: "css-loader",
+          },
+        ],
+      },
+      {
         test: /\/assets\//,
         type: "asset",
       },
@@ -76,6 +92,10 @@ module.exports = {
   },
   devtool: "source-map",
   plugins: [
+    new MonacoWebpackPlugin({
+      languages: [],
+      features: [],
+    }),
     new HtmlWebpackPlugin({
       title: "Circuit Simulator",
       template: "./src/index.ejs",

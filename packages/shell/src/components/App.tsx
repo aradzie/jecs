@@ -2,9 +2,8 @@ import type { ReactElement } from "react";
 import { useState } from "react";
 import defaultNetlist from "../assets/netlist.txt";
 import { exec, Result } from "../simul/exec";
-import { highlight } from "../simul/syntax";
 import styles from "./App.css";
-import { CodeEditor } from "./CodeEditor";
+import { NetlistEditor } from "./NetlistEditor";
 import { ResultPane } from "./ResultPane";
 
 export function App(): ReactElement {
@@ -13,13 +12,12 @@ export function App(): ReactElement {
   return (
     <main className={styles.App}>
       <section className={styles.App__editor}>
-        <CodeEditor
+        <NetlistEditor
           value={netlist}
           onValueChange={(value: string): void => {
             setNetlist(value);
             setResult(exec(value));
           }}
-          highlight={highlight}
         />
       </section>
       <section className={styles.App__result}>
