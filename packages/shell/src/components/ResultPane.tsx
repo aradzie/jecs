@@ -10,13 +10,15 @@ export function ResultPane({ result }: { result: Result }): ReactElement {
       return (
         <div className={clsx(styles.Result, styles.Result__ok)}>
           <table className={styles.OpTable}>
-            {result.ops.map(({ deviceId, name, value, unit }, index) => (
-              <tr className={styles.OpTable_row} key={index}>
-                <td className={styles.OpTable__deviceId}>{deviceId}</td>
-                <td className={styles.OpTable__name}>{name}</td>
-                <td className={styles.OpTable__value}>{formatNumber(value, unit)}</td>
-              </tr>
-            ))}
+            <tbody>
+              {result.ops.map(({ deviceId, name, value, unit }, index) => (
+                <tr className={styles.OpTable_row} key={index}>
+                  <td className={styles.OpTable__deviceId}>{deviceId}</td>
+                  <td className={styles.OpTable__name}>{name}</td>
+                  <td className={styles.OpTable__value}>{formatNumber(value, unit)}</td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       );
