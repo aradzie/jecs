@@ -1,9 +1,11 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
+const mode = process.env.NODE_ENV || "production";
+
 module.exports = {
   target: "web",
-  mode: process.env.NODE_ENV || "production",
+  mode,
   context: __dirname,
   entry: "./src/main.tsx",
   output: {
@@ -51,12 +53,20 @@ module.exports = {
           },
           {
             loader: "css-loader",
+            options: {
+              modules: {
+                localIdentName:
+                  mode === "production"
+                    ? "[hash:base64]"
+                    : "[path][name]__[local]--[hash:base64:5]",
+              },
+            },
           },
         ],
       },
       {
         test: /\/assets\//,
-        type: "asset/resource",
+        type: "asset",
       },
       {
         test: /\.txt$/i,
@@ -68,7 +78,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       title: "Circuit Simulator",
-      template: "index.ejs",
+      template: "./src/index.ejs",
     }),
   ],
 };
