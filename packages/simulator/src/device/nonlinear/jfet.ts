@@ -300,10 +300,7 @@ export class Jfet extends Device<JfetParams> {
     // FET
 
     stamper.stampConductance(nd, ns, Gds);
-    stamper.stampMatrix(nd, ng, Gm);
-    stamper.stampMatrix(nd, ns, -Gm);
-    stamper.stampMatrix(ns, ng, -Gm);
-    stamper.stampMatrix(ns, ns, Gm);
+    stamper.stampTransconductance(nd, ns, ng, ns, Gm);
     stamper.stampCurrentSource(nd, ns, pol * (Ids - Gds * Vds - Gm * Vgs));
   }
 }

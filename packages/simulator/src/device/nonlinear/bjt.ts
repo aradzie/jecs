@@ -237,20 +237,15 @@ export class Bjt extends Device<BjtParams> {
     const Ic = pol * state[S.Ic];
     const Gf = state[S.Gf];
     const Gr = state[S.Gr];
-    const eqGee = -Gf;
-    const eqGcc = -Gr;
-    const eqGec = Ar * Gr;
-    const eqGce = Af * Gf;
-    stamper.stampMatrix(ne, ne, -eqGee);
-    stamper.stampMatrix(ne, nc, -eqGec);
-    stamper.stampMatrix(ne, nb, eqGec + eqGee);
-    stamper.stampMatrix(nc, ne, -eqGce);
-    stamper.stampMatrix(nc, nc, -eqGcc);
-    stamper.stampMatrix(nc, nb, eqGce + eqGcc);
-    stamper.stampMatrix(nb, ne, eqGce + eqGee);
-    stamper.stampMatrix(nb, nc, eqGec + eqGcc);
-    stamper.stampMatrix(nb, nb, -(eqGcc + eqGee + eqGce + eqGec));
-    stamper.stampCurrentSource(ne, nb, pol * (Ie - eqGee * Vbe - eqGec * Vbc));
-    stamper.stampCurrentSource(nc, nb, pol * (Ic - eqGce * Vbe - eqGcc * Vbc));
+    const Gee = -Gf;
+    const Gcc = -Gr;
+    const Gec = Ar * Gr;
+    const Gce = Af * Gf;
+    stamper.stampConductance(ne, nb, -Gee);
+    stamper.stampConductance(nc, nb, -Gcc);
+    stamper.stampTransconductance(ne, nb, nc, nb, -Gec);
+    stamper.stampTransconductance(nc, nb, ne, nb, -Gce);
+    stamper.stampCurrentSource(ne, nb, pol * (Ie - Gee * Vbe - Gec * Vbc));
+    stamper.stampCurrentSource(nc, nb, pol * (Ic - Gce * Vbe - Gcc * Vbc));
   }
 }

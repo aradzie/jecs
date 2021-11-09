@@ -132,11 +132,18 @@ export class Stamper {
     }
   }
 
-  stampConductance(i: Node | Branch, j: Node | Branch, x: number): void {
+  stampConductance(i: Node, j: Node, x: number): void {
     this.stampMatrix(i, i, x);
     this.stampMatrix(i, j, -x);
     this.stampMatrix(j, i, -x);
     this.stampMatrix(j, j, x);
+  }
+
+  stampTransconductance(a: Node, b: Node, i: Node, j: Node, x: number): void {
+    this.stampMatrix(a, i, x);
+    this.stampMatrix(a, j, -x);
+    this.stampMatrix(b, i, -x);
+    this.stampMatrix(b, j, x);
   }
 
   stampVoltageSource(i: Node, j: Node, b: Branch, x: number): void {
