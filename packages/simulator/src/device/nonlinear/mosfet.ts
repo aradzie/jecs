@@ -1,4 +1,4 @@
-import { Device, DeviceState, StateParams } from "../../circuit/device";
+import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device";
 import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import { Params, ParamsSchema } from "../../circuit/params";
@@ -201,7 +201,10 @@ export class Mosfet extends Device<MosfetParams> {
     state[S.Vcrit] = Vcrit;
   }
 
-  override eval(state: DeviceState, final: boolean): void {
+  override eval(
+    state: DeviceState, //
+    { damped, gmin }: EvalOptions,
+  ): void {
     const { ns, ng, nd, nb } = this;
     const pol = state[S.pol];
     const Vth = state[S.Vth];
@@ -216,7 +219,7 @@ export class Mosfet extends Device<MosfetParams> {
     let Vgs = (state[S.Vgs] = pol * (ng.voltage - ns.voltage));
     let Vgd = (state[S.Vgd] = pol * (ng.voltage - nd.voltage));
     let Vds = Vgs - Vgd;
-    if (!final) {
+    if (damped) {
       Vbs = pnVoltage(Vbs, pol * state[S.Vbs], Vt, Vcrit);
       Vbd = pnVoltage(Vbd, pol * state[S.Vbd], Vt, Vcrit);
       if (Vds > 0) {

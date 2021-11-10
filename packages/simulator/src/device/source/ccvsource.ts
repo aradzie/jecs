@@ -1,4 +1,4 @@
-import { Device, DeviceState, StateParams } from "../../circuit/device";
+import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network";
 import { Params, ParamsSchema } from "../../circuit/params";
 
@@ -66,7 +66,7 @@ export class CCVSource extends Device<CCVSourceParams> {
     state[S.gain] = gain;
   }
 
-  override eval(state: DeviceState, final: boolean): void {
+  override eval(state: DeviceState, options: EvalOptions): void {
     const { np, nn, branch1 } = this;
     const V = np.voltage - nn.voltage;
     const I = branch1.current;

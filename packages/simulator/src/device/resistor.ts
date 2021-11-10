@@ -1,4 +1,4 @@
-import { Device, DeviceState, StateParams } from "../circuit/device";
+import { Device, DeviceState, EvalOptions, StateParams } from "../circuit/device";
 import { CircuitError } from "../circuit/error";
 import type { Node, Stamper } from "../circuit/network";
 import { Params, ParamsSchema } from "../circuit/params";
@@ -60,7 +60,7 @@ export class Resistor extends Device<ResistorParams> {
     state[S.G] = 1 / R;
   }
 
-  override eval(state: DeviceState, final: boolean): void {
+  override eval(state: DeviceState, options: EvalOptions): void {
     const { na, nb } = this;
     const G = state[S.G];
     const V = na.voltage - nb.voltage;

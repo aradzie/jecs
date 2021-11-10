@@ -1,7 +1,7 @@
-import { Device, DeviceState, StateParams } from "../../circuit/device";
+import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network";
 import { Params } from "../../circuit/params";
-import { GMin, piOverTwo, twoOverPi } from "../const";
+import { piOverTwo, twoOverPi } from "../const";
 
 export interface OpAmpParams {
   readonly gain: number;
@@ -67,14 +67,14 @@ export class OpAmp extends Device<OpAmpParams> {
     state[S.Vmax] = Vmax;
   }
 
-  override eval(state: DeviceState): void {
+  override eval(state: DeviceState, options: EvalOptions): void {
     const { np, nn } = this;
     const gain = state[S.gain];
     const Vmax = state[S.Vmax];
     const Vin = np.voltage - nn.voltage;
     const c = (piOverTwo * gain * Vin) / Vmax;
     const Vout = Vmax * twoOverPi * Math.atan(c);
-    const gv = gain / (1 + c * c) + GMin;
+    const gv = gain / (1 + c * c) + options.gmin;
     state[S.Vin] = Vin;
     state[S.Vout] = Vout;
     state[S.gv] = gv;

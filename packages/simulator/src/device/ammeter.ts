@@ -1,4 +1,4 @@
-import { Device, DeviceState, StateParams } from "../circuit/device";
+import { Device, DeviceState, EvalOptions, StateParams } from "../circuit/device";
 import type { Branch, Network, Node, Stamper } from "../circuit/network";
 
 const enum S {
@@ -38,7 +38,7 @@ export class Ammeter extends Device {
     this.branch = network.makeBranch(this.np, this.nn);
   }
 
-  override eval(state: DeviceState, final: boolean): void {
+  override eval(state: DeviceState, options: EvalOptions): void {
     const { branch } = this;
     state[S.I] = branch.current;
   }

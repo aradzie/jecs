@@ -48,6 +48,18 @@ export interface StateParams {
   readonly ops: readonly OutputParam[];
 }
 
+export type EvalOptions = {
+  /**
+   * Whether the non-linear devices should limit voltage changes to help convergence.
+   */
+  readonly damped: boolean;
+  /**
+   * A very small conductance added across nonlinear devices
+   * to prevent nodes from floating if a device is turned completely off.
+   */
+  readonly gmin: number;
+};
+
 export abstract class Device<ParamsT = unknown> {
   /** Returns a list of built-in generic device models, if any. */
   static getModels(): readonly DeviceModel[] {
@@ -112,11 +124,9 @@ export abstract class Device<ParamsT = unknown> {
    * Circuit calls this method to let a device to compute its state
    * from the current node voltages and branch currents.
    * @param state Device state which is saved between iterations.
-   * @param final Whether this is a final evaluation step, which is performed after last iteration.
-   *              At the final evaluation step devices should compute output parameters.
-   *              Non-linear devices should disable damping.
+   * @param options Evaluation options.
    */
-  eval(state: DeviceState, final: boolean): void {}
+  eval(state: DeviceState, options: EvalOptions): void {}
 
   /**
    * Circuit calls this method to let a device to stamp the MNA matrix

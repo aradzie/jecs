@@ -1,7 +1,7 @@
 import { solve } from "@jssim/math/lib/gauss-elimination";
 import { matClear, matMake, vecClear, vecCopy, vecMake } from "@jssim/math/lib/matrix";
 import type { Circuit } from "../circuit/circuit";
-import type { Device } from "../circuit/device";
+import type { Device, EvalOptions } from "../circuit/device";
 import { Stamper } from "../circuit/network";
 import { converged } from "./convergence";
 import { SimulationError } from "./error";
@@ -45,13 +45,19 @@ export function dcAnalysis(circuit: Circuit, userOptions: Partial<Options> = {})
 
   const stamper = new Stamper(matrix, vector);
 
+  const evalOptions: EvalOptions = {
+    damped: true,
+    gmin: options.gmin,
+  };
+
   for (const iteration of controller) {
     matClear(matrix);
     vecClear(vector);
 
     for (const device of devices) {
       const { state } = device;
-      device.eval(state, false);
+
+      device.eval(state, evalOptions);
       device.stamp(state, stamper);
     }
 
@@ -83,9 +89,14 @@ class Controller implements Iterable<number> {
 function makeOutput(devices: readonly Device[]): Output {
   const output: DeviceOutput[] = [];
 
+  const evalOptions: EvalOptions = {
+    damped: false,
+    gmin: 0,
+  };
+
   for (const device of devices) {
     const { state } = device;
-    device.eval(state, true);
+    device.eval(state, evalOptions);
 
     const deviceClass = device.getDeviceClass();
     const values = deviceClass.stateParams.ops.map(

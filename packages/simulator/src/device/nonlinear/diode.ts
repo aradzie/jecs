@@ -1,4 +1,4 @@
-import { Device, DeviceState, StateParams } from "../../circuit/device";
+import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device";
 import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import { Params, ParamsSchema } from "../../circuit/params";
@@ -88,13 +88,16 @@ export class Diode extends Device<DiodeParams> {
     state[S.Vcrit] = Vcrit;
   }
 
-  override eval(state: DeviceState, final: boolean): void {
+  override eval(
+    state: DeviceState, //
+    { damped, gmin }: EvalOptions,
+  ): void {
     const { na, nc } = this;
     const Is = state[S.Is];
     const Vt = state[S.Vt];
     const Vcrit = state[S.Vcrit];
     let V = na.voltage - nc.voltage;
-    if (!final) {
+    if (damped) {
       V = pnVoltage(V, state[S.V], Vt, Vcrit);
     }
     const I = pnCurrent(V, Is, Vt);

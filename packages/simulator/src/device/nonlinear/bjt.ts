@@ -1,4 +1,4 @@
-import { Device, DeviceState, StateParams } from "../../circuit/device";
+import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device";
 import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import { Params, ParamsSchema } from "../../circuit/params";
@@ -194,7 +194,10 @@ export class Bjt extends Device<BjtParams> {
     state[S.Vcritr] = Vcritr;
   }
 
-  override eval(state: DeviceState, final: boolean): void {
+  override eval(
+    state: DeviceState, //
+    { damped, gmin }: EvalOptions,
+  ): void {
     const { ne, nb, nc } = this;
     const pol = state[S.pol];
     const Af = state[S.Af];
@@ -206,7 +209,7 @@ export class Bjt extends Device<BjtParams> {
     const Vcritr = state[S.Vcritr];
     let Vbe = pol * (nb.voltage - ne.voltage);
     let Vbc = pol * (nb.voltage - nc.voltage);
-    if (!final) {
+    if (damped) {
       Vbe = pnVoltage(Vbe, pol * state[S.Vbe], Vtf, Vcritf);
       Vbc = pnVoltage(Vbc, pol * state[S.Vbc], Vtr, Vcritr);
     }

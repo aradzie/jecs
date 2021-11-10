@@ -1,4 +1,4 @@
-import { Device, DeviceState, StateParams } from "../../circuit/device";
+import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device";
 import type { Node, Stamper } from "../../circuit/network";
 import { Params, ParamsSchema } from "../../circuit/params";
 
@@ -50,7 +50,7 @@ export class CSource extends Device<CSourceParams> {
     state[S.I] = I;
   }
 
-  override eval(state: DeviceState, final: boolean): void {
+  override eval(state: DeviceState, options: EvalOptions): void {
     const { np, nn } = this;
     const I = state[S.I];
     const V = np.voltage - nn.voltage;

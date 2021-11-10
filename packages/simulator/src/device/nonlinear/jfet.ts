@@ -1,4 +1,4 @@
-import { Device, DeviceState, StateParams } from "../../circuit/device";
+import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device";
 import type { DeviceModel } from "../../circuit/library";
 import type { Node, Stamper } from "../../circuit/network";
 import { Params, ParamsSchema } from "../../circuit/params";
@@ -174,7 +174,10 @@ export class Jfet extends Device<JfetParams> {
     state[S.Vcrit] = Vcrit;
   }
 
-  override eval(state: DeviceState, final: boolean): void {
+  override eval(
+    state: DeviceState, //
+    { damped, gmin }: EvalOptions,
+  ): void {
     const { ns, ng, nd } = this;
     const pol = state[S.pol];
     const Vth = state[S.Vth];
@@ -188,7 +191,7 @@ export class Jfet extends Device<JfetParams> {
 
     let Vgs = pol * (ng.voltage - ns.voltage);
     let Vgd = pol * (ng.voltage - nd.voltage);
-    if (!final) {
+    if (damped) {
       Vgs = pnVoltage(Vgs, pol * state[S.Vgs], Vt, Vcrit);
       Vgd = pnVoltage(Vgd, pol * state[S.Vgd], Vt, Vcrit);
     }
