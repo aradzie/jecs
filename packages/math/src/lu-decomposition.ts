@@ -1,4 +1,4 @@
-import { MathError } from "./error";
+import { assert } from "./assert";
 import { matSize, swapRows } from "./matrix";
 import { findPivotRow, PermVector } from "./pivot";
 import type { Matrix, Solver, Vector } from "./types";
@@ -9,13 +9,9 @@ import type { Matrix, Solver, Vector } from "./types";
  * @param mat A matrix `A`.
  */
 export function createSolver(mat: Matrix): Solver {
-  const [h, w] = matSize(mat);
+  const [size, w] = matSize(mat);
 
-  if (h !== w) {
-    throw new MathError();
-  }
-
-  const size = h;
+  assert(size === w);
 
   const p = new Int32Array(size);
   for (let i = 0; i < size; i++) {
@@ -39,9 +35,7 @@ export function createSolver(mat: Matrix): Solver {
   const y = new Float64Array(size);
 
   return function solver(vec: Vector): void {
-    if (size !== vec.length) {
-      throw new MathError();
-    }
+    assert(size === vec.length);
 
     // LUx = b, Ly = b, Ux = y
 

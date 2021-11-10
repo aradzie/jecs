@@ -1,4 +1,4 @@
-import { MathError } from "@jssim/math/lib/error";
+import { NumericOverflowError } from "@jssim/math/lib/error";
 import type { Matrix, Vector } from "@jssim/math/lib/types";
 
 const { isFinite } = Number;
@@ -111,7 +111,7 @@ export class Stamper {
    */
   stampMatrix(i: Node | Branch, j: Node | Branch, x: number): void {
     if (!isFinite(x)) {
-      throw new MathError();
+      throw new NumericOverflowError();
     }
     if (i !== groundNode && j !== groundNode) {
       this.#matrix[i.index][j.index] += x;
@@ -125,7 +125,7 @@ export class Stamper {
    */
   stampRightSide(i: Node | Branch, x: number): void {
     if (!isFinite(x)) {
-      throw new MathError();
+      throw new NumericOverflowError();
     }
     if (i !== groundNode) {
       this.#vector[i.index] += x;

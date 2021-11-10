@@ -1,4 +1,4 @@
-import { MathError } from "./error";
+import { assert } from "./assert";
 import { matSize, swapRows } from "./matrix";
 import { findPivotRow } from "./pivot";
 import type { Matrix, Vector } from "./types";
@@ -18,9 +18,7 @@ export function solve(mat: Matrix, vec: Vector): void {
   const [h, w] = matSize(mat);
   const size = vec.length;
 
-  if (size !== w || size !== h) {
-    throw new MathError();
-  }
+  assert(size === w && size === h);
 
   for (let k = 0; k < size - 1; k++) {
     pivot(mat, vec, size, k);

@@ -1,4 +1,4 @@
-import { MathError } from "./error";
+import { assert } from "./assert";
 import type { Matrix, MatrixLike, Vector, VectorLike } from "./types";
 
 export function matSize(a: MatrixLike): [height: number, width: number] {
@@ -22,9 +22,7 @@ export function matClear(m: Matrix, x = 0): void {
 export function matCopy(src: MatrixLike, dst: Matrix): void {
   const [aHeight, aWidth] = matSize(src);
   const [bHeight, bWidth] = matSize(dst);
-  if (aHeight !== bHeight || aWidth !== bWidth) {
-    throw new MathError();
-  }
+  assert(aHeight === bHeight && aWidth === bWidth);
   for (let i = 0; i < aHeight; i++) {
     dst[i].set(src[i]);
   }
@@ -33,9 +31,7 @@ export function matCopy(src: MatrixLike, dst: Matrix): void {
 export function matMultiplyMat(a: MatrixLike, b: MatrixLike): Matrix {
   const [aHeight, aWidth] = matSize(a);
   const [bHeight, bWidth] = matSize(b);
-  if (aWidth !== bHeight) {
-    throw new MathError();
-  }
+  assert(aWidth === bHeight);
   const c = matMake(aHeight, bWidth);
   for (let i = 0; i < aHeight; i++) {
     for (let j = 0; j < bWidth; j++) {
@@ -50,14 +46,12 @@ export function matMultiplyMat(a: MatrixLike, b: MatrixLike): Matrix {
 }
 
 export function matMultiplyVec(a: MatrixLike, b: VectorLike): Vector {
-  const [height, width] = matSize(a);
-  if (width !== b.length) {
-    throw new MathError();
-  }
-  const c = vecMake(height);
-  for (let i = 0; i < height; i++) {
+  const [aHeight, aWidth] = matSize(a);
+  assert(aWidth === b.length);
+  const c = vecMake(aHeight);
+  for (let i = 0; i < aHeight; i++) {
     let x = 0;
-    for (let j = 0; j < width; j++) {
+    for (let j = 0; j < aWidth; j++) {
       x += a[i][j] * b[j];
     }
     c[i] = x;
@@ -74,9 +68,7 @@ export function vecClear(v: Vector, x = 0): void {
 }
 
 export function vecCopy(src: VectorLike, dst: Vector): void {
-  if (src.length !== dst.length) {
-    throw new MathError();
-  }
+  assert(src.length === dst.length);
   dst.set(src);
 }
 
