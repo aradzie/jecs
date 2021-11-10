@@ -46,7 +46,7 @@ export class CSource extends Device<CSourceParams> {
     this.nn = nn;
   }
 
-  override deriveState({ I }: CSourceParams, state: DeviceState): void {
+  override deriveState(state: DeviceState, { I }: CSourceParams): void {
     state[S.I] = I;
   }
 
@@ -59,7 +59,7 @@ export class CSource extends Device<CSourceParams> {
     state[S.P] = P;
   }
 
-  override stamp(stamper: Stamper, state: DeviceState): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn } = this;
     const I = state[S.I];
     stamper.stampCurrentSource(np, nn, I);

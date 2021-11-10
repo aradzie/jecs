@@ -186,8 +186,8 @@ export class Mosfet extends Device<MosfetParams> {
   }
 
   override deriveState(
-    { polarity, Vth, beta, lambda, Is, N, Temp }: MosfetParams, //
-    state: DeviceState,
+    state: DeviceState, //
+    { polarity, Vth, beta, lambda, Is, N, Temp }: MosfetParams,
   ): void {
     const pol = fetSign(polarity);
     const Vt = N * pnVt(Temp);
@@ -311,7 +311,7 @@ export class Mosfet extends Device<MosfetParams> {
     state[S.Gm] = Gm;
   }
 
-  override stamp(stamper: Stamper, state: DeviceState): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
     const { ns, ng, nd, nb } = this;
     const pol = state[S.pol];
     const Vbs = pol * state[S.Vbs];

@@ -52,7 +52,7 @@ export class VSource extends Device<VSourceParams> {
     this.branch = network.makeBranch(this.np, this.nn);
   }
 
-  override deriveState({ V }: VSourceParams, state: DeviceState): void {
+  override deriveState(state: DeviceState, { V }: VSourceParams): void {
     state[S.V] = V;
   }
 
@@ -65,7 +65,7 @@ export class VSource extends Device<VSourceParams> {
     state[S.P] = P;
   }
 
-  override stamp(stamper: Stamper, state: DeviceState): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn, branch } = this;
     const V = state[S.V];
     stamper.stampVoltageSource(np, nn, branch, V);

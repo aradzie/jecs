@@ -43,7 +43,7 @@ export class Ammeter extends Device {
     state[S.I] = branch.current;
   }
 
-  override stamp(stamper: Stamper): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn, branch } = this;
     stamper.stampVoltageSource(np, nn, branch, 0);
   }

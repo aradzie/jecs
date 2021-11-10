@@ -159,8 +159,8 @@ export class Jfet extends Device<JfetParams> {
   }
 
   override deriveState(
-    { polarity, Vth, beta, lambda, Is, N, Temp }: JfetParams, //
-    state: DeviceState,
+    state: DeviceState, //
+    { polarity, Vth, beta, lambda, Is, N, Temp }: JfetParams,
   ): void {
     const pol = fetSign(polarity);
     const Vt = N * pnVt(Temp);
@@ -275,7 +275,7 @@ export class Jfet extends Device<JfetParams> {
     state[S.Gm] = Gm;
   }
 
-  override stamp(stamper: Stamper, state: DeviceState): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
     const { ns, ng, nd } = this;
     const pol = state[S.pol];
     const Vgs = pol * state[S.Vgs];

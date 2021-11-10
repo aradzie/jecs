@@ -50,7 +50,10 @@ export class Resistor extends Device<ResistorParams> {
     this.nb = nb;
   }
 
-  override deriveState({ R }: ResistorParams, state: DeviceState): void {
+  override deriveState(
+    state: DeviceState, //
+    { R }: ResistorParams,
+  ): void {
     if (R === 0) {
       throw new CircuitError(`Zero valued resistor`);
     }
@@ -68,7 +71,7 @@ export class Resistor extends Device<ResistorParams> {
     state[S.P] = P;
   }
 
-  override stamp(stamper: Stamper, state: DeviceState): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
     const { na, nb } = this;
     const G = state[S.G];
     stamper.stampConductance(na, nb, G);

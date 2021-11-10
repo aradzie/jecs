@@ -62,7 +62,7 @@ export class CCVSource extends Device<CCVSourceParams> {
     this.branch2 = network.makeBranch(this.ncp, this.ncn);
   }
 
-  override deriveState({ gain }: CCVSourceParams, state: DeviceState): void {
+  override deriveState(state: DeviceState, { gain }: CCVSourceParams): void {
     state[S.gain] = gain;
   }
 
@@ -76,7 +76,7 @@ export class CCVSource extends Device<CCVSourceParams> {
     state[S.P] = P;
   }
 
-  override stamp(stamper: Stamper, state: DeviceState): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn, branch1, ncp, ncn, branch2 } = this;
     const gain = state[S.gain];
     stamper.stampVoltageSource(np, nn, branch1, 0);

@@ -59,7 +59,10 @@ export class OpAmp extends Device<OpAmpParams> {
     this.branch = network.makeBranch(this.no, network.groundNode);
   }
 
-  override deriveState({ gain, Vmax }: OpAmpParams, state: DeviceState): void {
+  override deriveState(
+    state: DeviceState, //
+    { gain, Vmax }: OpAmpParams,
+  ): void {
     state[S.gain] = gain;
     state[S.Vmax] = Vmax;
   }
@@ -77,7 +80,7 @@ export class OpAmp extends Device<OpAmpParams> {
     state[S.gv] = gv;
   }
 
-  override stamp(stamper: Stamper, state: DeviceState): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn, no, branch } = this;
     const Vin = state[S.Vin];
     const Vout = state[S.Vout];

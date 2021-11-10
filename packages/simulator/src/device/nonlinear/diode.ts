@@ -78,8 +78,8 @@ export class Diode extends Device<DiodeParams> {
   }
 
   override deriveState(
-    { Is, N, Temp }: DiodeParams, //
-    state: DeviceState,
+    state: DeviceState, //
+    { Is, N, Temp }: DiodeParams,
   ): void {
     const Vt = N * pnVt(Temp);
     const Vcrit = pnVcrit(Is, Vt);
@@ -106,7 +106,7 @@ export class Diode extends Device<DiodeParams> {
     state[S.P] = P;
   }
 
-  override stamp(stamper: Stamper, state: DeviceState): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
     const { na, nc } = this;
     const V = state[S.V];
     const I = state[S.I];

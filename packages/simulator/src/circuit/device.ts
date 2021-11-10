@@ -93,10 +93,13 @@ export abstract class Device<ParamsT = unknown> {
   }
 
   setParams(params: ParamsT): void {
-    this.deriveState((this.params = params), this.state);
+    this.deriveState(this.state, (this.params = params));
   }
 
-  deriveState(params: ParamsT, state: DeviceState): void {}
+  /**
+   * Derive state from params.
+   */
+  deriveState(state: DeviceState, params: ParamsT): void {}
 
   /**
    * Circuit calls this method to let a device to allocate extra nodes and
@@ -118,10 +121,10 @@ export abstract class Device<ParamsT = unknown> {
   /**
    * Circuit calls this method to let a device to stamp the MNA matrix
    * with values obtained from the previously computed state.
-   * @param stamper A stamper which updates MNA matrix and RHS vector.
    * @param state Device state which is saved between iterations.
+   * @param stamper A stamper which updates MNA matrix and RHS vector.
    */
-  stamp(stamper: Stamper, state: DeviceState): void {}
+  stamp(state: DeviceState, stamper: Stamper): void {}
 
   /**
    * Returns value of an output parameter with the given name.

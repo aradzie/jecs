@@ -52,7 +52,7 @@ export function dcAnalysis(circuit: Circuit, userOptions: Partial<Options> = {})
     for (const device of devices) {
       const { state } = device;
       device.eval(state, false);
-      device.stamp(stamper, state);
+      device.stamp(state, stamper);
     }
 
     solve(matrix, vector);

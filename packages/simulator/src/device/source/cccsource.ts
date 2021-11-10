@@ -59,7 +59,7 @@ export class CCCSource extends Device<CCCSourceParams> {
     this.branch = network.makeBranch(this.ncp, this.ncn);
   }
 
-  override deriveState({ gain }: CCCSourceParams, state: DeviceState): void {
+  override deriveState(state: DeviceState, { gain }: CCCSourceParams): void {
     state[S.gain] = gain;
   }
 
@@ -74,7 +74,7 @@ export class CCCSource extends Device<CCCSourceParams> {
     state[S.P] = P;
   }
 
-  override stamp(stamper: Stamper, state: DeviceState): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn, ncp, ncn, branch } = this;
     const gain = state[S.gain];
     stamper.stampVoltageSource(ncp, ncn, branch, 0);

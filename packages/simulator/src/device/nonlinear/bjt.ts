@@ -174,8 +174,8 @@ export class Bjt extends Device<BjtParams> {
   }
 
   override deriveState(
-    { polarity, Bf, Br, Is, Nf, Nr, Vaf, Var, Temp }: BjtParams, //
-    state: DeviceState,
+    state: DeviceState, //
+    { polarity, Bf, Br, Is, Nf, Nr, Vaf, Var, Temp }: BjtParams,
   ): void {
     const pol = bjtSign(polarity);
     const Af = Bf / (Bf + 1);
@@ -226,7 +226,7 @@ export class Bjt extends Device<BjtParams> {
     state[S.Gr] = Gr;
   }
 
-  override stamp(stamper: Stamper, state: DeviceState): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
     const { ne, nb, nc } = this;
     const pol = state[S.pol];
     const Af = state[S.Af];

@@ -59,7 +59,7 @@ export class VCCSource extends Device<VCCSourceParams> {
     this.branch = network.makeBranch(this.np, this.nn);
   }
 
-  override deriveState({ gain }: VCCSourceParams, state: DeviceState): void {
+  override deriveState(state: DeviceState, { gain }: VCCSourceParams): void {
     state[S.gain] = gain;
   }
 
@@ -73,7 +73,7 @@ export class VCCSource extends Device<VCCSourceParams> {
     state[S.P] = P;
   }
 
-  override stamp(stamper: Stamper, state: DeviceState): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn, ncp, ncn, branch } = this;
     const gain = state[S.gain];
     stamper.stampMatrix(np, branch, 1);
