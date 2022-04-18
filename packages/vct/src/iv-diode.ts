@@ -1,8 +1,8 @@
-import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist";
-import { parse } from "@jssim/simulator/lib/netlist/parser";
-import { Variables } from "@jssim/simulator/lib/netlist/variables";
-import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
-import { Dataset, points } from "./util/dataset";
+import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist.js";
+import { parse } from "@jssim/simulator/lib/netlist/parser.js";
+import { Variables } from "@jssim/simulator/lib/netlist/variables.js";
+import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc.js";
+import { Dataset, points } from "./util/dataset.js";
 
 const input = `
 V np g V=$xVd;

@@ -1,13 +1,13 @@
-import { Circuit } from "../circuit/circuit";
-import type { DeviceClass } from "../circuit/device";
-import { CircuitError } from "../circuit/error";
-import { createDevice, getDeviceClass, Initializer } from "../circuit/library";
-import type { Node } from "../circuit/network";
-import { Ground } from "../device";
-import { NameMap } from "../util/map";
-import type { Definition, Netlist } from "./ast";
-import { parse } from "./parser";
-import { Variables } from "./variables";
+import { Circuit } from "../circuit/circuit.js";
+import type { DeviceClass } from "../circuit/device.js";
+import { CircuitError } from "../circuit/error.js";
+import { createDevice, getDeviceClass, Initializer } from "../circuit/library.js";
+import type { Node } from "../circuit/network.js";
+import { Ground } from "../device/index.js";
+import { NameMap } from "../util/map.js";
+import type { Definition, Netlist } from "./ast.js";
+import { parse } from "./parser.js";
+import { Variables } from "./variables.js";
 
 interface DefinitionItem {
   readonly item: Definition;

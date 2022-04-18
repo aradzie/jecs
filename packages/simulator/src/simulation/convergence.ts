@@ -1,6 +1,6 @@
-import type { Vector } from "@jssim/math/lib/types";
-import type { Branch, Node } from "../circuit/network";
-import type { Options } from "./options";
+import type { Vector } from "@jssim/math/lib/types.js";
+import type { Branch, Node } from "../circuit/network.js";
+import type { Options } from "./options.js";
 
 export function converged(
   { abstol, vntol, reltol }: Options,

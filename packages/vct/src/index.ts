@@ -1,6 +1,6 @@
-import "./amp-bjt";
-import "./amp-mosfet";
-import "./iv-bjt";
-import "./iv-diode";
-import "./iv-jfet";
-import "./iv-mosfet";
+import "./amp-bjt.js";
+import "./amp-mosfet.js";
+import "./iv-bjt.js";
+import "./iv-diode.js";
+import "./iv-jfet.js";
+import "./iv-mosfet.js";

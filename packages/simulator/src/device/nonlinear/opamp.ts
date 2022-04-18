@@ -1,7 +1,7 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device";
-import type { Branch, Network, Node, Stamper } from "../../circuit/network";
-import { Params } from "../../circuit/params";
-import { piOverTwo, twoOverPi } from "../const";
+import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device.js";
+import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
+import { Params } from "../../circuit/params.js";
+import { piOverTwo, twoOverPi } from "../const.js";
 
 export interface OpAmpParams {
   readonly gain: number;

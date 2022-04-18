@@ -1,5 +1,5 @@
-import { assert } from "./assert";
-import type { Matrix, MatrixLike, Vector, VectorLike } from "./types";
+import { assert } from "./assert.js";
+import type { Matrix, MatrixLike, Vector, VectorLike } from "./types.js";
 
 export function matSize(a: MatrixLike): [height: number, width: number] {
   return [a.length, a[0].length];

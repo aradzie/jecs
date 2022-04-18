@@ -1,6 +1,6 @@
 import test from "ava";
-import { toMatrix, toVector } from "./debug";
-import { solve } from "./gauss-elimination";
+import { toMatrix, toVector } from "./debug.js";
+import { solve } from "./gauss-elimination.js";
 
 test("solve", (t) => {
   {

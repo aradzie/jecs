@@ -1,8 +1,8 @@
-import type { DeviceParams } from "../circuit/params";
-import { NameMap } from "../util/map";
-import type { BinaryExp, Equation, Expression, FuncExp, UnaryExp } from "./ast";
-import { builtins, equation, literalExp, Parameter } from "./ast";
-import { callFunc } from "./functions";
+import type { DeviceParams } from "../circuit/params.js";
+import { NameMap } from "../util/map.js";
+import type { BinaryExp, Equation, Expression, FuncExp, UnaryExp } from "./ast.js";
+import { builtins, equation, literalExp, Parameter } from "./ast.js";
+import { callFunc } from "./functions.js";
 
 export class Variables {
   private equations = new NameMap<Equation>();

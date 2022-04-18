@@ -1,6 +1,6 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device";
-import type { Node, Stamper } from "../../circuit/network";
-import { Params, ParamsSchema } from "../../circuit/params";
+import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device.js";
+import type { Node, Stamper } from "../../circuit/network.js";
+import { Params, ParamsSchema } from "../../circuit/params.js";
 
 export interface CSourceParams {
   readonly I: number;

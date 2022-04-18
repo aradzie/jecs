@@ -1,5 +1,8 @@
 import { writeFileSync } from "fs";
 import { join } from "path";
+import { fileURLToPath, URL } from "url";
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 export function* points(start: number, end: number, n: number): Iterable<number> {
   if (n < 1) {

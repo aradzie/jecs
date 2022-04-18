@@ -1,7 +1,7 @@
-import { assert } from "./assert";
-import { matSize, swapRows } from "./matrix";
-import { findPivotRow } from "./pivot";
-import type { Matrix, Vector } from "./types";
+import { assert } from "./assert.js";
+import { matSize, swapRows } from "./matrix.js";
+import { findPivotRow } from "./pivot.js";
+import type { Matrix, Vector } from "./types.js";
 
 /**
  * Solves `A * x = b` using the Gauss-Jordan elimination method.

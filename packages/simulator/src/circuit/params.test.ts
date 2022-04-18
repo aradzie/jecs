@@ -1,5 +1,5 @@
 import test from "ava";
-import { Params, ParamsMap } from "./params";
+import { Params, ParamsMap } from "./params.js";
 
 test("validate device params", (t) => {
   t.deepEqual(new ParamsMap({}).build(), {});

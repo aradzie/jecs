@@ -1,7 +1,7 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../circuit/device";
-import { CircuitError } from "../circuit/error";
-import type { Node, Stamper } from "../circuit/network";
-import { Params, ParamsSchema } from "../circuit/params";
+import { Device, DeviceState, EvalOptions, StateParams } from "../circuit/device.js";
+import { CircuitError } from "../circuit/error.js";
+import type { Node, Stamper } from "../circuit/network.js";
+import { Params, ParamsSchema } from "../circuit/params.js";
 
 export interface ResistorParams {
   readonly R: number;

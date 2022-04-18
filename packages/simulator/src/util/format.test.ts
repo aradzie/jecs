@@ -1,5 +1,5 @@
 import test from "ava";
-import { formatNumber } from "./format";
+import { formatNumber } from "./format.js";
 
 test("format number", (t) => {
   t.is(formatNumber(123e-18), "0");

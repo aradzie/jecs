@@ -1,18 +1,18 @@
-import type { DeviceClass } from "../circuit/device";
-import { Ammeter } from "./ammeter";
-import { Ground } from "./ground";
-import { Bjt } from "./nonlinear/bjt";
-import { Diode } from "./nonlinear/diode";
-import { Jfet } from "./nonlinear/jfet";
-import { Mosfet } from "./nonlinear/mosfet";
-import { OpAmp } from "./nonlinear/opamp";
-import { Resistor } from "./resistor";
-import { CCCSource } from "./source/cccsource";
-import { CCVSource } from "./source/ccvsource";
-import { CSource } from "./source/csource";
-import { VCCSource } from "./source/vccsource";
-import { VCVSource } from "./source/vcvsource";
-import { VSource } from "./source/vsource";
+import type { DeviceClass } from "../circuit/device.js";
+import { Ammeter } from "./ammeter.js";
+import { Ground } from "./ground.js";
+import { Bjt } from "./nonlinear/bjt.js";
+import { Diode } from "./nonlinear/diode.js";
+import { Jfet } from "./nonlinear/jfet.js";
+import { Mosfet } from "./nonlinear/mosfet.js";
+import { OpAmp } from "./nonlinear/opamp.js";
+import { Resistor } from "./resistor.js";
+import { CCCSource } from "./source/cccsource.js";
+import { CCVSource } from "./source/ccvsource.js";
+import { CSource } from "./source/csource.js";
+import { VCCSource } from "./source/vccsource.js";
+import { VCVSource } from "./source/vcvsource.js";
+import { VSource } from "./source/vsource.js";
 
 export {
   Ammeter,

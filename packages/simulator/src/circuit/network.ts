@@ -1,5 +1,5 @@
-import { NumericOverflowError } from "@jssim/math/lib/error";
-import type { Matrix, Vector } from "@jssim/math/lib/types";
+import { NumericOverflowError } from "@jssim/math/lib/error.js";
+import type { Matrix, Vector } from "@jssim/math/lib/types.js";
 
 const { isFinite } = Number;
 

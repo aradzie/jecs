@@ -49,16 +49,9 @@
     "webpack-cli": "^4.9.2"
   },
   "ava": {
-    "extensions": [
-      "ts",
-      "tsx"
-    ],
     "files": [
-      "src/**/*.test.*",
-      "src/**/__test__/*"
-    ],
-    "require": [
-      "ts-node/register"
+      "lib/**/*.test.*",
+      "lib/**/__test__/*"
     ]
   }
 }

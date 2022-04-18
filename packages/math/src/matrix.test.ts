@@ -1,6 +1,6 @@
 import test from "ava";
-import { toArray, toMatrix, toVector } from "./debug";
-import { matMultiplyMat, matMultiplyVec } from "./matrix";
+import { toArray, toMatrix, toVector } from "./debug.js";
+import { matMultiplyMat, matMultiplyVec } from "./matrix.js";
 
 test("multiply matrix by matrix", (t) => {
   {

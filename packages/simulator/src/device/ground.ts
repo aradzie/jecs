@@ -1,6 +1,6 @@
-import { Device, StateParams } from "../circuit/device";
-import { CircuitError } from "../circuit/error";
-import type { Network, Node } from "../circuit/network";
+import { Device, StateParams } from "../circuit/device.js";
+import { CircuitError } from "../circuit/error.js";
+import type { Network, Node } from "../circuit/network.js";
 
 export class Ground extends Device {
   static override readonly id = "Ground";

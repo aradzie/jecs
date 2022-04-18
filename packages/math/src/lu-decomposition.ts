@@ -1,7 +1,7 @@
-import { assert } from "./assert";
-import { matSize, swapRows } from "./matrix";
-import { findPivotRow, PermVector } from "./pivot";
-import type { Matrix, Solver, Vector } from "./types";
+import { assert } from "./assert.js";
+import { matSize, swapRows } from "./matrix.js";
+import { findPivotRow, PermVector } from "./pivot.js";
+import type { Matrix, Solver, Vector } from "./types.js";
 
 /**
  * Creates a new solver which uses LU decomposition to find a solution

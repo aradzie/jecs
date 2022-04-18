@@ -1,5 +1,5 @@
-import { Temp } from "../device/const";
-import { CircuitError } from "./error";
+import { Temp } from "../device/const.js";
+import { CircuitError } from "./error.js";
 
 export type ParamsSchema<T = any> = Record<keyof T, Param>;
 

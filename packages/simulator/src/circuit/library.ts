@@ -1,9 +1,9 @@
-import { devices } from "../device";
-import { NameMap } from "../util/map";
-import type { Device, DeviceClass } from "./device";
-import { CircuitError } from "./error";
-import type { Node } from "./network";
-import { DeviceParams, ParamsMap, ParamsSchema } from "./params";
+import { devices } from "../device/index.js";
+import { NameMap } from "../util/map.js";
+import type { Device, DeviceClass } from "./device.js";
+import { CircuitError } from "./error.js";
+import type { Node } from "./network.js";
+import { DeviceParams, ParamsMap, ParamsSchema } from "./params.js";
 
 export type ModelName = string;
 

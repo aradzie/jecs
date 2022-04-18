@@ -1,5 +1,5 @@
 import test from "ava";
-import { NameMap } from "./map";
+import { NameMap } from "./map.js";
 
 test("add keys", (t) => {
   const map = new NameMap<number>([

@@ -1,5 +1,5 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../circuit/device";
-import type { Branch, Network, Node, Stamper } from "../circuit/network";
+import { Device, DeviceState, EvalOptions, StateParams } from "../circuit/device.js";
+import type { Branch, Network, Node, Stamper } from "../circuit/network.js";
 
 const enum S {
   /** Current through probe. */

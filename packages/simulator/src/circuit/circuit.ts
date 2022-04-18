@@ -1,7 +1,7 @@
 import type { Vector } from "@jssim/math/lib/types";
-import type { Device } from "./device";
-import { CircuitError } from "./error";
-import { Branch, groundNode, Network, Node } from "./network";
+import type { Device } from "./device.js";
+import { CircuitError } from "./error.js";
+import { Branch, groundNode, Network, Node } from "./network.js";
 
 export class Circuit implements Network {
   readonly #nodes: (Node | Branch)[] = [];

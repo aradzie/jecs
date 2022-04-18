@@ -1,6 +1,6 @@
 import test from "ava";
-import { parseNetlist } from "./netlist";
-import { parse } from "./parser";
+import { parseNetlist } from "./netlist.js";
+import { parse } from "./parser.js";
 
 test("parse netlist text", (t) => {
   const circuit = parseNetlist(`

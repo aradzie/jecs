@@ -1,4 +1,4 @@
-import type { MatrixLike } from "./types";
+import type { MatrixLike } from "./types.js";
 
 export type PermVectorLike = ArrayLike<number>;
 export type PermVector = Int32Array;

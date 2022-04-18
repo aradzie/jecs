@@ -1,6 +1,6 @@
 import test from "ava";
-import { Resistor } from "../device";
-import { Circuit } from "./circuit";
+import { Resistor } from "../device/index.js";
+import { Circuit } from "./circuit.js";
 
 test("make node", (t) => {
   const circuit = new Circuit();

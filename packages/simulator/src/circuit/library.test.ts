@@ -1,8 +1,8 @@
 import test from "ava";
-import { Bjt } from "../device";
-import { Temp } from "../device/const";
-import { Circuit } from "./circuit";
-import { createDevice } from "./library";
+import { Temp } from "../device/const.js";
+import { Bjt } from "../device/index.js";
+import { Circuit } from "./circuit.js";
+import { createDevice } from "./library.js";
 
 test("create device", (t) => {
   const circuit = new Circuit();

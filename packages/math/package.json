@@ -18,6 +18,7 @@
   "bugs": {
     "url": "https://github.com/aradzie/jssim/issues"
   },
+  "type": "module",
   "scripts": {
     "clean": "rm -fr lib",
     "compile": "tsc",
@@ -28,16 +29,9 @@
   },
   "devDependencies": {},
   "ava": {
-    "extensions": [
-      "ts",
-      "tsx"
-    ],
     "files": [
-      "src/**/*.test.*",
-      "src/**/__test__/*"
-    ],
-    "require": [
-      "ts-node/register"
+      "lib/**/*.test.*",
+      "lib/**/__test__/*"
     ]
   }
 }

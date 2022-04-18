@@ -1,7 +1,7 @@
-import { Ground } from "../device";
-import { formatNumber } from "../util/format";
-import { Unit } from "../util/unit";
-import type { Circuit } from "./circuit";
+import { Ground } from "../device/index.js";
+import { formatNumber } from "../util/format.js";
+import { Unit } from "../util/unit.js";
+import type { Circuit } from "./circuit.js";
 
 export function dumpCircuit(circuit: Circuit): string[] {
   const lines: string[] = [];

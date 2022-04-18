@@ -1,6 +1,6 @@
-import type { DeviceModel } from "./library";
-import type { Network, Node, Stamper } from "./network";
-import type { ParamsSchema } from "./params";
+import type { DeviceModel } from "./library.js";
+import type { Network, Node, Stamper } from "./network.js";
+import type { ParamsSchema } from "./params.js";
 
 export interface DeviceClass {
   /** Unique device class identifier. */

@@ -1,6 +1,6 @@
 import test from "ava";
-import { toMatrix } from "./debug";
-import { findPivotCol, findPivotRow, findRookPivot } from "./pivot";
+import { toMatrix } from "./debug.js";
+import { findPivotCol, findPivotRow, findRookPivot } from "./pivot.js";
 
 test("find pivot row", (t) => {
   {

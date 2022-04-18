@@ -1,6 +1,6 @@
 import test from "ava";
-import { toMatrix, toVector } from "./debug";
-import { createSolver } from "./lu-decomposition";
+import { toMatrix, toVector } from "./debug.js";
+import { createSolver } from "./lu-decomposition.js";
 
 test("solve", (t) => {
   {

@@ -1,5 +1,5 @@
 import test from "ava";
-import { parse } from "./parser";
+import { parse } from "./parser.js";
 
 test("parse definitions", (t) => {
   t.like(parse("R a b;"), {

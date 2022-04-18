@@ -1,4 +1,4 @@
-import type { Matrix, MatrixLike, Vector, VectorLike } from "./types";
+import type { Matrix, MatrixLike, Vector, VectorLike } from "./types.js";
 
 export function toVector(data: VectorLike): Vector {
   return new Float64Array(data);

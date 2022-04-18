@@ -1,4 +1,4 @@
-import type { Location, Netlist } from "./ast";
+import type { Location, Netlist } from "./ast.js";
 
 export class SyntaxError extends Error {
   readonly location: Location;

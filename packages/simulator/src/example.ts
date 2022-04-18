@@ -1,7 +1,7 @@
-import { Circuit } from "./circuit/circuit";
-import { dumpCircuit } from "./circuit/debug";
-import { Diode, Resistor, VSource } from "./device";
-import { dcAnalysis } from "./simulation/dc";
+import { Circuit } from "./circuit/circuit.js";
+import { dumpCircuit } from "./circuit/debug.js";
+import { Diode, Resistor, VSource } from "./device/index.js";
+import { dcAnalysis } from "./simulation/dc.js";
 
 // Create an empty circuit.
 const circuit = new Circuit();

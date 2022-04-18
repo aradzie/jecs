@@ -1,5 +1,5 @@
-import { celsiusToKelvin } from "../../util/unit";
-import { k, q } from "../const";
+import { celsiusToKelvin } from "../../util/unit.js";
+import { k, q } from "../const.js";
 
 export const npn = "npn" as const;
 export const pnp = "pnp" as const;

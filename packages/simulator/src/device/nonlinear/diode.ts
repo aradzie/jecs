@@ -1,9 +1,9 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device";
-import type { DeviceModel } from "../../circuit/library";
-import type { Node, Stamper } from "../../circuit/network";
-import { Params, ParamsSchema } from "../../circuit/params";
-import { Temp } from "../const";
-import { pnConductance, pnCurrent, pnVcrit, pnVoltage, pnVt } from "./semi";
+import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device.js";
+import type { DeviceModel } from "../../circuit/library.js";
+import type { Node, Stamper } from "../../circuit/network.js";
+import { Params, ParamsSchema } from "../../circuit/params.js";
+import { Temp } from "../const.js";
+import { pnConductance, pnCurrent, pnVcrit, pnVoltage, pnVt } from "./semi.js";
 
 export interface DiodeParams {
   readonly Is: number;

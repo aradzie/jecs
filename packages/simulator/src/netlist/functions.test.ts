@@ -1,5 +1,5 @@
 import test from "ava";
-import { addFuncDef, callFunc } from "./functions";
+import { addFuncDef, callFunc } from "./functions.js";
 
 test("check args", (t) => {
   t.throws(

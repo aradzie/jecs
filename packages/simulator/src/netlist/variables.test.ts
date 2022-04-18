@@ -1,6 +1,6 @@
 import test from "ava";
-import { parse } from "./parser";
-import { Variables } from "./variables";
+import { parse } from "./parser.js";
+import { Variables } from "./variables.js";
 
 const input = `
 R:R1 n1 n2 R=$c;

@@ -1,7 +1,7 @@
-import type { Circuit } from "@jssim/simulator/lib/circuit/circuit";
-import { Ground } from "@jssim/simulator/lib/device";
-import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist";
-import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
+import type { Circuit } from "@jssim/simulator/lib/circuit/circuit.js";
+import { Ground } from "@jssim/simulator/lib/device/index.js";
+import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist.js";
+import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc.js";
 
 export type Result = OkResult | ErrorResult;
 

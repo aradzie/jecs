@@ -1,4 +1,4 @@
-import { NameMap } from "../util/map";
+import { NameMap } from "../util/map.js";
 
 export type Func = readonly [func: (...args: number[]) => number, numArgs: number];
 

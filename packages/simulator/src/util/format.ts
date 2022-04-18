@@ -1,4 +1,4 @@
-import { getUnitSymbol, Unit } from "./unit";
+import { getUnitSymbol, Unit } from "./unit.js";
 
 export function formatNumber(v: number, unit: string | Unit = Unit.UNITLESS): string {
   const unitName = getUnitSymbol(unit);

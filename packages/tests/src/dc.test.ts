@@ -1,12 +1,15 @@
-import { dumpCircuit } from "@jssim/simulator/lib/circuit/debug";
-import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist";
-import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc";
-import type { Options } from "@jssim/simulator/lib/simulation/options";
+import { dumpCircuit } from "@jssim/simulator/lib/circuit/debug.js";
+import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist.js";
+import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc.js";
+import type { Options } from "@jssim/simulator/lib/simulation/options.js";
 import test from "ava";
 import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
+import { fileURLToPath, URL } from "url";
 
-scan(join(__dirname, "dc"));
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+
+scan(join(__dirname, "..", "src", "dc"));
 
 function scan(dir: string): void {
   for (const entry of readdirSync(dir)) {

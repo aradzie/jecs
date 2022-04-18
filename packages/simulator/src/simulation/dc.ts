@@ -1,12 +1,12 @@
-import { solve } from "@jssim/math/lib/gauss-elimination";
-import { matClear, matMake, vecClear, vecCopy, vecMake } from "@jssim/math/lib/matrix";
-import type { Circuit } from "../circuit/circuit";
-import type { Device, EvalOptions } from "../circuit/device";
-import { Stamper } from "../circuit/network";
-import { converged } from "./convergence";
-import { SimulationError } from "./error";
-import type { Options } from "./options";
-import { defaultOptions } from "./options";
+import { solve } from "@jssim/math/lib/gauss-elimination.js";
+import { matClear, matMake, vecClear, vecCopy, vecMake } from "@jssim/math/lib/matrix.js";
+import type { Circuit } from "../circuit/circuit.js";
+import type { Device, EvalOptions } from "../circuit/device.js";
+import { Stamper } from "../circuit/network.js";
+import { converged } from "./convergence.js";
+import { SimulationError } from "./error.js";
+import type { Options } from "./options.js";
+import { defaultOptions } from "./options.js";
 
 export type Output = readonly DeviceOutput[];
 
