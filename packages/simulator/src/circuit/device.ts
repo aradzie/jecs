@@ -50,9 +50,13 @@ export interface StateParams {
 
 export type EvalOptions = {
   /**
-   * Whether the non-linear devices should limit voltage changes to help convergence.
+   * Elapsed simulation time.
    */
-  readonly damped: boolean;
+  readonly elapsedTime: number;
+  /**
+   * Time step from the last simulation.
+   */
+  readonly timeStep: number;
   /**
    * A very small conductance added across nonlinear devices
    * to prevent nodes from floating if a device is turned completely off.
@@ -120,8 +124,10 @@ export abstract class Device<ParamsT = unknown> {
    */
   connect(network: Network): void {}
 
+  beginEval(state: DeviceState, options: EvalOptions): void {}
+
   /**
-   * Circuit calls this method to let a device to compute its state
+   * Circuit calls this method to let a device  compute its state
    * from the current node voltages and branch currents.
    * @param state Device state which is saved between iterations.
    * @param options Evaluation options.
@@ -129,12 +135,14 @@ export abstract class Device<ParamsT = unknown> {
   eval(state: DeviceState, options: EvalOptions): void {}
 
   /**
-   * Circuit calls this method to let a device to stamp the MNA matrix
+   * Circuit calls this method to let a device stamp the MNA matrix
    * with values obtained from the previously computed state.
    * @param state Device state which is saved between iterations.
    * @param stamper A stamper which updates MNA matrix and RHS vector.
    */
   stamp(state: DeviceState, stamper: Stamper): void {}
+
+  endEval(state: DeviceState, options: EvalOptions): void {}
 
   /**
    * Returns value of an output parameter with the given name.

@@ -46,7 +46,7 @@ BJT:DUT g nb nc @npn;
 V(nc)=5V
 V(nb)=714.574mV
 V1{V=5V,I=-10mA,P=-50mW}
-I1{I=100μA,V=-714.574mV,P=-71.457μW}
+I1{I=100μA,V=-714.575mV,P=-71.457μW}
 DUT{Vbe=714.574mV,Vbc=-4.285V,Vce=5V,Ie=-10.1mA,Ic=10mA,Ib=100μA}
 ```
 
@@ -100,6 +100,6 @@ BJT:DUT ne nb g @pnp;
 V(ne)=5V
 V(nb)=4.285V
 V1{V=5V,I=-10mA,P=-50mW}
-I1{I=100μA,V=-714.574mV,P=-71.457μW}
+I1{I=100μA,V=-714.575mV,P=-71.457μW}
 DUT{Vbe=-714.574mV,Vbc=4.285V,Vce=-5V,Ie=10.1mA,Ic=-10mA,Ib=-100μA}
 ```

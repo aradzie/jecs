@@ -186,7 +186,7 @@ export class Mosfet extends Device<MosfetParams> {
   }
 
   override deriveState(
-    state: DeviceState, //
+    state: DeviceState,
     { polarity, Vth, beta, lambda, Is, N, Temp }: MosfetParams,
   ): void {
     const pol = fetSign(polarity);
@@ -201,10 +201,7 @@ export class Mosfet extends Device<MosfetParams> {
     state[S.Vcrit] = Vcrit;
   }
 
-  override eval(
-    state: DeviceState, //
-    { damped, gmin }: EvalOptions,
-  ): void {
+  private eval0(state: DeviceState, damped: boolean): void {
     const { ns, ng, nd, nb } = this;
     const pol = state[S.pol];
     const Vth = state[S.Vth];
@@ -314,6 +311,10 @@ export class Mosfet extends Device<MosfetParams> {
     state[S.Gm] = Gm;
   }
 
+  override eval(state: DeviceState, options: EvalOptions): void {
+    this.eval0(state, true);
+  }
+
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { ns, ng, nd, nb } = this;
     const pol = state[S.pol];
@@ -349,5 +350,9 @@ export class Mosfet extends Device<MosfetParams> {
       stamper.stampTransconductance(nd, ns, ng, nd, Gm);
       stamper.stampCurrentSource(nd, ns, pol * (Ids - Gds * Vds - Gm * Vgd));
     }
+  }
+
+  override endEval(state: DeviceState, options: EvalOptions): void {
+    this.eval0(state, false);
   }
 }

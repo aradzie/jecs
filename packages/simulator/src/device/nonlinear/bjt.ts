@@ -162,11 +162,7 @@ export class Bjt extends Device<BjtParams> {
   /** The collector terminal. */
   readonly nc: Node;
 
-  constructor(
-    id: string, //
-    [ne, nb, nc]: readonly Node[],
-    params: BjtParams | null = null,
-  ) {
+  constructor(id: string, [ne, nb, nc]: readonly Node[], params: BjtParams | null = null) {
     super(id, [ne, nb, nc], params);
     this.ne = ne;
     this.nb = nb;
@@ -174,7 +170,7 @@ export class Bjt extends Device<BjtParams> {
   }
 
   override deriveState(
-    state: DeviceState, //
+    state: DeviceState,
     { polarity, Bf, Br, Is, Nf, Nr, Vaf, Var, Temp }: BjtParams,
   ): void {
     const pol = bjtSign(polarity);
@@ -194,10 +190,7 @@ export class Bjt extends Device<BjtParams> {
     state[S.Vcritr] = Vcritr;
   }
 
-  override eval(
-    state: DeviceState, //
-    { damped, gmin }: EvalOptions,
-  ): void {
+  private eval0(state: DeviceState, damped: boolean): void {
     const { ne, nb, nc } = this;
     const pol = state[S.pol];
     const Af = state[S.Af];
@@ -229,6 +222,10 @@ export class Bjt extends Device<BjtParams> {
     state[S.Gr] = Gr;
   }
 
+  override eval(state: DeviceState, options: EvalOptions): void {
+    this.eval0(state, true);
+  }
+
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { ne, nb, nc } = this;
     const pol = state[S.pol];
@@ -250,5 +247,9 @@ export class Bjt extends Device<BjtParams> {
     stamper.stampTransconductance(nc, nb, ne, nb, -Gce);
     stamper.stampCurrentSource(ne, nb, pol * (Ie - Gee * Vbe - Gec * Vbc));
     stamper.stampCurrentSource(nc, nb, pol * (Ic - Gce * Vbe - Gcc * Vbc));
+  }
+
+  override endEval(state: DeviceState, options: EvalOptions): void {
+    this.eval0(state, false);
   }
 }

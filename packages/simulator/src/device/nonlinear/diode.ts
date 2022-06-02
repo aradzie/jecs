@@ -67,20 +67,13 @@ export class Diode extends Device<DiodeParams> {
   /** The cathode terminal. */
   readonly nc: Node;
 
-  constructor(
-    id: string, //
-    [na, nc]: readonly Node[],
-    params: DiodeParams | null = null,
-  ) {
+  constructor(id: string, [na, nc]: readonly Node[], params: DiodeParams | null = null) {
     super(id, [na, nc], params);
     this.na = na;
     this.nc = nc;
   }
 
-  override deriveState(
-    state: DeviceState, //
-    { Is, N, Temp }: DiodeParams,
-  ): void {
+  override deriveState(state: DeviceState, { Is, N, Temp }: DiodeParams): void {
     const Vt = N * pnVt(Temp);
     const Vcrit = pnVcrit(Is, Vt);
     state[S.Is] = Is;
@@ -88,10 +81,7 @@ export class Diode extends Device<DiodeParams> {
     state[S.Vcrit] = Vcrit;
   }
 
-  override eval(
-    state: DeviceState, //
-    { damped, gmin }: EvalOptions,
-  ): void {
+  private eval0(state: DeviceState, damped: boolean): void {
     const { na, nc } = this;
     const Is = state[S.Is];
     const Vt = state[S.Vt];
@@ -109,6 +99,10 @@ export class Diode extends Device<DiodeParams> {
     state[S.P] = P;
   }
 
+  override eval(state: DeviceState, options: EvalOptions): void {
+    this.eval0(state, true);
+  }
+
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { na, nc } = this;
     const V = state[S.V];
@@ -116,5 +110,9 @@ export class Diode extends Device<DiodeParams> {
     const G = state[S.G];
     stamper.stampConductance(na, nc, G);
     stamper.stampCurrentSource(na, nc, I - G * V);
+  }
+
+  override endEval(state: DeviceState, options: EvalOptions): void {
+    this.eval0(state, false);
   }
 }

@@ -9,7 +9,7 @@ import { fileURLToPath, URL } from "url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-scan(join(__dirname, "..", "src", "dc"));
+scan(join(__dirname, "..", "src", "op"));
 
 function scan(dir: string): void {
   for (const entry of readdirSync(dir)) {

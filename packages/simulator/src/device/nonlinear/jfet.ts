@@ -174,10 +174,7 @@ export class Jfet extends Device<JfetParams> {
     state[S.Vcrit] = Vcrit;
   }
 
-  override eval(
-    state: DeviceState, //
-    { damped, gmin }: EvalOptions,
-  ): void {
+  private eval0(state: DeviceState, damped: boolean): void {
     const { ns, ng, nd } = this;
     const pol = state[S.pol];
     const Vth = state[S.Vth];
@@ -278,6 +275,10 @@ export class Jfet extends Device<JfetParams> {
     state[S.Gm] = Gm;
   }
 
+  override eval(state: DeviceState, options: EvalOptions): void {
+    this.eval0(state, true);
+  }
+
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { ns, ng, nd } = this;
     const pol = state[S.pol];
@@ -305,5 +306,9 @@ export class Jfet extends Device<JfetParams> {
     stamper.stampConductance(nd, ns, Gds);
     stamper.stampTransconductance(nd, ns, ng, ns, Gm);
     stamper.stampCurrentSource(nd, ns, pol * (Ids - Gds * Vds - Gm * Vgs));
+  }
+
+  override endEval(state: DeviceState, options: EvalOptions): void {
+    this.eval0(state, false);
   }
 }

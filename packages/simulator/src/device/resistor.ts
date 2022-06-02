@@ -40,20 +40,13 @@ export class Resistor extends Device<ResistorParams> {
   /** Second terminal. */
   readonly nb: Node;
 
-  constructor(
-    id: string, //
-    [na, nb]: readonly Node[],
-    params: ResistorParams | null = null,
-  ) {
+  constructor(id: string, [na, nb]: readonly Node[], params: ResistorParams | null = null) {
     super(id, [na, nb], params);
     this.na = na;
     this.nb = nb;
   }
 
-  override deriveState(
-    state: DeviceState, //
-    { R }: ResistorParams,
-  ): void {
+  override deriveState(state: DeviceState, { R }: ResistorParams): void {
     if (R === 0) {
       throw new CircuitError(`Zero valued resistor`);
     }
