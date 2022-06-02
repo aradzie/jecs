@@ -1,7 +1,7 @@
 import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist.js";
 import { parse } from "@jssim/simulator/lib/netlist/parser.js";
 import { Variables } from "@jssim/simulator/lib/netlist/variables.js";
-import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc.js";
+import { opAnalysis } from "@jssim/simulator/lib/simulation/op.js";
 import { formatNumber } from "@jssim/simulator/lib/util/format.js";
 import { Unit } from "@jssim/simulator/lib/util/unit.js";
 import { Dataset, points } from "./util/dataset.js";
@@ -24,7 +24,7 @@ for (const xRl of points(2000, 100, 5)) {
     variables.setVariable("$xRl", xRl);
     variables.setVariable("$xVgs", xVgs);
     const circuit = parseNetlist(netlist, variables);
-    dcAnalysis(circuit);
+    opAnalysis(circuit);
     const q1 = circuit.getDevice("Q1");
     const nd = circuit.getNode("nd");
     dataset.add(q1.op("Vgs"), nd.voltage);

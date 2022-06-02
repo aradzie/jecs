@@ -1,7 +1,7 @@
 import { Circuit } from "./circuit/circuit.js";
 import { dumpCircuit } from "./circuit/debug.js";
 import { Diode, Resistor, VSource } from "./device/index.js";
-import { dcAnalysis } from "./simulation/dc.js";
+import { opAnalysis } from "./simulation/op.js";
 
 // Create an empty circuit.
 const circuit = new Circuit();
@@ -27,7 +27,7 @@ circuit.addDevice(
 );
 
 // Perform DC analysis, compute node voltages and branch currents.
-dcAnalysis(circuit);
+opAnalysis(circuit);
 
 // Print the operating points.
 console.log(dumpCircuit(circuit));

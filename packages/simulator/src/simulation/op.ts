@@ -28,7 +28,7 @@ export type DeviceValue = readonly [
   value: number,
 ];
 
-export function dcAnalysis(circuit: Circuit, userOptions: Partial<Options> = {}): Output {
+export function opAnalysis(circuit: Circuit, userOptions: Partial<Options> = {}): Output {
   const options = Object.freeze<Options>({ ...defaultOptions, ...userOptions });
   const { nodes, devices } = circuit;
 
