@@ -13,20 +13,20 @@ const n2 = circuit.makeNode("N2");
 // Add devices to the circuit.
 circuit.addDevice(
   new VSource("V1", [n1, ng], {
-    V: 10,
+    V: { type: "sin", offset: 0, amplitude: 1, frequency: 100, phase: 0 },
   }),
   new Resistor("R1", [n1, n2], {
-    R: 1e2,
+    R: 100,
   }),
   new Capacitor("C1", [n2, ng], {
-    C: 1e-4,
+    C: 0.0001,
   }),
 );
 
 // Perform transient analysis, compute node voltages and branch currents at every time point.
 const ops = tranAnalysis(circuit, {
-  timeInterval: 1e-1,
-  timeStep: 1e-3,
+  timeInterval: 0.1,
+  timeStep: 0.001,
 });
 
 // Print the operating points/output parameters.

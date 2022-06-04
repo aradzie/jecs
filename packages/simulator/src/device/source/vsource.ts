@@ -1,9 +1,11 @@
 import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
 import { Params, ParamsSchema } from "../../circuit/params.js";
+import type { Form, Signal } from "./signal.js";
+import { makeSignal } from "./signal.js";
 
 export interface VSourceParams {
-  readonly V: number;
+  readonly V: Form;
 }
 
 const enum S {
@@ -37,6 +39,8 @@ export class VSource extends Device<VSourceParams> {
   readonly nn: Node;
   /** Extra MNA branch. */
   private branch!: Branch;
+  /** Signal generator. */
+  private signal!: Signal;
 
   constructor(
     id: string, //
@@ -46,28 +50,29 @@ export class VSource extends Device<VSourceParams> {
     super(id, [np, nn], params);
     this.np = np;
     this.nn = nn;
+    this.signal = makeSignal(params?.V || 0);
   }
 
   override connect(network: Network): void {
     this.branch = network.makeBranch(this.np, this.nn);
   }
 
-  override deriveState(state: DeviceState, { V }: VSourceParams): void {
-    state[S.V] = V;
-  }
-
-  override eval(state: DeviceState, options: EvalOptions): void {
-    const { branch } = this;
-    const V = state[S.V];
-    const I = branch.current;
-    const P = V * I;
-    state[S.I] = I;
-    state[S.P] = P;
+  override beginEval(state: DeviceState, { elapsedTime }: EvalOptions): void {
+    state[S.V] = this.signal(elapsedTime || 0);
   }
 
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn, branch } = this;
     const V = state[S.V];
     stamper.stampVoltageSource(np, nn, branch, V);
+  }
+
+  override endEval(state: DeviceState, options: EvalOptions) {
+    const { branch } = this;
+    const I = branch.current;
+    const V = state[S.V];
+    const P = V * I;
+    state[S.I] = I;
+    state[S.P] = P;
   }
 }

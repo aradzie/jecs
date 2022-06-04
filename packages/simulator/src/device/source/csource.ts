@@ -1,9 +1,11 @@
 import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Params, ParamsSchema } from "../../circuit/params.js";
+import type { Form, Signal } from "./signal.js";
+import { makeSignal } from "./signal.js";
 
 export interface CSourceParams {
-  readonly I: number;
+  readonly I: Form;
 }
 
 const enum S {
@@ -35,6 +37,8 @@ export class CSource extends Device<CSourceParams> {
   readonly np: Node;
   /** Negative terminal. */
   readonly nn: Node;
+  /** Signal generator. */
+  private signal!: Signal;
 
   constructor(
     id: string, //
@@ -44,24 +48,25 @@ export class CSource extends Device<CSourceParams> {
     super(id, [np, nn], params);
     this.np = np;
     this.nn = nn;
+    this.signal = makeSignal(params?.I || 0);
   }
 
-  override deriveState(state: DeviceState, { I }: CSourceParams): void {
-    state[S.I] = I;
-  }
-
-  override eval(state: DeviceState, options: EvalOptions): void {
-    const { np, nn } = this;
-    const I = state[S.I];
-    const V = np.voltage - nn.voltage;
-    const P = V * I;
-    state[S.V] = V;
-    state[S.P] = P;
+  override beginEval(state: DeviceState, { elapsedTime }: EvalOptions): void {
+    state[S.I] = this.signal(elapsedTime || 0);
   }
 
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn } = this;
     const I = state[S.I];
     stamper.stampCurrentSource(np, nn, I);
+  }
+
+  override endEval(state: DeviceState, options: EvalOptions) {
+    const { np, nn } = this;
+    const V = np.voltage - nn.voltage;
+    const I = state[S.I];
+    const P = V * I;
+    state[S.V] = V;
+    state[S.P] = P;
   }
 }

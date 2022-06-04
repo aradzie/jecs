@@ -38,7 +38,7 @@ export function tranAnalysis(
       timeStep,
       gmin: options.gmin,
     });
-    elapsedTime = timeInterval * step;
+    elapsedTime = timeStep * step;
     updateOps(elapsedTime);
   }
 
