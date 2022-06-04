@@ -57,12 +57,12 @@ export class Capacitor extends Device<CapacitorParams> {
 
   override beginEval(state: DeviceState, options: EvalOptions): void {
     const { na, nb } = this;
-    const { timeStep, gmin } = options;
+    const { timeStep } = options;
     const C = state[S.C];
     const V = na.voltage - nb.voltage;
     if (timeStep !== timeStep) {
       // DC analysis.
-      state[S.Geq] = gmin;
+      state[S.Geq] = 0;
       state[S.Ieq] = 0;
     } else {
       // Transient analysis.
