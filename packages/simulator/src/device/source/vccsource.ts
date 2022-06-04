@@ -63,16 +63,6 @@ export class VCCSource extends Device<VCCSourceParams> {
     state[S.gain] = gain;
   }
 
-  override eval(state: DeviceState, options: EvalOptions): void {
-    const { np, nn, branch } = this;
-    const I = branch.current;
-    const V = np.voltage - nn.voltage;
-    const P = V * I;
-    state[S.I] = I;
-    state[S.V] = V;
-    state[S.P] = P;
-  }
-
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn, ncp, ncn, branch } = this;
     const gain = state[S.gain];
@@ -81,5 +71,15 @@ export class VCCSource extends Device<VCCSourceParams> {
     stamper.stampMatrix(branch, ncp, gain);
     stamper.stampMatrix(branch, ncn, -gain);
     stamper.stampMatrix(branch, branch, -1);
+  }
+
+  override endEval(state: DeviceState, options: EvalOptions): void {
+    const { np, nn, branch } = this;
+    const I = branch.current;
+    const V = np.voltage - nn.voltage;
+    const P = V * I;
+    state[S.I] = I;
+    state[S.V] = V;
+    state[S.P] = P;
   }
 }

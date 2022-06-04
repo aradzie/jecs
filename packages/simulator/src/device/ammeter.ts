@@ -38,13 +38,13 @@ export class Ammeter extends Device {
     this.branch = network.makeBranch(this.np, this.nn);
   }
 
-  override eval(state: DeviceState, options: EvalOptions): void {
-    const { branch } = this;
-    state[S.I] = branch.current;
-  }
-
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn, branch } = this;
     stamper.stampVoltageSource(np, nn, branch, 0);
+  }
+
+  override endEval(state: DeviceState, options: EvalOptions): void {
+    const { branch } = this;
+    state[S.I] = branch.current;
   }
 }

@@ -53,7 +53,13 @@ export class Resistor extends Device<ResistorParams> {
     state[S.G] = 1 / R;
   }
 
-  override eval(state: DeviceState, options: EvalOptions): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
+    const { na, nb } = this;
+    const G = state[S.G];
+    stamper.stampConductance(na, nb, G);
+  }
+
+  override endEval(state: DeviceState, options: EvalOptions): void {
     const { na, nb } = this;
     const G = state[S.G];
     const V = na.voltage - nb.voltage;
@@ -62,11 +68,5 @@ export class Resistor extends Device<ResistorParams> {
     state[S.V] = V;
     state[S.I] = I;
     state[S.P] = P;
-  }
-
-  override stamp(state: DeviceState, stamper: Stamper): void {
-    const { na, nb } = this;
-    const G = state[S.G];
-    stamper.stampConductance(na, nb, G);
   }
 }

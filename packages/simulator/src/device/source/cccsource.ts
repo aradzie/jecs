@@ -63,7 +63,15 @@ export class CCCSource extends Device<CCCSourceParams> {
     state[S.gain] = gain;
   }
 
-  override eval(state: DeviceState, options: EvalOptions): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
+    const { np, nn, ncp, ncn, branch } = this;
+    const gain = state[S.gain];
+    stamper.stampVoltageSource(ncp, ncn, branch, 0);
+    stamper.stampMatrix(np, branch, gain);
+    stamper.stampMatrix(nn, branch, -gain);
+  }
+
+  override endEval(state: DeviceState, options: EvalOptions): void {
     const { np, nn, branch } = this;
     const gain = state[S.gain];
     const I = branch.current * gain;
@@ -72,13 +80,5 @@ export class CCCSource extends Device<CCCSourceParams> {
     state[S.I] = I;
     state[S.V] = V;
     state[S.P] = P;
-  }
-
-  override stamp(state: DeviceState, stamper: Stamper): void {
-    const { np, nn, ncp, ncn, branch } = this;
-    const gain = state[S.gain];
-    stamper.stampVoltageSource(ncp, ncn, branch, 0);
-    stamper.stampMatrix(np, branch, gain);
-    stamper.stampMatrix(nn, branch, -gain);
   }
 }

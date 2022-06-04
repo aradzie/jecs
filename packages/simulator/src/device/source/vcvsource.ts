@@ -63,7 +63,15 @@ export class VCVSource extends Device<VCVSourceParams> {
     state[S.gain] = gain;
   }
 
-  override eval(state: DeviceState, options: EvalOptions): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
+    const { np, nn, ncp, ncn, branch } = this;
+    const gain = state[S.gain];
+    stamper.stampVoltageSource(np, nn, branch, 0);
+    stamper.stampMatrix(branch, ncp, -gain);
+    stamper.stampMatrix(branch, ncn, gain);
+  }
+
+  override endEval(state: DeviceState, options: EvalOptions): void {
     const { np, nn, branch } = this;
     const V = np.voltage - nn.voltage;
     const I = branch.current;
@@ -71,13 +79,5 @@ export class VCVSource extends Device<VCVSourceParams> {
     state[S.V] = V;
     state[S.I] = I;
     state[S.P] = P;
-  }
-
-  override stamp(state: DeviceState, stamper: Stamper): void {
-    const { np, nn, ncp, ncn, branch } = this;
-    const gain = state[S.gain];
-    stamper.stampVoltageSource(np, nn, branch, 0);
-    stamper.stampMatrix(branch, ncp, -gain);
-    stamper.stampMatrix(branch, ncn, gain);
   }
 }

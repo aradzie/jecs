@@ -66,7 +66,15 @@ export class CCVSource extends Device<CCVSourceParams> {
     state[S.gain] = gain;
   }
 
-  override eval(state: DeviceState, options: EvalOptions): void {
+  override stamp(state: DeviceState, stamper: Stamper): void {
+    const { np, nn, branch1, ncp, ncn, branch2 } = this;
+    const gain = state[S.gain];
+    stamper.stampVoltageSource(np, nn, branch1, 0);
+    stamper.stampVoltageSource(ncp, ncn, branch2, 0);
+    stamper.stampMatrix(branch1, branch2, -gain);
+  }
+
+  override endEval(state: DeviceState, options: EvalOptions): void {
     const { np, nn, branch1 } = this;
     const V = np.voltage - nn.voltage;
     const I = branch1.current;
@@ -74,13 +82,5 @@ export class CCVSource extends Device<CCVSourceParams> {
     state[S.V] = V;
     state[S.I] = I;
     state[S.P] = P;
-  }
-
-  override stamp(state: DeviceState, stamper: Stamper): void {
-    const { np, nn, branch1, ncp, ncn, branch2 } = this;
-    const gain = state[S.gain];
-    stamper.stampVoltageSource(np, nn, branch1, 0);
-    stamper.stampVoltageSource(ncp, ncn, branch2, 0);
-    stamper.stampMatrix(branch1, branch2, -gain);
   }
 }
