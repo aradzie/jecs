@@ -25,8 +25,8 @@ circuit.addDevice(
 );
 
 // Perform DC analysis, compute node voltages and branch currents.
-const ops = opAnalysis(circuit);
+const output = opAnalysis(circuit);
 
 // Print the operating points/output parameters.
-console.log(ops);
+console.log(output);
 console.log(dumpCircuit(circuit));

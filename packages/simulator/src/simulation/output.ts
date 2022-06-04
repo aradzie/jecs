@@ -1,36 +1,45 @@
 import type { Circuit } from "../circuit/circuit.js";
 import { Ground } from "../device/index.js";
+import { formatNumber } from "../util/format.js";
 
-export interface Op<T = number | Float64Array> {
+export interface Op {
+  /** Column name which consists of parameter name with node or device name. */
   readonly name: string;
-  /** Parameter unit. */
+  /** Column unit. */
   readonly unit: string;
-  /** Parameter value. */
-  readonly value: T;
+  /** Cell index in an output row. */
+  readonly index: number;
 }
 
-export type ScalarOp = Op<number>;
+/**
+ * A table whose rows are node and device parameters.
+ */
+export type Output = {
+  /** Column names. */
+  readonly schema: readonly Op[];
+  /** Data rows. */
+  readonly data: readonly Float64Array[];
+};
 
-export type VectorOp = Op<Float64Array>;
+export type OutputBuilder = {
+  append(elapsedTime: number): void;
+  build(): Output;
+};
 
-export function captureOp({ nodes, devices }: Circuit): Map<string, ScalarOp> {
-  const ops = new Map<string, ScalarOp>();
+export const makeOutputBuilder = ({ nodes, devices }: Circuit): OutputBuilder => {
+  const schema: Op[] = [];
+  const data: Float64Array[] = [];
 
-  // Capture node voltages and branch currents.
+  // Time column.
+  schema.push({ name: "time", unit: "S", index: schema.length });
+
+  // Capture node voltages.
   for (const node of nodes) {
     if (node.type === "node") {
-      const name = `V(#${node.id})`;
-      ops.set(name, {
-        name,
+      schema.push({
+        name: `V(#${node.id})`,
         unit: "V",
-        value: node.voltage,
-      });
-    } else {
-      const name = `I(#${node.a.id}-#${node.b.id})`;
-      ops.set(name, {
-        name,
-        unit: "A",
-        value: node.current,
+        index: schema.length,
       });
     }
   }
@@ -42,88 +51,77 @@ export function captureOp({ nodes, devices }: Circuit): Map<string, ScalarOp> {
     }
     const { stateParams } = device.getDeviceClass();
     for (const op of stateParams.ops) {
-      const name = `${op.name}(${device.id})`;
-      ops.set(name, {
-        name,
+      schema.push({
+        name: `${op.name}(${device.id})`,
         unit: op.unit,
-        value: device.state[op.index],
+        index: schema.length,
       });
     }
   }
 
-  return ops;
-}
+  return new (class implements OutputBuilder {
+    append(elapsedTime: number): void {
+      const row = new Float64Array(schema.length);
+      let index = 0;
 
-export function captureVectorOp(
-  { nodes, devices }: Circuit,
-  length: number,
-): [Map<string, VectorOp>, (elapsedTime: number) => void] {
-  const ops = new Map<string, VectorOp>();
-  const updaters: (() => void)[] = [];
+      // Time column.
+      row[index++] = elapsedTime;
 
-  let index = 0;
+      // Capture node voltages.
+      for (const node of nodes) {
+        if (node.type === "node") {
+          row[index++] = node.voltage;
+        }
+      }
 
-  const time = new Float64Array(length);
-  ops.set("T", {
-    name: "T",
-    unit: "S",
-    value: time,
-  });
+      // Capture device output parameters.
+      for (const device of devices) {
+        if (device instanceof Ground) {
+          continue;
+        }
+        const { stateParams } = device.getDeviceClass();
+        for (const op of stateParams.ops) {
+          row[index++] = device.state[op.index];
+        }
+      }
 
-  // Capture node voltages and branch currents.
-  for (const node of nodes) {
-    if (node.type === "node") {
-      const name = `V(#${node.id})`;
-      const value = new Float64Array(length);
-      ops.set(name, {
-        name,
-        unit: "V",
-        value,
-      });
-      updaters.push(() => {
-        value[index] = node.voltage;
-      });
-    } else {
-      const name = `I(#${node.a.id}-#${node.b.id})`;
-      const value = new Float64Array(length);
-      ops.set(name, {
-        name,
-        unit: "A",
-        value,
-      });
-      updaters.push(() => {
-        value[index] = node.current;
-      });
+      data.push(row);
     }
+
+    build(): Output {
+      return { schema, data };
+    }
+  })();
+};
+
+export const exportDataset = ({ schema, data }: Output): string => {
+  const lines: string[] = [];
+  for (const row of data) {
+    const line: string[] = [];
+    for (let i = 0; i < schema.length; i++) {
+      line.push(String(row[i]));
+    }
+    lines.push(line.join(" "));
   }
+  return lines.join("\n");
+};
 
-  // Capture device output parameters.
-  for (const device of devices) {
-    if (device instanceof Ground) {
-      continue;
-    }
-    const { stateParams } = device.getDeviceClass();
-    for (const op of stateParams.ops) {
-      const name = `${op.name}(${device.id})`;
-      const value = new Float64Array(length);
-      ops.set(name, {
-        name,
-        unit: op.unit,
-        value: value,
-      });
-      updaters.push(() => {
-        value[index] = device.state[op.index];
-      });
-    }
+export const formatSchema = ({ schema }: Output): string => {
+  const lines: string[] = [];
+  for (let i = 0; i < schema.length; i++) {
+    lines.push(`#${i + 1}\t${schema[i].name}`);
   }
+  return lines.join("\n");
+};
 
-  const append = (elapsedTime: number): void => {
-    time[index] = elapsedTime;
-    for (const updater of updaters) {
-      updater();
-    }
-    index += 1;
-  };
-
-  return [ops, append];
-}
+export const formatRow = ({ schema, data }: Output, index: number): string => {
+  if (index < 0 || index >= data.length) {
+    throw new TypeError();
+  }
+  const row = data[index];
+  const items: string[] = [];
+  for (const op of schema) {
+    items.push(`${op.name}=${formatNumber(row[op.index], op.unit)}`);
+  }
+  return items.join("; ");
+};

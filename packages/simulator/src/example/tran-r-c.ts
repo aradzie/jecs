@@ -1,5 +1,7 @@
+import { writeFileSync } from "fs";
 import { Circuit } from "../circuit/circuit.js";
 import { Capacitor, Resistor, VSource } from "../device/index.js";
+import { exportDataset, formatSchema } from "../simulation/output.js";
 import { tranAnalysis } from "../simulation/tran.js";
 
 // Create an empty circuit.
@@ -16,7 +18,7 @@ circuit.addDevice(
     V: { type: "sin", offset: 0, amplitude: 1, frequency: 100, phase: 0 },
   }),
   new Resistor("R1", [n1, n2], {
-    R: 100,
+    R: 10,
   }),
   new Capacitor("C1", [n2, ng], {
     C: 0.0001,
@@ -24,10 +26,11 @@ circuit.addDevice(
 );
 
 // Perform transient analysis, compute node voltages and branch currents at every time point.
-const ops = tranAnalysis(circuit, {
-  timeInterval: 0.1,
-  timeStep: 0.001,
+const output = tranAnalysis(circuit, {
+  timeInterval: 0.03,
+  timeStep: 0.0001,
 });
 
-// Print the operating points/output parameters.
-console.log(ops);
+// Save dataset.
+writeFileSync("output.schema", formatSchema(output));
+writeFileSync("output.data", exportDataset(output));

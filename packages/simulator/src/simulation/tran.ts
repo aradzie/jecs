@@ -3,7 +3,7 @@ import type { Circuit } from "../circuit/circuit.js";
 import { newSimulator } from "./iter.js";
 import type { Options } from "./options.js";
 import { defaultOptions } from "./options.js";
-import { captureVectorOp, VectorOp } from "./output.js";
+import { makeOutputBuilder, Output } from "./output.js";
 
 export function tranAnalysis(
   circuit: Circuit,
@@ -15,7 +15,7 @@ export function tranAnalysis(
     readonly timeStep: number;
   },
   userOptions: Partial<Options> = {},
-): Map<string, VectorOp> {
+): Output {
   const options = Object.freeze<Options>({ ...defaultOptions, ...userOptions });
 
   assert(circuit.nodes.length > 0);
@@ -27,20 +27,21 @@ export function tranAnalysis(
   assert(options.reltol > 0);
   assert(options.gmin > 0);
 
-  const steps = Math.floor(timeInterval / timeStep);
-  const [ops, updateOps] = captureVectorOp(circuit, steps);
+  const builder = makeOutputBuilder(circuit);
+
+  let step = 0;
   let elapsedTime = 0;
-  updateOps(elapsedTime);
   const simulator = newSimulator(circuit, options);
-  for (let step = 0; step <= steps; step++) {
+  while (elapsedTime <= timeInterval) {
     simulator({
       elapsedTime,
       timeStep,
       gmin: options.gmin,
     });
+    step += 1;
     elapsedTime = timeStep * step;
-    updateOps(elapsedTime);
+    builder.append(elapsedTime);
   }
 
-  return ops;
+  return builder.build();
 }
