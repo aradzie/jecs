@@ -2,6 +2,7 @@ import type { DeviceClass } from "../circuit/device.js";
 import { Ammeter } from "./ammeter.js";
 import { Capacitor } from "./capacitor.js";
 import { Ground } from "./ground.js";
+import { Inductor } from "./inductor.js";
 import { Bjt } from "./nonlinear/bjt.js";
 import { Diode } from "./nonlinear/diode.js";
 import { Jfet } from "./nonlinear/jfet.js";
@@ -24,6 +25,7 @@ export {
   Capacitor,
   Diode,
   Ground,
+  Inductor,
   Jfet,
   Mosfet,
   OpAmp,
@@ -42,6 +44,7 @@ export const devices: readonly DeviceClass[] = [
   Capacitor,
   Diode,
   Ground,
+  Inductor,
   Jfet,
   Mosfet,
   OpAmp,
