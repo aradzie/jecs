@@ -1,0 +1,39 @@
+{
+  "name": "@jssim/cli",
+  "version": "1.0.0",
+  "description": "A simulator of electronic circuits.",
+  "author": "Aliaksandr Radzivanovich",
+  "license": "GPL",
+  "keywords": [
+    "electronics",
+    "simulation",
+    "circuit",
+    "spice"
+  ],
+  "homepage": "https://github.com/aradzie/jssim#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aradzie/jssim.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aradzie/jssim/issues"
+  },
+  "type": "module",
+  "scripts": {
+    "clean": "rm -fr lib",
+    "compile": "tsc",
+    "test": "ava"
+  },
+  "dependencies": {
+    "@jssim/simulator": "*",
+    "commander": "^9.3.0",
+    "tslib": "^2.4.0"
+  },
+  "devDependencies": {},
+  "ava": {
+    "files": [
+      "lib/**/*.test.*",
+      "lib/**/__test__/*"
+    ]
+  }
+}

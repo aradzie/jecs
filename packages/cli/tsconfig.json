@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "alwaysStrict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "importHelpers": true,
+    "sourceMap": true,
+    "inlineSources": true,
+    "jsx": "react-jsx",
+    "lib": ["esnext"],
+    "module": "es2022",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitOverride": true,
+    "resolveJsonModule": true,
+    "importsNotUsedAsValues": "error",
+    "strict": true,
+    "target": "esnext",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "rootDir": "src",
+    "outDir": "lib",
+    "incremental": true,
+    "tsBuildInfoFile": "lib/.tsbuildcache"
+  },
+  "include": ["src/**/*"],
+  "ts-node": {
+    "transpileOnly": true
+  }
+}
