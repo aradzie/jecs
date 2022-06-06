@@ -1,5 +1,4 @@
 import { Device, DeviceState, EvalOptions, StateParams } from "../circuit/device.js";
-import { CircuitError } from "../circuit/error.js";
 import type { Branch, Network, Node, Stamper } from "../circuit/network.js";
 import { Params, ParamsSchema } from "../circuit/params.js";
 
@@ -55,9 +54,6 @@ export class Inductor extends Device<InductorParams> {
   }
 
   override deriveState(state: DeviceState, { L }: InductorParams): void {
-    if (L === 0) {
-      throw new CircuitError(`Zero valued inductor`);
-    }
     state[S.L] = L;
   }
 

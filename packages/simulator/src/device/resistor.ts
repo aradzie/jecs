@@ -1,5 +1,4 @@
 import { Device, DeviceState, EvalOptions, StateParams } from "../circuit/device.js";
-import { CircuitError } from "../circuit/error.js";
 import type { Node, Stamper } from "../circuit/network.js";
 import { Params, ParamsSchema } from "../circuit/params.js";
 
@@ -47,9 +46,6 @@ export class Resistor extends Device<ResistorParams> {
   }
 
   override deriveState(state: DeviceState, { R }: ResistorParams): void {
-    if (R === 0) {
-      throw new CircuitError(`Zero valued resistor`);
-    }
     state[S.G] = 1 / R;
   }
 

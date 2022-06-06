@@ -1,5 +1,4 @@
 import { Device, DeviceState, EvalOptions, StateParams } from "../circuit/device.js";
-import { CircuitError } from "../circuit/error.js";
 import type { Node, Stamper } from "../circuit/network.js";
 import { Params, ParamsSchema } from "../circuit/params.js";
 
@@ -49,9 +48,6 @@ export class Capacitor extends Device<CapacitorParams> {
   }
 
   override deriveState(state: DeviceState, { C }: CapacitorParams): void {
-    if (C === 0) {
-      throw new CircuitError(`Zero valued capacitor`);
-    }
     state[S.C] = C;
   }
 
