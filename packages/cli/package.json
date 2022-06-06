@@ -19,6 +19,9 @@
     "url": "https://github.com/aradzie/jssim/issues"
   },
   "type": "module",
+  "bin": {
+    "jssim": "./jssim.js"
+  },
   "scripts": {
     "clean": "rm -fr lib",
     "compile": "tsc",
