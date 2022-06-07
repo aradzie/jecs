@@ -1,10 +1,6 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device.js";
+import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
-import { Params, ParamsSchema } from "../../circuit/params.js";
-
-export interface VCVSourceParams {
-  readonly gain: number;
-}
+import { Properties } from "../../circuit/properties.js";
 
 const enum S {
   gain,
@@ -17,13 +13,13 @@ const enum S {
 /**
  * Voltage-controlled voltage source.
  */
-export class VCVSource extends Device<VCVSourceParams> {
+export class VCVSource extends Device {
   static override readonly id = "VCVS";
   static override readonly numTerminals = 4;
-  static override readonly paramsSchema: ParamsSchema<VCVSourceParams> = {
-    gain: Params.number({ title: "gain" }),
+  static override readonly propertiesSchema = {
+    gain: Properties.number({ title: "gain" }),
   };
-  static override readonly stateParams: StateParams = {
+  static override readonly stateSchema = {
     length: S._Size_,
     ops: [
       { index: S.V, name: "V", unit: "V" },
@@ -43,12 +39,8 @@ export class VCVSource extends Device<VCVSourceParams> {
   /** Extra MNA branch. */
   private branch!: Branch;
 
-  constructor(
-    id: string, //
-    [np, nn, ncp, ncn]: readonly Node[],
-    params: VCVSourceParams | null = null,
-  ) {
-    super(id, [np, nn, ncp, ncn], params);
+  constructor(id: string, [np, nn, ncp, ncn]: readonly Node[]) {
+    super(id, [np, nn, ncp, ncn]);
     this.np = np;
     this.nn = nn;
     this.ncp = ncp;
@@ -59,8 +51,8 @@ export class VCVSource extends Device<VCVSourceParams> {
     this.branch = network.makeBranch(this.np, this.nn);
   }
 
-  override deriveState(state: DeviceState, { gain }: VCVSourceParams): void {
-    state[S.gain] = gain;
+  override deriveState(state: DeviceState): void {
+    state[S.gain] = this.properties.getNumber("gain");
   }
 
   override stamp(state: DeviceState, stamper: Stamper): void {

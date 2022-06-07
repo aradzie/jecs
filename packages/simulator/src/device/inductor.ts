@@ -1,10 +1,6 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../circuit/device.js";
+import { Device, DeviceState, EvalOptions } from "../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../circuit/network.js";
-import { Params, ParamsSchema } from "../circuit/params.js";
-
-export interface InductorParams {
-  readonly L: number;
-}
+import { Properties } from "../circuit/properties.js";
 
 const enum S {
   L,
@@ -19,15 +15,15 @@ const enum S {
 /**
  * Inductor.
  */
-export class Inductor extends Device<InductorParams> {
+export class Inductor extends Device {
   static override readonly id = "L";
   static override readonly numTerminals = 2;
-  static override readonly paramsSchema: ParamsSchema<InductorParams> = {
-    L: Params.number({
+  static override readonly propertiesSchema = {
+    L: Properties.number({
       title: "inductance",
     }),
   };
-  static override readonly stateParams: StateParams = {
+  static override readonly stateSchema = {
     length: S._Size_,
     ops: [
       { index: S.V, name: "V", unit: "V" },
@@ -43,8 +39,8 @@ export class Inductor extends Device<InductorParams> {
   /** Extra MNA branch. */
   private branch!: Branch;
 
-  constructor(id: string, [na, nb]: readonly Node[], params: InductorParams | null = null) {
-    super(id, [na, nb], params);
+  constructor(id: string, [na, nb]: readonly Node[]) {
+    super(id, [na, nb]);
     this.na = na;
     this.nb = nb;
   }
@@ -53,8 +49,8 @@ export class Inductor extends Device<InductorParams> {
     this.branch = network.makeBranch(this.na, this.nb);
   }
 
-  override deriveState(state: DeviceState, { L }: InductorParams): void {
-    state[S.L] = L;
+  override deriveState(state: DeviceState): void {
+    state[S.L] = this.properties.getNumber("L");
   }
 
   override beginEval(state: DeviceState, options: EvalOptions): void {

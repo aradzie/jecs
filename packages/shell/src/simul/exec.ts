@@ -62,8 +62,8 @@ function getOps(circuit: Circuit): readonly Op[] {
     if (device instanceof Ground) {
       continue;
     }
-    const { id: classId, stateParams } = device.getDeviceClass();
-    for (const op of stateParams.ops) {
+    const { id: classId, stateSchema } = device.getDeviceClass();
+    for (const op of stateSchema.ops) {
       ops.push({
         deviceId: `${classId}:${device.id}`,
         name: op.name,

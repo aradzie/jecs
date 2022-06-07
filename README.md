@@ -1,6 +1,6 @@
 # Electronic Circuit Simulator
 
-jssim is an electronic circuit simulator written in TypeScript.
+**jssim** is an electronic circuit simulator written in TypeScript.
 
 ## Example
 
@@ -11,24 +11,24 @@ The following code
 const circuit = new Circuit();
 
 // Allocate circuit nodes.
-const ng = circuit.groundNode;
-const n1 = circuit.makeNode("N1");
-const n2 = circuit.makeNode("N2");
+const GND = circuit.groundNode;
+const N1 = circuit.makeNode("N1");
+const N2 = circuit.makeNode("N2");
+
+// Create devices.
+const V1 = new VSource("V1", [N1, GND]);
+const R1 = new Resistor("R1", [N1, N2]);
+const D1 = new Diode("D1", [N2, GND]);
+
+// Set device properties.
+V1.properties.set("V", 10);
+R1.properties.set("R", 1000);
+D1.properties.set("Temp", 26.85);
 
 // Add devices to the circuit.
-circuit.addDevice(
-  new VSource("V1", [n1, ng], {
-    V: 10,
-  }),
-  new Resistor("R1", [n1, n2], {
-    R: 1000,
-  }),
-  new Diode("D1", [n2, ng], {
-    Is: 1e-14,
-    N: 1,
-    Temp: 26.85,
-  }),
-);
+circuit.addDevice(V1);
+circuit.addDevice(R1);
+circuit.addDevice(D1);
 
 // Perform DC analysis, compute node voltages and branch currents.
 opAnalysis(circuit);
@@ -41,11 +41,11 @@ prints the following result
 
 ```typescript
 [
-  "V(N1)=10V", // voltage at node N1
-  "V(N2)=712.41mV", // voltage at node N2
-  "V1{V=10V,I=-9.288mA,P=-92.876mW}", // voltage source output params
-  "R1{V=9.288V,I=9.288mA,P=86.259mW}", // resistor output params
-  "D1{V=712.41mV,I=9.288mA,P=6.617mW}", // diode output params
+  'V(N1)=10V', // voltage at node N1
+  'V(N2)=712.41mV', // voltage at node N2
+  'V1{V=10V,I=-9.288mA,P=-92.876mW}', // voltage source output params
+  'R1{V=9.288V,I=9.288mA,P=86.259mW}', // resistor output params
+  'D1{V=712.41mV,I=9.288mA,P=6.617mW}' // diode output params
 ];
 ```
 

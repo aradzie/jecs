@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../circuit/device.js";
+import { Device, DeviceState, EvalOptions } from "../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../circuit/network.js";
 
 const enum S {
@@ -13,8 +13,8 @@ const enum S {
 export class Ammeter extends Device {
   static override readonly id = "Ammeter";
   static override readonly numTerminals = 2;
-  static override readonly paramsSchema = {};
-  static override readonly stateParams: StateParams = {
+  static override readonly propertiesSchema = {};
+  static override readonly stateSchema = {
     length: S._Size_,
     ops: [
       { index: S.I, name: "I", unit: "A" }, //
@@ -29,7 +29,7 @@ export class Ammeter extends Device {
   private branch!: Branch;
 
   constructor(id: string, [np, nn]: readonly Node[]) {
-    super(id, [np, nn], {});
+    super(id, [np, nn]);
     this.np = np;
     this.nn = nn;
   }

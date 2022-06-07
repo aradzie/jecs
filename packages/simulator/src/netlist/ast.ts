@@ -37,41 +37,48 @@ export interface Identifier extends Node {
   readonly name: string;
 }
 
-export type Item = Definition | Equation | Action;
+export type Item = InstanceItem | ModelItem | EquationItem | ActionItem;
 
-export interface Definition extends Node, HasId {
-  readonly type: "definition";
-  readonly id: Identifier;
+export interface InstanceItem extends Node {
+  readonly type: "instance";
+  readonly deviceId: Identifier;
   readonly modelId: Identifier | null;
   readonly instanceId: Identifier | null;
   readonly nodes: readonly Identifier[];
-  readonly params: readonly Parameter[];
+  readonly properties: readonly Property[];
 }
 
-export interface Parameter extends Node, HasId {
+export interface ModelItem extends Node, HasId {
+  readonly type: "model";
+  readonly deviceId: Identifier;
+  readonly modelId: Identifier;
+  readonly properties: readonly Property[];
+}
+
+export interface Property extends Node, HasId {
   readonly id: Identifier;
-  readonly value: ParameterValue;
+  readonly value: PropertyValue;
 }
 
-export type ParameterValue = StringParameterValue | ExpParameterValue;
+export type PropertyValue = StringPropertyValue | ExpPropertyValue;
 
-export interface StringParameterValue {
+export interface StringPropertyValue {
   readonly type: "string";
   readonly value: string;
 }
 
-export interface ExpParameterValue {
+export interface ExpPropertyValue {
   readonly type: "exp";
   readonly value: Expression;
 }
 
-export interface Equation extends Node, HasId {
+export interface EquationItem extends Node, HasId {
   readonly type: "equation";
   readonly id: Identifier;
   readonly value: Expression;
 }
 
-export interface Action extends Node {
+export interface ActionItem extends Node {
   readonly type: "action";
 }
 
@@ -106,7 +113,7 @@ export interface FuncExp extends Node, HasId {
   readonly args: readonly Expression[];
 }
 
-export function equation(name: string, value: Expression): Equation {
+export function equation(name: string, value: Expression): EquationItem {
   return {
     type: "equation",
     id: { name },
@@ -118,7 +125,7 @@ export function literalExp(value: number): LiteralExp {
   return { type: "literal", value };
 }
 
-export const builtins: readonly Equation[] = [
+export const builtins: readonly EquationItem[] = [
   equation("$PI", literalExp(Math.PI)),
   equation("$E", literalExp(Math.E)),
 ];

@@ -1,15 +1,7 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device.js";
-import type { DeviceModel } from "../../circuit/library.js";
+import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
-import { Params, ParamsSchema } from "../../circuit/params.js";
-import { Temp } from "../const.js";
+import { Properties } from "../../circuit/properties.js";
 import { pnConductance, pnCurrent, pnVcrit, pnVoltage, pnVt } from "./semi.js";
-
-export interface DiodeParams {
-  readonly Is: number;
-  readonly N: number;
-  readonly Temp: number;
-}
 
 const enum S {
   Is,
@@ -26,34 +18,24 @@ const enum S {
 /**
  * Diode.
  */
-export class Diode extends Device<DiodeParams> {
-  static override getModels(): readonly DeviceModel[] {
-    return [["Diode", Diode.modelDiode]];
-  }
-
-  static modelDiode = Object.freeze<DiodeParams>({
-    Is: 1e-14,
-    N: 1,
-    Temp,
-  });
-
+export class Diode extends Device {
   static override readonly id = "Diode";
   static override readonly numTerminals = 2;
-  static override readonly paramsSchema: ParamsSchema<DiodeParams> = {
-    Is: Params.number({
+  static override readonly propertiesSchema = {
+    Is: Properties.number({
       default: 1e-14,
       min: 0,
       title: "saturation current",
     }),
-    N: Params.number({
+    N: Properties.number({
       default: 1,
       min: 1e-3,
       max: 100,
       title: "emission coefficient",
     }),
-    Temp: Params.Temp,
+    Temp: Properties.Temp,
   };
-  static override readonly stateParams: StateParams = {
+  static override readonly stateSchema = {
     length: S._Size_,
     ops: [
       { index: S.V, name: "V", unit: "V" },
@@ -67,13 +49,16 @@ export class Diode extends Device<DiodeParams> {
   /** The cathode terminal. */
   readonly nc: Node;
 
-  constructor(id: string, [na, nc]: readonly Node[], params: DiodeParams | null = null) {
-    super(id, [na, nc], params);
+  constructor(id: string, [na, nc]: readonly Node[]) {
+    super(id, [na, nc]);
     this.na = na;
     this.nc = nc;
   }
 
-  override deriveState(state: DeviceState, { Is, N, Temp }: DiodeParams): void {
+  override deriveState(state: DeviceState): void {
+    const Is = this.properties.getNumber("Is");
+    const N = this.properties.getNumber("N");
+    const Temp = this.properties.getNumber("Temp");
     const Vt = N * pnVt(Temp);
     const Vcrit = pnVcrit(Is, Vt);
     state[S.Is] = Is;

@@ -21,6 +21,23 @@ export class Circuit implements Network {
     return this.#devices;
   }
 
+  reset(): void {
+    for (const node of this.#nodes) {
+      switch (node.type) {
+        case "node":
+          node.voltage = 0;
+          break;
+        case "branch":
+          node.current = 0;
+          break;
+      }
+    }
+    for (const device of this.#devices) {
+      device.state.fill(0);
+      device.deriveState(device.state);
+    }
+  }
+
   makeNode(id: string): Node {
     if (this.#nodesById.has(id)) {
       throw new CircuitError(`Duplicate node [${id}]`);

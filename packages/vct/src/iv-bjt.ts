@@ -9,7 +9,7 @@ import { Dataset, points } from "./util/dataset.js";
 const input = `
 V nc g V=$xVce;
 V nb g V=$xVbe;
-BJT:DUT g nb nc @npn;
+BJT:DUT g nb nc @NPN;
 `;
 const netlist = parse(input, {});
 

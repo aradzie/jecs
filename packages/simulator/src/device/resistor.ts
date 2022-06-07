@@ -1,10 +1,6 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../circuit/device.js";
+import { Device, DeviceState, EvalOptions } from "../circuit/device.js";
 import type { Node, Stamper } from "../circuit/network.js";
-import { Params, ParamsSchema } from "../circuit/params.js";
-
-export interface ResistorParams {
-  readonly R: number;
-}
+import { Properties } from "../circuit/properties.js";
 
 const enum S {
   G,
@@ -17,15 +13,15 @@ const enum S {
 /**
  * Resistor.
  */
-export class Resistor extends Device<ResistorParams> {
+export class Resistor extends Device {
   static override readonly id = "R";
   static override readonly numTerminals = 2;
-  static override readonly paramsSchema: ParamsSchema<ResistorParams> = {
-    R: Params.number({
+  static override readonly propertiesSchema = {
+    R: Properties.number({
       title: "resistance",
     }),
   };
-  static override readonly stateParams: StateParams = {
+  static override readonly stateSchema = {
     length: S._Size_,
     ops: [
       { index: S.V, name: "V", unit: "V" },
@@ -39,13 +35,14 @@ export class Resistor extends Device<ResistorParams> {
   /** Second terminal. */
   readonly nb: Node;
 
-  constructor(id: string, [na, nb]: readonly Node[], params: ResistorParams | null = null) {
-    super(id, [na, nb], params);
+  constructor(id: string, [na, nb]: readonly Node[]) {
+    super(id, [na, nb]);
     this.na = na;
     this.nb = nb;
   }
 
-  override deriveState(state: DeviceState, { R }: ResistorParams): void {
+  override deriveState(state: DeviceState): void {
+    const R = this.properties.getNumber("R");
     state[S.G] = 1 / R;
   }
 

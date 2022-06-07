@@ -1,12 +1,7 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device.js";
+import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
-import { Params } from "../../circuit/params.js";
+import { Properties } from "../../circuit/properties.js";
 import { piOverTwo, twoOverPi } from "../const.js";
-
-export interface OpAmpParams {
-  readonly gain: number;
-  readonly Vmax: number;
-}
 
 const enum S {
   gain,
@@ -20,14 +15,18 @@ const enum S {
 /**
  * Ideal operational amplifier.
  */
-export class OpAmp extends Device<OpAmpParams> {
+export class OpAmp extends Device {
   static override readonly id = "OpAmp";
   static override readonly numTerminals = 3;
-  static override readonly paramsSchema = {
-    gain: Params.number({ default: 1e6, min: 1, title: "gain" }),
-    Vmax: Params.number({ default: 15, min: 0, title: "maximum absolute value of output voltage" }),
+  static override readonly propertiesSchema = {
+    gain: Properties.number({ default: 1e6, min: 1, title: "gain" }),
+    Vmax: Properties.number({
+      default: 15,
+      min: 0,
+      title: "maximum absolute value of output voltage",
+    }),
   };
-  static override readonly stateParams: StateParams = {
+  static override readonly stateSchema = {
     length: S._Size_,
     ops: [
       { index: S.Vin, name: "Vin", unit: "V" },
@@ -44,12 +43,8 @@ export class OpAmp extends Device<OpAmpParams> {
   /** Extra MNA branch. */
   private branch!: Branch;
 
-  constructor(
-    id: string, //
-    [np, nn, no]: readonly Node[],
-    params: OpAmpParams | null = null,
-  ) {
-    super(id, [np, nn, no], params);
+  constructor(id: string, [np, nn, no]: readonly Node[]) {
+    super(id, [np, nn, no]);
     this.np = np;
     this.nn = nn;
     this.no = no;
@@ -59,10 +54,9 @@ export class OpAmp extends Device<OpAmpParams> {
     this.branch = network.makeBranch(this.no, network.groundNode);
   }
 
-  override deriveState(
-    state: DeviceState, //
-    { gain, Vmax }: OpAmpParams,
-  ): void {
+  override deriveState(state: DeviceState): void {
+    const gain = this.properties.getNumber("gain");
+    const Vmax = this.properties.getNumber("Vmax");
     state[S.gain] = gain;
     state[S.Vmax] = Vmax;
   }

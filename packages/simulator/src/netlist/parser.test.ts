@@ -1,18 +1,18 @@
 import test from "ava";
 import { parse } from "./parser.js";
 
-test("parse definitions", (t) => {
+test("parse devices", (t) => {
   t.like(parse("R a b;"), {
     items: [
       {
-        type: "definition",
-        id: {
+        type: "instance",
+        deviceId: {
           name: "R",
         },
         instanceId: null,
         nodes: [{ name: "a" }, { name: "b" }],
         modelId: null,
-        params: [],
+        properties: [],
       },
     ],
   });
@@ -20,8 +20,8 @@ test("parse definitions", (t) => {
   t.like(parse("R:R1 a b;"), {
     items: [
       {
-        type: "definition",
-        id: {
+        type: "instance",
+        deviceId: {
           name: "R",
         },
         instanceId: {
@@ -29,7 +29,7 @@ test("parse definitions", (t) => {
         },
         nodes: [{ name: "a" }, { name: "b" }],
         modelId: null,
-        params: [],
+        properties: [],
       },
     ],
   });
@@ -37,8 +37,8 @@ test("parse definitions", (t) => {
   t.like(parse("R:R1 a b R=1;"), {
     items: [
       {
-        type: "definition",
-        id: {
+        type: "instance",
+        deviceId: {
           name: "R",
         },
         instanceId: {
@@ -46,7 +46,7 @@ test("parse definitions", (t) => {
         },
         nodes: [{ name: "a" }, { name: "b" }],
         modelId: null,
-        params: [
+        properties: [
           {
             id: {
               name: "R",
@@ -67,8 +67,8 @@ test("parse definitions", (t) => {
   t.like(parse("R:R1 a b R=1 T=27;"), {
     items: [
       {
-        type: "definition",
-        id: {
+        type: "instance",
+        deviceId: {
           name: "R",
         },
         instanceId: {
@@ -76,7 +76,7 @@ test("parse definitions", (t) => {
         },
         nodes: [{ name: "a" }, { name: "b" }],
         modelId: null,
-        params: [
+        properties: [
           {
             id: {
               name: "R",
@@ -109,8 +109,8 @@ test("parse definitions", (t) => {
   t.like(parse('BJT:Q1 e b c polarity="npn";'), {
     items: [
       {
-        type: "definition",
-        id: {
+        type: "instance",
+        deviceId: {
           name: "BJT",
         },
         instanceId: {
@@ -118,7 +118,7 @@ test("parse definitions", (t) => {
         },
         nodes: [{ name: "e" }, { name: "b" }, { name: "c" }],
         modelId: null,
-        params: [
+        properties: [
           {
             id: {
               name: "polarity",

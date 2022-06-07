@@ -4,7 +4,7 @@
 Ground g;
 V:VDS nd g V=5;
 V:VGS ng g V=0;
-JFET:DUT g ng nd @nfet;
+JFET:DUT g ng nd @NFET;
 ```
 
 ## Options
@@ -31,7 +31,7 @@ DUT{Vgs=0V,Vgd=-5V,Vds=5V,Ids=400μA}
 Ground g;
 V:VDS nd g V=5;
 V:VGS ng g V=-5;
-JFET:DUT g ng nd @nfet;
+JFET:DUT g ng nd @NFET;
 ```
 
 ## Options
@@ -57,7 +57,7 @@ DUT{Vgs=-5V,Vgd=-10V,Vds=5V,Ids=0A}
 ```text
 Ground g;
 V g nc V=0.7;
-JFET:DUT nc g nc @nfet;
+JFET:DUT nc g nc @NFET;
 ```
 
 ## Options
@@ -81,7 +81,7 @@ DUT{Vgs=700mV,Vgd=700mV,Vds=0V,Ids=0A}
 ```text
 Ground g;
 V nc g V=0.7;
-JFET:DUT nc g nc @nfet;
+JFET:DUT nc g nc @NFET;
 ```
 
 ## Options
@@ -105,7 +105,7 @@ DUT{Vgs=-700mV,Vgd=-700mV,Vds=0V,Ids=0A}
 ```text
 Ground g;
 V nc g V=0.7;
-JFET:DUT nc g nc @pfet;
+JFET:DUT nc g nc @PFET;
 ```
 
 ## Options
@@ -129,7 +129,7 @@ DUT{Vgs=-700mV,Vgd=-700mV,Vds=0V,Ids=0A}
 ```text
 Ground g;
 V g nc V=0.7;
-JFET:DUT nc g nc @pfet;
+JFET:DUT nc g nc @PFET;
 ```
 
 ## Options

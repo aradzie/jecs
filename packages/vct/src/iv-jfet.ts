@@ -9,7 +9,7 @@ import { Dataset, points } from "./util/dataset.js";
 const input = `
 V nd g V=$xVds;
 V ng g V=$xVgs;
-JFET:DUT g ng nd @nfet beta=0.001;
+JFET:DUT g ng nd @NFET beta=0.001;
 `;
 const netlist = parse(input, {});
 

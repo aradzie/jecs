@@ -49,8 +49,8 @@ export const makeOutputBuilder = ({ nodes, devices }: Circuit): OutputBuilder =>
     if (device instanceof Ground) {
       continue;
     }
-    const { stateParams } = device.getDeviceClass();
-    for (const op of stateParams.ops) {
+    const { stateSchema } = device.getDeviceClass();
+    for (const op of stateSchema.ops) {
       schema.push({
         name: `${op.name}(${device.id})`,
         unit: op.unit,
@@ -79,8 +79,8 @@ export const makeOutputBuilder = ({ nodes, devices }: Circuit): OutputBuilder =>
         if (device instanceof Ground) {
           continue;
         }
-        const { stateParams } = device.getDeviceClass();
-        for (const op of stateParams.ops) {
+        const { stateSchema } = device.getDeviceClass();
+        for (const op of stateSchema.ops) {
           row[index++] = device.state[op.index];
         }
       }

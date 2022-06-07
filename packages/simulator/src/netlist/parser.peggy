@@ -19,24 +19,25 @@ Netlist
     { return { items }; }
 
 Item =
-  Definition
-  / Equation
-  / Action
+  InstanceItem
+  / ModelItem
+  / EquationItem
+  / ActionItem
 
-Definition
-  = id:Identifier instanceId:( ":" @Identifier )?
+InstanceItem
+  = deviceId:Identifier instanceId:( ":" @Identifier )?
     _ nodes:NodeList
     _ modelId:ModelIdentifier?
-    _ params:ParameterList
+    _ properties:PropertyList
     _ ";"
     {
       return {
-        type: "definition",
-        id,
+        type: "instance",
+        deviceId,
         modelId,
         instanceId,
         nodes,
-        params,
+        properties,
       };
     }
 
@@ -50,25 +51,33 @@ NodeList
 NodeIdentifier
   = @Identifier !( _ "=" )
 
-ParameterList
-  = params:( _ @Parameter )*
-    { return params; }
+PropertyList
+  = properties:( _ @Property )*
+    { return properties; }
 
-Parameter
-  = id:Identifier _ "=" _ value:ParameterValue
+Property
+  = id:Identifier _ "=" _ value:PropertyValue
     { return { id, value }; }
 
-ParameterValue
+PropertyValue
   = value:String
     { return { type: "string", value }; }
   / value:Expression
     { return { type: "exp", value }; }
 
-Equation
+ModelItem
+  = ".model"
+    _ deviceId:Identifier
+    _ modelId:ModelIdentifier
+    _ properties:PropertyList
+    _ ";"
+    { return { type: "model", deviceId, modelId, properties }; }
+
+EquationItem
   = ".eq" _ id:Variable _ "=" _ value:Expression _ ";"
     { return { type: "equation", id, value, }; }
 
-Action
+ActionItem
   = ( ".dc" / ".sweep" ) _ ";"
     { return { type: "action" }; }
 

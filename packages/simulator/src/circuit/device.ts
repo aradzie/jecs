@@ -1,6 +1,5 @@
-import type { DeviceModel } from "./library.js";
 import type { Network, Node, Stamper } from "./network.js";
-import type { ParamsSchema } from "./params.js";
+import { Properties, PropertiesSchema } from "./properties.js";
 
 export interface DeviceClass {
   /** Unique device class identifier. */
@@ -10,21 +9,17 @@ export interface DeviceClass {
   readonly numTerminals: number;
 
   /** Schema of the device parameters. */
-  readonly paramsSchema: ParamsSchema;
+  readonly propertiesSchema: PropertiesSchema;
 
   /** Schema of the device state vector. */
-  readonly stateParams: StateParams;
+  readonly stateSchema: StateSchema;
 
   /**
    * Device constructor.
    * @param id Unique device instance identifier.
    * @param nodes Circuit nodes to which the device terminals are connected.
-   * @param params Device parameters.
    */
-  new (id: string, nodes: readonly Node[], params: any): Device;
-
-  /** Returns a list of device models. */
-  getModels(): readonly DeviceModel[];
+  new (id: string, nodes: readonly Node[]): Device;
 }
 
 /**
@@ -41,7 +36,7 @@ export interface OutputParam {
   readonly unit: string;
 }
 
-export interface StateParams {
+export interface StateSchema {
   /** Length of the state vector. */
   readonly length: number;
   /** Output parameters from the state vector. */
@@ -64,12 +59,7 @@ export type EvalOptions = {
   readonly gmin: number;
 };
 
-export abstract class Device<ParamsT = unknown> {
-  /** Returns a list of built-in generic device models, if any. */
-  static getModels(): readonly DeviceModel[] {
-    return [];
-  }
-
+export abstract class Device {
   /** Unique device class identifier. */
   static readonly id: string;
 
@@ -77,10 +67,10 @@ export abstract class Device<ParamsT = unknown> {
   static readonly numTerminals: number;
 
   /** Schema of the device parameters. */
-  static readonly paramsSchema: ParamsSchema;
+  static readonly propertiesSchema: PropertiesSchema;
 
   /** Schema of the device state vector. */
-  static readonly stateParams: StateParams;
+  static readonly stateSchema: StateSchema;
 
   /** Unique device instance identifier. */
   readonly id: string;
@@ -88,34 +78,28 @@ export abstract class Device<ParamsT = unknown> {
   /** The list of nodes to which the device terminals are connected. */
   readonly nodes: readonly Node[];
 
+  /** Device properties. */
+  readonly properties: Properties;
+
   /** Vector with device state variables. */
   state: DeviceState;
 
-  /** Device parameters. */
-  params: ParamsT | null = null;
-
-  constructor(id: string, nodes: readonly Node[], params: ParamsT | null = null) {
+  constructor(id: string, nodes: readonly Node[]) {
     this.id = id;
     this.nodes = nodes;
-    const { stateParams } = this.getDeviceClass();
-    this.state = new Float64Array(stateParams.length);
-    if (params != null) {
-      this.setParams(params);
-    }
+    const { propertiesSchema, stateSchema } = this.getDeviceClass();
+    this.properties = new Properties(propertiesSchema);
+    this.state = new Float64Array(stateSchema.length);
   }
 
   getDeviceClass(): DeviceClass {
     return this.constructor as DeviceClass;
   }
 
-  setParams(params: ParamsT): void {
-    this.deriveState(this.state, (this.params = params));
-  }
-
   /**
    * Derive state from params.
    */
-  deriveState(state: DeviceState, params: ParamsT): void {}
+  deriveState(state: DeviceState): void {}
 
   /**
    * Circuit calls this method to let a device to allocate extra nodes and
@@ -148,8 +132,8 @@ export abstract class Device<ParamsT = unknown> {
    * Returns value of an output parameter with the given name.
    */
   op(name: string): number {
-    const { stateParams } = this.getDeviceClass();
-    for (const op of stateParams.ops) {
+    const { stateSchema } = this.getDeviceClass();
+    for (const op of stateSchema.ops) {
       if (name === op.name) {
         return this.state[op.index];
       }

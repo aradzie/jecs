@@ -1,8 +1,6 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device.js";
-import type { DeviceModel } from "../../circuit/library.js";
+import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
-import { Params, ParamsSchema } from "../../circuit/params.js";
-import { Temp } from "../const.js";
+import { Properties } from "../../circuit/properties.js";
 import {
   BjtPolarity,
   bjtSign,
@@ -14,18 +12,6 @@ import {
   pnVoltage,
   pnVt,
 } from "./semi.js";
-
-export interface BjtParams {
-  readonly polarity: BjtPolarity;
-  readonly Bf: number;
-  readonly Br: number;
-  readonly Is: number;
-  readonly Nf: number;
-  readonly Nr: number;
-  readonly Vaf: number;
-  readonly Var: number;
-  readonly Temp: number;
-}
 
 const enum S {
   /** Device polarity, +1 for npn, -1 for pnp. */
@@ -66,84 +52,54 @@ const enum S {
 /**
  * Bipolar junction transistor, BJT.
  */
-export class Bjt extends Device<BjtParams> {
-  static modelNpn = Object.freeze<BjtParams>({
-    polarity: "npn",
-    Bf: 100.0,
-    Br: 1.0,
-    Is: 1e-14,
-    Nf: 1,
-    Nr: 1,
-    Vaf: 10.0,
-    Var: 0.0,
-    Temp,
-  });
-  static modelPnp = Object.freeze<BjtParams>({
-    polarity: "pnp",
-    Bf: 100.0,
-    Br: 1.0,
-    Is: 1e-14,
-    Nf: 1,
-    Nr: 1,
-    Vaf: 10.0,
-    Var: 0.0,
-    Temp,
-  });
-
-  static override getModels(): readonly DeviceModel[] {
-    return [
-      ["NPN", Bjt.modelNpn],
-      ["PNP", Bjt.modelPnp],
-    ];
-  }
-
+export class Bjt extends Device {
   static override readonly id = "BJT";
   static override readonly numTerminals = 3;
-  static override readonly paramsSchema: ParamsSchema<BjtParams> = {
-    polarity: Params.enum({
+  static override readonly propertiesSchema = {
+    polarity: Properties.enum({
       values: [npn, pnp],
       title: "transistor polarity",
     }),
-    Bf: Params.number({
+    Bf: Properties.number({
       default: 100.0,
       min: 1e-3,
       title: "forward beta",
     }),
-    Br: Params.number({
+    Br: Properties.number({
       default: 1.0,
       min: 1e-3,
       title: "reverse beta",
     }),
-    Is: Params.number({
+    Is: Properties.number({
       default: 1e-14,
       min: 0,
       title: "saturation current",
     }),
-    Nf: Params.number({
+    Nf: Properties.number({
       default: 1,
       min: 1e-3,
       max: 100,
       title: "forward emission coefficient",
     }),
-    Nr: Params.number({
+    Nr: Properties.number({
       default: 1,
       min: 1e-3,
       max: 100,
       title: "reverse emission coefficient",
     }),
-    Vaf: Params.number({
+    Vaf: Properties.number({
       default: 10.0,
       min: 0,
       title: "forward Early voltage",
     }),
-    Var: Params.number({
+    Var: Properties.number({
       default: 0.0,
       min: 0,
       title: "reverse Early voltage",
     }),
-    Temp: Params.Temp,
+    Temp: Properties.Temp,
   };
-  static override readonly stateParams: StateParams = {
+  static override readonly stateSchema = {
     length: S._Size_,
     ops: [
       { index: S.Vbe, name: "Vbe", unit: "V" },
@@ -162,17 +118,21 @@ export class Bjt extends Device<BjtParams> {
   /** The collector terminal. */
   readonly nc: Node;
 
-  constructor(id: string, [ne, nb, nc]: readonly Node[], params: BjtParams | null = null) {
-    super(id, [ne, nb, nc], params);
+  constructor(id: string, [ne, nb, nc]: readonly Node[]) {
+    super(id, [ne, nb, nc]);
     this.ne = ne;
     this.nb = nb;
     this.nc = nc;
   }
 
-  override deriveState(
-    state: DeviceState,
-    { polarity, Bf, Br, Is, Nf, Nr, Vaf, Var, Temp }: BjtParams,
-  ): void {
+  override deriveState(state: DeviceState): void {
+    const polarity = this.properties.getEnum("polarity") as BjtPolarity;
+    const Bf = this.properties.getNumber("Bf");
+    const Br = this.properties.getNumber("Br");
+    const Is = this.properties.getNumber("Is");
+    const Nf = this.properties.getNumber("Nf");
+    const Nr = this.properties.getNumber("Nr");
+    const Temp = this.properties.getNumber("Temp");
     const pol = bjtSign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);

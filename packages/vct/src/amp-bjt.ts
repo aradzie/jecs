@@ -11,7 +11,7 @@ Ground g;
 V nr g V=10;
 V nb g V=$xVbe;
 R nr nc R=$xRl;
-BJT:Q1 g nb nc @npn;
+BJT:Q1 g nb nc @NPN;
 `;
 const netlist = parse(input, {});
 

@@ -9,7 +9,7 @@ import { Dataset, points } from "./util/dataset.js";
 const input = `
 V nd g V=$xVds;
 V ng g V=$xVgs;
-MOSFET:DUT g ng nd g @nmos;
+MOSFET:DUT g ng nd g @NMOS;
 `;
 const netlist = parse(input, {});
 

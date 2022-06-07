@@ -1,8 +1,6 @@
-import { NameMap } from "../util/map.js";
-
 export type Func = readonly [func: (...args: number[]) => number, numArgs: number];
 
-const funcDefs = new NameMap<Func>([
+const funcDefs = new Map<string, Func>([
   ["abs", [Math.abs, 1]],
   ["sin", [Math.sin, 1]],
   ["asin", [Math.asin, 1]],

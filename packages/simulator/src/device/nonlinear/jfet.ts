@@ -1,8 +1,6 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device.js";
-import type { DeviceModel } from "../../circuit/library.js";
+import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
-import { Params, ParamsSchema } from "../../circuit/params.js";
-import { Temp } from "../const.js";
+import { Properties } from "../../circuit/properties.js";
 import {
   FetPolarity,
   fetSign,
@@ -14,16 +12,6 @@ import {
   pnVoltage,
   pnVt,
 } from "./semi.js";
-
-export interface JfetParams {
-  readonly polarity: FetPolarity;
-  readonly Vth: number;
-  readonly beta: number;
-  readonly lambda: number;
-  readonly Is: number;
-  readonly N: number;
-  readonly Temp: number;
-}
 
 const enum S {
   /** Device polarity, +1 for nfet, -1 for pfet. */
@@ -66,70 +54,44 @@ const enum S {
 /**
  * Junction field-effect transistor, JFET.
  */
-export class Jfet extends Device<JfetParams> {
-  static override getModels(): readonly DeviceModel[] {
-    return [
-      ["NFET", Jfet.modelNJfet],
-      ["PFET", Jfet.modelPJfet],
-    ];
-  }
-
-  static modelNJfet = Object.freeze<JfetParams>({
-    polarity: "nfet",
-    Vth: -2.0,
-    beta: 1e-4,
-    lambda: 0.0,
-    Is: 1e-14,
-    N: 1,
-    Temp,
-  });
-  static modelPJfet = Object.freeze<JfetParams>({
-    polarity: "pfet",
-    Vth: -2.0,
-    beta: 1e-4,
-    lambda: 0.0,
-    Is: 1e-14,
-    N: 1,
-    Temp,
-  });
-
+export class Jfet extends Device {
   static override readonly id = "JFET";
   static override readonly numTerminals = 3;
-  static override readonly paramsSchema: ParamsSchema<JfetParams> = {
-    polarity: Params.enum({
+  static override readonly propertiesSchema = {
+    polarity: Properties.enum({
       values: [nfet, pfet],
       title: "transistor polarity",
     }),
-    Vth: Params.number({
+    Vth: Properties.number({
       default: -2.0,
       min: -100,
       max: +100,
       title: "threshold voltage",
     }),
-    beta: Params.number({
+    beta: Properties.number({
       default: 1e-4,
       min: 1e-6,
       title: "transconductance parameter",
     }),
-    lambda: Params.number({
+    lambda: Properties.number({
       default: 0.0,
       min: 0,
       title: "channel-length modulation parameter",
     }),
-    Is: Params.number({
+    Is: Properties.number({
       default: 1e-14,
       min: 0,
       title: "saturation current",
     }),
-    N: Params.number({
+    N: Properties.number({
       default: 1,
       min: 1e-3,
       max: 100,
       title: "emission coefficient",
     }),
-    Temp: Params.Temp,
+    Temp: Properties.Temp,
   };
-  static override readonly stateParams: StateParams = {
+  static override readonly stateSchema = {
     length: S._Size_,
     ops: [
       { index: S.Vgs, name: "Vgs", unit: "V" },
@@ -147,21 +109,21 @@ export class Jfet extends Device<JfetParams> {
   /** The drain terminal. */
   readonly nd: Node;
 
-  constructor(
-    id: string, //
-    [ns, ng, nd]: readonly Node[],
-    params: JfetParams | null = null,
-  ) {
-    super(id, [ns, ng, nd], params);
+  constructor(id: string, [ns, ng, nd]: readonly Node[]) {
+    super(id, [ns, ng, nd]);
     this.ns = ns;
     this.ng = ng;
     this.nd = nd;
   }
 
-  override deriveState(
-    state: DeviceState, //
-    { polarity, Vth, beta, lambda, Is, N, Temp }: JfetParams,
-  ): void {
+  override deriveState(state: DeviceState): void {
+    const polarity = this.properties.getEnum("polarity") as FetPolarity;
+    const Vth = this.properties.getNumber("Vth");
+    const beta = this.properties.getNumber("beta");
+    const lambda = this.properties.getNumber("lambda");
+    const Is = this.properties.getNumber("Is");
+    const N = this.properties.getNumber("N");
+    const Temp = this.properties.getNumber("Temp");
     const pol = fetSign(polarity);
     const Vt = N * pnVt(Temp);
     const Vcrit = pnVcrit(Is, Vt);

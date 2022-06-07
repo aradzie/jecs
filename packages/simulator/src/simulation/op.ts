@@ -15,6 +15,8 @@ export function opAnalysis(circuit: Circuit, userOptions: Partial<Options> = {})
   assert(options.reltol > 0);
   assert(options.gmin > 0);
 
+  circuit.reset();
+
   const output = makeOutputBuilder(circuit);
 
   const simulator = newSimulator(circuit, options);

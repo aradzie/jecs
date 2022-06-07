@@ -27,6 +27,8 @@ export function tranAnalysis(
   assert(options.reltol > 0);
   assert(options.gmin > 0);
 
+  circuit.reset();
+
   const builder = makeOutputBuilder(circuit);
 
   let step = 0;

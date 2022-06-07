@@ -1,10 +1,6 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../circuit/device.js";
+import { Device, DeviceState, EvalOptions } from "../circuit/device.js";
 import type { Node, Stamper } from "../circuit/network.js";
-import { Params, ParamsSchema } from "../circuit/params.js";
-
-export interface CapacitorParams {
-  readonly C: number;
-}
+import { Properties } from "../circuit/properties.js";
 
 const enum S {
   C,
@@ -19,15 +15,15 @@ const enum S {
 /**
  * Capacitor.
  */
-export class Capacitor extends Device<CapacitorParams> {
+export class Capacitor extends Device {
   static override readonly id = "C";
   static override readonly numTerminals = 2;
-  static override readonly paramsSchema: ParamsSchema<CapacitorParams> = {
-    C: Params.number({
+  static override readonly propertiesSchema = {
+    C: Properties.number({
       title: "capacitance",
     }),
   };
-  static override readonly stateParams: StateParams = {
+  static override readonly stateSchema = {
     length: S._Size_,
     ops: [
       { index: S.V, name: "V", unit: "V" },
@@ -41,14 +37,14 @@ export class Capacitor extends Device<CapacitorParams> {
   /** Second terminal. */
   readonly nb: Node;
 
-  constructor(id: string, [na, nb]: readonly Node[], params: CapacitorParams | null = null) {
-    super(id, [na, nb], params);
+  constructor(id: string, [na, nb]: readonly Node[]) {
+    super(id, [na, nb]);
     this.na = na;
     this.nb = nb;
   }
 
-  override deriveState(state: DeviceState, { C }: CapacitorParams): void {
-    state[S.C] = C;
+  override deriveState(state: DeviceState): void {
+    state[S.C] = this.properties.getNumber("C");
   }
 
   override beginEval(state: DeviceState, options: EvalOptions): void {

@@ -1,12 +1,12 @@
-import { Device, StateParams } from "../circuit/device.js";
+import { Device } from "../circuit/device.js";
 import { CircuitError } from "../circuit/error.js";
 import type { Network, Node } from "../circuit/network.js";
 
 export class Ground extends Device {
   static override readonly id = "Ground";
   static override readonly numTerminals = 1;
-  static override readonly paramsSchema = {};
-  static override readonly stateParams: StateParams = {
+  static override readonly propertiesSchema = {};
+  static override readonly stateSchema = {
     length: 0,
     ops: [],
   };
@@ -14,7 +14,7 @@ export class Ground extends Device {
   readonly n: Node;
 
   constructor(id: string, [n]: readonly Node[]) {
-    super(id, [n], {});
+    super(id, [n]);
     this.n = n;
   }
 

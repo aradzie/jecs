@@ -1,8 +1,6 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device.js";
-import type { DeviceModel } from "../../circuit/library.js";
+import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
-import { Params, ParamsSchema } from "../../circuit/params.js";
-import { Temp } from "../const.js";
+import { Properties } from "../../circuit/properties.js";
 import {
   FetPolarity,
   fetSign,
@@ -15,16 +13,6 @@ import {
   pnVoltage,
   pnVt,
 } from "./semi.js";
-
-export interface MosfetParams {
-  readonly polarity: FetPolarity;
-  readonly Vth: number;
-  readonly beta: number;
-  readonly lambda: number;
-  readonly Is: number;
-  readonly N: number;
-  readonly Temp: number;
-}
 
 const enum S {
   /** Device polarity, +1 for nfet, -1 for pfet. */
@@ -71,89 +59,43 @@ const enum S {
 /**
  * Metal–oxide–semiconductor field-effect transistor, MOSFET.
  */
-export class Mosfet extends Device<MosfetParams> {
-  static override getModels(): readonly DeviceModel[] {
-    return [
-      ["NMOS", Mosfet.modelEnhNMosfet],
-      ["PMOS", Mosfet.modelEnhPMosfet],
-      ["DEPNMOS", Mosfet.modelDepNMosfet],
-      ["DEPPMOS", Mosfet.modelDepPMosfet],
-    ];
-  }
-
-  static modelEnhNMosfet = Object.freeze<MosfetParams>({
-    polarity: "nfet",
-    Vth: +2.0,
-    beta: 2e-2,
-    lambda: 0.0,
-    Is: 1e-14,
-    N: 1,
-    Temp,
-  });
-  static modelEnhPMosfet = Object.freeze<MosfetParams>({
-    polarity: "pfet",
-    Vth: -2.0,
-    beta: 2e-2,
-    lambda: 0.0,
-    Is: 1e-14,
-    N: 1,
-    Temp,
-  });
-  static modelDepNMosfet = Object.freeze<MosfetParams>({
-    polarity: "nfet",
-    Vth: -2.0,
-    beta: 2e-2,
-    lambda: 0.0,
-    Is: 1e-14,
-    N: 1,
-    Temp,
-  });
-  static modelDepPMosfet = Object.freeze<MosfetParams>({
-    polarity: "pfet",
-    Vth: +2.0,
-    beta: 2e-2,
-    lambda: 0.0,
-    Is: 1e-14,
-    N: 1,
-    Temp,
-  });
-
+export class Mosfet extends Device {
   static override readonly id = "MOSFET";
   static override readonly numTerminals = 4;
-  static override readonly paramsSchema: ParamsSchema<MosfetParams> = {
-    polarity: Params.enum({
+  static override readonly propertiesSchema = {
+    polarity: Properties.enum({
       values: [nfet, pfet],
       title: "transistor polarity",
     }),
-    Vth: Params.number({
+    Vth: Properties.number({
       title: "threshold voltage",
       min: -100,
       max: +100,
     }),
-    beta: Params.number({
+    beta: Properties.number({
       default: 2e-2,
       min: 1e-6,
       title: "transconductance parameter",
     }),
-    lambda: Params.number({
+    lambda: Properties.number({
       default: 0.0,
       min: 0,
       title: "channel-length modulation parameter",
     }),
-    Is: Params.number({
+    Is: Properties.number({
       default: 1e-14,
       min: 0,
       title: "saturation current",
     }),
-    N: Params.number({
+    N: Properties.number({
       default: 1,
       min: 1e-3,
       max: 100,
       title: "emission coefficient",
     }),
-    Temp: Params.Temp,
+    Temp: Properties.Temp,
   };
-  static override readonly stateParams: StateParams = {
+  static override readonly stateSchema = {
     length: S._Size_,
     ops: [
       { index: S.Vgs, name: "Vgs", unit: "V" },
@@ -173,22 +115,22 @@ export class Mosfet extends Device<MosfetParams> {
   /** The body terminal. */
   readonly nb: Node;
 
-  constructor(
-    id: string, //
-    [ns, ng, nd, nb]: readonly Node[],
-    params: MosfetParams | null = null,
-  ) {
-    super(id, [ns, ng, nd, nb], params);
+  constructor(id: string, [ns, ng, nd, nb]: readonly Node[]) {
+    super(id, [ns, ng, nd, nb]);
     this.ns = ns;
     this.ng = ng;
     this.nd = nd;
     this.nb = nb;
   }
 
-  override deriveState(
-    state: DeviceState,
-    { polarity, Vth, beta, lambda, Is, N, Temp }: MosfetParams,
-  ): void {
+  override deriveState(state: DeviceState): void {
+    const polarity = this.properties.getEnum("polarity") as FetPolarity;
+    const Vth = this.properties.getNumber("Vth");
+    const beta = this.properties.getNumber("beta");
+    const lambda = this.properties.getNumber("lambda");
+    const Is = this.properties.getNumber("Is");
+    const N = this.properties.getNumber("N");
+    const Temp = this.properties.getNumber("Temp");
     const pol = fetSign(polarity);
     const Vt = N * pnVt(Temp);
     const Vcrit = pnVcrit(Is, Vt);

@@ -1,11 +1,16 @@
-import type { DeviceParams } from "../circuit/params.js";
-import { NameMap } from "../util/map.js";
-import type { BinaryExp, Equation, Expression, FuncExp, UnaryExp } from "./ast.js";
-import { builtins, equation, literalExp, Parameter } from "./ast.js";
+import type {
+  BinaryExp,
+  EquationItem,
+  Expression,
+  FuncExp,
+  PropertyValue,
+  UnaryExp,
+} from "./ast.js";
+import { builtins, equation, literalExp } from "./ast.js";
 import { callFunc } from "./functions.js";
 
 export class Variables {
-  private equations = new NameMap<Equation>();
+  private equations = new Map<string, EquationItem>();
 
   constructor() {
     for (const builtin of builtins) {
@@ -17,23 +22,17 @@ export class Variables {
     this.setEquation(equation(name, literalExp(value)));
   }
 
-  setEquation(equation: Equation): void {
+  setEquation(equation: EquationItem): void {
     this.equations.set(equation.id.name, equation);
   }
 
-  makeParams(params: readonly Parameter[]): DeviceParams {
-    const result = {} as DeviceParams;
-    for (const { id, value } of params) {
-      switch (value.type) {
-        case "string":
-          result[id.name] = value.value;
-          break;
-        case "exp":
-          result[id.name] = this.evalExp(value.value);
-          break;
-      }
+  getValue({ type, value }: PropertyValue): number | string {
+    switch (type) {
+      case "string":
+        return value;
+      case "exp":
+        return this.evalExp(value);
     }
-    return result;
   }
 
   lookup(name: string): number {

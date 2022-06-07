@@ -1,12 +1,8 @@
-import { Device, DeviceState, EvalOptions, StateParams } from "../../circuit/device.js";
+import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
-import { Params, ParamsSchema } from "../../circuit/params.js";
-import type { Form, Signal } from "./signal.js";
+import { Properties } from "../../circuit/properties.js";
+import type { Signal } from "./signal.js";
 import { makeSignal } from "./signal.js";
-
-export interface VSourceParams {
-  readonly V: Form;
-}
 
 const enum S {
   V,
@@ -18,13 +14,13 @@ const enum S {
 /**
  * Voltage source.
  */
-export class VSource extends Device<VSourceParams> {
+export class VSource extends Device {
   static override readonly id = "V";
   static override readonly numTerminals = 2;
-  static override readonly paramsSchema: ParamsSchema<VSourceParams> = {
-    V: Params.number({ title: "voltage" }),
+  static override readonly propertiesSchema = {
+    V: Properties.number({ title: "voltage" }),
   };
-  static override readonly stateParams: StateParams = {
+  static override readonly stateSchema = {
     length: S._Size_,
     ops: [
       { index: S.V, name: "V", unit: "V" },
@@ -42,19 +38,18 @@ export class VSource extends Device<VSourceParams> {
   /** Signal generator. */
   private signal!: Signal;
 
-  constructor(
-    id: string, //
-    [np, nn]: readonly Node[],
-    params: VSourceParams | null = null,
-  ) {
-    super(id, [np, nn], params);
+  constructor(id: string, [np, nn]: readonly Node[]) {
+    super(id, [np, nn]);
     this.np = np;
     this.nn = nn;
-    this.signal = makeSignal(params?.V || 0);
   }
 
   override connect(network: Network): void {
     this.branch = network.makeBranch(this.np, this.nn);
+  }
+
+  override deriveState(state: DeviceState) {
+    this.signal = makeSignal(this.properties.getNumber("V") || 0);
   }
 
   override beginEval(state: DeviceState, { elapsedTime }: EvalOptions): void {
