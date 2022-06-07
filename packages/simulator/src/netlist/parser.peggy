@@ -136,8 +136,8 @@ String
     { return chars; }
 
 Number "number"
-  = $( "-"? Integer Frac? Exp? )
-    { return Number.parseFloat(text()); }
+  = $( "-"? Integer Frac? Exp? ) m:MetricUnit?
+    { return Number.parseFloat(text()) * (m ?? 1); }
 
 Integer
   = Digit+
@@ -147,6 +147,17 @@ Frac
 
 Exp
   = ( "e" / "E" ) ( "-" / "+" )? Digit+
+
+MetricUnit
+  = "T" { return 1e+12; }
+  / "G" { return 1e+09; }
+  / "M" { return 1e+06; }
+  / "k" { return 1e+03; }
+  / "m" { return 1e-03; }
+  / "u" { return 1e-06; }
+  / "µ" { return 1e-06; }
+  / "n" { return 1e-09; }
+  / "p" { return 1e-12; }
 
 Digit
   = [0-9]
