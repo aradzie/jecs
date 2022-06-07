@@ -17,7 +17,7 @@ export function dumpCircuit(circuit: Circuit): string[] {
       continue;
     }
     const items: string[] = [];
-    const { stateSchema } = device.getDeviceClass();
+    const { stateSchema } = device.deviceClass;
     for (const op of stateSchema.ops) {
       items.push(`${op.name}=${formatNumber(device.state[op.index], op.unit)}`);
     }

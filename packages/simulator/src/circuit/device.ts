@@ -87,12 +87,12 @@ export abstract class Device {
   constructor(id: string, nodes: readonly Node[]) {
     this.id = id;
     this.nodes = nodes;
-    const { propertiesSchema, stateSchema } = this.getDeviceClass();
+    const { propertiesSchema, stateSchema } = this.deviceClass;
     this.properties = new Properties(propertiesSchema);
     this.state = new Float64Array(stateSchema.length);
   }
 
-  getDeviceClass(): DeviceClass {
+  get deviceClass(): DeviceClass {
     return this.constructor as DeviceClass;
   }
 
@@ -132,7 +132,7 @@ export abstract class Device {
    * Returns value of an output parameter with the given name.
    */
   op(name: string): number {
-    const { stateSchema } = this.getDeviceClass();
+    const { stateSchema } = this.deviceClass;
     for (const op of stateSchema.ops) {
       if (name === op.name) {
         return this.state[op.index];

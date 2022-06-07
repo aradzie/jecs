@@ -39,22 +39,22 @@ R:R1 n1 gnd R=100;
 
   const [d1, d2, d3, d4, d5] = devices;
 
-  t.is(d1.getDeviceClass().id, "Ground");
+  t.is(d1.deviceClass.id, "Ground");
   t.is(d1.id, "Ground1");
 
-  t.is(d2.getDeviceClass().id, "V");
+  t.is(d2.deviceClass.id, "V");
   t.is(d2.id, "V1");
   t.is(d2.properties.getNumber("V"), 5);
 
-  t.is(d3.getDeviceClass().id, "R");
+  t.is(d3.deviceClass.id, "R");
   t.is(d3.id, "R2");
   t.is(d3.properties.getNumber("R"), 111);
 
-  t.is(d4.getDeviceClass().id, "R");
+  t.is(d4.deviceClass.id, "R");
   t.is(d4.id, "R3");
   t.is(d4.properties.getNumber("R"), 200);
 
-  t.is(d5.getDeviceClass().id, "R");
+  t.is(d5.deviceClass.id, "R");
   t.is(d5.id, "R1");
   t.is(d5.properties.getNumber("R"), 100);
 });
