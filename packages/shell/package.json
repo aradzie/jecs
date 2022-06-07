@@ -22,7 +22,6 @@
   "scripts": {
     "clean": "rm -fr {lib,build}",
     "compile": "tsc",
-    "test": "ava",
     "build": "webpack",
     "publish": "gh-pages -d build"
   },
@@ -47,11 +46,5 @@
     "ts-loader": "^9.3.0",
     "webpack": "^5.72.1",
     "webpack-cli": "^4.9.2"
-  },
-  "ava": {
-    "files": [
-      "lib/**/*.test.*",
-      "lib/**/__test__/*"
-    ]
   }
 }
