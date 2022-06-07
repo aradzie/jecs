@@ -1,7 +1,7 @@
 import type { Circuit } from "@jssim/simulator/lib/circuit/circuit.js";
 import { Ground } from "@jssim/simulator/lib/device/index.js";
 import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist.js";
-import { opAnalysis } from "@jssim/simulator/lib/simulation/op.js";
+import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc.js";
 
 export type Result = OkResult | ErrorResult;
 
@@ -28,7 +28,7 @@ export type Op = {
 export function exec(value: string): Result {
   try {
     const circuit = parseNetlist(value);
-    opAnalysis(circuit);
+    dcAnalysis(circuit);
     return {
       type: "ok",
       ops: getOps(circuit),

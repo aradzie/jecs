@@ -4,7 +4,7 @@ import type { Options } from "./options.js";
 import { defaultOptions } from "./options.js";
 import { makeOutputBuilder, Output } from "./output.js";
 
-export function opAnalysis(circuit: Circuit, userOptions: Partial<Options> = {}): Output {
+export function dcAnalysis(circuit: Circuit, userOptions: Partial<Options> = {}): Output {
   const options = Object.freeze<Options>({ ...defaultOptions, ...userOptions });
 
   circuit.reset();

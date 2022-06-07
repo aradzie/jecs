@@ -1,7 +1,7 @@
 import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist.js";
 import { parse } from "@jssim/simulator/lib/netlist/parser.js";
 import { Variables } from "@jssim/simulator/lib/netlist/variables.js";
-import { opAnalysis } from "@jssim/simulator/lib/simulation/op.js";
+import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc.js";
 import { Dataset, points } from "./util/dataset.js";
 
 const input = `
@@ -16,7 +16,7 @@ for (const xVd of points(0.5, 0.9, 100)) {
   const variables = new Variables();
   variables.setVariable("$xVd", xVd);
   const circuit = parseNetlist(netlist, variables);
-  opAnalysis(circuit);
+  dcAnalysis(circuit);
   const dut = circuit.getDevice("DUT");
   const V = dut.op("V");
   const I = dut.op("I");

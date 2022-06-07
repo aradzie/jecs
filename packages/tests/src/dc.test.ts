@@ -1,6 +1,6 @@
 import { dumpCircuit } from "@jssim/simulator/lib/circuit/debug.js";
 import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist.js";
-import { opAnalysis } from "@jssim/simulator/lib/simulation/op.js";
+import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc.js";
 import type { Options } from "@jssim/simulator/lib/simulation/options.js";
 import test from "ava";
 import { readdirSync, readFileSync } from "fs";
@@ -9,7 +9,7 @@ import { fileURLToPath, URL } from "url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-scan(join(__dirname, "..", "src", "op"));
+scan(join(__dirname, "..", "src", "dc"));
 
 function scan(dir: string): void {
   for (const entry of readdirSync(dir)) {
@@ -27,7 +27,7 @@ function makeTest(filename: string, testCases: readonly TestCase[]): void {
   for (const { netlist, options, result } of testCases) {
     test(`${filename}#${index}`, (t) => {
       const circuit = parseNetlist(netlist);
-      opAnalysis(circuit, options);
+      dcAnalysis(circuit, options);
       t.deepEqual(dumpCircuit(circuit), result);
     });
     index += 1;
