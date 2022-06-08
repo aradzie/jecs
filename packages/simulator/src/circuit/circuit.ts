@@ -2,8 +2,40 @@ import type { Vector } from "@jssim/math/lib/types";
 import type { Device } from "./device.js";
 import { CircuitError } from "./error.js";
 import { Branch, groundNode, Network, Node } from "./network.js";
+import { Properties, Temp } from "./properties.js";
 
 export class Circuit implements Network {
+  readonly options = new Properties({
+    Temp: Properties.number({
+      default: Temp,
+      min: -273.15, // Absolute zero.
+      title: "simulation temperature in degrees Celsius",
+    }),
+    abstol: Properties.number({
+      default: 1e-12, // 1pA
+      min: 0,
+      title: "absolute current error tolerance in amperes",
+    }),
+    vntol: Properties.number({
+      default: 1e-6, // 1uV
+      min: 0,
+      title: "absolute voltage error tolerance in volts",
+    }),
+    reltol: Properties.number({
+      default: 1e-3,
+      min: 0,
+      title: "Relative error tolerance",
+    }),
+    gmin: Properties.number({
+      default: 1e-12,
+      min: 0,
+      title: "minimum conductance in siemens",
+    }),
+    integrationMethod: Properties.enum({
+      values: ["trapezoidal", "euler"],
+      title: "integration method",
+    }),
+  });
   readonly #nodes: (Node | Branch)[] = [];
   readonly #nodesById = new Map<string, Node>();
   readonly #devices: Device[] = [];

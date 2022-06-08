@@ -4,12 +4,7 @@
 Ground g;
 V np g V=5;
 Diode:DUT g np;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result
@@ -28,12 +23,7 @@ DUT{V=-5V,I=0A,P=0W}
 Ground g;
 I g np I=0.1;
 Diode:DUT np g;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result
@@ -53,12 +43,7 @@ Ground g;
 I g np I=1;
 Diode:DUT1 np nm;
 Diode:DUT2 nm g;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result
@@ -79,12 +64,7 @@ DUT2{V=833.37mV,I=1A,P=833.37mW}
 Ground g;
 V np g V=0.8;
 Diode:DUT np g;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result
@@ -104,12 +84,7 @@ Ground g;
 V np g V=1.6;
 Diode:DUT1 np nm;
 Diode:DUT2 nm g;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result

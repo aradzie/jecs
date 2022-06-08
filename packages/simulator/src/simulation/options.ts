@@ -1,3 +1,5 @@
+import type { Properties } from "../circuit/properties.js";
+
 export interface Options {
   /** Absolute current error tolerance, `A`. */
   readonly abstol: number;
@@ -9,9 +11,11 @@ export interface Options {
   readonly gmin: number;
 }
 
-export const defaultOptions = Object.freeze<Options>({
-  abstol: 1e-12,
-  vntol: 1e-6,
-  reltol: 1e-3,
-  gmin: 1e-12,
-});
+export function getOptions(properties: Properties): Options {
+  return {
+    abstol: properties.getNumber("abstol"),
+    vntol: properties.getNumber("vntol"),
+    reltol: properties.getNumber("reltol"),
+    gmin: properties.getNumber("gmin"),
+  };
+}

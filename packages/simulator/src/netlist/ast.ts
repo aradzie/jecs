@@ -37,7 +37,7 @@ export interface Identifier extends Node {
   readonly name: string;
 }
 
-export type Item = InstanceItem | ModelItem | EquationItem | ActionItem;
+export type Item = InstanceItem | ModelItem | EquationItem | ActionItem | OptionsItem;
 
 export interface InstanceItem extends Node {
   readonly type: "instance";
@@ -80,6 +80,11 @@ export interface EquationItem extends Node, HasId {
 
 export interface ActionItem extends Node {
   readonly type: "action";
+}
+
+export interface OptionsItem extends Node {
+  readonly type: "options";
+  readonly properties: readonly Property[];
 }
 
 export type Expression = UnaryExp | BinaryExp | LiteralExp | VarExp | FuncExp;

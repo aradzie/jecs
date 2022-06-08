@@ -53,14 +53,15 @@ class CircuitBuilder {
     this.collectEquations();
     this.collectModels();
     this.collectInstances();
+    this.assignNodes();
     this.assignInstanceIds();
-    this.collectNodes();
     for (const instance of this.instances) {
       this.createDevice(instance);
     }
     for (const instance of this.instances) {
       this.setProperties(instance);
     }
+    this.collectOptions();
   }
 
   collectEquations(): void {
@@ -153,7 +154,7 @@ class CircuitBuilder {
     }
   }
 
-  collectNodes(): void {
+  assignNodes(): void {
     const map = new Map<string, Node>();
 
     const { groundNode } = this.circuit;
@@ -229,6 +230,23 @@ class CircuitBuilder {
           `Error in instance [${instance.instanceId}]: ` +
             `Invalid property [${property.id.name}]. ${err.message}`,
         );
+      }
+    }
+  }
+
+  collectOptions(): void {
+    for (const item of this.netlist.items) {
+      if (item.type === "options") {
+        for (const property of item.properties) {
+          try {
+            this.circuit.options.set(property.id.name, this.variables.getValue(property.value));
+          } catch (err: any) {
+            throw new NetlistError(
+              `Error in simulation options: ` +
+                `Invalid property [${property.id.name}]. ${err.message}`,
+            );
+          }
+        }
       }
     }
   }

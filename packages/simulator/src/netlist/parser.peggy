@@ -23,6 +23,7 @@ Item =
   / ModelItem
   / EquationItem
   / ActionItem
+  / OptionsItem
 
 InstanceItem
   = deviceId:Identifier instanceId:( ":" @Identifier )?
@@ -78,8 +79,20 @@ EquationItem
     { return { type: "equation", id, value, }; }
 
 ActionItem
-  = ( ".dc" / ".sweep" ) _ ";"
-    { return { type: "action" }; }
+  = DcAnalysisItem
+  / TranAnalysisItem
+
+DcAnalysisItem
+  = ".dc" _ ";"
+    { return { type: "dc" }; }
+
+TranAnalysisItem
+  = ".tran" _ ";"
+    { return { type: "tran" }; }
+
+OptionsItem
+  = ".options" _ properties:PropertyList _ ";"
+    { return { type: "options", properties }; }
 
 Expression
   = AdditiveExp

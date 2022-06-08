@@ -1,6 +1,3 @@
-/** The default simulation temperature. */
-export const Temp = 26.85;
-
 /** The electrical charge on the electron, `C`. */
 export const q = 1.602176634e-19;
 

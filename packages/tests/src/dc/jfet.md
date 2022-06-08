@@ -5,12 +5,7 @@ Ground g;
 V:VDS nd g V=5;
 V:VGS ng g V=0;
 JFET:DUT g ng nd @NFET;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result
@@ -32,12 +27,7 @@ Ground g;
 V:VDS nd g V=5;
 V:VGS ng g V=-5;
 JFET:DUT g ng nd @NFET;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result
@@ -58,12 +48,7 @@ DUT{Vgs=-5V,Vgd=-10V,Vds=5V,Ids=0A}
 Ground g;
 V g nc V=0.7;
 JFET:DUT nc g nc @NFET;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result
@@ -82,12 +67,7 @@ DUT{Vgs=700mV,Vgd=700mV,Vds=0V,Ids=0A}
 Ground g;
 V nc g V=0.7;
 JFET:DUT nc g nc @NFET;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result
@@ -106,12 +86,7 @@ DUT{Vgs=-700mV,Vgd=-700mV,Vds=0V,Ids=0A}
 Ground g;
 V nc g V=0.7;
 JFET:DUT nc g nc @PFET;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result
@@ -130,12 +105,7 @@ DUT{Vgs=-700mV,Vgd=-700mV,Vds=0V,Ids=0A}
 Ground g;
 V g nc V=0.7;
 JFET:DUT nc g nc @PFET;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result

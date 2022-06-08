@@ -5,12 +5,7 @@ Ground g;
 V nc g V=5;
 V nb g V=0.65;
 BJT:DUT g nb nc @NPN;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result
@@ -32,12 +27,7 @@ Ground g;
 V nc g V=5;
 I g nb I=0.0001;
 BJT:DUT g nb nc @NPN;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result
@@ -59,12 +49,7 @@ Ground g;
 V ne g V=5;
 V ne nb V=0.65;
 BJT:DUT ne nb g @PNP;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result
@@ -86,12 +71,7 @@ Ground g;
 V ne g V=5;
 I nb ne I=0.0001;
 BJT:DUT ne nb g @PNP;
-```
-
-## Options
-
-```json
-{ "reltol": 0.00001 }
+.options reltol=1e-5;
 ```
 
 ## Result

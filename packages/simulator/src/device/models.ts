@@ -1,5 +1,5 @@
 import { Model } from "../circuit/model.js";
-import { Temp } from "./const.js";
+import { Temp } from "../circuit/properties.js";
 import { Bjt } from "./nonlinear/bjt.js";
 import { Diode } from "./nonlinear/diode.js";
 import { Jfet } from "./nonlinear/jfet.js";

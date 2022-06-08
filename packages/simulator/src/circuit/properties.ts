@@ -1,5 +1,7 @@
-import { Temp } from "../device/const.js";
 import { CircuitError } from "./error.js";
+
+/** The default simulation temperature. */
+export const Temp = 26.85;
 
 export type PropertiesSchema = Record<string, PropertySchema>;
 
