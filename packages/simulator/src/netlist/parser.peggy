@@ -82,16 +82,16 @@ ActionItem
   / TranAnalysisItem
 
 DcAnalysisItem
-  = ".dc" _ properties:PropertyList _ LineEnd
-    { return { type: "dc", properties }; }
+  = ".dc" _ properties:PropertyList sweeps:( _ @Sweep )* _ LineEnd
+    { return { type: "dc", properties, sweeps }; }
 
 TranAnalysisItem
-  = ".tran" _ properties:PropertyList _ LineEnd
-    { return { type: "tran", properties }; }
+  = ".tran" _ properties:PropertyList sweeps:( _ @Sweep )* _ LineEnd
+    { return { type: "tran", properties, sweeps }; }
 
 Sweep
-  = ".sweep" _ properties:PropertyList
-    { return { type: "sweep", properties } }
+  = "sweep" _ variable:Variable _ from:Number _ to:Number _ points:Number
+    { return { type: "sweep", variable, from, to, points } }
 
 Expression
   = AdditiveExp
@@ -143,7 +143,7 @@ Identifier "identifier"
   = $( [_a-zA-Z] [_a-zA-Z0-9]* )
     { return { name: text()/*, location: location()*/ }; }
 
-String
+String "string"
   = '"' chars:$( !( '"' / "\n" / "\r" ) . )* '"'
     { return chars; }
 

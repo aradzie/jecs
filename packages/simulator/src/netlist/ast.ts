@@ -81,11 +81,20 @@ export interface EquationItem extends Node, HasId {
 export interface DcItem extends Node {
   readonly type: "dc";
   readonly properties: readonly Property[];
+  readonly sweeps: readonly SweepNode[];
 }
 
 export interface TranItem extends Node {
   readonly type: "tran";
   readonly properties: readonly Property[];
+  readonly sweeps: readonly SweepNode[];
+}
+
+export interface SweepNode extends Node {
+  readonly variable: string;
+  readonly from: number;
+  readonly to: number;
+  readonly points: number;
 }
 
 export type Expression = UnaryExp | BinaryExp | LiteralExp | VarExp | FuncExp;

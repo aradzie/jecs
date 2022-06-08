@@ -5,6 +5,8 @@ import { makeOutputBuilder, Output } from "./output.js";
 import { newSimulator } from "./simulator.js";
 
 export abstract class Analysis {
+  readonly sweeps: Sweep[] = [];
+
   constructor(readonly properties: Properties) {}
 
   abstract run(circuit: Circuit): Output;
@@ -60,4 +62,13 @@ export class TranAnalysis extends Analysis {
     }
     return builder.build();
   }
+}
+
+export class Sweep {
+  constructor(
+    readonly variable: string,
+    readonly from: number,
+    readonly to: number,
+    readonly points: number,
+  ) {}
 }
