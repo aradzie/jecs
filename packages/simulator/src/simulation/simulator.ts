@@ -4,11 +4,11 @@ import type { Circuit } from "../circuit/circuit.js";
 import type { EvalOptions } from "../circuit/device.js";
 import { Stamper } from "../circuit/network.js";
 import { Controller, converged } from "./convergence.js";
-import type { Options } from "./options.js";
+import type { SimulationOptions } from "./options.js";
 
 export const newSimulator = (
   circuit: Circuit,
-  options: Options,
+  options: SimulationOptions,
 ): ((evalOptions: EvalOptions) => void) => {
   const { nodes, devices } = circuit;
 

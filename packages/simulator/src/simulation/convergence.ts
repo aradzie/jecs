@@ -1,7 +1,7 @@
 import type { Vector } from "@jssim/math/lib/types.js";
 import type { Branch, Node } from "../circuit/network.js";
 import { SimulationError } from "./error.js";
-import type { Options } from "./options.js";
+import type { SimulationOptions } from "./options.js";
 
 export class Controller implements Iterable<number> {
   iteration = 0;
@@ -15,7 +15,7 @@ export class Controller implements Iterable<number> {
 }
 
 export function converged(
-  { abstol, vntol, reltol }: Options,
+  { abstol, vntol, reltol }: SimulationOptions,
   nodes: readonly (Node | Branch)[],
   prev: Vector,
   curr: Vector,
