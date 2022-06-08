@@ -3,6 +3,7 @@ import { Properties } from "../circuit/properties.js";
 import { dcProperties, getOptions, tranProperties } from "./options.js";
 import { makeOutputBuilder, Output } from "./output.js";
 import { newSimulator } from "./simulator.js";
+import { Sweep } from "./sweep.js";
 
 export abstract class Analysis {
   readonly sweeps: Sweep[] = [];
@@ -19,17 +20,26 @@ export class DcAnalysis extends Analysis {
 
   override run(circuit: Circuit): Output {
     const { properties } = this;
-    circuit.reset();
     const gmin = properties.getNumber("gmin");
     const options = getOptions(this.properties);
     const output = makeOutputBuilder(circuit);
-    const simulator = newSimulator(circuit, options);
-    simulator({
-      elapsedTime: 0,
-      timeStep: NaN,
-      gmin,
+
+    Sweep.walk(this.sweeps, {
+      enter: (sweep, level) => {},
+      set: (sweep, value) => {},
+      end: () => {
+        circuit.reset();
+        const simulator = newSimulator(circuit, options);
+        simulator({
+          elapsedTime: 0,
+          timeStep: NaN,
+          gmin,
+        });
+        output.append(0);
+      },
+      leave: (sweep, level) => {},
     });
-    output.append(0);
+
     return output.build();
   }
 }
@@ -41,34 +51,34 @@ export class TranAnalysis extends Analysis {
 
   override run(circuit: Circuit): Output {
     const { properties } = this;
-    circuit.reset();
     const timeInterval = properties.getNumber("timeInterval");
     const timeStep = properties.getNumber("timeStep");
     const gmin = properties.getNumber("gmin");
     const options = getOptions(properties);
     const builder = makeOutputBuilder(circuit);
-    let step = 0;
-    let elapsedTime = 0;
-    const simulator = newSimulator(circuit, options);
-    while (elapsedTime <= timeInterval) {
-      simulator({
-        elapsedTime,
-        timeStep,
-        gmin,
-      });
-      step += 1;
-      elapsedTime = timeStep * step;
-      builder.append(elapsedTime);
-    }
+
+    Sweep.walk(this.sweeps, {
+      enter: (sweep, level) => {},
+      set: (sweep, value) => {},
+      end: () => {
+        circuit.reset();
+        let step = 0;
+        let elapsedTime = 0;
+        const simulator = newSimulator(circuit, options);
+        while (elapsedTime <= timeInterval) {
+          simulator({
+            elapsedTime,
+            timeStep,
+            gmin,
+          });
+          step += 1;
+          elapsedTime = timeStep * step;
+          builder.append(elapsedTime);
+        }
+      },
+      leave: (sweep, level) => {},
+    });
+
     return builder.build();
   }
-}
-
-export class Sweep {
-  constructor(
-    readonly variable: string,
-    readonly from: number,
-    readonly to: number,
-    readonly points: number,
-  ) {}
 }

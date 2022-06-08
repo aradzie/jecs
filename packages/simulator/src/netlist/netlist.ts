@@ -4,7 +4,8 @@ import { getDeviceClass } from "../circuit/library.js";
 import { Model } from "../circuit/model.js";
 import type { Node } from "../circuit/network.js";
 import { standardModels } from "../device/models.js";
-import { Analysis, DcAnalysis, Sweep, TranAnalysis } from "../simulation/analysis.js";
+import { Analysis, DcAnalysis, TranAnalysis } from "../simulation/analysis.js";
+import { Sweep } from "../simulation/sweep.js";
 import type {
   DcItemNode,
   EquationItemNode,
