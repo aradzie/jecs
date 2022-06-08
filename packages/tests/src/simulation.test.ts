@@ -1,6 +1,5 @@
 import { dumpCircuit } from "@jssim/simulator/lib/circuit/debug.js";
-import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist.js";
-import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc.js";
+import { Netlist } from "@jssim/simulator/lib/netlist/netlist.js";
 import test from "ava";
 import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
@@ -8,7 +7,7 @@ import { fileURLToPath, URL } from "url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-scan(join(__dirname, "..", "src", "dc"));
+scan(join(__dirname, "..", "spec"));
 
 function scan(dir: string): void {
   for (const entry of readdirSync(dir)) {
@@ -23,11 +22,11 @@ function scan(dir: string): void {
 
 function makeTest(filename: string, testCases: readonly TestCase[]): void {
   let index = 1;
-  for (const { netlist, result } of testCases) {
+  for (const { netlist: content, result } of testCases) {
     test(`${filename}#${index}`, (t) => {
-      const circuit = parseNetlist(netlist);
-      dcAnalysis(circuit);
-      t.deepEqual(dumpCircuit(circuit), result);
+      const netlist = Netlist.parse(content);
+      netlist.runAnalyses();
+      t.deepEqual(dumpCircuit(netlist.circuit), result);
     });
     index += 1;
   }
@@ -102,7 +101,7 @@ function parse(filename: string, content: string): TestCase[] {
 
   function makeTestCase(): void {
     cases.push({
-      netlist: netlist.join("\n"),
+      netlist: netlist.join("\n") + "\n",
       result: [...result],
     });
     netlist.splice(0);

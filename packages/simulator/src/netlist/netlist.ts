@@ -5,20 +5,32 @@ import { Model } from "../circuit/model.js";
 import type { Node } from "../circuit/network.js";
 import { Ground } from "../device/index.js";
 import { standardModels } from "../device/models.js";
-import type { EquationItem, InstanceItem, ModelItem, Netlist } from "./ast.js";
+import { Analysis, DcAnalysis, TranAnalysis } from "../simulation/analysis.js";
+import type { DcItem, Document, EquationItem, InstanceItem, ModelItem, TranItem } from "./ast.js";
 import { dummy } from "./dummy.js";
 import { NetlistError } from "./error.js";
 import { parse } from "./parser.js";
 import { Variables } from "./variables.js";
 
-export function parseNetlist(input: string | Netlist, variables = new Variables()): Circuit {
-  if (typeof input === "string") {
-    input = parse(input);
+export class Netlist {
+  static parse(content: string, variables = new Variables()): Netlist {
+    const document = parse(content);
+    const builder = new NetlistBuilder(document, variables);
+    builder.addModels(standardModels);
+    return builder.build();
   }
-  const builder = new CircuitBuilder(input, variables);
-  builder.addModels(standardModels);
-  builder.buildCircuit();
-  return builder.circuit;
+
+  constructor(
+    readonly circuit: Circuit,
+    readonly variables: Variables,
+    readonly analyses: readonly Analysis[],
+  ) {}
+
+  runAnalyses(): void {
+    for (const analysis of this.analyses) {
+      analysis.run(this.circuit);
+    }
+  }
 }
 
 interface Instance {
@@ -29,18 +41,20 @@ interface Instance {
   device: Device;
 }
 
-class CircuitBuilder {
+class NetlistBuilder {
   readonly circuit = new Circuit();
-  readonly netlist: Netlist;
+  readonly document: Document;
   readonly variables: Variables;
   readonly models: Map<string, Model>;
   readonly instances: Instance[];
+  readonly analyses: Analysis[];
 
-  constructor(netlist: Netlist, variables: Variables) {
-    this.netlist = netlist;
+  constructor(document: Document, variables: Variables) {
+    this.document = document;
     this.variables = variables;
     this.models = new Map();
     this.instances = [];
+    this.analyses = [];
   }
 
   addModels(models: readonly Model[]): void {
@@ -49,7 +63,7 @@ class CircuitBuilder {
     }
   }
 
-  buildCircuit(): void {
+  build(): Netlist {
     this.collectEquations();
     this.collectModels();
     this.collectInstances();
@@ -61,11 +75,12 @@ class CircuitBuilder {
     for (const instance of this.instances) {
       this.setProperties(instance);
     }
-    this.collectOptions();
+    this.collectAnalyses();
+    return new Netlist(this.circuit, this.variables, this.analyses);
   }
 
   collectEquations(): void {
-    for (const item of this.netlist.items) {
+    for (const item of this.document.items) {
       if (item.type === "equation") {
         this.addEquation(item);
       }
@@ -77,7 +92,7 @@ class CircuitBuilder {
   }
 
   collectModels(): void {
-    for (const item of this.netlist.items) {
+    for (const item of this.document.items) {
       if (item.type === "model") {
         this.addModel(item);
       }
@@ -101,7 +116,7 @@ class CircuitBuilder {
   }
 
   collectInstances(): void {
-    for (const item of this.netlist.items) {
+    for (const item of this.document.items) {
       if (item.type === "instance") {
         this.addInstance(item);
       }
@@ -234,20 +249,46 @@ class CircuitBuilder {
     }
   }
 
-  collectOptions(): void {
-    for (const item of this.netlist.items) {
-      if (item.type === "options") {
-        for (const property of item.properties) {
-          try {
-            this.circuit.options.set(property.id.name, this.variables.getValue(property.value));
-          } catch (err: any) {
-            throw new NetlistError(
-              `Error in simulation options: ` +
-                `Invalid property [${property.id.name}]. ${err.message}`,
-            );
-          }
-        }
+  collectAnalyses(): void {
+    for (const item of this.document.items) {
+      switch (item.type) {
+        case "dc":
+          this.addDcAnalysis(item);
+          break;
+        case "tran":
+          this.addTranAnalysis(item);
+          break;
       }
     }
+  }
+
+  addDcAnalysis(item: DcItem): void {
+    const analysis = new DcAnalysis();
+    for (const property of item.properties) {
+      try {
+        analysis.properties.set(property.id.name, this.variables.getValue(property.value));
+      } catch (err: any) {
+        throw new NetlistError(
+          `Error in analysis properties: ` + //
+            `Invalid property [${property.id.name}]. ${err.message}`,
+        );
+      }
+    }
+    this.analyses.push(analysis);
+  }
+
+  addTranAnalysis(item: TranItem): void {
+    const analysis = new TranAnalysis();
+    for (const property of item.properties) {
+      try {
+        analysis.properties.set(property.id.name, this.variables.getValue(property.value));
+      } catch (err: any) {
+        throw new NetlistError(
+          `Error in analysis properties: ` + //
+            `Invalid property [${property.id.name}]. ${err.message}`,
+        );
+      }
+    }
+    this.analyses.push(analysis);
   }
 }

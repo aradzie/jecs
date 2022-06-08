@@ -1,4 +1,5 @@
-Ground g;
-V nc g V=5;
-V nb g V=0.65;
-BJT:DUT g nb nc @npn;
+Ground g
+V nc g V=5
+V nb g V=0.65
+BJT:DUT g nb nc @NPN
+.op

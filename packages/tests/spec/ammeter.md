@@ -1,10 +1,11 @@
 ## Netlist
 
 ```text
-Ground na;
-V nb na V=5;
-Ammeter:DUT nb nc;
-R nc na R=1000;
+Ground na
+V nb na V=5
+Ammeter:DUT nb nc
+R nc na R=1000
+.dc
 ```
 
 ## Result

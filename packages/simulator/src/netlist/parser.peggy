@@ -15,7 +15,7 @@ function binaryExp(head, tail) {
 }}
 
 Netlist
-  = items:( _ @Item )* _
+  = ( _ LineEnd )* items:( @Item ( _ LineEnd )* )*
     { return { items }; }
 
 Item =
@@ -23,14 +23,13 @@ Item =
   / ModelItem
   / EquationItem
   / ActionItem
-  / OptionsItem
 
 InstanceItem
   = deviceId:Identifier instanceId:( ":" @Identifier )?
     _ nodes:NodeList
     _ modelId:ModelIdentifier?
     _ properties:PropertyList
-    _ ";"
+    _ LineEnd
     {
       return {
         type: "instance",
@@ -71,11 +70,11 @@ ModelItem
     _ deviceId:Identifier
     _ modelId:ModelIdentifier
     _ properties:PropertyList
-    _ ";"
+    _ LineEnd
     { return { type: "model", deviceId, modelId, properties }; }
 
 EquationItem
-  = ".eq" _ id:Variable _ "=" _ value:Expression _ ";"
+  = ".eq" _ id:Variable _ "=" _ value:Expression _ LineEnd
     { return { type: "equation", id, value, }; }
 
 ActionItem
@@ -83,16 +82,16 @@ ActionItem
   / TranAnalysisItem
 
 DcAnalysisItem
-  = ".dc" _ ";"
-    { return { type: "dc" }; }
+  = ".dc" _ properties:PropertyList _ LineEnd
+    { return { type: "dc", properties }; }
 
 TranAnalysisItem
-  = ".tran" _ ";"
-    { return { type: "tran" }; }
+  = ".tran" _ properties:PropertyList _ LineEnd
+    { return { type: "tran", properties }; }
 
-OptionsItem
-  = ".options" _ properties:PropertyList _ ";"
-    { return { type: "options", properties }; }
+Sweep
+  = ".sweep" _ properties:PropertyList
+    { return { type: "sweep", properties } }
 
 Expression
   = AdditiveExp
@@ -175,5 +174,15 @@ MetricUnit
 Digit
   = [0-9]
 
+LineEnd "line separator"
+  = [\n]
+    { return null; }
+
 _ "whitespace"
-  = [ \t\n\r]*
+  = [ \t]* ( "#" [^\n]* )? ( [\n] [ \t]+ )?
+    { return null; }
+
+nl
+  = "\n"
+  / "\r\n"
+  / "\r"

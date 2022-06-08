@@ -1,11 +1,12 @@
 ## Netlist
 
 ```text
-Ground ncn;
-Ground non;
-V ncp ncn V=1;
-VCCS:DUT nop non ncp ncn gain=2;
-R nop non R=10;
+Ground ncn
+Ground non
+V ncp ncn V=1
+VCCS:DUT nop non ncp ncn gain=2
+R nop non R=10
+.dc
 ```
 
 ## Result

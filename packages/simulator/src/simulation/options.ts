@@ -7,8 +7,6 @@ export interface Options {
   readonly vntol: number;
   /** Relative error tolerance. */
   readonly reltol: number;
-  /** Minimum conductance, `S`. */
-  readonly gmin: number;
 }
 
 export function getOptions(properties: Properties): Options {
@@ -16,6 +14,5 @@ export function getOptions(properties: Properties): Options {
     abstol: properties.getNumber("abstol"),
     vntol: properties.getNumber("vntol"),
     reltol: properties.getNumber("reltol"),
-    gmin: properties.getNumber("gmin"),
   };
 }

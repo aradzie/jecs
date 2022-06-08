@@ -3,11 +3,11 @@ import { parse } from "./parser.js";
 import { Variables } from "./variables.js";
 
 const input = `
-R:R1 n1 n2 R=$c;
-R:R2 n1 n2 R=sin($PI);
-.eq $a = -(-(1));
-.eq $b = $a + 2;
-.eq $c = -+sin($a + $b);
+R:R1 n1 n2 R=$c
+R:R2 n1 n2 R=sin($PI)
+.eq $a = -(-(1))
+.eq $b = $a + 2
+.eq $c = -+sin($a + $b)
 `;
 
 test("variables", (t) => {

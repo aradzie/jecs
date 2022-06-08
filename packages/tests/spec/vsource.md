@@ -1,9 +1,10 @@
 ## Netlist
 
 ```text
-Ground nn;
-V:DUT np nn V=5;
-R np nn R=1000;
+Ground nn
+V:DUT np nn V=5
+R np nn R=1000
+.dc
 ```
 
 ## Result

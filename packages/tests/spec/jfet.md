@@ -1,11 +1,11 @@
 ## Netlist
 
 ```text
-Ground g;
-V:VDS nd g V=5;
-V:VGS ng g V=0;
-JFET:DUT g ng nd @NFET;
-.options reltol=1e-5;
+Ground g
+V:VDS nd g V=5
+V:VGS ng g V=0
+JFET:DUT g ng nd @NFET
+.dc
 ```
 
 ## Result
@@ -23,11 +23,11 @@ DUT{Vgs=0V,Vgd=-5V,Vds=5V,Ids=400μA}
 ## Netlist
 
 ```text
-Ground g;
-V:VDS nd g V=5;
-V:VGS ng g V=-5;
-JFET:DUT g ng nd @NFET;
-.options reltol=1e-5;
+Ground g
+V:VDS nd g V=5
+V:VGS ng g V=-5
+JFET:DUT g ng nd @NFET
+.dc
 ```
 
 ## Result
@@ -45,10 +45,10 @@ DUT{Vgs=-5V,Vgd=-10V,Vds=5V,Ids=0A}
 ## Netlist
 
 ```text
-Ground g;
-V g nc V=0.7;
-JFET:DUT nc g nc @NFET;
-.options reltol=1e-5;
+Ground g
+V g nc V=0.7
+JFET:DUT nc g nc @NFET
+.dc
 ```
 
 ## Result
@@ -64,10 +64,10 @@ DUT{Vgs=700mV,Vgd=700mV,Vds=0V,Ids=0A}
 ## Netlist
 
 ```text
-Ground g;
-V nc g V=0.7;
-JFET:DUT nc g nc @NFET;
-.options reltol=1e-5;
+Ground g
+V nc g V=0.7
+JFET:DUT nc g nc @NFET
+.dc
 ```
 
 ## Result
@@ -83,10 +83,10 @@ DUT{Vgs=-700mV,Vgd=-700mV,Vds=0V,Ids=0A}
 ## Netlist
 
 ```text
-Ground g;
-V nc g V=0.7;
-JFET:DUT nc g nc @PFET;
-.options reltol=1e-5;
+Ground g
+V nc g V=0.7
+JFET:DUT nc g nc @PFET
+.dc
 ```
 
 ## Result
@@ -102,10 +102,10 @@ DUT{Vgs=-700mV,Vgd=-700mV,Vds=0V,Ids=0A}
 ## Netlist
 
 ```text
-Ground g;
-V g nc V=0.7;
-JFET:DUT nc g nc @PFET;
-.options reltol=1e-5;
+Ground g
+V g nc V=0.7
+JFET:DUT nc g nc @PFET
+.dc
 ```
 
 ## Result

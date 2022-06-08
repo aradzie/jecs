@@ -1,7 +1,6 @@
 import type { Circuit } from "@jssim/simulator/lib/circuit/circuit.js";
 import { Ground } from "@jssim/simulator/lib/device/index.js";
-import { parseNetlist } from "@jssim/simulator/lib/netlist/netlist.js";
-import { dcAnalysis } from "@jssim/simulator/lib/simulation/dc.js";
+import { Netlist } from "@jssim/simulator/lib/netlist/netlist.js";
 
 export type Result = OkResult | ErrorResult;
 
@@ -25,13 +24,13 @@ export type Op = {
   readonly unit: string;
 };
 
-export function exec(value: string): Result {
+export function exec(content: string): Result {
   try {
-    const circuit = parseNetlist(value);
-    dcAnalysis(circuit);
+    const netlist = Netlist.parse(content);
+    netlist.runAnalyses();
     return {
       type: "ok",
-      ops: getOps(circuit),
+      ops: getOps(netlist.circuit),
     };
   } catch (err: unknown) {
     return {

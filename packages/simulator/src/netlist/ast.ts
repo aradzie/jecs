@@ -27,7 +27,7 @@ export interface HasId {
   readonly id: Identifier;
 }
 
-export interface Netlist {
+export interface Document {
   readonly items: readonly Item[];
 }
 
@@ -37,7 +37,7 @@ export interface Identifier extends Node {
   readonly name: string;
 }
 
-export type Item = InstanceItem | ModelItem | EquationItem | ActionItem | OptionsItem;
+export type Item = InstanceItem | ModelItem | EquationItem | DcItem | TranItem;
 
 export interface InstanceItem extends Node {
   readonly type: "instance";
@@ -78,12 +78,13 @@ export interface EquationItem extends Node, HasId {
   readonly value: Expression;
 }
 
-export interface ActionItem extends Node {
-  readonly type: "action";
+export interface DcItem extends Node {
+  readonly type: "dc";
+  readonly properties: readonly Property[];
 }
 
-export interface OptionsItem extends Node {
-  readonly type: "options";
+export interface TranItem extends Node {
+  readonly type: "tran";
   readonly properties: readonly Property[];
 }
 

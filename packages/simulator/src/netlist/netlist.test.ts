@@ -1,25 +1,29 @@
 import test from "ava";
 import type { Branch, Node } from "../circuit/network.js";
-import { parseNetlist } from "./netlist.js";
-import { parse } from "./parser.js";
+import { DcAnalysis, TranAnalysis } from "../simulation/analysis.js";
+import { Netlist } from "./netlist.js";
 
 test("parse netlist", (t) => {
   // Arrange.
 
-  const netlist = parse(`
-Ground gnd;
-V n1 gnd V=$V;
-R n1 gnd @R2;
-R n1 gnd @R3 R=200;
-R:R1 n1 gnd R=100;
-.model R @R2 R=111;
-.model R @R3 R=222;
-.eq $V=5;
-`);
+  const content = `
+# An example netlist.
+Ground gnd
+V n1 gnd V=$V
+R n1 gnd @R2
+R n1 gnd @R3 R=200
+R:R1 n1 gnd R=100
+.model R @R2 R=111
+.model R @R3 R=222
+.eq $V=5
+.dc
+.tran timeInterval=1m timeStep=1u
+`;
 
   // Act.
 
-  const { nodes, devices } = parseNetlist(netlist);
+  const { circuit, analyses } = Netlist.parse(content);
+  const { nodes, devices } = circuit;
 
   // Assert nodes.
 
@@ -57,4 +61,15 @@ R:R1 n1 gnd R=100;
   t.is(d5.deviceClass.id, "R");
   t.is(d5.id, "R1");
   t.is(d5.properties.getNumber("R"), 100);
+
+  // Assert analyses.
+
+  t.is(analyses.length, 2);
+
+  const [dc, tran] = analyses;
+
+  t.true(dc instanceof DcAnalysis);
+  t.true(tran instanceof TranAnalysis);
+  t.is(tran.properties.getNumber("timeInterval"), 1e-3);
+  t.is(tran.properties.getNumber("timeStep"), 1e-6);
 });

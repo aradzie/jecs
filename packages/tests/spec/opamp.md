@@ -1,10 +1,11 @@
 ## Netlist
 
 ```text
-V:Vp np g V=0;
-V:Vn nn g V=0;
-OpAmp:DUT np nn no;
-R:Rl no g R=1000;
+V:Vp np g V=0
+V:Vn nn g V=0
+OpAmp:DUT np nn no
+R:Rl no g R=1000
+.dc
 ```
 
 ## Result
@@ -24,10 +25,11 @@ Rl{V=0V,I=0A,P=0W}
 ## Netlist
 
 ```text
-V:Vp np g V=1;
-V:Vn nn g V=0;
-OpAmp:DUT np nn no;
-R:Rl no g R=1000;
+V:Vp np g V=1
+V:Vn nn g V=0
+OpAmp:DUT np nn no
+R:Rl no g R=1000
+.dc
 ```
 
 ## Result
@@ -47,10 +49,11 @@ Rl{V=15V,I=15mA,P=224.997mW}
 ## Netlist
 
 ```text
-V:Vp np g V=0;
-V:Vn nn g V=1;
-OpAmp:DUT np nn no;
-R:Rl no g R=1000;
+V:Vp np g V=0
+V:Vn nn g V=1
+OpAmp:DUT np nn no
+R:Rl no g R=1000
+.dc
 ```
 
 ## Result
@@ -70,11 +73,12 @@ Rl{V=-15V,I=-15mA,P=224.997mW}
 ## Netlist
 
 ```text
-.eq $d = 1e-3;
-V:Vp np g V=0 + $d;
-V:Vn nn g V=0 - $d;
-OpAmp:DUT np nn no gain=1e3;
-R:Rl no g R=1000;
+.eq $d = 1e-3
+V:Vp np g V=0 + $d
+V:Vn nn g V=0 - $d
+OpAmp:DUT np nn no gain=1e3
+R:Rl no g R=1000
+.dc
 ```
 
 ## Result
