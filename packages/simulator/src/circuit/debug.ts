@@ -1,4 +1,3 @@
-import { Ground } from "../device/index.js";
 import { formatNumber } from "../util/format.js";
 import { Unit } from "../util/unit.js";
 import type { Circuit } from "./circuit.js";
@@ -13,9 +12,6 @@ export function dumpCircuit(circuit: Circuit): string[] {
     }
   }
   for (const device of circuit.devices) {
-    if (device instanceof Ground) {
-      continue;
-    }
     const items: string[] = [];
     const { stateSchema } = device.deviceClass;
     for (const op of stateSchema.ops) {

@@ -1,9 +1,9 @@
 ## Netlist
 
 ```text
-V n1 g V=5
+V n1 gnd V=5
 R n1 n2 R=5
-L:DUT n2 g L=1e-3
+L:DUT n2 gnd L=1e-3
 .dc
 ```
 

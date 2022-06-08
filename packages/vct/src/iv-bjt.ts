@@ -6,9 +6,9 @@ import { Unit } from "@jssim/simulator/lib/util/unit.js";
 import { Dataset, points } from "./util/dataset.js";
 
 const input = `
-V nc g V=$xVce
-V nb g V=$xVbe
-BJT:DUT g nb nc @NPN
+V nc gnd V=$xVce
+V nb gnd V=$xVbe
+BJT:DUT gnd nb nc @NPN
 `;
 
 const dataset = new Dataset();

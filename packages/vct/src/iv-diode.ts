@@ -4,8 +4,8 @@ import { DcAnalysis } from "@jssim/simulator/lib/simulation/analysis.js";
 import { Dataset, points } from "./util/dataset.js";
 
 const input = `
-V np g V=$xVd
-Diode:DUT np g @D
+V np gnd V=$xVd
+Diode:DUT np gnd @D
 `;
 
 const dataset = new Dataset();

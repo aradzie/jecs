@@ -6,11 +6,10 @@ import { Unit } from "@jssim/simulator/lib/util/unit.js";
 import { Dataset, points } from "./util/dataset.js";
 
 const input = `
-Ground g
-V nr g V=10
-V ng g V=$xVgs
+V nr gnd V=10
+V ng gnd V=$xVgs
 R nr nd R=$xRl
-MOSFET:Q1 g ng nd g @NMOS
+MOSFET:Q1 gnd ng nd gnd @NMOS
 `;
 
 const dataset = new Dataset();

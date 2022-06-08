@@ -6,11 +6,10 @@ import { Unit } from "@jssim/simulator/lib/util/unit.js";
 import { Dataset, points } from "./util/dataset.js";
 
 const input = `
-Ground g
-V nr g V=10
-V nb g V=$xVbe
+V nr gnd V=10
+V nb gnd V=$xVbe
 R nr nc R=$xRl
-BJT:Q1 g nb nc @NPN
+BJT:Q1 gnd nb nc @NPN
 `;
 
 const dataset = new Dataset();

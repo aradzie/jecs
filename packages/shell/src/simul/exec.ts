@@ -1,5 +1,4 @@
 import type { Circuit } from "@jssim/simulator/lib/circuit/circuit.js";
-import { Ground } from "@jssim/simulator/lib/device/index.js";
 import { Netlist } from "@jssim/simulator/lib/netlist/netlist.js";
 
 export type Result = OkResult | ErrorResult;
@@ -58,9 +57,6 @@ function getOps(circuit: Circuit): readonly Op[] {
     }
   }
   for (const device of circuit.devices) {
-    if (device instanceof Ground) {
-      continue;
-    }
     const { id: classId, stateSchema } = device.deviceClass;
     for (const op of stateSchema.ops) {
       ops.push({

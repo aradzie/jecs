@@ -8,7 +8,6 @@ test("parse netlist", (t) => {
 
   const content = `
 # An example netlist.
-Ground gnd
 V n1 gnd V=$V
 R n1 gnd @R2
 R n1 gnd @R3 R=200
@@ -35,32 +34,29 @@ R:R1 n1 gnd R=100
   t.is((n1 as Node).id, "n1");
   t.is(n2.type, "branch");
   t.is((n2 as Branch).a.id, "n1");
-  t.is((n2 as Branch).b.id, "g");
+  t.is((n2 as Branch).b.id, "gnd");
 
   // Assert devices.
 
-  t.is(devices.length, 5);
+  t.is(devices.length, 4);
 
-  const [d1, d2, d3, d4, d5] = devices;
+  const [d1, d2, d3, d4] = devices;
 
-  t.is(d1.deviceClass.id, "Ground");
-  t.is(d1.id, "Ground1");
+  t.is(d1.deviceClass.id, "V");
+  t.is(d1.id, "V1");
+  t.is(d1.properties.getNumber("V"), 5);
 
-  t.is(d2.deviceClass.id, "V");
-  t.is(d2.id, "V1");
-  t.is(d2.properties.getNumber("V"), 5);
+  t.is(d2.deviceClass.id, "R");
+  t.is(d2.id, "R2");
+  t.is(d2.properties.getNumber("R"), 111);
 
   t.is(d3.deviceClass.id, "R");
-  t.is(d3.id, "R2");
-  t.is(d3.properties.getNumber("R"), 111);
+  t.is(d3.id, "R3");
+  t.is(d3.properties.getNumber("R"), 200);
 
   t.is(d4.deviceClass.id, "R");
-  t.is(d4.id, "R3");
-  t.is(d4.properties.getNumber("R"), 200);
-
-  t.is(d5.deviceClass.id, "R");
-  t.is(d5.id, "R1");
-  t.is(d5.properties.getNumber("R"), 100);
+  t.is(d4.id, "R1");
+  t.is(d4.properties.getNumber("R"), 100);
 
   // Assert analyses.
 

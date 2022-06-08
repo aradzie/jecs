@@ -3,7 +3,6 @@ import type { Device, DeviceClass } from "../circuit/device.js";
 import { getDeviceClass } from "../circuit/library.js";
 import { Model } from "../circuit/model.js";
 import type { Node } from "../circuit/network.js";
-import { Ground } from "../device/index.js";
 import { standardModels } from "../device/models.js";
 import { Analysis, DcAnalysis, TranAnalysis } from "../simulation/analysis.js";
 import type { DcItem, Document, EquationItem, InstanceItem, ModelItem, TranItem } from "./ast.js";
@@ -171,32 +170,15 @@ class NetlistBuilder {
 
   assignNodes(): void {
     const map = new Map<string, Node>();
-
     const { groundNode } = this.circuit;
-
     map.set(groundNode.id, groundNode);
-
-    // Find ground nodes.
-    // Any node to which the Ground device is connected becomes the ground node.
-    for (const instance of this.instances) {
-      if (instance.deviceClass === Ground) {
-        for (const { name } of instance.item.nodes) {
-          map.set(name, groundNode);
-        }
-        instance.nodes.push(groundNode);
-      }
-    }
-
-    // Find the remaining, non-ground nodes.
     for (const instance of this.instances) {
       for (const { name } of instance.item.nodes) {
-        if (instance.deviceClass !== Ground) {
-          let node = map.get(name);
-          if (node == null) {
-            map.set(name, (node = this.circuit.makeNode(name)));
-          }
-          instance.nodes.push(node);
+        let node = map.get(name);
+        if (node == null) {
+          map.set(name, (node = this.circuit.makeNode(name)));
         }
+        instance.nodes.push(node);
       }
     }
   }

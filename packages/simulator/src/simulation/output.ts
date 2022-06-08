@@ -1,5 +1,4 @@
 import type { Circuit } from "../circuit/circuit.js";
-import { Ground } from "../device/index.js";
 import { formatNumber } from "../util/format.js";
 
 export interface Op {
@@ -46,9 +45,6 @@ export const makeOutputBuilder = ({ nodes, devices }: Circuit): OutputBuilder =>
 
   // Capture device output parameters.
   for (const device of devices) {
-    if (device instanceof Ground) {
-      continue;
-    }
     const { stateSchema } = device.deviceClass;
     for (const op of stateSchema.ops) {
       schema.push({
@@ -76,9 +72,6 @@ export const makeOutputBuilder = ({ nodes, devices }: Circuit): OutputBuilder =>
 
       // Capture device output parameters.
       for (const device of devices) {
-        if (device instanceof Ground) {
-          continue;
-        }
         const { stateSchema } = device.deviceClass;
         for (const op of stateSchema.ops) {
           row[index++] = device.state[op.index];

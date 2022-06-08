@@ -1,18 +1,17 @@
 ## Netlist
 
 ```text
-Ground na
-V nb na V=5
-Ammeter:DUT nb nc
-R nc na R=1000
+V n1 gnd V=5
+Ammeter:DUT n1 n2
+R n2 gnd R=1000
 .dc
 ```
 
 ## Result
 
 ```text
-V(nb)=5V
-V(nc)=5V
+V(n1)=5V
+V(n2)=5V
 V1{V=5V,I=-5mA,P=-25mW}
 DUT{I=5mA}
 R1{V=5V,I=5mA,P=25mW}

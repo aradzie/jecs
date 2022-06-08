@@ -1,10 +1,9 @@
 ## Netlist
 
 ```text
-Ground g
-V nc g V=5
-V nb g V=0.65
-BJT:DUT g nb nc @NPN
+V nc gnd V=5
+V nb gnd V=0.65
+BJT:DUT gnd nb nc @NPN
 .dc
 ```
 
@@ -23,10 +22,9 @@ DUT{Vbe=650mV,Vbc=-4.35V,Vce=5V,Ie=-830.844μA,Ic=822.618μA,Ib=8.226μA}
 ## Netlist
 
 ```text
-Ground g
-V nc g V=5
-I g nb I=0.0001
-BJT:DUT g nb nc @NPN
+V nc gnd V=5
+I gnd nb I=0.0001
+BJT:DUT gnd nb nc @NPN
 .dc
 ```
 
@@ -45,10 +43,9 @@ DUT{Vbe=714.575mV,Vbc=-4.285V,Vce=5V,Ie=-10.1mA,Ic=10mA,Ib=100.001μA}
 ## Netlist
 
 ```text
-Ground g
-V ne g V=5
+V ne gnd V=5
 V ne nb V=0.65
-BJT:DUT ne nb g @PNP
+BJT:DUT ne nb gnd @PNP
 .dc
 ```
 
@@ -67,10 +64,9 @@ DUT{Vbe=-650mV,Vbc=4.35V,Vce=-5V,Ie=830.844μA,Ic=-822.618μA,Ib=-8.226μA}
 ## Netlist
 
 ```text
-Ground g
-V ne g V=5
+V ne gnd V=5
 I nb ne I=0.0001
-BJT:DUT ne nb g @PNP
+BJT:DUT ne nb gnd @PNP
 .dc
 ```
 

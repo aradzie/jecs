@@ -1,9 +1,8 @@
 ## Netlist
 
 ```text
-Ground g
-V np g V=5
-Diode:DUT g np
+V np gnd V=5
+Diode:DUT gnd np
 .dc
 ```
 
@@ -20,9 +19,8 @@ DUT{V=-5V,I=0A,P=0W}
 ## Netlist
 
 ```text
-Ground g
-I g np I=0.1
-Diode:DUT np g
+I gnd np I=0.1
+Diode:DUT np gnd
 .dc
 ```
 
@@ -39,10 +37,9 @@ DUT{V=773.844mV,I=100.002mA,P=77.386mW}
 ## Netlist
 
 ```text
-Ground g
-I g np I=1
+I gnd np I=1
 Diode:DUT1 np nm
-Diode:DUT2 nm g
+Diode:DUT2 nm gnd
 .dc
 ```
 
@@ -61,9 +58,8 @@ DUT2{V=833.37mV,I=1A,P=833.374mW}
 ## Netlist
 
 ```text
-Ground g
-V np g V=0.8
-Diode:DUT np g
+V np gnd V=0.8
+Diode:DUT np gnd
 .dc
 ```
 
@@ -80,10 +76,9 @@ DUT{V=800mV,I=275.048mA,P=220.038mW}
 ## Netlist
 
 ```text
-Ground g
-V np g V=1.6
+V np gnd V=1.6
 Diode:DUT1 np nm
-Diode:DUT2 nm g
+Diode:DUT2 nm gnd
 .dc
 ```
 
