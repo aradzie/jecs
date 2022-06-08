@@ -1,16 +1,16 @@
 import type {
-  BinaryExp,
-  EquationItem,
-  Expression,
-  FuncExp,
+  BinaryExpNode,
+  EquationItemNode,
+  ExpressionNode,
+  FuncExpNode,
   PropertyValue,
-  UnaryExp,
+  UnaryExpNode,
 } from "./ast.js";
 import { builtins, equation, literalExp } from "./ast.js";
 import { callFunc } from "./functions.js";
 
 export class Variables {
-  private equations = new Map<string, EquationItem>();
+  private equations = new Map<string, EquationItemNode>();
 
   constructor() {
     for (const builtin of builtins) {
@@ -22,7 +22,7 @@ export class Variables {
     this.setEquation(equation(name, literalExp(value)));
   }
 
-  setEquation(equation: EquationItem): void {
+  setEquation(equation: EquationItemNode): void {
     this.equations.set(equation.id.name, equation);
   }
 
@@ -43,7 +43,7 @@ export class Variables {
     return this.evalExp(eq.value);
   }
 
-  evalExp(exp: Expression): number {
+  evalExp(exp: ExpressionNode): number {
     switch (exp.type) {
       case "literal": {
         return exp.value;
@@ -63,7 +63,7 @@ export class Variables {
     }
   }
 
-  private _evalUnaryExp(exp: UnaryExp): number {
+  private _evalUnaryExp(exp: UnaryExpNode): number {
     const arg = this.evalExp(exp.arg);
     switch (exp.op) {
       case "+":
@@ -73,7 +73,7 @@ export class Variables {
     }
   }
 
-  private _evalBinaryExp(exp: BinaryExp): number {
+  private _evalBinaryExp(exp: BinaryExpNode): number {
     const a = this.evalExp(exp.arg1);
     const b = this.evalExp(exp.arg2);
     switch (exp.op) {
@@ -95,7 +95,7 @@ export class Variables {
     }
   }
 
-  private _evalFuncExp(exp: FuncExp): number {
+  private _evalFuncExp(exp: FuncExpNode): number {
     return callFunc(
       exp.id.name,
       exp.args.map((arg) => this.evalExp(arg)),

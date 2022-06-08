@@ -5,7 +5,14 @@ import { Model } from "../circuit/model.js";
 import type { Node } from "../circuit/network.js";
 import { standardModels } from "../device/models.js";
 import { Analysis, DcAnalysis, Sweep, TranAnalysis } from "../simulation/analysis.js";
-import type { DcItem, Document, EquationItem, InstanceItem, ModelItem, TranItem } from "./ast.js";
+import type {
+  DcItemNode,
+  EquationItemNode,
+  InstanceItemNode,
+  ModelItemNode,
+  NetlistNode,
+  TranItemNode,
+} from "./ast.js";
 import { dummy } from "./dummy.js";
 import { NetlistError } from "./error.js";
 import { parse } from "./parser.js";
@@ -33,7 +40,7 @@ export class Netlist {
 }
 
 interface Instance {
-  readonly item: InstanceItem;
+  readonly item: InstanceItemNode;
   readonly deviceClass: DeviceClass;
   readonly nodes: Node[];
   instanceId: string;
@@ -42,13 +49,13 @@ interface Instance {
 
 class NetlistBuilder {
   readonly circuit = new Circuit();
-  readonly document: Document;
+  readonly document: NetlistNode;
   readonly variables: Variables;
   readonly models: Map<string, Model>;
   readonly instances: Instance[];
   readonly analyses: Analysis[];
 
-  constructor(document: Document, variables: Variables) {
+  constructor(document: NetlistNode, variables: Variables) {
     this.document = document;
     this.variables = variables;
     this.models = new Map();
@@ -86,7 +93,7 @@ class NetlistBuilder {
     }
   }
 
-  addEquation(item: EquationItem): void {
+  addEquation(item: EquationItemNode): void {
     this.variables.setEquation(item);
   }
 
@@ -98,7 +105,7 @@ class NetlistBuilder {
     }
   }
 
-  addModel(item: ModelItem): void {
+  addModel(item: ModelItemNode): void {
     const deviceClass = getDeviceClass(item.deviceId.name);
     const model = new Model(item.modelId.name, deviceClass);
     for (const property of item.properties) {
@@ -122,7 +129,7 @@ class NetlistBuilder {
     }
   }
 
-  addInstance(item: InstanceItem): void {
+  addInstance(item: InstanceItemNode): void {
     const deviceClass = getDeviceClass(item.deviceId.name);
     this.instances.push({
       item,
@@ -244,7 +251,7 @@ class NetlistBuilder {
     }
   }
 
-  addDcAnalysis(item: DcItem): void {
+  addDcAnalysis(item: DcItemNode): void {
     const analysis = new DcAnalysis();
     for (const property of item.properties) {
       try {
@@ -262,7 +269,7 @@ class NetlistBuilder {
     this.analyses.push(analysis);
   }
 
-  addTranAnalysis(item: TranItem): void {
+  addTranAnalysis(item: TranItemNode): void {
     const analysis = new TranAnalysis();
     for (const property of item.properties) {
       try {

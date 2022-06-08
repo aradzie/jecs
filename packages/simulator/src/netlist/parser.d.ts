@@ -1,4 +1,4 @@
-import type { Document, Location } from "./ast.js";
+import type { Location, NetlistNode } from "./ast.js";
 
 export class SyntaxError extends Error {
   readonly location: Location;
@@ -6,4 +6,4 @@ export class SyntaxError extends Error {
   constructor(message: string, expected: unknown, found: unknown, location: Location);
 }
 
-export function parse(input: string, options?: unknown): Document;
+export function parse(input: string, options?: unknown): NetlistNode;

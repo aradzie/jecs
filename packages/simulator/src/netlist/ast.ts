@@ -27,35 +27,40 @@ export interface HasId {
   readonly id: Identifier;
 }
 
-export interface Document {
-  readonly items: readonly Item[];
-}
-
 export interface Node {}
+
+export interface NetlistNode extends Node {
+  readonly items: readonly ItemNode[];
+}
 
 export interface Identifier extends Node {
   readonly name: string;
 }
 
-export type Item = InstanceItem | ModelItem | EquationItem | DcItem | TranItem;
+export type ItemNode =
+  | InstanceItemNode
+  | ModelItemNode
+  | EquationItemNode
+  | DcItemNode
+  | TranItemNode;
 
-export interface InstanceItem extends Node {
+export interface InstanceItemNode extends Node {
   readonly type: "instance";
   readonly deviceId: Identifier;
   readonly modelId: Identifier | null;
   readonly instanceId: Identifier | null;
   readonly nodes: readonly Identifier[];
-  readonly properties: readonly Property[];
+  readonly properties: readonly PropertyNode[];
 }
 
-export interface ModelItem extends Node, HasId {
+export interface ModelItemNode extends Node, HasId {
   readonly type: "model";
   readonly deviceId: Identifier;
   readonly modelId: Identifier;
-  readonly properties: readonly Property[];
+  readonly properties: readonly PropertyNode[];
 }
 
-export interface Property extends Node, HasId {
+export interface PropertyNode extends Node, HasId {
   readonly id: Identifier;
   readonly value: PropertyValue;
 }
@@ -69,24 +74,24 @@ export interface StringPropertyValue {
 
 export interface ExpPropertyValue {
   readonly type: "exp";
-  readonly value: Expression;
+  readonly value: ExpressionNode;
 }
 
-export interface EquationItem extends Node, HasId {
+export interface EquationItemNode extends Node, HasId {
   readonly type: "equation";
   readonly id: Identifier;
-  readonly value: Expression;
+  readonly value: ExpressionNode;
 }
 
-export interface DcItem extends Node {
+export interface DcItemNode extends Node {
   readonly type: "dc";
-  readonly properties: readonly Property[];
+  readonly properties: readonly PropertyNode[];
   readonly sweeps: readonly SweepNode[];
 }
 
-export interface TranItem extends Node {
+export interface TranItemNode extends Node {
   readonly type: "tran";
-  readonly properties: readonly Property[];
+  readonly properties: readonly PropertyNode[];
   readonly sweeps: readonly SweepNode[];
 }
 
@@ -97,38 +102,43 @@ export interface SweepNode extends Node {
   readonly points: number;
 }
 
-export type Expression = UnaryExp | BinaryExp | LiteralExp | VarExp | FuncExp;
+export type ExpressionNode =
+  | UnaryExpNode
+  | BinaryExpNode
+  | LiteralExpNode
+  | VarExpNode
+  | FuncExpNode;
 
-export interface UnaryExp extends Node {
+export interface UnaryExpNode extends Node {
   readonly type: "unary";
   readonly op: "+" | "-";
-  readonly arg: Expression;
+  readonly arg: ExpressionNode;
 }
 
-export interface BinaryExp extends Node {
+export interface BinaryExpNode extends Node {
   readonly type: "binary";
   readonly op: "+" | "-" | "*" | "/" | "^";
-  readonly arg1: Expression;
-  readonly arg2: Expression;
+  readonly arg1: ExpressionNode;
+  readonly arg2: ExpressionNode;
 }
 
-export interface LiteralExp extends Node {
+export interface LiteralExpNode extends Node {
   readonly type: "literal";
   readonly value: number;
 }
 
-export interface VarExp extends Node, HasId {
+export interface VarExpNode extends Node, HasId {
   readonly type: "var";
   readonly id: Identifier;
 }
 
-export interface FuncExp extends Node, HasId {
+export interface FuncExpNode extends Node, HasId {
   readonly type: "func";
   readonly id: Identifier;
-  readonly args: readonly Expression[];
+  readonly args: readonly ExpressionNode[];
 }
 
-export function equation(name: string, value: Expression): EquationItem {
+export function equation(name: string, value: ExpressionNode): EquationItemNode {
   return {
     type: "equation",
     id: { name },
@@ -136,11 +146,11 @@ export function equation(name: string, value: Expression): EquationItem {
   };
 }
 
-export function literalExp(value: number): LiteralExp {
+export function literalExp(value: number): LiteralExpNode {
   return { type: "literal", value };
 }
 
-export const builtins: readonly EquationItem[] = [
+export const builtins: readonly EquationItemNode[] = [
   equation("$PI", literalExp(Math.PI)),
   equation("$E", literalExp(Math.E)),
 ];
