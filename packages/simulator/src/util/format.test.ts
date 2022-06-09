@@ -2,6 +2,18 @@ import test from "ava";
 import { formatNumber } from "./format.js";
 
 test("format number", (t) => {
+  t.is(formatNumber(NaN), "NaN");
+  t.is(formatNumber(NaN, "V"), "NaN");
+  t.is(formatNumber(-Infinity), "-Infinity");
+  t.is(formatNumber(-Infinity, "V"), "-Infinity");
+  t.is(formatNumber(Infinity), "Infinity");
+  t.is(formatNumber(Infinity, "V"), "Infinity");
+
+  t.is(formatNumber(-1), "-1");
+  t.is(formatNumber(-1, "V"), "-1V");
+  t.is(formatNumber(1), "1");
+  t.is(formatNumber(1, "V"), "1V");
+
   t.is(formatNumber(123e-18), "0");
   t.is(formatNumber(123e-17), "0.001p");
   t.is(formatNumber(123e-16), "0.012p");

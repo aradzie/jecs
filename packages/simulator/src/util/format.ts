@@ -2,6 +2,9 @@ import { getUnitSymbol, Unit } from "./unit.js";
 
 export function formatNumber(v: number, unit: string | Unit = Unit.UNITLESS): string {
   const unitName = getUnitSymbol(unit);
+  if (!Number.isFinite(v)) {
+    return `${v}`;
+  }
   const a = Math.abs(v);
   if (a < 1e-15) {
     return `0${unitName}`;
