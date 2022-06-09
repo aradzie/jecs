@@ -26,7 +26,7 @@ export type Op = {
 export function exec(content: string): Result {
   try {
     const netlist = Netlist.parse(content);
-    netlist.runAnalyses();
+    netlist.runAnalyses(() => {});
     return {
       type: "ok",
       ops: getOps(netlist.circuit),

@@ -25,7 +25,7 @@ function makeTest(filename: string, testCases: readonly TestCase[]): void {
   for (const { netlist: content, result } of testCases) {
     test(`${filename}#${index}`, (t) => {
       const netlist = Netlist.parse(content);
-      netlist.runAnalyses();
+      netlist.runAnalyses(() => {});
       t.deepEqual(dumpCircuit(netlist.circuit), result);
     });
     index += 1;

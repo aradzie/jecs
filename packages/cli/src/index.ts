@@ -1,23 +1,40 @@
+import { Netlist } from "@jssim/simulator/lib/netlist/netlist.js";
+import { formatData, formatSchema } from "@jssim/simulator/lib/simulation/dataset.js";
 import { program } from "commander";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
-import { simulate } from "./simulate.js";
+import { readFileSync, writeFileSync } from "node:fs";
+import { join, parse, resolve } from "node:path";
 
-const run = (netlist: string, options: Record<string, unknown>): void => {
-  const path = resolve(netlist);
+const run = (name: string, options: Record<string, unknown>): void => {
+  const netlistPath = resolve(name);
   let content: string;
   try {
-    content = readFileSync(path, "utf-8");
+    content = readFileSync(netlistPath, "utf-8");
   } catch (err: any) {
     if (err.code === "ENOENT") {
-      console.error(`File [${path}] not found.`);
+      console.error(`File [${netlistPath}] not found.`);
     } else {
-      console.error(`File [${path}] cannot be read: ${err.message}.`);
+      console.error(`File [${netlistPath}] cannot be read: ${err.message}.`);
     }
-    process.exitCode = 1;
-    return;
+    process.exit(1);
   }
-  simulate(content);
+
+  const netlist = Netlist.parse(content);
+
+  netlist.runAnalyses((analysis, table) => {
+    const { root, dir, name } = parse(netlistPath);
+    const schemaPath = join(root, dir, `${name}.schema`);
+    const dataPath = join(root, dir, `${name}.data`);
+    try {
+      writeFileSync(schemaPath, formatSchema(table));
+    } catch (err: any) {
+      console.error(`Cannot write file [${schemaPath}]: ${err.message}`);
+    }
+    try {
+      writeFileSync(dataPath, formatData(table));
+    } catch (err: any) {
+      console.error(`Cannot write file [${dataPath}]: ${err.message}`);
+    }
+  });
 };
 
 program

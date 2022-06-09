@@ -5,6 +5,7 @@ import { Model } from "../circuit/model.js";
 import type { Node } from "../circuit/network.js";
 import { standardModels } from "../device/models.js";
 import { Analysis, DcAnalysis, TranAnalysis } from "../simulation/analysis.js";
+import type { Table } from "../simulation/dataset.js";
 import { Sweep } from "../simulation/sweep.js";
 import type {
   DcItemNode,
@@ -45,9 +46,10 @@ export class Netlist {
     readonly analyses: readonly Analysis[],
   ) {}
 
-  runAnalyses(): void {
+  runAnalyses(callback: (analysis: Analysis, table: Table) => void): void {
     for (const analysis of this.analyses) {
-      analysis.run(this.circuit);
+      const table = analysis.run(this.circuit);
+      callback(analysis, table);
     }
   }
 }

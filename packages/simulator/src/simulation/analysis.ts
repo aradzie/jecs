@@ -1,7 +1,7 @@
 import type { Circuit } from "../circuit/circuit.js";
 import { Properties } from "../circuit/properties.js";
+import { makeTableBuilder, Table } from "./dataset.js";
 import { dcProperties, getOptions, tranProperties } from "./options.js";
-import { makeOutputBuilder, Output } from "./output.js";
 import { newSimulator } from "./simulator.js";
 import { Sweep } from "./sweep.js";
 
@@ -10,7 +10,7 @@ export abstract class Analysis {
 
   constructor(readonly properties: Properties) {}
 
-  abstract run(circuit: Circuit): Output;
+  abstract run(circuit: Circuit): Table;
 }
 
 export class DcAnalysis extends Analysis {
@@ -18,16 +18,20 @@ export class DcAnalysis extends Analysis {
     super(new Properties(dcProperties));
   }
 
-  override run(circuit: Circuit): Output {
+  override run(circuit: Circuit): Table {
     const { properties } = this;
     const gmin = properties.getNumber("gmin");
     const options = getOptions(this.properties);
-    const output = makeOutputBuilder(circuit);
+    const table = makeTableBuilder(circuit);
 
     Sweep.walk(this.sweeps, {
-      enter: (sweep, level) => {},
+      enter: (sweep, level) => {
+        table.group(null);
+      },
       set: ({ instanceId, propertyId }, value) => {
-        circuit.getDevice(instanceId).properties.set(propertyId, value);
+        const device = circuit.getDevice(instanceId);
+        device.properties.set(propertyId, value);
+        device.deriveState(device.state);
       },
       end: () => {
         circuit.reset();
@@ -37,12 +41,12 @@ export class DcAnalysis extends Analysis {
           timeStep: NaN,
           gmin,
         });
-        output.append(0);
+        table.capture(0);
       },
       leave: (sweep, level) => {},
     });
 
-    return output.build();
+    return table.build();
   }
 }
 
@@ -51,18 +55,22 @@ export class TranAnalysis extends Analysis {
     super(new Properties(tranProperties));
   }
 
-  override run(circuit: Circuit): Output {
+  override run(circuit: Circuit): Table {
     const { properties } = this;
     const timeInterval = properties.getNumber("timeInterval");
     const timeStep = properties.getNumber("timeStep");
     const gmin = properties.getNumber("gmin");
     const options = getOptions(properties);
-    const builder = makeOutputBuilder(circuit);
+    const table = makeTableBuilder(circuit);
 
     Sweep.walk(this.sweeps, {
-      enter: (sweep, level) => {},
+      enter: (sweep, level) => {
+        table.group(null);
+      },
       set: ({ instanceId, propertyId }, value) => {
-        circuit.getDevice(instanceId).properties.set(propertyId, value);
+        const device = circuit.getDevice(instanceId);
+        device.properties.set(propertyId, value);
+        device.deriveState(device.state);
       },
       end: () => {
         circuit.reset();
@@ -77,12 +85,12 @@ export class TranAnalysis extends Analysis {
           });
           step += 1;
           elapsedTime = timeStep * step;
-          builder.append(elapsedTime);
+          table.capture(elapsedTime);
         }
       },
       leave: (sweep, level) => {},
     });
 
-    return builder.build();
+    return table.build();
   }
 }
