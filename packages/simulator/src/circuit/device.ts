@@ -60,6 +60,20 @@ export type EvalOptions = {
 };
 
 export abstract class Device {
+  static readonly dummy = new (class Dummy extends Device {
+    static override readonly id = "DUMMY";
+    static override readonly numTerminals = 0;
+    static override readonly propertiesSchema = {};
+    static override readonly stateSchema = {
+      length: 0,
+      ops: [],
+    };
+
+    constructor() {
+      super("DUMMY", []);
+    }
+  })();
+
   /** Unique device class identifier. */
   static readonly id: string;
 

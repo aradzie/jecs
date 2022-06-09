@@ -1,5 +1,5 @@
 import { Circuit } from "../circuit/circuit.js";
-import type { Device, DeviceClass } from "../circuit/device.js";
+import { Device, DeviceClass } from "../circuit/device.js";
 import { getDeviceClass } from "../circuit/library.js";
 import { Model } from "../circuit/model.js";
 import type { Node } from "../circuit/network.js";
@@ -17,7 +17,6 @@ import type {
   SweepNode,
   TranItemNode,
 } from "./ast.js";
-import { dummy } from "./dummy.js";
 import { NetlistError } from "./error.js";
 import { parse } from "./parser.js";
 import { Variables } from "./variables.js";
@@ -153,7 +152,7 @@ class NetlistBuilder {
       item,
       deviceClass,
       nodes: [],
-      device: dummy,
+      device: Device.dummy,
     });
   }
 
