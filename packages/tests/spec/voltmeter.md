@@ -2,8 +2,8 @@
 
 ```text
 V:V1 n1 gnd V=5
-Ammeter:DUT n1 n2
-R:R1 n2 gnd R=1000
+Voltmeter:DUT n1 gnd
+R:R1 n1 gnd R=1000
 .dc
 ```
 
@@ -11,9 +11,8 @@ R:R1 n2 gnd R=1000
 
 ```text
 V(n1)=5V
-V(n2)=5V
 V1{V=5V,I=-5mA,P=-25mW}
-DUT{I=5mA,Imax=5mA,Imin=5mA}
+DUT{V=5V,Vmax=5V,Vmin=5V}
 R1{V=5V,I=5mA,P=25mW}
 ```
 
@@ -23,8 +22,8 @@ R1{V=5V,I=5mA,P=25mW}
 
 ```text
 Vac:Vac1 n1 gnd amplitude=5 frequency=1k
-Ammeter:DUT n1 n2
-R:R1 n2 gnd R=1000
+Voltmeter:DUT n1 gnd
+R:R1 n1 gnd R=1000
 .tran timeInterval=3m timeStep=1u
 ```
 
@@ -32,8 +31,7 @@ R:R1 n2 gnd R=1000
 
 ```text
 V(n1)=-0.004pV
-V(n2)=-0.004pV
 Vac1{V=-0.004pV,I=0A,P=0W}
-DUT{I=0A,Imax=5mA,Imin=-5mA}
+DUT{V=-0.004pV,Vmax=5V,Vmin=-5V}
 R1{V=-0.004pV,I=0A,P=0W}
 ```
