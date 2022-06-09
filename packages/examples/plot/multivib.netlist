@@ -1,0 +1,13 @@
+# Astable Multivibrator
+
+V:V1 npos gnd V=5
+R:Rc1 npos nc1 R=330
+R:Rc2 npos nc2 R=320
+R:Rb1 npos nb1 R=1k
+R:Rb2 npos nb2 R=1k
+C:Cc1 nc1 nb2 C=18u
+C:Cc2 nc2 nb1 C=18u
+BJT:Q1 gnd nb1 nc1 @NPN
+BJT:Q2 gnd nb2 nc2 @NPN
+
+.tran timeInterval=100m timeStep=0.1m
