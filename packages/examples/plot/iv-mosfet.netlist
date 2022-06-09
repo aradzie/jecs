@@ -1,0 +1,6 @@
+V:Vds nd gnd
+V:Vgs ng gnd
+MOSFET:DUT gnd ng nd gnd @NMOS
+.dc
+  sweep Vgs V 3 10 5
+  sweep Vds V 0 10 100

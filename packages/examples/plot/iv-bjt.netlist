@@ -1,0 +1,6 @@
+V:Vce nc gnd
+V:Vbe nb gnd
+BJT:DUT gnd nb nc @NPN
+.dc
+  sweep Vbe V 0.625 0.65 5
+  sweep Vce V 0 0.3 100

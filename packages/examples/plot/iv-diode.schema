@@ -1,0 +1,8 @@
+1 time
+2 V(#np)
+3 V(V1)
+4 I(V1)
+5 P(V1)
+6 V(DUT)
+7 I(DUT)
+8 P(DUT)

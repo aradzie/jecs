@@ -1,0 +1,3 @@
+V:V1 np gnd
+Diode:DUT np gnd @D
+.dc sweep V1 V 0.5 0.9 100

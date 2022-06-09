@@ -1,0 +1,7 @@
+V:Vdd nr gnd V=10
+V:Vgs ng gnd
+R:Rload nr nd
+MOSFET:Q1 gnd ng nd gnd @NMOS
+.dc
+  sweep Rload R 2000 100 5
+  sweep Vgs V 2 4 100
