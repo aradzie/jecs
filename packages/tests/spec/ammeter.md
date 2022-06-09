@@ -1,9 +1,9 @@
 ## Netlist
 
 ```text
-V n1 gnd V=5
+V:V1 n1 gnd V=5
 Ammeter:DUT n1 n2
-R n2 gnd R=1000
+R:R1 n2 gnd R=1000
 .dc
 ```
 

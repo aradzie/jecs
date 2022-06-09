@@ -25,7 +25,7 @@ Item =
   / ActionItem
 
 InstanceItem
-  = deviceId:Identifier instanceId:( ":" @Identifier )?
+  = deviceId:Identifier ":" instanceId:Identifier
     _ nodes:NodeList
     _ modelId:ModelIdentifier?
     _ properties:PropertyList

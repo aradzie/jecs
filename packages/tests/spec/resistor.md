@@ -1,7 +1,7 @@
 ## Netlist
 
 ```text
-V n1 gnd V=5
+V:V1 n1 gnd V=5
 R:DUT n1 gnd R=1000
 .dc
 ```
@@ -19,7 +19,7 @@ DUT{V=5V,I=5mA,P=25mW}
 ## Netlist
 
 ```text
-V n1 gnd V=5
+V:V1 n1 gnd V=5
 R:DUT n1 gnd R=-1000
 .dc
 ```

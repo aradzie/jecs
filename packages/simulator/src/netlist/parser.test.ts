@@ -7,14 +7,12 @@ test("parse empty netlist", (t) => {
 });
 
 test("parse netlist", (t) => {
-  t.like(parse("\n\n# a\n#b\n\nR \t\n a \t\n b # inline\n\n# c\n# d\n\n"), {
+  t.like(parse("\n\n# a\n#b\n\nR:R1 \t\n a \t\n b # inline\n\n# c\n# d\n\n"), {
     items: [
       {
         type: "instance",
-        deviceId: {
-          name: "R",
-        },
-        instanceId: null,
+        deviceId: { name: "R" },
+        instanceId: { name: "R1" },
         nodes: [{ name: "a" }, { name: "b" }],
         modelId: null,
         properties: [],

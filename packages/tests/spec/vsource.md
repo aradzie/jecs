@@ -2,7 +2,7 @@
 
 ```text
 V:DUT np gnd V=5
-R np gnd R=1000
+R:R1 np gnd R=1000
 .dc
 ```
 

@@ -43,7 +43,7 @@ DUT{Vgs=-5V,Vgd=-10V,Vds=5V,Ids=0A}
 ## Netlist
 
 ```text
-V gnd nc V=0.7
+V:V1 gnd nc V=0.7
 JFET:DUT nc gnd nc @NFET
 .dc
 ```
@@ -61,7 +61,7 @@ DUT{Vgs=700mV,Vgd=700mV,Vds=0V,Ids=0A}
 ## Netlist
 
 ```text
-V nc gnd V=0.7
+V:V1 nc gnd V=0.7
 JFET:DUT nc gnd nc @NFET
 .dc
 ```
@@ -79,7 +79,7 @@ DUT{Vgs=-700mV,Vgd=-700mV,Vds=0V,Ids=0A}
 ## Netlist
 
 ```text
-V nc gnd V=0.7
+V:V1 nc gnd V=0.7
 JFET:DUT nc gnd nc @PFET
 .dc
 ```
@@ -97,7 +97,7 @@ DUT{Vgs=-700mV,Vgd=-700mV,Vds=0V,Ids=0A}
 ## Netlist
 
 ```text
-V gnd nc V=0.7
+V:V1 gnd nc V=0.7
 JFET:DUT nc gnd nc @PFET
 .dc
 ```

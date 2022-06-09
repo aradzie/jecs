@@ -44,7 +44,6 @@ interface Instance {
   readonly item: InstanceItemNode;
   readonly deviceClass: DeviceClass;
   readonly nodes: Node[];
-  instanceId: string;
   device: Device;
 }
 
@@ -75,7 +74,6 @@ class NetlistBuilder {
     this.collectModels();
     this.collectInstances();
     this.assignNodes();
-    this.assignInstanceIds();
     for (const instance of this.instances) {
       this.createDevice(instance);
     }
@@ -135,45 +133,9 @@ class NetlistBuilder {
     this.instances.push({
       item,
       deviceClass,
-      instanceId: "",
       nodes: [],
       device: dummy,
     });
-  }
-
-  assignInstanceIds(): void {
-    const taken = new Set<string>();
-
-    // Process named instances.
-    for (const instance of this.instances) {
-      const { instanceId } = instance.item;
-      if (instanceId != null) {
-        const { name } = instanceId;
-        if (taken.has(name)) {
-          throw new NetlistError(`Duplicate instance id [${name}]`);
-        }
-        taken.add(name);
-        instance.instanceId = name;
-      }
-    }
-
-    // Process anonymous instances.
-    for (const instance of this.instances) {
-      const { instanceId } = instance.item;
-      if (instanceId == null) {
-        let counter = 1;
-        let name;
-        while (true) {
-          name = `${instance.item.deviceId.name}${counter}`;
-          if (!taken.has(name)) {
-            break;
-          }
-          counter += 1;
-        }
-        taken.add(name);
-        instance.instanceId = name;
-      }
-    }
   }
 
   assignNodes(): void {
@@ -194,13 +156,13 @@ class NetlistBuilder {
   createDevice(instance: Instance): void {
     if (instance.nodes.length !== instance.deviceClass.numTerminals) {
       throw new NetlistError(
-        `Error in instance [${instance.instanceId}]: Invalid number of nodes. ` +
+        `Error in instance [${instance.item.instanceId.name}]: Invalid number of nodes. ` +
           `Expected ${instance.deviceClass.numTerminals}, got ${instance.nodes.length}.`,
       );
     }
 
     this.circuit.addDevice(
-      (instance.device = new instance.deviceClass(instance.instanceId, instance.nodes)),
+      (instance.device = new instance.deviceClass(instance.item.instanceId.name, instance.nodes)),
     );
   }
 
@@ -211,13 +173,13 @@ class NetlistBuilder {
       const model = this.models.get(instance.item.modelId.name);
       if (model == null) {
         throw new NetlistError(
-          `Error in instance [${instance.instanceId}]: ` +
+          `Error in instance [${instance.item.instanceId.name}]: ` +
             `Model [${instance.item.modelId.name}] not found.`,
         );
       }
       if (model.deviceClass.id !== instance.deviceClass.id) {
         throw new NetlistError(
-          `Error in instance [${instance.instanceId}]: ` +
+          `Error in instance [${instance.item.instanceId.name}]: ` +
             `Invalid device of model [${instance.item.modelId.name}]. ` +
             `Expected [${instance.deviceClass.id}], got [${model.deviceClass.id}].`,
         );
@@ -232,7 +194,7 @@ class NetlistBuilder {
         instance.device.properties.set(property.id.name, this.variables.getValue(property.value));
       } catch (err: any) {
         throw new NetlistError(
-          `Error in instance [${instance.instanceId}]: ` +
+          `Error in instance [${instance.item.instanceId.name}]: ` +
             `Invalid property [${property.id.name}]. ${err.message}`,
         );
       }

@@ -1,9 +1,9 @@
 ## Netlist
 
 ```text
-I ncp gnd I=1
+I:I1 ncp gnd I=1
 CCCS:DUT nop gnd ncp gnd gain=2
-R nop gnd R=5
+R:R1 nop gnd R=5
 .dc
 ```
 

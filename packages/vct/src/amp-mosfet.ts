@@ -6,9 +6,9 @@ import { Unit } from "@jssim/simulator/lib/util/unit.js";
 import { Dataset, points } from "./util/dataset.js";
 
 const input = `
-V nr gnd V=10
-V ng gnd V=$xVgs
-R nr nd R=$xRl
+V:V1 nr gnd V=10
+V:V2 ng gnd V=$xVgs
+R:R1 nr nd R=$xRl
 MOSFET:Q1 gnd ng nd gnd @NMOS
 `;
 

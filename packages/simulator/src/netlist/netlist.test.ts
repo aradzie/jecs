@@ -8,9 +8,9 @@ test("parse netlist", (t) => {
 
   const content = `
 # An example netlist.
-V n1 gnd V=$V
-R n1 gnd @R2
-R n1 gnd @R3 R=200
+V:V1 n1 gnd V=$V
+R:R2 n1 gnd @R2
+R:R3 n1 gnd @R3 R=200
 R:R1 n1 gnd R=100
 .model R @R2 R=111
 .model R @R3 R=222

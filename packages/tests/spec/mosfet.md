@@ -1,8 +1,8 @@
 ## Netlist
 
 ```text
-V nd gnd V=15
-V ng gnd V=10
+V:V1 nd gnd V=15
+V:V2 ng gnd V=10
 MOSFET:DUT gnd ng nd gnd @NMOS Is=0
 .dc
 ```
@@ -22,8 +22,8 @@ DUT{Vgs=10V,Vgd=-5V,Vds=15V,Ids=640mA}
 ## Netlist
 
 ```text
-V ns gnd V=15
-V ng gnd V=10
+V:V1 ns gnd V=15
+V:V2 ng gnd V=10
 MOSFET:DUT ns ng gnd ns @NMOS Is=0
 .dc
 ```
@@ -43,7 +43,7 @@ DUT{Vgs=-5V,Vgd=10V,Vds=-15V,Ids=-640mA}
 ## Netlist
 
 ```text
-V ns gnd V=0.7738435
+V:V1 ns gnd V=0.7738435
 MOSFET:DUT ns gnd gnd ns @NMOS
 .dc
 ```
@@ -61,7 +61,7 @@ DUT{Vgs=-773.844mV,Vgd=0V,Vds=-773.844mV,Ids=0A}
 ## Netlist
 
 ```text
-V nd gnd V=0.7738435
+V:V1 nd gnd V=0.7738435
 MOSFET:DUT gnd nd nd gnd @PMOS
 .dc
 ```

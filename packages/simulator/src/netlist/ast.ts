@@ -47,9 +47,9 @@ export type ItemNode =
 export interface InstanceItemNode extends Node {
   readonly type: "instance";
   readonly deviceId: Identifier;
-  readonly modelId: Identifier | null;
-  readonly instanceId: Identifier | null;
+  readonly instanceId: Identifier;
   readonly nodes: readonly Identifier[];
+  readonly modelId: Identifier | null;
   readonly properties: readonly PropertyNode[];
 }
 
