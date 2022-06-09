@@ -19,7 +19,7 @@ for (const xVbe of points(0.625, 0.65, 5)) {
     const variables = new Variables();
     variables.setVariable("$xVce", xVce);
     variables.setVariable("$xVbe", xVbe);
-    const { circuit } = Netlist.parse(input, variables);
+    const { circuit } = Netlist.parse(input, { variables });
     new DcAnalysis().run(circuit);
     const dut = circuit.getDevice("DUT");
     const Vce = dut.op("Vce");

@@ -13,7 +13,7 @@ const dataset = new Dataset();
 for (const xVd of points(0.5, 0.9, 100)) {
   const variables = new Variables();
   variables.setVariable("$xVd", xVd);
-  const { circuit } = Netlist.parse(input, variables);
+  const { circuit } = Netlist.parse(input, { variables });
   new DcAnalysis().run(circuit);
   const dut = circuit.getDevice("DUT");
   const V = dut.op("V");

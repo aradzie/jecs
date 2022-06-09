@@ -20,10 +20,20 @@ import { parse } from "./parser.js";
 import { Variables } from "./variables.js";
 
 export class Netlist {
-  static parse(content: string, variables = new Variables()): Netlist {
+  static parse(
+    content: string,
+    {
+      variables = new Variables(),
+      models = [],
+    }: {
+      readonly variables?: Variables;
+      readonly models?: readonly Model[];
+    } = {},
+  ): Netlist {
     const document = parse(content);
     const builder = new NetlistBuilder(document, variables);
     builder.addModels(standardModels);
+    builder.addModels(models);
     return builder.build();
   }
 
@@ -52,14 +62,16 @@ class NetlistBuilder {
   readonly document: NetlistNode;
   readonly variables: Variables;
   readonly models: Map<string, Model>;
-  readonly instances: Instance[];
+  readonly nodes: Map<string, Node>;
+  readonly instances: Map<string, Instance>;
   readonly analyses: Analysis[];
 
   constructor(document: NetlistNode, variables: Variables) {
     this.document = document;
     this.variables = variables;
     this.models = new Map();
-    this.instances = [];
+    this.nodes = new Map();
+    this.instances = new Map();
     this.analyses = [];
   }
 
@@ -74,10 +86,10 @@ class NetlistBuilder {
     this.collectModels();
     this.collectInstances();
     this.assignNodes();
-    for (const instance of this.instances) {
+    for (const instance of this.instances.values()) {
       this.createDevice(instance);
     }
-    for (const instance of this.instances) {
+    for (const instance of this.instances.values()) {
       this.setProperties(instance);
     }
     this.collectAnalyses();
@@ -130,7 +142,10 @@ class NetlistBuilder {
 
   addInstance(item: InstanceItemNode): void {
     const deviceClass = getDeviceClass(item.deviceId.name);
-    this.instances.push({
+    if (this.instances.has(item.instanceId.name)) {
+      throw new NetlistError(`Duplicate instance identifier [${item.instanceId.name}].`);
+    }
+    this.instances.set(item.instanceId.name, {
       item,
       deviceClass,
       nodes: [],
@@ -139,14 +154,13 @@ class NetlistBuilder {
   }
 
   assignNodes(): void {
-    const map = new Map<string, Node>();
     const { groundNode } = this.circuit;
-    map.set(groundNode.id, groundNode);
-    for (const instance of this.instances) {
+    this.nodes.set(groundNode.id, groundNode);
+    for (const instance of this.instances.values()) {
       for (const { name } of instance.item.nodes) {
-        let node = map.get(name);
+        let node = this.nodes.get(name);
         if (node == null) {
-          map.set(name, (node = this.circuit.makeNode(name)));
+          this.nodes.set(name, (node = this.circuit.makeNode(name)));
         }
         instance.nodes.push(node);
       }

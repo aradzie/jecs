@@ -19,7 +19,7 @@ for (const xVgs of points(-1.5, 0, 5)) {
     const variables = new Variables();
     variables.setVariable("$xVds", xVds);
     variables.setVariable("$xVgs", xVgs);
-    const { circuit } = Netlist.parse(input, variables);
+    const { circuit } = Netlist.parse(input, { variables });
     new DcAnalysis().run(circuit);
     const dut = circuit.getDevice("DUT");
     const Vds = dut.op("Vds");

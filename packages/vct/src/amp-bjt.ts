@@ -20,7 +20,7 @@ for (const xRl of points(2000, 100, 5)) {
     const variables = new Variables();
     variables.setVariable("$xRl", xRl);
     variables.setVariable("$xVbe", xVbe);
-    const { circuit } = Netlist.parse(input, variables);
+    const { circuit } = Netlist.parse(input, { variables });
     new DcAnalysis().run(circuit);
     const q1 = circuit.getDevice("Q1");
     const nc = circuit.getNode("nc");
