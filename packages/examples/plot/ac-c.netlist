@@ -1,0 +1,4 @@
+Vac:Vin n1 gnd amplitude=1 frequency=1000
+C:Cload n1 n2 C=1m
+R:R1 n2 gnd R=100
+.tran timeInterval=3m timeStep=10u
