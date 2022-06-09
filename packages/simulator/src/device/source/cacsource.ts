@@ -3,6 +3,10 @@ import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
 const enum S {
+  offset,
+  amplitude,
+  omega,
+  theta,
   I,
   V,
   P,
@@ -10,13 +14,16 @@ const enum S {
 }
 
 /**
- * Current source.
+ * AC current source.
  */
-export class CSource extends Device {
-  static override readonly id = "I";
+export class CacSource extends Device {
+  static override readonly id = "Iac";
   static override readonly numTerminals = 2;
   static override readonly propertiesSchema = {
-    I: Properties.number({ title: "current" }),
+    offset: Properties.number({ title: "offset", default: 0 }),
+    amplitude: Properties.number({ title: "amplitude" }),
+    frequency: Properties.number({ title: "frequency" }),
+    phase: Properties.number({ title: "phase", default: 0 }),
   };
   static override readonly stateSchema = {
     length: S._Size_,
@@ -39,7 +46,24 @@ export class CSource extends Device {
   }
 
   override deriveState(state: DeviceState): void {
-    state[S.I] = this.properties.getNumber("I");
+    const offset = this.properties.getNumber("offset");
+    const amplitude = this.properties.getNumber("amplitude");
+    const frequency = this.properties.getNumber("frequency");
+    const phase = this.properties.getNumber("phase");
+    const omega = 2 * Math.PI * frequency;
+    const theta = (phase / 180) * Math.PI;
+    state[S.offset] = offset;
+    state[S.amplitude] = amplitude;
+    state[S.omega] = omega;
+    state[S.theta] = theta;
+  }
+
+  override beginEval(state: DeviceState, { elapsedTime }: EvalOptions): void {
+    const offset = state[S.offset];
+    const amplitude = state[S.amplitude];
+    const omega = state[S.omega];
+    const theta = state[S.theta];
+    state[S.I] = offset + amplitude * Math.sin(omega * elapsedTime + theta);
   }
 
   override stamp(state: DeviceState, stamper: Stamper): void {

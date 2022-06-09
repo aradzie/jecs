@@ -73,7 +73,7 @@ export class Capacitor extends Device {
     stamper.stampCurrentSource(na, nb, Ieq);
   }
 
-  override endEval(state: DeviceState, options: EvalOptions) {
+  override endEval(state: DeviceState, options: EvalOptions): void {
     const { na, nb } = this;
     const { timeStep } = options;
     const V = na.voltage - nb.voltage;

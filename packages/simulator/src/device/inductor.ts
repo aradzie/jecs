@@ -79,7 +79,7 @@ export class Inductor extends Device {
     stamper.stampVoltageSource(na, nb, branch, Veq);
   }
 
-  override endEval(state: DeviceState, options: EvalOptions) {
+  override endEval(state: DeviceState, options: EvalOptions): void {
     const { branch } = this;
     const { timeStep } = options;
     const I = branch.current;
