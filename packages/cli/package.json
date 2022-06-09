@@ -24,19 +24,12 @@
   },
   "scripts": {
     "clean": "rm -fr lib",
-    "compile": "tsc",
-    "test": "ava"
+    "compile": "tsc"
   },
   "dependencies": {
     "@jssim/simulator": "*",
     "commander": "^9.3.0",
     "tslib": "^2.4.0"
   },
-  "devDependencies": {},
-  "ava": {
-    "files": [
-      "lib/**/*.test.*",
-      "lib/**/__test__/*"
-    ]
-  }
+  "devDependencies": {}
 }
