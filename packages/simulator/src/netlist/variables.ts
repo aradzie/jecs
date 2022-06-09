@@ -77,21 +77,16 @@ export class Variables {
     const a = this.evalExp(exp.arg1);
     const b = this.evalExp(exp.arg2);
     switch (exp.op) {
-      case "+": {
+      case "+":
         return a + b;
-      }
-      case "-": {
+      case "-":
         return a - b;
-      }
-      case "*": {
+      case "*":
         return a * b;
-      }
-      case "/": {
+      case "/":
         return a / b;
-      }
-      case "^": {
+      case "^":
         return Math.pow(a, b);
-      }
     }
   }
 

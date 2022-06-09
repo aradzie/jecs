@@ -150,6 +150,21 @@ export function literalExp(value: number): LiteralExpNode {
   return { type: "literal", value };
 }
 
+export function isConstant(exp: ExpressionNode): boolean {
+  switch (exp.type) {
+    case "var":
+      return false;
+    case "literal":
+      return true;
+    case "unary":
+      return isConstant(exp.arg);
+    case "binary":
+      return isConstant(exp.arg1) && isConstant(exp.arg2);
+    case "func":
+      return exp.args.every((arg) => isConstant(arg));
+  }
+}
+
 export const builtins: readonly EquationItemNode[] = [
   equation("$PI", literalExp(Math.PI)),
   equation("$E", literalExp(Math.E)),
