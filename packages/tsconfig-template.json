@@ -10,8 +10,8 @@
     "importHelpers": true,
     "importsNotUsedAsValues": "error",
     "inlineSources": true,
-    "lib": ["es2021"],
-    "module": "es2020",
+    "lib": ["esnext"],
+    "module": "esnext",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -21,6 +21,6 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es2021"
+    "target": "esnext"
   }
 }
