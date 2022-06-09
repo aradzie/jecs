@@ -34,9 +34,9 @@ export type TableBuilder = {
   group(title: string | null): void;
   /**
    * Appends a new row to the dataset with node and device output parameters.
-   * @param elapsedTime The point in time for which the row is captured.
+   * @param time The point in time for which the row is captured.
    */
-  capture(elapsedTime: number): void;
+  capture(time: number): void;
   /**
    * Creates and returns a new table with the captured values.
    */
@@ -48,7 +48,10 @@ type MutableRowGroup = {
   rows: Float64Array[];
 };
 
-export const makeTableBuilder = ({ nodes, devices }: Circuit): TableBuilder => {
+export const makeTableBuilder = (
+  { nodes, devices }: Circuit,
+  timeColumn: boolean,
+): TableBuilder => {
   const columns: Column[] = [];
   const rowGroups: MutableRowGroup[] = [];
 
@@ -57,12 +60,14 @@ export const makeTableBuilder = ({ nodes, devices }: Circuit): TableBuilder => {
     rows: [],
   };
 
-  // Time column.
-  columns.push({
-    name: "time",
-    unit: "S",
-    index: columns.length,
-  });
+  if (timeColumn) {
+    // Time column.
+    columns.push({
+      name: "time",
+      unit: "S",
+      index: columns.length,
+    });
+  }
 
   // Capture node voltages.
   for (const node of nodes) {
@@ -98,12 +103,14 @@ export const makeTableBuilder = ({ nodes, devices }: Circuit): TableBuilder => {
       };
     }
 
-    capture(elapsedTime: number): void {
+    capture(time: number): void {
       const row = new Float64Array(columns.length);
       let index = 0;
 
-      // Time column.
-      row[index++] = elapsedTime;
+      if (timeColumn) {
+        // Time column.
+        row[index++] = time;
+      }
 
       // Capture node voltages.
       for (const node of nodes) {

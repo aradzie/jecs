@@ -10,6 +10,6 @@ set format x "%g"
 plot for [IDX=0:4] \
   'iv-bjt.data' \
   index IDX \
-  using 12:14 \
+  using 11:13 \
   with lines lw 1 \
   title columnheader(1)

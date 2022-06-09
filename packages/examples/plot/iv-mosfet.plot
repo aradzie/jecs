@@ -10,6 +10,6 @@ set format x "%g"
 plot for [IDX=0:4] \
   'iv-mosfet.data' \
   index IDX \
-  using 12:13 \
+  using 11:12 \
   with lines lw 1 \
   title columnheader(1)

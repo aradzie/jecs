@@ -21,7 +21,7 @@ export class DcAnalysis extends Analysis {
   override run(circuit: Circuit): Table {
     const gmin = this.properties.getNumber("gmin");
     const options = getOptions(this.properties);
-    const table = makeTableBuilder(circuit);
+    const table = makeTableBuilder(circuit, false);
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {
@@ -43,7 +43,7 @@ export class DcAnalysis extends Analysis {
           timeStep: NaN,
           gmin,
         });
-        table.capture(0);
+        table.capture(NaN);
       },
       leave: (sweep, level, steps) => {},
     });
@@ -62,7 +62,7 @@ export class TranAnalysis extends Analysis {
     const timeStep = this.properties.getNumber("timeStep");
     const gmin = this.properties.getNumber("gmin");
     const options = getOptions(this.properties);
-    const table = makeTableBuilder(circuit);
+    const table = makeTableBuilder(circuit, true);
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {

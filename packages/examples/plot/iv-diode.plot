@@ -7,4 +7,4 @@ set grid lw 1
 set border lw 1
 set format y "%g"
 set format x "%g"
-plot 'iv-diode.data' using 6:7 with lines lw 1 title "Diode I/V"
+plot 'iv-diode.data' using 5:6 with lines lw 1 title "Diode I/V"
