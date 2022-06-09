@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "@jssim/vct",
+  "name": "@jssim/examples",
   "version": "1.0.0",
-  "description": "Virtual curve tracer.",
+  "description": "Simulation examples.",
   "author": "Aliaksandr Radzivanovich",
   "license": "GPL",
   "keywords": [

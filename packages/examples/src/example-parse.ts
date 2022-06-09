@@ -1,5 +1,5 @@
-import { Netlist } from "../netlist/netlist.js";
-import { formatData, formatSchema } from "../simulation/dataset.js";
+import { Netlist } from "@jssim/simulator/lib/netlist/netlist.js";
+import { formatData, formatSchema } from "@jssim/simulator/lib/simulation/dataset.js";
 
 const netlist = Netlist.parse(`
 V:Vce nc gnd V=0

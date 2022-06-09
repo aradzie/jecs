@@ -59,27 +59,27 @@ The following non-linear device I/V curves were obtained from the simulator.
 
 ### Diode I/V Curve
 
-![Diode I/V curve](./packages/vct/plot/iv-diode.svg)
+![Diode I/V curve](packages/examples/plot/iv-diode.svg)
 
 ### BJT I/V Curve
 
-![BJT I/V curve](./packages/vct/plot/iv-bjt.svg)
+![BJT I/V curve](packages/examples/plot/iv-bjt.svg)
 
 ### MOSFET I/V Curve
 
-![MOSFET I/V curve](./packages/vct/plot/iv-mosfet.svg)
+![MOSFET I/V curve](packages/examples/plot/iv-mosfet.svg)
 
 ### JFET I/V Curve
 
-![JFET I/V curve](./packages/vct/plot/iv-jfet.svg)
+![JFET I/V curve](packages/examples/plot/iv-jfet.svg)
 
 ### BJT Amplifier I/V Curve
 
-![BJT Amplifier I/V curve](./packages/vct/plot/amp-bjt.svg)
+![BJT Amplifier I/V curve](packages/examples/plot/amp-bjt.svg)
 
 ### MOSFET Amplifier I/V Curve
 
-![MOSFET Amplifier I/V curve](./packages/vct/plot/amp-mosfet.svg)
+![MOSFET Amplifier I/V curve](packages/examples/plot/amp-mosfet.svg)
 
 # License
 
