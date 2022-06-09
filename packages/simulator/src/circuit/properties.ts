@@ -64,6 +64,14 @@ export class Properties {
     }
   }
 
+  prop(name: string): PropertySchema {
+    const property = this.schema.get(name);
+    if (property == null) {
+      throw new CircuitError(`Unknown property [${name}]`);
+    }
+    return property;
+  }
+
   from(that: Properties): void {
     for (const [name, value] of that.values.entries()) {
       this.set(name, value);
@@ -80,10 +88,7 @@ export class Properties {
   }
 
   set(name: string, value: PropertyValue): this {
-    const property = this.schema.get(name);
-    if (property == null) {
-      throw new CircuitError(`Unknown property [${name}]`);
-    }
+    const property = this.prop(name);
     switch (property.type) {
       case "number": {
         if (typeof value !== "number") {
@@ -132,10 +137,7 @@ export class Properties {
   }
 
   getNumber(name: string): number {
-    const property = this.schema.get(name);
-    if (property == null) {
-      throw new Error(`Unknown property [${name}]`);
-    }
+    const property = this.prop(name);
     if (property.type !== "number") {
       throw new Error(`Property [${name}] is not a number`);
     }
@@ -147,10 +149,7 @@ export class Properties {
   }
 
   getEnum(name: string): string {
-    const property = this.schema.get(name);
-    if (property == null) {
-      throw new Error(`Unknown property [${name}]`);
-    }
+    const property = this.prop(name);
     if (property.type !== "enum") {
       throw new Error(`Property [${name}] is not an enum`);
     }

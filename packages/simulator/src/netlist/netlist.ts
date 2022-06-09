@@ -12,6 +12,8 @@ import type {
   InstanceItemNode,
   ModelItemNode,
   NetlistNode,
+  PropertyNode,
+  SweepNode,
   TranItemNode,
 } from "./ast.js";
 import { dummy } from "./dummy.js";
@@ -87,10 +89,10 @@ class NetlistBuilder {
     this.collectInstances();
     this.assignNodes();
     for (const instance of this.instances.values()) {
-      this.createDevice(instance);
+      this.createInstance(instance);
     }
     for (const instance of this.instances.values()) {
-      this.setProperties(instance);
+      this.setInstanceProperties(instance);
     }
     this.collectAnalyses();
     return new Netlist(this.circuit, this.variables, this.analyses);
@@ -167,7 +169,7 @@ class NetlistBuilder {
     }
   }
 
-  createDevice(instance: Instance): void {
+  createInstance(instance: Instance): void {
     if (instance.nodes.length !== instance.deviceClass.numTerminals) {
       throw new NetlistError(
         `Error in instance [${instance.item.instanceId.name}]: Invalid number of nodes. ` +
@@ -180,7 +182,7 @@ class NetlistBuilder {
     );
   }
 
-  setProperties(instance: Instance): void {
+  setInstanceProperties(instance: Instance): void {
     // Set properties from model.
 
     if (instance.item.modelId != null) {
@@ -230,59 +232,43 @@ class NetlistBuilder {
 
   addDcAnalysis(item: DcItemNode): void {
     const analysis = new DcAnalysis();
-    for (const property of item.properties) {
-      try {
-        analysis.properties.set(property.id.name, this.variables.getValue(property.value));
-      } catch (err: any) {
-        throw new NetlistError(
-          `Error in analysis properties: ` + //
-            `Invalid property [${property.id.name}]. ${err.message}`,
-        );
-      }
-    }
-    for (const sweep of item.sweeps) {
-      if (!this.instances.has(sweep.instanceId.name)) {
-        throw new NetlistError(`Error in sweep: Unknown instance [${sweep.instanceId.name}].`);
-      }
-      analysis.sweeps.push(
-        new Sweep(
-          sweep.instanceId.name, //
-          sweep.propertyId.name,
-          sweep.from,
-          sweep.to,
-          sweep.points,
-        ),
-      );
-    }
+    this.setAnalysisProperties(item.properties, analysis);
+    this.addAnalysisSweeps(item.sweeps, analysis);
     this.analyses.push(analysis);
   }
 
   addTranAnalysis(item: TranItemNode): void {
     const analysis = new TranAnalysis();
-    for (const property of item.properties) {
+    this.setAnalysisProperties(item.properties, analysis);
+    this.addAnalysisSweeps(item.sweeps, analysis);
+    this.analyses.push(analysis);
+  }
+
+  private setAnalysisProperties(properties: readonly PropertyNode[], analysis: Analysis) {
+    for (const { id, value } of properties) {
       try {
-        analysis.properties.set(property.id.name, this.variables.getValue(property.value));
+        analysis.properties.set(id.name, this.variables.getValue(value));
       } catch (err: any) {
         throw new NetlistError(
           `Error in analysis properties: ` + //
-            `Invalid property [${property.id.name}]. ${err.message}`,
+            `Invalid property [${id.name}]. ${err.message}`,
         );
       }
     }
-    for (const sweep of item.sweeps) {
-      if (!this.instances.has(sweep.instanceId.name)) {
-        throw new NetlistError(`Error in sweep: Unknown instance [${sweep.instanceId.name}].`);
+  }
+
+  private addAnalysisSweeps(sweeps: readonly SweepNode[], analysis: Analysis) {
+    for (const { instanceId, propertyId, from, to, points } of sweeps) {
+      const instance = this.instances.get(instanceId.name);
+      if (instance == null) {
+        throw new NetlistError(`Error in analysis: Unknown sweep instance [${instanceId.name}].`);
       }
-      analysis.sweeps.push(
-        new Sweep(
-          sweep.instanceId.name, //
-          sweep.propertyId.name,
-          sweep.from,
-          sweep.to,
-          sweep.points,
-        ),
-      );
+      try {
+        instance.device.properties.prop(propertyId.name);
+      } catch {
+        throw new NetlistError(`Error in analysis: Unknown sweep property [${propertyId.name}].`);
+      }
+      analysis.sweeps.push(new Sweep(instanceId.name, propertyId.name, from, to, points));
     }
-    this.analyses.push(analysis);
   }
 }
