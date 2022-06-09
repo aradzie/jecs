@@ -90,8 +90,13 @@ TranAnalysisItem
     { return { type: "tran", properties, sweeps }; }
 
 Sweep
-  = "sweep" _ variable:Variable _ from:Number _ to:Number _ points:Number
-    { return { type: "sweep", variable, from, to, points } }
+  = "sweep"
+    _ instanceId:Identifier
+    _ propertyId:Identifier
+    _ from:Number
+    _ to:Number
+    _ points:Number
+    { return { type: "sweep", instanceId, propertyId, from, to, points } }
 
 Expression
   = AdditiveExp

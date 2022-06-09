@@ -26,7 +26,9 @@ export class DcAnalysis extends Analysis {
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level) => {},
-      set: (sweep, value) => {},
+      set: ({ instanceId, propertyId }, value) => {
+        circuit.getDevice(instanceId).properties.set(propertyId, value);
+      },
       end: () => {
         circuit.reset();
         const simulator = newSimulator(circuit, options);
@@ -59,7 +61,9 @@ export class TranAnalysis extends Analysis {
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level) => {},
-      set: (sweep, value) => {},
+      set: ({ instanceId, propertyId }, value) => {
+        circuit.getDevice(instanceId).properties.set(propertyId, value);
+      },
       end: () => {
         circuit.reset();
         let step = 0;

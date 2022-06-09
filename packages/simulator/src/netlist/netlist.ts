@@ -241,7 +241,18 @@ class NetlistBuilder {
       }
     }
     for (const sweep of item.sweeps) {
-      analysis.sweeps.push(new Sweep(sweep.variable, sweep.from, sweep.to, sweep.points));
+      if (!this.instances.has(sweep.instanceId.name)) {
+        throw new NetlistError(`Error in sweep: Unknown instance [${sweep.instanceId.name}].`);
+      }
+      analysis.sweeps.push(
+        new Sweep(
+          sweep.instanceId.name, //
+          sweep.propertyId.name,
+          sweep.from,
+          sweep.to,
+          sweep.points,
+        ),
+      );
     }
     this.analyses.push(analysis);
   }
@@ -259,7 +270,18 @@ class NetlistBuilder {
       }
     }
     for (const sweep of item.sweeps) {
-      analysis.sweeps.push(new Sweep(sweep.variable, sweep.from, sweep.to, sweep.points));
+      if (!this.instances.has(sweep.instanceId.name)) {
+        throw new NetlistError(`Error in sweep: Unknown instance [${sweep.instanceId.name}].`);
+      }
+      analysis.sweeps.push(
+        new Sweep(
+          sweep.instanceId.name, //
+          sweep.propertyId.name,
+          sweep.from,
+          sweep.to,
+          sweep.points,
+        ),
+      );
     }
     this.analyses.push(analysis);
   }

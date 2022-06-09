@@ -96,7 +96,8 @@ export interface TranItemNode extends Node {
 }
 
 export interface SweepNode extends Node {
-  readonly variable: string;
+  readonly instanceId: Identifier;
+  readonly propertyId: Identifier;
   readonly from: number;
   readonly to: number;
   readonly points: number;

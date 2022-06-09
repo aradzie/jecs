@@ -1,6 +1,7 @@
 export class Sweep implements Iterable<number> {
   constructor(
-    readonly variable: string,
+    readonly instanceId: string,
+    readonly propertyId: string,
     readonly from: number,
     readonly to: number,
     readonly points: number,
@@ -21,10 +22,9 @@ export class Sweep implements Iterable<number> {
     const step = (level: number): void => {
       if (level < length) {
         const sweep = sweeps[level];
-        const { variable } = sweep;
         visitor.enter(sweep, level);
         for (const value of sweep) {
-          visitor.set(variable, value);
+          visitor.set(sweep, value);
           step(level + 1);
         }
         visitor.leave(sweep, level);
@@ -46,10 +46,10 @@ export type Visitor = {
   readonly enter: (sweep: Sweep, level: number) => void;
   /**
    * Set swept variable value.
-   * @param variable Swept variable name.
-   * @param value Variable value.
+   * @param sweep The current sweep.
+   * @param value Property value to set.
    */
-  readonly set: (variable: string, value: number) => void;
+  readonly set: (sweep: Sweep, value: number) => void;
   /**
    * Indicate that all sweeps have been visited.
    */

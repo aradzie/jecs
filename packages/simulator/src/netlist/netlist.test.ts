@@ -16,13 +16,13 @@ R:R1 n1 gnd R=100
 .model R @R3 R=222
 .eq $V=5
 .dc
-  sweep $A 1 5 5
-  sweep $B 1 10 10
+  sweep R1 R 1 5 5
+  sweep R2 R 1 10 10
 .tran
   timeInterval=1m
   timeStep=1u
-  sweep $A 1 5 5
-  sweep $B 1 10 10
+  sweep R1 R 1 5 5
+  sweep R2 R 1 10 10
 `;
 
   // Act.
