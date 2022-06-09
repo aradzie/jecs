@@ -73,7 +73,7 @@ export const makeTableBuilder = (
   for (const node of nodes) {
     if (node.type === "node") {
       columns.push({
-        name: `V(#${node.id})`,
+        name: `#${node.id}:V`,
         unit: "V",
         index: columns.length,
       });
@@ -85,7 +85,7 @@ export const makeTableBuilder = (
     const { stateSchema } = device.deviceClass;
     for (const op of stateSchema.ops) {
       columns.push({
-        name: `${op.name}(${device.id})`,
+        name: `${device.id}:${op.name}`,
         unit: op.unit,
         index: columns.length,
       });
