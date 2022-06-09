@@ -150,9 +150,9 @@ export const formatData = ({ columns, rowGroups }: Table): string => {
     if (lines.length > 0) {
       lines.push("");
       lines.push("");
-      if (rowGroup.title) {
-        lines.push(rowGroup.title);
-      }
+    }
+    if (rowGroup.title) {
+      lines.push(rowGroup.title);
     }
     for (const row of rowGroup.rows) {
       const line: string[] = [];

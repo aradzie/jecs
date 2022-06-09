@@ -19,14 +19,16 @@ export class DcAnalysis extends Analysis {
   }
 
   override run(circuit: Circuit): Table {
-    const { properties } = this;
-    const gmin = properties.getNumber("gmin");
+    const gmin = this.properties.getNumber("gmin");
     const options = getOptions(this.properties);
     const table = makeTableBuilder(circuit);
 
     Sweep.walk(this.sweeps, {
-      enter: (sweep, level) => {
-        table.group(null);
+      enter: (sweep, level, steps) => {
+        const a = steps.map(
+          ({ sweep: { instanceId, propertyId }, value }) => `${instanceId}:${propertyId}=${value}`,
+        );
+        table.group(`"${a.join(", ")}"`);
       },
       set: ({ instanceId, propertyId }, value) => {
         const device = circuit.getDevice(instanceId);
@@ -43,7 +45,7 @@ export class DcAnalysis extends Analysis {
         });
         table.capture(0);
       },
-      leave: (sweep, level) => {},
+      leave: (sweep, level, steps) => {},
     });
 
     return table.build();
@@ -56,16 +58,18 @@ export class TranAnalysis extends Analysis {
   }
 
   override run(circuit: Circuit): Table {
-    const { properties } = this;
-    const timeInterval = properties.getNumber("timeInterval");
-    const timeStep = properties.getNumber("timeStep");
-    const gmin = properties.getNumber("gmin");
-    const options = getOptions(properties);
+    const timeInterval = this.properties.getNumber("timeInterval");
+    const timeStep = this.properties.getNumber("timeStep");
+    const gmin = this.properties.getNumber("gmin");
+    const options = getOptions(this.properties);
     const table = makeTableBuilder(circuit);
 
     Sweep.walk(this.sweeps, {
-      enter: (sweep, level) => {
-        table.group(null);
+      enter: (sweep, level, steps) => {
+        const a = steps.map(
+          ({ sweep: { instanceId, propertyId }, value }) => `${instanceId}:${propertyId}=${value}`,
+        );
+        table.group(`"${a.join(", ")}"`);
       },
       set: ({ instanceId, propertyId }, value) => {
         const device = circuit.getDevice(instanceId);
@@ -88,7 +92,7 @@ export class TranAnalysis extends Analysis {
           table.capture(elapsedTime);
         }
       },
-      leave: (sweep, level) => {},
+      leave: (sweep, level, steps) => {},
     });
 
     return table.build();

@@ -18,24 +18,30 @@ export class Sweep implements Iterable<number> {
 
   static walk(sweeps: readonly Sweep[], visitor: Visitor): void {
     const { length } = sweeps;
-
+    const steps: Step[] = [];
     const step = (level: number): void => {
       if (level < length) {
         const sweep = sweeps[level];
-        visitor.enter(sweep, level);
+        visitor.enter(sweep, level, steps);
         for (const value of sweep) {
+          steps.push({ sweep, value });
           visitor.set(sweep, value);
           step(level + 1);
+          steps.pop();
         }
-        visitor.leave(sweep, level);
+        visitor.leave(sweep, level, steps);
       } else {
         visitor.end();
       }
     };
-
     step(0);
   }
 }
+
+export type Step = {
+  readonly sweep: Sweep;
+  readonly value: number;
+};
 
 export type Visitor = {
   /**
@@ -43,7 +49,7 @@ export type Visitor = {
    * @param sweep Swept to enter.
    * @param level Sweep index.
    */
-  readonly enter: (sweep: Sweep, level: number) => void;
+  readonly enter: (sweep: Sweep, level: number, steps: Step[]) => void;
   /**
    * Set swept variable value.
    * @param sweep The current sweep.
@@ -59,5 +65,5 @@ export type Visitor = {
    * @param sweep Swept to leave.
    * @param level Sweep index.
    */
-  readonly leave: (sweep: Sweep, level: number) => void;
+  readonly leave: (sweep: Sweep, level: number, steps: Step[]) => void;
 };
