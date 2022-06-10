@@ -1,5 +1,4 @@
 import { Model } from "../circuit/model.js";
-import { Temp } from "../circuit/properties.js";
 import { Bjt } from "./nonlinear/bjt.js";
 import { Diode } from "./nonlinear/diode.js";
 import { Jfet } from "./nonlinear/jfet.js";
@@ -9,7 +8,6 @@ export const standardModels: readonly Model[] = [
   new Model("D", Diode, {
     Is: 1e-14,
     N: 1,
-    Temp,
   }),
   new Model("NPN", Bjt, {
     polarity: "npn",
@@ -20,7 +18,6 @@ export const standardModels: readonly Model[] = [
     Nr: 1,
     Vaf: 10.0,
     Var: 0.0,
-    Temp,
   }),
   new Model("PNP", Bjt, {
     polarity: "pnp",
@@ -31,7 +28,6 @@ export const standardModels: readonly Model[] = [
     Nr: 1,
     Vaf: 10.0,
     Var: 0.0,
-    Temp,
   }),
   new Model("NFET", Jfet, {
     polarity: "nfet",
@@ -40,7 +36,6 @@ export const standardModels: readonly Model[] = [
     lambda: 0.0,
     Is: 1e-14,
     N: 1,
-    Temp,
   }),
   new Model("PFET", Jfet, {
     polarity: "pfet",
@@ -49,7 +44,6 @@ export const standardModels: readonly Model[] = [
     lambda: 0.0,
     Is: 1e-14,
     N: 1,
-    Temp,
   }),
   new Model("NMOS", Mosfet, {
     polarity: "nfet",
@@ -58,7 +52,6 @@ export const standardModels: readonly Model[] = [
     lambda: 0.0,
     Is: 1e-14,
     N: 1,
-    Temp,
   }),
   new Model("PMOS", Mosfet, {
     polarity: "pfet",
@@ -67,7 +60,6 @@ export const standardModels: readonly Model[] = [
     lambda: 0.0,
     Is: 1e-14,
     N: 1,
-    Temp,
   }),
   new Model("DEPNMOS", Mosfet, {
     polarity: "nfet",
@@ -76,7 +68,6 @@ export const standardModels: readonly Model[] = [
     lambda: 0.0,
     Is: 1e-14,
     N: 1,
-    Temp,
   }),
   new Model("DEPPMOS", Mosfet, {
     polarity: "pfet",
@@ -85,6 +76,5 @@ export const standardModels: readonly Model[] = [
     lambda: 0.0,
     Is: 1e-14,
     N: 1,
-    Temp,
   }),
 ];
