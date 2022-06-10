@@ -92,7 +92,6 @@ export interface DcItemNode extends Node {
 export interface TranItemNode extends Node {
   readonly type: "tran";
   readonly properties: readonly PropertyNode[];
-  readonly sweeps: readonly SweepNode[];
 }
 
 export interface SweepNode extends Node {

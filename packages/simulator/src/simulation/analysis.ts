@@ -22,6 +22,7 @@ export class DcAnalysis extends Analysis {
     const gmin = this.properties.getNumber("gmin");
     const options = getOptions(this.properties);
     const table = makeTableBuilder(circuit, false);
+    const simulator = newSimulator(circuit, options);
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {
@@ -37,7 +38,6 @@ export class DcAnalysis extends Analysis {
       },
       end: () => {
         circuit.reset();
-        const simulator = newSimulator(circuit, options);
         simulator({
           elapsedTime: 0,
           timeStep: NaN,
@@ -63,37 +63,21 @@ export class TranAnalysis extends Analysis {
     const gmin = this.properties.getNumber("gmin");
     const options = getOptions(this.properties);
     const table = makeTableBuilder(circuit, true);
+    const simulator = newSimulator(circuit, options);
 
-    Sweep.walk(this.sweeps, {
-      enter: (sweep, level, steps) => {
-        const a = steps.map(
-          ({ sweep: { instanceId, propertyId }, value }) => `${instanceId}:${propertyId}=${value}`,
-        );
-        table.group(`"${a.join(", ")}"`);
-      },
-      set: ({ instanceId, propertyId }, value) => {
-        const device = circuit.getDevice(instanceId);
-        device.properties.set(propertyId, value);
-        device.deriveState(device.state);
-      },
-      end: () => {
-        circuit.reset();
-        let step = 0;
-        let elapsedTime = 0;
-        const simulator = newSimulator(circuit, options);
-        while (elapsedTime <= timeInterval) {
-          simulator({
-            elapsedTime,
-            timeStep,
-            gmin,
-          });
-          step += 1;
-          elapsedTime = timeStep * step;
-          table.capture(elapsedTime);
-        }
-      },
-      leave: (sweep, level, steps) => {},
-    });
+    circuit.reset();
+    let step = 0;
+    let elapsedTime = 0;
+    while (elapsedTime <= timeInterval) {
+      simulator({
+        elapsedTime,
+        timeStep,
+        gmin,
+      });
+      step += 1;
+      elapsedTime = timeStep * step;
+      table.capture(elapsedTime);
+    }
 
     return table.build();
   }
