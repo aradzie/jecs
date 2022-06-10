@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
+import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import {
@@ -123,14 +123,14 @@ export class Mosfet extends Device {
     this.nb = nb;
   }
 
-  override deriveState(state: DeviceState, options: EvalOptions): void {
+  override deriveState(state: DeviceState, params: EvalParams): void {
     const polarity = this.properties.getEnum("polarity") as FetPolarity;
     const Vth = this.properties.getNumber("Vth");
     const beta = this.properties.getNumber("beta");
     const lambda = this.properties.getNumber("lambda");
     const Is = this.properties.getNumber("Is");
     const N = this.properties.getNumber("N");
-    const temp = this.properties.getNumber("temp", options.temp);
+    const temp = this.properties.getNumber("temp", params.temp);
     const pol = fetSign(polarity);
     const Vt = N * pnVt(temp);
     const Vcrit = pnVcrit(Is, Vt);
@@ -253,7 +253,7 @@ export class Mosfet extends Device {
     state[S.Gm] = Gm;
   }
 
-  override eval(state: DeviceState, options: EvalOptions): void {
+  override eval(state: DeviceState): void {
     this.eval0(state, true);
   }
 
@@ -294,7 +294,7 @@ export class Mosfet extends Device {
     }
   }
 
-  override endEval(state: DeviceState, options: EvalOptions): void {
+  override endEval(state: DeviceState): void {
     this.eval0(state, false);
   }
 }

@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
+import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -64,7 +64,7 @@ export class VacSource extends Device {
     state[S.theta] = theta;
   }
 
-  override beginEval(state: DeviceState, { elapsedTime }: EvalOptions): void {
+  override beginEval(state: DeviceState, { elapsedTime }: EvalParams): void {
     const offset = state[S.offset];
     const amplitude = state[S.amplitude];
     const omega = state[S.omega];
@@ -78,7 +78,7 @@ export class VacSource extends Device {
     stamper.stampVoltageSource(np, nn, branch, V);
   }
 
-  override endEval(state: DeviceState, options: EvalOptions): void {
+  override endEval(state: DeviceState): void {
     const { branch } = this;
     const I = branch.current;
     const V = state[S.V];

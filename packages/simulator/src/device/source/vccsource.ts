@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
+import { Device, DeviceState } from "../../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -65,7 +65,7 @@ export class VCCSource extends Device {
     stamper.stampMatrix(branch, branch, -1);
   }
 
-  override endEval(state: DeviceState, options: EvalOptions): void {
+  override endEval(state: DeviceState): void {
     const { np, nn, branch } = this;
     const I = branch.current;
     const V = np.voltage - nn.voltage;

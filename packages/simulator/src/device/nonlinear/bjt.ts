@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
+import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import {
@@ -125,14 +125,14 @@ export class Bjt extends Device {
     this.nc = nc;
   }
 
-  override deriveState(state: DeviceState, options: EvalOptions): void {
+  override deriveState(state: DeviceState, params: EvalParams): void {
     const polarity = this.properties.getEnum("polarity") as BjtPolarity;
     const Bf = this.properties.getNumber("Bf");
     const Br = this.properties.getNumber("Br");
     const Is = this.properties.getNumber("Is");
     const Nf = this.properties.getNumber("Nf");
     const Nr = this.properties.getNumber("Nr");
-    const temp = this.properties.getNumber("temp", options.temp);
+    const temp = this.properties.getNumber("temp", params.temp);
     const pol = bjtSign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);
@@ -182,7 +182,7 @@ export class Bjt extends Device {
     state[S.Gr] = Gr;
   }
 
-  override eval(state: DeviceState, options: EvalOptions): void {
+  override eval(state: DeviceState): void {
     this.eval0(state, true);
   }
 
@@ -209,7 +209,7 @@ export class Bjt extends Device {
     stamper.stampCurrentSource(nc, nb, pol * (Ic - Gce * Vbe - Gcc * Vbc));
   }
 
-  override endEval(state: DeviceState, options: EvalOptions): void {
+  override endEval(state: DeviceState): void {
     this.eval0(state, false);
   }
 }

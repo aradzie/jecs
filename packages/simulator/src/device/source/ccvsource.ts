@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
+import { Device, DeviceState } from "../../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -66,7 +66,7 @@ export class CCVSource extends Device {
     stamper.stampMatrix(branch1, branch2, -gain);
   }
 
-  override endEval(state: DeviceState, options: EvalOptions): void {
+  override endEval(state: DeviceState): void {
     const { np, nn, branch1 } = this;
     const V = np.voltage - nn.voltage;
     const I = branch1.current;

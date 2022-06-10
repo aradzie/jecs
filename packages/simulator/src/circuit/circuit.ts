@@ -1,5 +1,5 @@
 import type { Vector } from "@jssim/math/lib/types";
-import type { Device, EvalOptions } from "./device.js";
+import type { Device, EvalParams } from "./device.js";
 import { CircuitError } from "./error.js";
 import { Branch, groundNode, Network, Node } from "./network.js";
 
@@ -21,7 +21,7 @@ export class Circuit implements Network {
     return this.#devices;
   }
 
-  reset(options: EvalOptions): void {
+  reset(params: EvalParams): void {
     for (const node of this.#nodes) {
       switch (node.type) {
         case "node":
@@ -34,7 +34,7 @@ export class Circuit implements Network {
     }
     for (const device of this.#devices) {
       device.state.fill(0);
-      device.deriveState(device.state, options);
+      device.deriveState(device.state, params);
     }
   }
 

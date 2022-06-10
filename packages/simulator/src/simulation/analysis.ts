@@ -1,5 +1,5 @@
 import type { Circuit } from "../circuit/circuit.js";
-import type { EvalOptions } from "../circuit/device.js";
+import type { EvalParams } from "../circuit/device.js";
 import { Properties } from "../circuit/properties.js";
 import { makeTableBuilder, Table } from "./dataset.js";
 import { dcProperties, getOptions, tranProperties } from "./options.js";
@@ -25,7 +25,7 @@ export class DcAnalysis extends Analysis {
     const table = makeTableBuilder(circuit, false);
     const simulator = newSimulator(circuit, options);
 
-    const evalOptions: EvalOptions = {
+    const params: EvalParams = {
       elapsedTime: 0,
       timeStep: NaN,
       temp,
@@ -41,11 +41,11 @@ export class DcAnalysis extends Analysis {
       set: ({ instanceId, propertyId }, value) => {
         const device = circuit.getDevice(instanceId);
         device.properties.set(propertyId, value);
-        device.deriveState(device.state, evalOptions);
+        device.deriveState(device.state, params);
       },
       end: () => {
-        circuit.reset(evalOptions);
-        simulator(evalOptions);
+        circuit.reset(params);
+        simulator(params);
         table.capture(NaN);
       },
       leave: (sweep, level, steps) => {},

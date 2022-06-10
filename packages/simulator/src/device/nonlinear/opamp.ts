@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
+import { Device, DeviceState } from "../../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { gmin, piOverTwo, twoOverPi } from "../const.js";
@@ -65,7 +65,7 @@ export class OpAmp extends Device {
     state[S.Vmax] = Vmax;
   }
 
-  override eval(state: DeviceState, options: EvalOptions): void {
+  override eval(state: DeviceState): void {
     const { np, nn } = this;
     const gain = state[S.gain];
     const Vmax = state[S.Vmax];

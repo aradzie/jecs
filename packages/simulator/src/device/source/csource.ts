@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
+import { Device, DeviceState } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -48,7 +48,7 @@ export class CSource extends Device {
     stamper.stampCurrentSource(np, nn, I);
   }
 
-  override endEval(state: DeviceState, options: EvalOptions): void {
+  override endEval(state: DeviceState): void {
     const { np, nn } = this;
     const V = np.voltage - nn.voltage;
     const I = state[S.I];

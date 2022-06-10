@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
+import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -58,7 +58,7 @@ export class CacSource extends Device {
     state[S.theta] = theta;
   }
 
-  override beginEval(state: DeviceState, { elapsedTime }: EvalOptions): void {
+  override beginEval(state: DeviceState, { elapsedTime }: EvalParams): void {
     const offset = state[S.offset];
     const amplitude = state[S.amplitude];
     const omega = state[S.omega];
@@ -72,7 +72,7 @@ export class CacSource extends Device {
     stamper.stampCurrentSource(np, nn, I);
   }
 
-  override endEval(state: DeviceState, options: EvalOptions): void {
+  override endEval(state: DeviceState): void {
     const { np, nn } = this;
     const V = np.voltage - nn.voltage;
     const I = state[S.I];

@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
+import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { pnConductance, pnCurrent, pnVcrit, pnVoltage, pnVt } from "./semi.js";
@@ -55,10 +55,10 @@ export class Diode extends Device {
     this.nc = nc;
   }
 
-  override deriveState(state: DeviceState, options: EvalOptions): void {
+  override deriveState(state: DeviceState, params: EvalParams): void {
     const Is = this.properties.getNumber("Is");
     const N = this.properties.getNumber("N");
-    const temp = this.properties.getNumber("temp", options.temp);
+    const temp = this.properties.getNumber("temp", params.temp);
     const Vt = N * pnVt(temp);
     const Vcrit = pnVcrit(Is, Vt);
     state[S.Is] = Is;
@@ -84,7 +84,7 @@ export class Diode extends Device {
     state[S.P] = P;
   }
 
-  override eval(state: DeviceState, options: EvalOptions): void {
+  override eval(state: DeviceState): void {
     this.eval0(state, true);
   }
 
@@ -97,7 +97,7 @@ export class Diode extends Device {
     stamper.stampCurrentSource(na, nc, I - G * V);
   }
 
-  override endEval(state: DeviceState, options: EvalOptions): void {
+  override endEval(state: DeviceState): void {
     this.eval0(state, false);
   }
 }

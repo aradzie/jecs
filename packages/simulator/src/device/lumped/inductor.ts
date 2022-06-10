@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
+import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -53,9 +53,8 @@ export class Inductor extends Device {
     state[S.L] = this.properties.getNumber("L");
   }
 
-  override beginEval(state: DeviceState, options: EvalOptions): void {
+  override beginEval(state: DeviceState, { timeStep }: EvalParams): void {
     const { branch } = this;
-    const { timeStep } = options;
     const L = state[S.L];
     const I = branch.current;
     if (timeStep !== timeStep) {
@@ -79,9 +78,8 @@ export class Inductor extends Device {
     stamper.stampVoltageSource(na, nb, branch, Veq);
   }
 
-  override endEval(state: DeviceState, options: EvalOptions): void {
+  override endEval(state: DeviceState, { timeStep }: EvalParams): void {
     const { branch } = this;
-    const { timeStep } = options;
     const I = branch.current;
     if (timeStep !== timeStep) {
       // DC analysis.

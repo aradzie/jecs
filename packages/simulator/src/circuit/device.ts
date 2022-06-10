@@ -39,7 +39,7 @@ export interface StateSchema {
   readonly ops: readonly OutputParam[];
 }
 
-export type EvalOptions = {
+export type EvalParams = {
   /** Elapsed simulation time. */
   readonly elapsedTime: number;
   /** Time step from the last simulation. */
@@ -109,17 +109,17 @@ export abstract class Device {
   /**
    * Derive state from params.
    */
-  deriveState(state: DeviceState, options: EvalOptions): void {}
+  deriveState(state: DeviceState, params: EvalParams): void {}
 
-  beginEval(state: DeviceState, options: EvalOptions): void {}
+  beginEval(state: DeviceState, params: EvalParams): void {}
 
   /**
    * Circuit calls this method to let a device compute its state
    * from the current node voltages and branch currents.
    * @param state Device state which is saved between iterations.
-   * @param options Evaluation options.
+   * @param params Evaluation parameters.
    */
-  eval(state: DeviceState, options: EvalOptions): void {}
+  eval(state: DeviceState, params: EvalParams): void {}
 
   /**
    * Circuit calls this method to let a device stamp the MNA matrix
@@ -129,7 +129,7 @@ export abstract class Device {
    */
   stamp(state: DeviceState, stamper: Stamper): void {}
 
-  endEval(state: DeviceState, options: EvalOptions): void {}
+  endEval(state: DeviceState, params: EvalParams): void {}
 
   /**
    * Returns value of an output parameter with the given name.

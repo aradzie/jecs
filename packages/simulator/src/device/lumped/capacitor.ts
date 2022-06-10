@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
+import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -47,9 +47,8 @@ export class Capacitor extends Device {
     state[S.C] = this.properties.getNumber("C");
   }
 
-  override beginEval(state: DeviceState, options: EvalOptions): void {
+  override beginEval(state: DeviceState, { timeStep }: EvalParams): void {
     const { na, nb } = this;
-    const { timeStep } = options;
     const C = state[S.C];
     const V = na.voltage - nb.voltage;
     if (timeStep !== timeStep) {
@@ -73,9 +72,8 @@ export class Capacitor extends Device {
     stamper.stampCurrentSource(na, nb, Ieq);
   }
 
-  override endEval(state: DeviceState, options: EvalOptions): void {
+  override endEval(state: DeviceState, { timeStep }: EvalParams): void {
     const { na, nb } = this;
-    const { timeStep } = options;
     const V = na.voltage - nb.voltage;
     if (timeStep !== timeStep) {
       // DC analysis.

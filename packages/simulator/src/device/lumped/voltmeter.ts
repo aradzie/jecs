@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
+import { Device, DeviceState } from "../../circuit/device.js";
 import type { Node } from "../../circuit/network.js";
 
 const enum S {
@@ -48,7 +48,7 @@ export class Voltmeter extends Device {
     state[S.rmsCnt] = 0;
   }
 
-  override endEval(state: DeviceState, options: EvalOptions): void {
+  override endEval(state: DeviceState): void {
     const { np, nn } = this;
     const V = np.voltage - nn.voltage;
     const Vmax = state[S.Vmax];

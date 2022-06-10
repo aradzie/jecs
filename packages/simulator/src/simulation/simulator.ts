@@ -1,7 +1,7 @@
 import { solve } from "@jssim/math/lib/gauss-elimination.js";
 import { matClear, matMake, vecClear, vecCopy, vecMake } from "@jssim/math/lib/matrix.js";
 import type { Circuit } from "../circuit/circuit.js";
-import type { EvalOptions } from "../circuit/device.js";
+import type { EvalParams } from "../circuit/device.js";
 import { Stamper } from "../circuit/network.js";
 import { Controller, converged } from "./convergence.js";
 import type { SimulationOptions } from "./options.js";
@@ -9,7 +9,7 @@ import type { SimulationOptions } from "./options.js";
 export const newSimulator = (
   circuit: Circuit,
   options: SimulationOptions,
-): ((evalOptions: EvalOptions) => void) => {
+): ((evalParams: EvalParams) => void) => {
   const { nodes, devices } = circuit;
 
   const n = nodes.length;
@@ -20,7 +20,7 @@ export const newSimulator = (
 
   const linear = false;
 
-  return (evalOptions: EvalOptions): void => {
+  return (evalParams: EvalParams): void => {
     matClear(matrix);
     vecClear(vector);
 
@@ -29,10 +29,10 @@ export const newSimulator = (
       // The solution can be obtained in a single step.
 
       for (const device of devices) {
-        device.beginEval(device.state, evalOptions);
+        device.beginEval(device.state, evalParams);
       }
       for (const device of devices) {
-        device.eval(device.state, evalOptions);
+        device.eval(device.state, evalParams);
       }
       for (const device of devices) {
         device.stamp(device.state, stamper);
@@ -43,7 +43,7 @@ export const newSimulator = (
       circuit.updateNodes(vector);
 
       for (const device of devices) {
-        device.endEval(device.state, evalOptions);
+        device.endEval(device.state, evalParams);
       }
     } else {
       // The circuit includes some non-linear devices.
@@ -51,13 +51,13 @@ export const newSimulator = (
 
       // Initialize iteration.
       for (const device of devices) {
-        device.beginEval(device.state, evalOptions);
+        device.beginEval(device.state, evalParams);
       }
 
       // Iterate until converges.
       for (const iteration of new Controller(options)) {
         for (const device of devices) {
-          device.eval(device.state, evalOptions);
+          device.eval(device.state, evalParams);
         }
         for (const device of devices) {
           device.stamp(device.state, stamper);
@@ -77,7 +77,7 @@ export const newSimulator = (
       }
 
       for (const device of devices) {
-        device.endEval(device.state, evalOptions);
+        device.endEval(device.state, evalParams);
       }
     }
   };

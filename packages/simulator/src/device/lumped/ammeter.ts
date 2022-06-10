@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
+import { Device, DeviceState } from "../../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
 
 const enum S {
@@ -59,7 +59,7 @@ export class Ammeter extends Device {
     stamper.stampVoltageSource(np, nn, branch, 0);
   }
 
-  override endEval(state: DeviceState, options: EvalOptions): void {
+  override endEval(state: DeviceState): void {
     const { branch } = this;
     const I = branch.current;
     const Imax = state[S.Imax];
