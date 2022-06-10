@@ -1,6 +1,7 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
+import { celsiusToKelvin } from "../../util/unit.js";
 import { pnConductance, pnCurrent, pnVcrit, pnVoltage, pnVt } from "./semi.js";
 
 const enum S {
@@ -34,6 +35,7 @@ export class Diode extends Device {
       title: "emission coefficient",
     }),
     temp: Properties.temp,
+    Tnom: Properties.Tnom,
   };
   static override readonly stateSchema = {
     length: S._Size_,
@@ -58,7 +60,8 @@ export class Diode extends Device {
   override deriveState(state: DeviceState, params: EvalParams): void {
     const Is = this.properties.getNumber("Is");
     const N = this.properties.getNumber("N");
-    const temp = this.properties.getNumber("temp", params.temp);
+    const temp = celsiusToKelvin(this.properties.getNumber("temp", params.temp));
+    const Tnom = celsiusToKelvin(this.properties.getNumber("Tnom"));
     const Vt = N * pnVt(temp);
     const Vcrit = pnVcrit(Is, Vt);
     state[S.Is] = Is;

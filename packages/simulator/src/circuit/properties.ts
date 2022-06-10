@@ -49,6 +49,13 @@ export class Properties {
     title: "device temperature in degrees Celsius",
   });
 
+  /** The nominal temperature property. */
+  static Tnom = Properties.number({
+    defaultValue: 26.85, // Room temperature.
+    min: -273.15, // Absolute zero.
+    title: "nominal temperature in degrees Celsius",
+  });
+
   private readonly schema = new Map<string, PropertySchema>();
   private readonly values = new Map<string, PropertyValue>();
 

@@ -1,6 +1,7 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
+import { celsiusToKelvin } from "../../util/unit.js";
 import {
   FetPolarity,
   fetSign,
@@ -94,6 +95,7 @@ export class Mosfet extends Device {
       title: "emission coefficient",
     }),
     temp: Properties.temp,
+    Tnom: Properties.Tnom,
   };
   static override readonly stateSchema = {
     length: S._Size_,
@@ -130,7 +132,8 @@ export class Mosfet extends Device {
     const lambda = this.properties.getNumber("lambda");
     const Is = this.properties.getNumber("Is");
     const N = this.properties.getNumber("N");
-    const temp = this.properties.getNumber("temp", params.temp);
+    const temp = celsiusToKelvin(this.properties.getNumber("temp", params.temp));
+    const Tnom = celsiusToKelvin(this.properties.getNumber("Tnom"));
     const pol = fetSign(polarity);
     const Vt = N * pnVt(temp);
     const Vcrit = pnVcrit(Is, Vt);

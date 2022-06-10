@@ -1,6 +1,7 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
+import { celsiusToKelvin } from "../../util/unit.js";
 import {
   BjtPolarity,
   bjtSign,
@@ -98,6 +99,7 @@ export class Bjt extends Device {
       title: "reverse Early voltage",
     }),
     temp: Properties.temp,
+    Tnom: Properties.Tnom,
   };
   static override readonly stateSchema = {
     length: S._Size_,
@@ -132,7 +134,8 @@ export class Bjt extends Device {
     const Is = this.properties.getNumber("Is");
     const Nf = this.properties.getNumber("Nf");
     const Nr = this.properties.getNumber("Nr");
-    const temp = this.properties.getNumber("temp", params.temp);
+    const temp = celsiusToKelvin(this.properties.getNumber("temp", params.temp));
+    const Tnom = celsiusToKelvin(this.properties.getNumber("Tnom"));
     const pol = bjtSign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);

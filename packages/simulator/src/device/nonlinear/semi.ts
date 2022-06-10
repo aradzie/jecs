@@ -1,4 +1,3 @@
-import { celsiusToKelvin } from "../../util/unit.js";
 import { k, q } from "../const.js";
 
 export const npn = "npn" as const;
@@ -34,7 +33,7 @@ export function fetSign(polarity: FetPolarity): number {
  * @param temp Device temperature.
  */
 export function pnVt(temp: number): number {
-  return celsiusToKelvin(temp) * (k / q);
+  return temp * (k / q);
 }
 
 /**
