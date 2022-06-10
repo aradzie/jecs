@@ -12,7 +12,7 @@ R:R1 n1 gnd R=1000
 ```text
 V(n1)=5V
 V1{V=5V,I=-5mA,P=-25mW}
-DUT{V=5V,Vmax=5V,Vmin=5V}
+DUT{V=5V,Vmax=5V,Vmin=5V,Vrms=5V}
 R1{V=5V,I=5mA,P=25mW}
 ```
 
@@ -32,6 +32,6 @@ R:R1 n1 gnd R=1000
 ```text
 V(n1)=-0.004pV
 Vac1{V=-0.004pV,I=0A,P=0W}
-DUT{V=-0.004pV,Vmax=5V,Vmin=-5V}
+DUT{V=-0.004pV,Vmax=5V,Vmin=-5V,Vrms=3.535V}
 R1{V=-0.004pV,I=0A,P=0W}
 ```

@@ -6,6 +6,9 @@ const enum S {
   I,
   Imax,
   Imin,
+  Irms,
+  rmsSum,
+  rmsCnt,
   _Size_,
 }
 
@@ -22,6 +25,7 @@ export class Ammeter extends Device {
       { index: S.I, name: "I", unit: "A" },
       { index: S.Imax, name: "Imax", unit: "A" },
       { index: S.Imin, name: "Imin", unit: "A" },
+      { index: S.Irms, name: "Irms", unit: "A" },
     ],
   };
 
@@ -45,6 +49,9 @@ export class Ammeter extends Device {
   override deriveState(state: DeviceState): void {
     state[S.Imax] = NaN;
     state[S.Imin] = NaN;
+    state[S.Irms] = NaN;
+    state[S.rmsSum] = 0;
+    state[S.rmsCnt] = 0;
   }
 
   override stamp(state: DeviceState, stamper: Stamper): void {
@@ -57,8 +64,13 @@ export class Ammeter extends Device {
     const I = branch.current;
     const Imax = state[S.Imax];
     const Imin = state[S.Imin];
+    const rmsSum = state[S.rmsSum] + I * I;
+    const rmsCnt = state[S.rmsCnt] + 1;
     state[S.I] = I;
     state[S.Imax] = Imax === Imax ? Math.max(Imax, I) : I;
     state[S.Imin] = Imin === Imin ? Math.min(Imin, I) : I;
+    state[S.Irms] = Math.sqrt(rmsSum / rmsCnt);
+    state[S.rmsSum] = rmsSum;
+    state[S.rmsCnt] = rmsCnt;
   }
 }
