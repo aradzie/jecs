@@ -7,7 +7,7 @@ export type PropertySchema = NumberPropertySchema | EnumPropertySchema;
 export type NumberPropertySchema = {
   readonly type: "number";
   /** The default value of this property. */
-  readonly default?: number;
+  readonly defaultValue?: number;
   /** The minimal allowed value of this property. */
   readonly min?: number;
   /** The maximal allowed value of this property. */
@@ -21,7 +21,7 @@ export type EnumPropertySchema = {
   /** The set of allowed values. */
   readonly values: readonly string[];
   /** The default value of this property. */
-  readonly default?: string;
+  readonly defaultValue?: string;
   /** Property description. */
   readonly title: string;
 };
@@ -44,7 +44,7 @@ export class Properties {
 
   /** The device temperature property. */
   static temp = Properties.number({
-    default: 26.85, // Room temperature.
+    defaultValue: 26.85, // Room temperature.
     min: -273.15, // Absolute zero.
     title: "device temperature in degrees Celsius",
   });
@@ -55,9 +55,6 @@ export class Properties {
   constructor(schema: PropertiesSchema) {
     for (const [name, property] of Object.entries(schema)) {
       this.schema.set(name, property);
-      if (property.default != null) {
-        this.values.set(name, property.default);
-      }
     }
   }
 
@@ -75,9 +72,9 @@ export class Properties {
     }
   }
 
-  allSet(): boolean {
-    for (const name of this.schema.keys()) {
-      if (!this.values.has(name)) {
+  hasAll(): boolean {
+    for (const [name, schema] of this.schema.entries()) {
+      if (!this.values.has(name) && schema.defaultValue == null) {
         return false;
       }
     }
@@ -133,24 +130,24 @@ export class Properties {
     return this;
   }
 
-  getNumber(name: string): number {
+  getNumber(name: string, defaultValue: number | null = null): number {
     const property = this.prop(name);
     if (property.type !== "number") {
       throw new Error(`Property [${name}] is not a number`);
     }
-    const value = this.values.get(name);
+    const value = this.values.get(name) ?? defaultValue ?? property.defaultValue;
     if (value == null) {
       throw new Error(`Property [${name}] has no value`);
     }
     return value as number;
   }
 
-  getEnum(name: string): string {
+  getEnum(name: string, defaultValue: string | null = null): string {
     const property = this.prop(name);
     if (property.type !== "enum") {
       throw new Error(`Property [${name}] is not an enum`);
     }
-    const value = this.values.get(name);
+    const value = this.values.get(name) ?? defaultValue ?? property.defaultValue;
     if (value == null) {
       throw new Error(`Property [${name}] has no value`);
     }

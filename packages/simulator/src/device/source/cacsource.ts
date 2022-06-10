@@ -20,10 +20,10 @@ export class CacSource extends Device {
   static override readonly id = "Iac";
   static override readonly numTerminals = 2;
   static override readonly propertiesSchema = {
-    offset: Properties.number({ title: "offset", default: 0 }),
+    offset: Properties.number({ title: "offset", defaultValue: 0 }),
     amplitude: Properties.number({ title: "amplitude" }),
     frequency: Properties.number({ title: "frequency" }),
-    phase: Properties.number({ title: "phase", default: 0 }),
+    phase: Properties.number({ title: "phase", defaultValue: 0 }),
   };
   static override readonly stateSchema = {
     length: S._Size_,

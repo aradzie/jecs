@@ -63,28 +63,28 @@ export class Jfet extends Device {
       title: "transistor polarity",
     }),
     Vth: Properties.number({
-      default: -2.0,
+      defaultValue: -2.0,
       min: -100,
       max: +100,
       title: "threshold voltage",
     }),
     beta: Properties.number({
-      default: 1e-4,
+      defaultValue: 1e-4,
       min: 1e-6,
       title: "transconductance parameter",
     }),
     lambda: Properties.number({
-      default: 0.0,
+      defaultValue: 0.0,
       min: 0,
       title: "channel-length modulation parameter",
     }),
     Is: Properties.number({
-      default: 1e-14,
+      defaultValue: 1e-14,
       min: 0,
       title: "saturation current",
     }),
     N: Properties.number({
-      default: 1,
+      defaultValue: 1,
       min: 1e-3,
       max: 100,
       title: "emission coefficient",

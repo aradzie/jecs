@@ -19,9 +19,13 @@ export class OpAmp extends Device {
   static override readonly id = "OpAmp";
   static override readonly numTerminals = 3;
   static override readonly propertiesSchema = {
-    gain: Properties.number({ default: 1e6, min: 1, title: "gain" }),
+    gain: Properties.number({
+      defaultValue: 1e6,
+      min: 1,
+      title: "gain",
+    }),
     Vmax: Properties.number({
-      default: 15,
+      defaultValue: 15,
       min: 0,
       title: "maximum absolute value of output voltage",
     }),

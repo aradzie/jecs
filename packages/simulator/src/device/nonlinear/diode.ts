@@ -23,12 +23,12 @@ export class Diode extends Device {
   static override readonly numTerminals = 2;
   static override readonly propertiesSchema = {
     Is: Properties.number({
-      default: 1e-14,
+      defaultValue: 1e-14,
       min: 0,
       title: "saturation current",
     }),
     N: Properties.number({
-      default: 1,
+      defaultValue: 1,
       min: 1e-3,
       max: 100,
       title: "emission coefficient",

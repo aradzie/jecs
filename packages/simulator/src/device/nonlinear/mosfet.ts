@@ -73,22 +73,22 @@ export class Mosfet extends Device {
       max: +100,
     }),
     beta: Properties.number({
-      default: 2e-2,
+      defaultValue: 2e-2,
       min: 1e-6,
       title: "transconductance parameter",
     }),
     lambda: Properties.number({
-      default: 0.0,
+      defaultValue: 0.0,
       min: 0,
       title: "channel-length modulation parameter",
     }),
     Is: Properties.number({
-      default: 1e-14,
+      defaultValue: 1e-14,
       min: 0,
       title: "saturation current",
     }),
     N: Properties.number({
-      default: 1,
+      defaultValue: 1,
       min: 1e-3,
       max: 100,
       title: "emission coefficient",

@@ -1,7 +1,7 @@
 import { Properties } from "../circuit/properties.js";
 
 const startTime = Properties.number({
-  default: 0,
+  defaultValue: 0,
   min: 0,
   title: "simulation start time",
 });
@@ -14,27 +14,27 @@ const timeStep = Properties.number({
   title: "simulation time step",
 });
 const temp = Properties.number({
-  default: 26.85, // Room temperature.
+  defaultValue: 26.85, // Room temperature.
   min: -273.15, // Absolute zero.
   title: "default device temperature in degrees Celsius",
 });
 const abstol = Properties.number({
-  default: 1e-12, // 1pA
+  defaultValue: 1e-12, // 1pA
   min: 0,
   title: "absolute current error tolerance in amperes",
 });
 const vntol = Properties.number({
-  default: 1e-6, // 1uV
+  defaultValue: 1e-6, // 1uV
   min: 0,
   title: "absolute voltage error tolerance in volts",
 });
 const reltol = Properties.number({
-  default: 1e-3,
+  defaultValue: 1e-3,
   min: 0,
   title: "relative error tolerance",
 });
 const maxIter = Properties.number({
-  default: 150,
+  defaultValue: 150,
   min: 1,
   title: "maximum number of iterations",
 });
