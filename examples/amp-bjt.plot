@@ -6,7 +6,7 @@ set grid lw 1
 set border lw 1
 set format y "%g"
 set format x "%g"
-plot for [IDX=0:4] \
+plot for [IDX=0:*] \
   'amp-bjt.data' \
   index IDX \
   using 13:3 \

@@ -7,7 +7,7 @@ set grid lw 1
 set border lw 1
 set format y "%g"
 set format x "%g"
-plot for [IDX=0:4] \
+plot for [IDX=0:*] \
   'iv-jfet.data' \
   index IDX \
   using 11:12 \
