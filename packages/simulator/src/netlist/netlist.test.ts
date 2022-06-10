@@ -19,7 +19,8 @@ R:R1 n1 gnd R=100
   sweep R1 R 1 5 5
   sweep R2 R 1 10 10
 .tran
-  timeInterval=1m
+  startTime=0.5m
+  stopTime=1m
   timeStep=1u
 `;
 
@@ -70,6 +71,7 @@ R:R1 n1 gnd R=100
 
   t.true(dc instanceof DcAnalysis);
   t.true(tran instanceof TranAnalysis);
-  t.is(tran.properties.getNumber("timeInterval"), 1e-3);
+  t.is(tran.properties.getNumber("startTime"), 5e-4);
+  t.is(tran.properties.getNumber("stopTime"), 1e-3);
   t.is(tran.properties.getNumber("timeStep"), 1e-6);
 });

@@ -1,8 +1,13 @@
 import { Properties, Temp } from "../circuit/properties.js";
 
-const timeInterval = Properties.number({
+const startTime = Properties.number({
+  default: 0,
   min: 0,
-  title: "simulation time interval",
+  title: "simulation start time",
+});
+const stopTime = Properties.number({
+  min: 0,
+  title: "simulation stop time",
 });
 const timeStep = Properties.number({
   min: 0,
@@ -53,7 +58,8 @@ export const dcProperties = {
 };
 
 export const tranProperties = {
-  timeInterval,
+  startTime,
+  stopTime,
   timeStep,
   temp,
   abstol,

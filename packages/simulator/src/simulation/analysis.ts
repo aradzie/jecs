@@ -58,7 +58,8 @@ export class TranAnalysis extends Analysis {
   }
 
   override run(circuit: Circuit): Table {
-    const timeInterval = this.properties.getNumber("timeInterval");
+    const startTime = this.properties.getNumber("startTime");
+    const stopTime = this.properties.getNumber("stopTime");
     const timeStep = this.properties.getNumber("timeStep");
     const gmin = this.properties.getNumber("gmin");
     const options = getOptions(this.properties);
@@ -68,7 +69,7 @@ export class TranAnalysis extends Analysis {
     circuit.reset();
     let step = 0;
     let elapsedTime = 0;
-    while (elapsedTime <= timeInterval) {
+    while (elapsedTime <= stopTime) {
       simulator({
         elapsedTime,
         timeStep,
@@ -76,7 +77,9 @@ export class TranAnalysis extends Analysis {
       });
       step += 1;
       elapsedTime = timeStep * step;
-      table.capture(elapsedTime);
+      if (elapsedTime >= startTime) {
+        table.capture(elapsedTime);
+      }
     }
 
     return table.build();

@@ -24,7 +24,7 @@ R1{V=5V,I=5mA,P=25mW}
 Vac:Vac1 n1 gnd amplitude=5 frequency=1k
 Voltmeter:DUT n1 gnd
 R:R1 n1 gnd R=1000
-.tran timeInterval=3m timeStep=1u
+.tran stopTime=3m timeStep=1u
 ```
 
 ## Result
