@@ -116,14 +116,14 @@ export class Jfet extends Device {
     this.nd = nd;
   }
 
-  override deriveState(state: DeviceState): void {
+  override deriveState(state: DeviceState, options: EvalOptions): void {
     const polarity = this.properties.getEnum("polarity") as FetPolarity;
     const Vth = this.properties.getNumber("Vth");
     const beta = this.properties.getNumber("beta");
     const lambda = this.properties.getNumber("lambda");
     const Is = this.properties.getNumber("Is");
     const N = this.properties.getNumber("N");
-    const temp = this.properties.getNumber("temp");
+    const temp = this.properties.getNumber("temp", options.temp);
     const pol = fetSign(polarity);
     const Vt = N * pnVt(temp);
     const Vcrit = pnVcrit(Is, Vt);

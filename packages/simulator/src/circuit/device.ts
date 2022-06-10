@@ -4,16 +4,12 @@ import { Properties, PropertiesSchema } from "./properties.js";
 export interface DeviceClass {
   /** Unique device class identifier. */
   readonly id: string;
-
   /** The number of terminals in the device. */
   readonly numTerminals: number;
-
   /** Schema of the device parameters. */
   readonly propertiesSchema: PropertiesSchema;
-
   /** Schema of the device state vector. */
   readonly stateSchema: StateSchema;
-
   /**
    * Device constructor.
    * @param id Unique device instance identifier.
@@ -44,14 +40,12 @@ export interface StateSchema {
 }
 
 export type EvalOptions = {
-  /**
-   * Elapsed simulation time.
-   */
+  /** Elapsed simulation time. */
   readonly elapsedTime: number;
-  /**
-   * Time step from the last simulation.
-   */
+  /** Time step from the last simulation. */
   readonly timeStep: number;
+  /** The default temperature of devices. */
+  readonly temp: number;
 };
 
 export abstract class Device {
@@ -106,21 +100,21 @@ export abstract class Device {
   }
 
   /**
-   * Derive state from params.
-   */
-  deriveState(state: DeviceState): void {}
-
-  /**
-   * Circuit calls this method to let a device to allocate extra nodes and
+   * Circuit calls this method to let a device allocate extra nodes and
    * branches.
    * @param network A network which contains allocated nodes and branches.
    */
   connect(network: Network): void {}
 
+  /**
+   * Derive state from params.
+   */
+  deriveState(state: DeviceState, options: EvalOptions): void {}
+
   beginEval(state: DeviceState, options: EvalOptions): void {}
 
   /**
-   * Circuit calls this method to let a device  compute its state
+   * Circuit calls this method to let a device compute its state
    * from the current node voltages and branch currents.
    * @param state Device state which is saved between iterations.
    * @param options Evaluation options.

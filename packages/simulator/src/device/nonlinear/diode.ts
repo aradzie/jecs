@@ -55,10 +55,10 @@ export class Diode extends Device {
     this.nc = nc;
   }
 
-  override deriveState(state: DeviceState): void {
+  override deriveState(state: DeviceState, options: EvalOptions): void {
     const Is = this.properties.getNumber("Is");
     const N = this.properties.getNumber("N");
-    const temp = this.properties.getNumber("temp");
+    const temp = this.properties.getNumber("temp", options.temp);
     const Vt = N * pnVt(temp);
     const Vcrit = pnVcrit(Is, Vt);
     state[S.Is] = Is;

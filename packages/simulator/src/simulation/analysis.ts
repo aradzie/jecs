@@ -1,4 +1,5 @@
 import type { Circuit } from "../circuit/circuit.js";
+import type { EvalOptions } from "../circuit/device.js";
 import { Properties } from "../circuit/properties.js";
 import { makeTableBuilder, Table } from "./dataset.js";
 import { dcProperties, getOptions, tranProperties } from "./options.js";
@@ -19,9 +20,16 @@ export class DcAnalysis extends Analysis {
   }
 
   override run(circuit: Circuit): Table {
+    const temp = this.properties.getNumber("temp");
     const options = getOptions(this.properties);
     const table = makeTableBuilder(circuit, false);
     const simulator = newSimulator(circuit, options);
+
+    const evalOptions: EvalOptions = {
+      elapsedTime: 0,
+      timeStep: NaN,
+      temp,
+    };
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {
@@ -33,14 +41,11 @@ export class DcAnalysis extends Analysis {
       set: ({ instanceId, propertyId }, value) => {
         const device = circuit.getDevice(instanceId);
         device.properties.set(propertyId, value);
-        device.deriveState(device.state);
+        device.deriveState(device.state, evalOptions);
       },
       end: () => {
-        circuit.reset();
-        simulator({
-          elapsedTime: 0,
-          timeStep: NaN,
-        });
+        circuit.reset(evalOptions);
+        simulator(evalOptions);
         table.capture(NaN);
       },
       leave: (sweep, level, steps) => {},
@@ -59,17 +64,23 @@ export class TranAnalysis extends Analysis {
     const startTime = this.properties.getNumber("startTime");
     const stopTime = this.properties.getNumber("stopTime");
     const timeStep = this.properties.getNumber("timeStep");
+    const temp = this.properties.getNumber("temp");
     const options = getOptions(this.properties);
     const table = makeTableBuilder(circuit, true);
     const simulator = newSimulator(circuit, options);
 
-    circuit.reset();
+    circuit.reset({
+      elapsedTime: 0,
+      timeStep: 0,
+      temp,
+    });
     let step = 0;
     let elapsedTime = 0;
     while (elapsedTime <= stopTime) {
       simulator({
         elapsedTime,
         timeStep,
+        temp,
       });
       step += 1;
       elapsedTime = timeStep * step;

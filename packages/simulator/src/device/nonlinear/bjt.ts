@@ -125,14 +125,14 @@ export class Bjt extends Device {
     this.nc = nc;
   }
 
-  override deriveState(state: DeviceState): void {
+  override deriveState(state: DeviceState, options: EvalOptions): void {
     const polarity = this.properties.getEnum("polarity") as BjtPolarity;
     const Bf = this.properties.getNumber("Bf");
     const Br = this.properties.getNumber("Br");
     const Is = this.properties.getNumber("Is");
     const Nf = this.properties.getNumber("Nf");
     const Nr = this.properties.getNumber("Nr");
-    const temp = this.properties.getNumber("temp");
+    const temp = this.properties.getNumber("temp", options.temp);
     const pol = bjtSign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);
