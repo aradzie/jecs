@@ -1,7 +1,7 @@
 import { Device, DeviceState, EvalOptions } from "../../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
-import { piOverTwo, twoOverPi } from "../const.js";
+import { gmin, piOverTwo, twoOverPi } from "../const.js";
 
 const enum S {
   gain,
@@ -68,7 +68,7 @@ export class OpAmp extends Device {
     const Vin = np.voltage - nn.voltage;
     const c = (piOverTwo * gain * Vin) / Vmax;
     const Vout = Vmax * twoOverPi * Math.atan(c);
-    const gv = gain / (1 + c * c) + options.gmin;
+    const gv = gain / (1 + c * c) + gmin;
     state[S.Vin] = Vin;
     state[S.Vout] = Vout;
     state[S.gv] = gv;

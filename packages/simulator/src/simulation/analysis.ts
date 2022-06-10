@@ -19,7 +19,6 @@ export class DcAnalysis extends Analysis {
   }
 
   override run(circuit: Circuit): Table {
-    const gmin = this.properties.getNumber("gmin");
     const options = getOptions(this.properties);
     const table = makeTableBuilder(circuit, false);
     const simulator = newSimulator(circuit, options);
@@ -41,7 +40,6 @@ export class DcAnalysis extends Analysis {
         simulator({
           elapsedTime: 0,
           timeStep: NaN,
-          gmin,
         });
         table.capture(NaN);
       },
@@ -61,7 +59,6 @@ export class TranAnalysis extends Analysis {
     const startTime = this.properties.getNumber("startTime");
     const stopTime = this.properties.getNumber("stopTime");
     const timeStep = this.properties.getNumber("timeStep");
-    const gmin = this.properties.getNumber("gmin");
     const options = getOptions(this.properties);
     const table = makeTableBuilder(circuit, true);
     const simulator = newSimulator(circuit, options);
@@ -73,7 +70,6 @@ export class TranAnalysis extends Analysis {
       simulator({
         elapsedTime,
         timeStep,
-        gmin,
       });
       step += 1;
       elapsedTime = timeStep * step;

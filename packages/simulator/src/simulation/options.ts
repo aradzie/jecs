@@ -38,11 +38,6 @@ const maxIter = Properties.number({
   min: 1,
   title: "maximum number of iterations",
 });
-const gmin = Properties.number({
-  default: 1e-12,
-  min: 0,
-  title: "minimum conductance in siemens",
-});
 const integrationMethod = Properties.enum({
   values: ["trapezoidal", "euler"],
   title: "integration method",
@@ -54,7 +49,6 @@ export const dcProperties = {
   vntol,
   reltol,
   maxIter,
-  gmin,
 };
 
 export const tranProperties = {
@@ -66,7 +60,6 @@ export const tranProperties = {
   vntol,
   reltol,
   maxIter,
-  gmin,
   integrationMethod,
 };
 

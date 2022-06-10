@@ -52,11 +52,6 @@ export type EvalOptions = {
    * Time step from the last simulation.
    */
   readonly timeStep: number;
-  /**
-   * A very small conductance added across nonlinear devices
-   * to prevent nodes from floating if a device is turned completely off.
-   */
-  readonly gmin: number;
 };
 
 export abstract class Device {

@@ -9,3 +9,9 @@ export const twoOverPi = 2 / Math.PI;
 
 /** A precomputed value. */
 export const piOverTwo = Math.PI / 2;
+
+/**
+ * A very small conductance added across nonlinear devices
+ * to prevent nodes from floating if a device is turned completely off.
+ */
+export const gmin = 1e-12;
