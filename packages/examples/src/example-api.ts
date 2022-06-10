@@ -19,7 +19,7 @@ const D1 = new Diode("D1", [N2, GND]);
 // Set device properties.
 V1.properties.set("V", 10);
 R1.properties.set("R", 1000);
-D1.properties.set("Temp", 26.85);
+D1.properties.set("temp", 26.85);
 
 // Add devices to the circuit.
 circuit.addDevice(V1);

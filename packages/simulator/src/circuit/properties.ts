@@ -1,8 +1,5 @@
 import { CircuitError } from "./error.js";
 
-/** The default simulation temperature. */
-export const Temp = 26.85;
-
 export type PropertiesSchema = Record<string, PropertySchema>;
 
 export type PropertySchema = NumberPropertySchema | EnumPropertySchema;
@@ -46,10 +43,10 @@ export class Properties {
   }
 
   /** The device temperature property. */
-  static Temp = Properties.number({
-    default: Temp,
+  static temp = Properties.number({
+    default: 26.85, // Room temperature.
     min: -273.15, // Absolute zero.
-    title: "device temperature",
+    title: "device temperature in degrees Celsius",
   });
 
   private readonly schema = new Map<string, PropertySchema>();

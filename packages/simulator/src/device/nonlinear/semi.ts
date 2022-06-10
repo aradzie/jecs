@@ -31,10 +31,10 @@ export function fetSign(polarity: FetPolarity): number {
 
 /**
  * Returns thermal voltage.
- * @param Temp Device temperature.
+ * @param temp Device temperature.
  */
-export function pnVt(Temp: number): number {
-  return celsiusToKelvin(Temp) * (k / q);
+export function pnVt(temp: number): number {
+  return celsiusToKelvin(temp) * (k / q);
 }
 
 /**

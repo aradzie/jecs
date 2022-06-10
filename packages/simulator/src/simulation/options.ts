@@ -1,4 +1,4 @@
-import { Properties, Temp } from "../circuit/properties.js";
+import { Properties } from "../circuit/properties.js";
 
 const startTime = Properties.number({
   default: 0,
@@ -14,9 +14,9 @@ const timeStep = Properties.number({
   title: "simulation time step",
 });
 const temp = Properties.number({
-  default: Temp,
+  default: 26.85, // Room temperature.
   min: -273.15, // Absolute zero.
-  title: "simulation temperature in degrees Celsius",
+  title: "default device temperature in degrees Celsius",
 });
 const abstol = Properties.number({
   default: 1e-12, // 1pA

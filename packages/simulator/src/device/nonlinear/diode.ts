@@ -33,7 +33,7 @@ export class Diode extends Device {
       max: 100,
       title: "emission coefficient",
     }),
-    Temp: Properties.Temp,
+    temp: Properties.temp,
   };
   static override readonly stateSchema = {
     length: S._Size_,
@@ -58,8 +58,8 @@ export class Diode extends Device {
   override deriveState(state: DeviceState): void {
     const Is = this.properties.getNumber("Is");
     const N = this.properties.getNumber("N");
-    const Temp = this.properties.getNumber("Temp");
-    const Vt = N * pnVt(Temp);
+    const temp = this.properties.getNumber("temp");
+    const Vt = N * pnVt(temp);
     const Vcrit = pnVcrit(Is, Vt);
     state[S.Is] = Is;
     state[S.Vt] = Vt;

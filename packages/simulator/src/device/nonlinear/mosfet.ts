@@ -93,7 +93,7 @@ export class Mosfet extends Device {
       max: 100,
       title: "emission coefficient",
     }),
-    Temp: Properties.Temp,
+    temp: Properties.temp,
   };
   static override readonly stateSchema = {
     length: S._Size_,
@@ -130,9 +130,9 @@ export class Mosfet extends Device {
     const lambda = this.properties.getNumber("lambda");
     const Is = this.properties.getNumber("Is");
     const N = this.properties.getNumber("N");
-    const Temp = this.properties.getNumber("Temp");
+    const temp = this.properties.getNumber("temp");
     const pol = fetSign(polarity);
-    const Vt = N * pnVt(Temp);
+    const Vt = N * pnVt(temp);
     const Vcrit = pnVcrit(Is, Vt);
     state[S.pol] = pol;
     state[S.Vth] = Vth;

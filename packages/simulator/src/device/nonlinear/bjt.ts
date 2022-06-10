@@ -97,7 +97,7 @@ export class Bjt extends Device {
       min: 0,
       title: "reverse Early voltage",
     }),
-    Temp: Properties.Temp,
+    temp: Properties.temp,
   };
   static override readonly stateSchema = {
     length: S._Size_,
@@ -132,12 +132,12 @@ export class Bjt extends Device {
     const Is = this.properties.getNumber("Is");
     const Nf = this.properties.getNumber("Nf");
     const Nr = this.properties.getNumber("Nr");
-    const Temp = this.properties.getNumber("Temp");
+    const temp = this.properties.getNumber("temp");
     const pol = bjtSign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);
-    const Vtf = Nf * pnVt(Temp);
-    const Vtr = Nr * pnVt(Temp);
+    const Vtf = Nf * pnVt(temp);
+    const Vtr = Nr * pnVt(temp);
     const Vcritf = pnVcrit(Is, Vtf);
     const Vcritr = pnVcrit(Is, Vtr);
     state[S.pol] = pol;
