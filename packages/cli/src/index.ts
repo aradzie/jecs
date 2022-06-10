@@ -1,10 +1,11 @@
 import { Netlist } from "@jssim/simulator/lib/netlist/netlist.js";
 import { formatData, formatSchema } from "@jssim/simulator/lib/simulation/dataset.js";
+import { logger } from "@jssim/simulator/lib/util/logging.js";
 import { program } from "commander";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, parse, resolve } from "node:path";
 
-const run = (name: string, options: Record<string, unknown>): void => {
+const run = (name: string, { verbose = false }: { verbose?: boolean }): void => {
   const netlistPath = resolve(name);
   let content: string;
   try {
@@ -34,6 +35,9 @@ const run = (name: string, options: Record<string, unknown>): void => {
     } catch (err: any) {
       console.error(`Cannot write file [${dataPath}]: ${err.message}`);
     }
+    if (verbose) {
+      console.log(String(logger));
+    }
   });
 };
 
@@ -41,6 +45,7 @@ program
   .name("jssim")
   .description("Electronic circuit simulator")
   .version("0.1")
+  .option("--verbose", "verbose output")
   .argument("netlist", "netlist file")
   .action(run)
   .parse();

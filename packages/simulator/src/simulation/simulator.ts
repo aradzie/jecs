@@ -3,13 +3,14 @@ import { matClear, matMake, vecClear, vecCopy, vecMake } from "@jssim/math/lib/m
 import type { Circuit } from "../circuit/circuit.js";
 import type { EvalParams } from "../circuit/device.js";
 import { Stamper } from "../circuit/network.js";
+import { logger } from "../util/logging.js";
 import { Controller, converged } from "./convergence.js";
 import type { SimulationOptions } from "./options.js";
 
 export const newSimulator = (
   circuit: Circuit,
   options: SimulationOptions,
-): ((evalParams: EvalParams) => void) => {
+): ((params: EvalParams) => void) => {
   const { nodes, devices } = circuit;
 
   const n = nodes.length;
@@ -20,7 +21,32 @@ export const newSimulator = (
 
   const linear = false;
 
-  return (evalParams: EvalParams): void => {
+  return (params: EvalParams): void => {
+    const startIteration = (): void => {
+      for (const device of devices) {
+        device.beginEval(device.state, params);
+      }
+    };
+
+    const doIteration = (): void => {
+      logger.iterationStarted();
+      for (const device of devices) {
+        device.eval(device.state, params);
+      }
+      for (const device of devices) {
+        device.stamp(device.state, stamper);
+      }
+      solve(matrix, vector);
+      circuit.updateNodes(vector);
+      logger.iterationEnded();
+    };
+
+    const endIteration = (): void => {
+      for (const device of devices) {
+        device.endEval(device.state, params);
+      }
+    };
+
     matClear(matrix);
     vecClear(vector);
 
@@ -28,57 +54,28 @@ export const newSimulator = (
       // The circuit consists only of linear devices.
       // The solution can be obtained in a single step.
 
-      for (const device of devices) {
-        device.beginEval(device.state, evalParams);
-      }
-      for (const device of devices) {
-        device.eval(device.state, evalParams);
-      }
-      for (const device of devices) {
-        device.stamp(device.state, stamper);
-      }
-
-      solve(matrix, vector);
-
-      circuit.updateNodes(vector);
-
-      for (const device of devices) {
-        device.endEval(device.state, evalParams);
-      }
+      logger.simulationStarted();
+      startIteration();
+      doIteration();
+      endIteration();
+      logger.simulationEnded();
     } else {
       // The circuit includes some non-linear devices.
       // Must perform multiple iterations until the convergence is reached.
 
-      // Initialize iteration.
-      for (const device of devices) {
-        device.beginEval(device.state, evalParams);
-      }
-
-      // Iterate until converges.
+      logger.simulationStarted();
+      startIteration();
       for (const iteration of new Controller(options)) {
-        for (const device of devices) {
-          device.eval(device.state, evalParams);
-        }
-        for (const device of devices) {
-          device.stamp(device.state, stamper);
-        }
-
-        solve(matrix, vector);
-
-        circuit.updateNodes(vector);
-
+        doIteration();
         if (iteration > 1 && converged(options, nodes, prevVector, vector)) {
           break;
         }
-
         vecCopy(vector, prevVector);
         matClear(matrix);
         vecClear(vector);
       }
-
-      for (const device of devices) {
-        device.endEval(device.state, evalParams);
-      }
+      endIteration();
+      logger.simulationEnded();
     }
   };
 };

@@ -1,6 +1,7 @@
 import type { Circuit } from "../circuit/circuit.js";
 import type { EvalParams } from "../circuit/device.js";
 import { Properties } from "../circuit/properties.js";
+import { logger } from "../util/logging.js";
 import { makeTableBuilder, Table } from "./dataset.js";
 import { dcProperties, getOptions, tranProperties } from "./options.js";
 import { newSimulator } from "./simulator.js";
@@ -20,6 +21,8 @@ export class DcAnalysis extends Analysis {
   }
 
   override run(circuit: Circuit): Table {
+    logger.reset();
+
     const temp = this.properties.getNumber("temp");
     const options = getOptions(this.properties);
     const table = makeTableBuilder(circuit, false);
@@ -61,6 +64,8 @@ export class TranAnalysis extends Analysis {
   }
 
   override run(circuit: Circuit): Table {
+    logger.reset();
+
     const startTime = this.properties.getNumber("startTime");
     const stopTime = this.properties.getNumber("stopTime");
     const timeStep = this.properties.getNumber("timeStep");

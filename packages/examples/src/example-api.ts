@@ -2,6 +2,7 @@ import { Circuit } from "@jssim/simulator/lib/circuit/circuit.js";
 import { dumpCircuit } from "@jssim/simulator/lib/circuit/debug.js";
 import { Diode, Resistor, VSource } from "@jssim/simulator/lib/device/index.js";
 import { DcAnalysis } from "@jssim/simulator/lib/simulation/analysis.js";
+import { logger } from "@jssim/simulator/lib/util/logging.js";
 
 // Create an empty circuit.
 const circuit = new Circuit();
@@ -31,3 +32,5 @@ new DcAnalysis().run(circuit);
 
 // Print the operating points.
 console.log(dumpCircuit(circuit));
+
+console.log(String(logger));
