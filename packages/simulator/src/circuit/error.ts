@@ -1,7 +1,7 @@
 export class CircuitError extends Error {
-  override readonly name = "CircuitError";
+  override name = "CircuitError";
 
-  constructor(message?: string) {
+  constructor(message: string) {
     super(message);
   }
 }

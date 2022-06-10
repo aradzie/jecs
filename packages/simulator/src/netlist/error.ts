@@ -1,5 +1,5 @@
 export class NetlistError extends Error {
-  override readonly name = "NetlistError";
+  override name = "NetlistError";
 
   constructor(message: string) {
     super(message);

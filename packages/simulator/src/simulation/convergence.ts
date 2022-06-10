@@ -1,6 +1,6 @@
 import type { Vector } from "@jssim/math/lib/types.js";
 import type { Branch, Node } from "../circuit/network.js";
-import { SimulationError } from "./error.js";
+import { ConvergenceError } from "./error.js";
 import type { ConvergenceOptions } from "./options.js";
 
 export class Controller implements Iterable<number> {
@@ -16,7 +16,7 @@ export class Controller implements Iterable<number> {
     for (this.iter = 0; this.iter < this.maxIter; this.iter += 1) {
       yield this.iter;
     }
-    throw new SimulationError(`Simulation did not converge after ${this.iter} iterations.`);
+    throw new ConvergenceError(`Simulation did not converge after ${this.iter} iterations.`);
   }
 }
 

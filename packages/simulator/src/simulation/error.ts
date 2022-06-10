@@ -1,7 +1,15 @@
 export class SimulationError extends Error {
-  override readonly name = "SimulationError";
+  override name = "SimulationError";
 
-  constructor(message?: string) {
+  constructor(message: string) {
+    super(message);
+  }
+}
+
+export class ConvergenceError extends SimulationError {
+  override name = "ConvergenceError";
+
+  constructor(message: string) {
     super(message);
   }
 }
