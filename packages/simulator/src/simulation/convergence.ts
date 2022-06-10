@@ -1,21 +1,27 @@
 import type { Vector } from "@jssim/math/lib/types.js";
 import type { Branch, Node } from "../circuit/network.js";
 import { SimulationError } from "./error.js";
-import type { SimulationOptions } from "./options.js";
+import type { ConvergenceOptions } from "./options.js";
 
 export class Controller implements Iterable<number> {
-  iteration = 0;
+  private readonly maxIter: number;
+  private iter: number;
+
+  constructor({ maxIter }: ConvergenceOptions) {
+    this.maxIter = Math.floor(maxIter);
+    this.iter = 0;
+  }
 
   *[Symbol.iterator](): IterableIterator<number> {
-    for (this.iteration = 0; this.iteration < 100; this.iteration += 1) {
-      yield this.iteration;
+    for (this.iter = 0; this.iter < this.maxIter; this.iter += 1) {
+      yield this.iter;
     }
-    throw new SimulationError(`Simulation did not converge`);
+    throw new SimulationError(`Simulation did not converge after ${this.iter} iterations.`);
   }
 }
 
 export function converged(
-  { abstol, vntol, reltol }: SimulationOptions,
+  { abstol, vntol, reltol }: ConvergenceOptions,
   nodes: readonly (Node | Branch)[],
   prev: Vector,
   curr: Vector,

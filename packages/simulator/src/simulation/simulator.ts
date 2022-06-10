@@ -55,7 +55,7 @@ export const newSimulator = (
       }
 
       // Iterate until converges.
-      for (const iteration of new Controller()) {
+      for (const iteration of new Controller(options)) {
         for (const device of devices) {
           device.eval(device.state, evalOptions);
         }

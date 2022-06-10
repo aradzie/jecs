@@ -28,6 +28,11 @@ const reltol = Properties.number({
   min: 0,
   title: "relative error tolerance",
 });
+const maxIter = Properties.number({
+  default: 150,
+  min: 1,
+  title: "maximum number of iterations",
+});
 const gmin = Properties.number({
   default: 1e-12,
   min: 0,
@@ -39,31 +44,39 @@ const integrationMethod = Properties.enum({
 });
 
 export const dcProperties = {
-  Temp: temp,
+  temp,
   abstol,
   vntol,
   reltol,
+  maxIter,
   gmin,
 };
 
 export const tranProperties = {
   timeInterval,
   timeStep,
-  Temp: temp,
+  temp,
   abstol,
   vntol,
   reltol,
+  maxIter,
   gmin,
   integrationMethod,
 };
 
-export interface SimulationOptions {
+export interface ConvergenceOptions {
   /** Absolute current error tolerance, `A`. */
   readonly abstol: number;
   /** Absolute voltage error tolerance, `V`. */
   readonly vntol: number;
   /** Relative error tolerance. */
   readonly reltol: number;
+  /** Maximum number of non-linear iterations. */
+  readonly maxIter: number;
+}
+
+export interface SimulationOptions extends ConvergenceOptions {
+  //
 }
 
 export function getOptions(properties: Properties): SimulationOptions {
@@ -71,5 +84,6 @@ export function getOptions(properties: Properties): SimulationOptions {
     abstol: properties.getNumber("abstol"),
     vntol: properties.getNumber("vntol"),
     reltol: properties.getNumber("reltol"),
+    maxIter: properties.getNumber("maxIter"),
   };
 }
