@@ -95,7 +95,6 @@ export class Mosfet extends Device {
       title: "emission coefficient",
     }),
     temp: Properties.temp,
-    Tnom: Properties.Tnom,
   };
   static override readonly stateSchema = {
     length: S._Size_,
@@ -133,7 +132,6 @@ export class Mosfet extends Device {
     const Is = this.properties.getNumber("Is");
     const N = this.properties.getNumber("N");
     const temp = celsiusToKelvin(this.properties.getNumber("temp", params.temp));
-    const Tnom = celsiusToKelvin(this.properties.getNumber("Tnom"));
     const pol = fetSign(polarity);
     const Vt = N * pnVt(temp);
     const Vcrit = pnVcrit(Is, Vt);
