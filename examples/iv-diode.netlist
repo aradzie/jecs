@@ -1,3 +1,5 @@
 V:V1 np gnd
 Diode:DUT np gnd @D
-.dc sweep V1 V 0.5 0.9 100
+.dc
+  sweep DUT temp 0 50 6
+  sweep V1 V 0.5 0.8 100

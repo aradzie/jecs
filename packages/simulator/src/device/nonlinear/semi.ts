@@ -1,4 +1,4 @@
-import { k, q } from "../const.js";
+import { Eg, k, q, Tnom, Xti } from "../const.js";
 
 export const npn = "npn" as const;
 export const pnp = "pnp" as const;
@@ -29,20 +29,21 @@ export function fetSign(polarity: FetPolarity): number {
 }
 
 /**
- * Returns thermal voltage.
+ * Returns thermal voltage and saturation current.
  * @param temp Device temperature.
- */
-export function pnVt(temp: number): number {
-  return temp * (k / q);
-}
-
-/**
- * Returns critical voltage.
  * @param Is Saturation current.
- * @param Vt Thermal voltage.
+ * @param N Emission coefficient.
  */
-export function pnVcrit(Is: number, Vt: number): number {
-  return Vt * Math.log(Vt / Math.sqrt(2) / Is);
+export function pnTemp(
+  temp: number,
+  Is: number,
+  N: number,
+): [Vt: number, Is: number, Vcrit: number] {
+  const t = temp / Tnom;
+  const Vt = N * temp * (k / q);
+  const Ist = Is * Math.pow(t, Xti / N) * Math.exp((t - 1) * (Eg / Vt));
+  const Vcrit = Vt * Math.log(Vt / Math.sqrt(2) / Ist);
+  return [Vt, Ist, Vcrit];
 }
 
 /**

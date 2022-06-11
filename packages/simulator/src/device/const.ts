@@ -1,8 +1,19 @@
+import { celsiusToKelvin } from "../util/unit.js";
+
+/** Nominal temperature. */
+export const Tnom = celsiusToKelvin(26.85);
+
 /** The electrical charge on the electron, `C`. */
 export const q = 1.602176634e-19;
 
 /** The Boltzmann constant, `J⋅K^(−1)`. */
 export const k = 1.380649e-23;
+
+/** Saturation current temperature exponent. */
+export const Xti = 3.0;
+
+/** Energy gap. */
+export const Eg = 1.11;
 
 /** A precomputed value. */
 export const twoOverPi = 2 / Math.PI;

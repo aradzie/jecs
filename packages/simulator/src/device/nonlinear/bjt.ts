@@ -9,9 +9,8 @@ import {
   pnConductance,
   pnCurrent,
   pnp,
-  pnVcrit,
+  pnTemp,
   pnVoltage,
-  pnVt,
 } from "./semi.js";
 
 const enum S {
@@ -137,14 +136,13 @@ export class Bjt extends Device {
     const pol = bjtSign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);
-    const Vtf = Nf * pnVt(temp);
-    const Vtr = Nr * pnVt(temp);
-    const Vcritf = pnVcrit(Is, Vtf);
-    const Vcritr = pnVcrit(Is, Vtr);
+    const [Vtf, , Vcritf] = pnTemp(temp, Is, Nf);
+    const [Vtr, , Vcritr] = pnTemp(temp, Is, Nr);
+    const [, Ist] = pnTemp(temp, Is, 1);
     state[S.pol] = pol;
     state[S.Af] = Af;
     state[S.Ar] = Ar;
-    state[S.Is] = Is;
+    state[S.Is] = Ist;
     state[S.Vtf] = Vtf;
     state[S.Vtr] = Vtr;
     state[S.Vcritf] = Vcritf;

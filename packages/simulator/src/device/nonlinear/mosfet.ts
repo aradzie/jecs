@@ -10,9 +10,8 @@ import {
   pfet,
   pnConductance,
   pnCurrent,
-  pnVcrit,
+  pnTemp,
   pnVoltage,
-  pnVt,
 } from "./semi.js";
 
 const enum S {
@@ -133,13 +132,12 @@ export class Mosfet extends Device {
     const N = this.properties.getNumber("N");
     const temp = celsiusToKelvin(this.properties.getNumber("temp", params.temp));
     const pol = fetSign(polarity);
-    const Vt = N * pnVt(temp);
-    const Vcrit = pnVcrit(Is, Vt);
+    const [Vt, Ist, Vcrit] = pnTemp(temp, Is, N);
     state[S.pol] = pol;
     state[S.Vth] = Vth;
     state[S.beta] = beta;
     state[S.lambda] = lambda;
-    state[S.Is] = Is;
+    state[S.Is] = Ist;
     state[S.Vt] = Vt;
     state[S.Vcrit] = Vcrit;
   }
