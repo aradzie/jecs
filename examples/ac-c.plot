@@ -1,11 +1,12 @@
 set term svg size 600, 400 dynamic
 set output "ac-c.svg"
-set xlabel "time"
-set border 0
-set grid lw 1
 set border lw 1
-set format y "%g"
-set format x "%g"
+set grid lw 1
+set xlabel "time"
+set ytics nomirror tc lt 1
+set ylabel "voltage, V" tc lt 1
+set y2tics nomirror tc lt 2
+set y2label "current, A" tc lt 2
 plot \
-  'ac-c.data' using 1:7 with lines lw 1 title "Vc", \
-  'ac-c.data' using 1:8 with lines lw 1 title "Ic"
+  "ac-c.data" using 1:6 axes x1y1 with lines lw 1 title "Vc", \
+  "ac-c.data" using 1:7 axes x1y2 with lines lw 1 title "Ic"
