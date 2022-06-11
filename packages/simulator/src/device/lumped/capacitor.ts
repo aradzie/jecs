@@ -1,9 +1,11 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
+import { method } from "../integration.js";
 
 const enum S {
   C,
+  V0,
   V,
   I,
   P,
@@ -21,6 +23,10 @@ export class Capacitor extends Device {
   static override readonly propertiesSchema = {
     C: Properties.number({
       title: "capacitance",
+    }),
+    V0: Properties.number({
+      title: "initial voltage",
+      defaultValue: 0,
     }),
   };
   static override readonly stateSchema = {
@@ -45,20 +51,37 @@ export class Capacitor extends Device {
 
   override deriveState(state: DeviceState): void {
     state[S.C] = this.properties.getNumber("C");
+    state[S.V0] = this.properties.getNumber("V0");
   }
 
-  override beginEval(state: DeviceState, { timeStep }: EvalParams): void {
+  override beginEval(state: DeviceState, { elapsedTime, timeStep }: EvalParams): void {
     const { na, nb } = this;
-    const C = state[S.C];
-    const V = na.voltage - nb.voltage;
     if (timeStep !== timeStep) {
       // DC analysis.
       state[S.Geq] = 0;
       state[S.Ieq] = 0;
     } else {
       // Transient analysis.
-      const Geq = C / timeStep;
-      const Ieq = -V * Geq;
+      const C = state[S.C];
+      let V = na.voltage - nb.voltage;
+      if (elapsedTime === 0) {
+        V = state[S.V0];
+      }
+      let Geq: number;
+      let Ieq: number;
+      switch (method) {
+        case "euler": {
+          Geq = C / timeStep;
+          Ieq = -V * Geq;
+          break;
+        }
+        case "trapezoidal": {
+          const I = state[S.I];
+          Geq = (2 * C) / timeStep;
+          Ieq = -V * Geq - I;
+          break;
+        }
+      }
       state[S.Geq] = Geq;
       state[S.Ieq] = Ieq;
     }
