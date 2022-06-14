@@ -115,7 +115,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M46.14,106.48 L406.41,106.48 M566.43,106.48 L574.82,106.48  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M46.14,106.48 L389.63,106.48 M566.43,106.48 L574.82,106.48  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M46.14,106.48 L55.14,106.48 M574.82,106.48 L565.82,106.48  '/>	<g transform="translate(37.75,110.38)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
 		<text><tspan font-family="Arial" > 8</tspan></text>
@@ -124,7 +124,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M46.14,76.99 L406.41,76.99 M566.43,76.99 L574.82,76.99  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M46.14,76.99 L389.63,76.99 M566.43,76.99 L574.82,76.99  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M46.14,76.99 L55.14,76.99 M574.82,76.99 L565.82,76.99  '/>	<g transform="translate(37.75,80.89)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
 		<text><tspan font-family="Arial" > 9</tspan></text>
@@ -133,7 +133,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M46.14,47.50 L406.41,47.50 M566.43,47.50 L574.82,47.50  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M46.14,47.50 L389.63,47.50 M566.43,47.50 L574.82,47.50  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M46.14,47.50 L55.14,47.50 M574.82,47.50 L565.82,47.50  '/>	<g transform="translate(37.75,51.40)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
 		<text><tspan font-family="Arial" > 10</tspan></text>
@@ -204,10 +204,10 @@
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
-	<g id="gnuplot_plot_1" ><title>Rload:R=2000</title>
+	<g id="gnuplot_plot_1" ><title>Rload:R=2k</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,39.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >Rload:R=2000</tspan></text>
+		<text><tspan font-family="Arial" >Rload:R=2k</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -225,10 +225,10 @@
 		L505.40,338.03 L510.74,338.09 L516.08,338.14 L521.42,338.19 L526.76,338.24 L532.10,338.29 L537.44,338.34 L542.78,338.38
 		L548.12,338.43 L553.46,338.47 L558.80,338.52 L564.14,338.56 L569.48,338.60 L574.82,338.64  '/></g>
 	</g>
-	<g id="gnuplot_plot_2" ><title>Rload:R=1525</title>
+	<g id="gnuplot_plot_2" ><title>Rload:R=1.525k</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,57.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >Rload:R=1525</tspan></text>
+		<text><tspan font-family="Arial" >Rload:R=1.525k</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -246,10 +246,10 @@
 		L505.40,336.62 L510.74,336.69 L516.08,336.76 L521.42,336.83 L526.76,336.90 L532.10,336.97 L537.44,337.03 L542.78,337.09
 		L548.12,337.15 L553.46,337.21 L558.80,337.27 L564.14,337.33 L569.48,337.38 L574.82,337.44  '/></g>
 	</g>
-	<g id="gnuplot_plot_3" ><title>Rload:R=1050</title>
+	<g id="gnuplot_plot_3" ><title>Rload:R=1.05k</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,75.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >Rload:R=1050</tspan></text>
+		<text><tspan font-family="Arial" >Rload:R=1.05k</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
