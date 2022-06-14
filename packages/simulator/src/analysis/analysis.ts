@@ -69,13 +69,14 @@ export class TranAnalysis extends Analysis {
     const simulator = newSimulator(circuit, options);
 
     Sweep.walk(this.sweeps, {
-      enter: (sweep, level, steps) => {
-        table.group(groupName(steps));
-      },
+      enter: (sweep, level, steps) => {},
       set: ({ instanceId, propertyId }, value) => {
         circuit.getDevice(instanceId).properties.set(propertyId, value);
       },
-      end: () => {
+      end: (steps) => {
+        if (steps.length > 0) {
+          table.group(groupName(steps));
+        }
         circuit.reset({
           elapsedTime: 0,
           timeStep: 0,

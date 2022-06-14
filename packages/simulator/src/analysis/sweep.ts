@@ -31,7 +31,7 @@ export class Sweep implements Iterable<number> {
         }
         visitor.leave(sweep, level, steps);
       } else {
-        visitor.end();
+        visitor.end(steps);
       }
     };
     step(0);
@@ -59,7 +59,7 @@ export type Visitor = {
   /**
    * Indicate that all sweeps have been visited.
    */
-  readonly end: () => void;
+  readonly end: (steps: Step[]) => void;
   /**
    * Leave the sweep. Sweeps are walked from left to right.
    * @param sweep Swept to leave.
