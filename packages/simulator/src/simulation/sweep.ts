@@ -67,3 +67,9 @@ export type Visitor = {
    */
   readonly leave: (sweep: Sweep, level: number, steps: Step[]) => void;
 };
+
+export const groupName = (steps: readonly Step[]): string => {
+  const stepName = ({ sweep: { instanceId, propertyId }, value }: Step): string =>
+    `${instanceId}:${propertyId}=${value}`;
+  return `"${steps.map(stepName).join(", ")}"`;
+};

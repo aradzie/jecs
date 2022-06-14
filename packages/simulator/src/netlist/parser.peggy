@@ -86,8 +86,8 @@ DcAnalysisItem
     { return { type: "dc", properties, sweeps }; }
 
 TranAnalysisItem
-  = ".tran" _ properties:PropertyList _ LineEnd
-    { return { type: "tran", properties }; }
+  = ".tran" _ properties:PropertyList sweeps:( _ @Sweep )* _ LineEnd
+    { return { type: "tran", properties, sweeps }; }
 
 Sweep
   = "sweep"

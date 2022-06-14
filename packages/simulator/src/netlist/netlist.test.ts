@@ -22,6 +22,8 @@ R:R1 n1 gnd R=100
   startTime=0.5m
   stopTime=1m
   timeStep=1u
+  sweep R1 R 1 5 5
+  sweep R2 R 1 10 10
 `;
 
   // Act.

@@ -241,6 +241,7 @@ class NetlistBuilder {
   addTranAnalysis(item: TranItemNode): void {
     const analysis = new TranAnalysis();
     this.setAnalysisProperties(item.properties, analysis);
+    this.addAnalysisSweeps(item.sweeps, analysis);
     this.analyses.push(analysis);
   }
 

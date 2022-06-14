@@ -5,7 +5,7 @@ import { logger } from "../util/logging.js";
 import { makeTableBuilder, Table } from "./dataset.js";
 import { dcProperties, getOptions, tranProperties } from "./options.js";
 import { newSimulator } from "./simulator.js";
-import { Sweep } from "./sweep.js";
+import { groupName, Sweep } from "./sweep.js";
 
 export abstract class Analysis {
   readonly sweeps: Sweep[] = [];
@@ -28,25 +28,19 @@ export class DcAnalysis extends Analysis {
     const table = makeTableBuilder(circuit, false);
     const simulator = newSimulator(circuit, options);
 
-    const params: EvalParams = {
-      elapsedTime: 0,
-      timeStep: NaN,
-      temp,
-    };
-
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {
-        const a = steps.map(
-          ({ sweep: { instanceId, propertyId }, value }) => `${instanceId}:${propertyId}=${value}`,
-        );
-        table.group(`"${a.join(", ")}"`);
+        table.group(groupName(steps));
       },
       set: ({ instanceId, propertyId }, value) => {
-        const device = circuit.getDevice(instanceId);
-        device.properties.set(propertyId, value);
-        device.deriveState(device.state, params);
+        circuit.getDevice(instanceId).properties.set(propertyId, value);
       },
       end: () => {
+        const params: EvalParams = {
+          elapsedTime: 0,
+          timeStep: NaN,
+          temp,
+        };
         circuit.reset(params);
         simulator(params);
         table.capture(NaN);
@@ -74,25 +68,36 @@ export class TranAnalysis extends Analysis {
     const table = makeTableBuilder(circuit, true);
     const simulator = newSimulator(circuit, options);
 
-    circuit.reset({
-      elapsedTime: 0,
-      timeStep: 0,
-      temp,
+    Sweep.walk(this.sweeps, {
+      enter: (sweep, level, steps) => {
+        table.group(groupName(steps));
+      },
+      set: ({ instanceId, propertyId }, value) => {
+        circuit.getDevice(instanceId).properties.set(propertyId, value);
+      },
+      end: () => {
+        circuit.reset({
+          elapsedTime: 0,
+          timeStep: 0,
+          temp,
+        });
+        let step = 0;
+        let elapsedTime = 0;
+        while (elapsedTime <= stopTime) {
+          simulator({
+            elapsedTime,
+            timeStep,
+            temp,
+          });
+          step += 1;
+          elapsedTime = timeStep * step;
+          if (elapsedTime >= startTime) {
+            table.capture(elapsedTime);
+          }
+        }
+      },
+      leave: (sweep, level, steps) => {},
     });
-    let step = 0;
-    let elapsedTime = 0;
-    while (elapsedTime <= stopTime) {
-      simulator({
-        elapsedTime,
-        timeStep,
-        temp,
-      });
-      step += 1;
-      elapsedTime = timeStep * step;
-      if (elapsedTime >= startTime) {
-        table.capture(elapsedTime);
-      }
-    }
 
     return table.build();
   }
