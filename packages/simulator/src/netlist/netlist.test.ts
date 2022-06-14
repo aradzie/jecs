@@ -1,6 +1,6 @@
 import test from "ava";
+import { DcAnalysis, TranAnalysis } from "../analysis/analysis.js";
 import type { Branch, Node } from "../circuit/network.js";
-import { DcAnalysis, TranAnalysis } from "../simulation/analysis.js";
 import { Netlist } from "./netlist.js";
 
 test("parse netlist", (t) => {

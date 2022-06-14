@@ -1,5 +1,5 @@
+import { formatData, formatSchema } from "@jssim/simulator/lib/analysis/dataset.js";
 import { Netlist } from "@jssim/simulator/lib/netlist/netlist.js";
-import { formatData, formatSchema } from "@jssim/simulator/lib/simulation/dataset.js";
 import { logger } from "@jssim/simulator/lib/util/logging.js";
 import { program } from "commander";
 import { readFileSync, writeFileSync } from "node:fs";
