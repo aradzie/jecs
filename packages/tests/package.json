@@ -27,9 +27,9 @@
   },
   "dependencies": {
     "@jssim/simulator": "*",
+    "globby": "^13.1.2",
     "tslib": "^2.4.0"
   },
-  "devDependencies": {},
   "ava": {
     "files": [
       "lib/**/*.test.*",

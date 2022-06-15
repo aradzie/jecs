@@ -1,22 +1,21 @@
 import { dumpCircuit } from "@jssim/simulator/lib/circuit/debug.js";
 import { Netlist } from "@jssim/simulator/lib/netlist/netlist.js";
 import test from "ava";
-import { readdirSync, readFileSync } from "fs";
-import { join } from "path";
-import { fileURLToPath, URL } from "url";
+import { globbySync } from "globby";
+import { readFileSync } from "node:fs";
+import { fileURLToPath, URL } from "node:url";
+import { join, resolve } from "path";
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
+makeTests();
 
-scan(join(__dirname, "..", "spec"));
-
-function scan(dir: string): void {
-  for (const entry of readdirSync(dir)) {
-    if (entry.endsWith(".md")) {
-      const filename = join(dir, entry);
-      const content = readFileSync(filename, "utf-8");
-      const testCases = parse(entry, content);
-      makeTest(entry, testCases);
-    }
+function makeTests() {
+  const __dirname = fileURLToPath(new URL(".", import.meta.url));
+  const cwd = resolve(__dirname, "..", "spec");
+  const files = globbySync("**/*.md", { cwd });
+  for (const file of files) {
+    const content = readFileSync(join(cwd, file), "utf-8");
+    const testCases = parse(file, content);
+    makeTest(file, testCases);
   }
 }
 
