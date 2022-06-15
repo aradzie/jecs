@@ -10,6 +10,8 @@ export interface DeviceClass {
   readonly propertiesSchema: PropertiesSchema;
   /** Schema of the device state vector. */
   readonly stateSchema: StateSchema;
+  /** Whether this device is linear. */
+  readonly linear: boolean;
   /**
    * Device constructor.
    * @param id Unique device instance identifier.
@@ -74,6 +76,9 @@ export abstract class Device {
 
   /** Schema of the device state vector. */
   static readonly stateSchema: StateSchema;
+
+  /** Whether this device is linear. Most devices are linear. */
+  static readonly linear: boolean = true;
 
   /** Unique device instance identifier. */
   readonly id: string;

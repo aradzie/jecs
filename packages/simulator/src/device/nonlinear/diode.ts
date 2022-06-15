@@ -44,6 +44,7 @@ export class Diode extends Device {
       { index: S.P, name: "P", unit: "W" },
     ],
   };
+  static override readonly linear = false;
 
   /** The anode terminal. */
   readonly na: Node;

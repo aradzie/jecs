@@ -19,7 +19,7 @@ export const newSimulator = (
   const prevVector = vecMake(n);
   const stamper = new Stamper(matrix, vector);
 
-  const linear = false;
+  const linear = devices.every((device) => device.deviceClass.linear);
 
   return (params: EvalParams): void => {
     const startIteration = (): void => {

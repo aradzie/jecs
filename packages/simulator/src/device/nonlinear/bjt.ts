@@ -110,6 +110,7 @@ export class Bjt extends Device {
       { index: S.Ib, name: "Ib", unit: "A" },
     ],
   };
+  static override readonly linear = false;
 
   /** The emitter terminal. */
   readonly ne: Node;

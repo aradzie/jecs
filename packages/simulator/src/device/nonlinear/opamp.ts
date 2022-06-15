@@ -37,6 +37,7 @@ export class OpAmp extends Device {
       { index: S.Vout, name: "Vout", unit: "V" },
     ],
   };
+  static override readonly linear = false;
 
   /** Positive input terminal. */
   readonly np: Node;

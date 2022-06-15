@@ -101,6 +101,7 @@ export class Jfet extends Device {
       // { index: S.Gm, name: "gm", unit: "A/V" },
     ],
   };
+  static override readonly linear = false;
 
   /** The source terminal. */
   readonly ns: Node;
