@@ -22,7 +22,7 @@ R1{V=5V,I=5mA,P=25mW}
 ## Netlist
 
 ```text
-Vac:Vac1 n1 gnd amplitude=5 frequency=1k
+Vac:Vac1 n1 gnd V=5 f=1k
 Ammeter:DUT n1 n2
 R:R1 n2 gnd R=1000
 .tran stopTime=3m timeStep=1u

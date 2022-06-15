@@ -1,4 +1,4 @@
-Vac:Vin pow gnd amplitude=1 frequency=1000
+Vac:Vin pow gnd V=1 f=1k
 R:R1 pow vout R=1k
 C:C1 vout gnd C=100u
 R:R2 vout gnd R=1k
