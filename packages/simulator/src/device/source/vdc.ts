@@ -1,28 +1,28 @@
 import { Device, DeviceState } from "../../circuit/device.js";
-import type { Node, Stamper } from "../../circuit/network.js";
+import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
 const enum S {
-  I,
   V,
+  I,
   P,
   _Size_,
 }
 
 /**
- * Current source.
+ * Voltage source.
  */
-export class CSource extends Device {
-  static override readonly id = "I";
+export class Vdc extends Device {
+  static override readonly id = "V";
   static override readonly numTerminals = 2;
   static override readonly propertiesSchema = {
-    I: Properties.number({ title: "current" }),
+    V: Properties.number({ title: "voltage" }),
   };
   static override readonly stateSchema = {
     length: S._Size_,
     ops: [
-      { index: S.I, name: "I", unit: "A" },
       { index: S.V, name: "V", unit: "V" },
+      { index: S.I, name: "I", unit: "A" },
       { index: S.P, name: "P", unit: "W" },
     ],
   };
@@ -31,6 +31,8 @@ export class CSource extends Device {
   readonly np: Node;
   /** Negative terminal. */
   readonly nn: Node;
+  /** Extra MNA branch. */
+  private branch!: Branch;
 
   constructor(id: string, [np, nn]: readonly Node[]) {
     super(id, [np, nn]);
@@ -38,22 +40,26 @@ export class CSource extends Device {
     this.nn = nn;
   }
 
+  override connect(network: Network): void {
+    this.branch = network.makeBranch(this.np, this.nn);
+  }
+
   override deriveState(state: DeviceState): void {
-    state[S.I] = this.properties.getNumber("I");
+    state[S.V] = this.properties.getNumber("V");
   }
 
   override stamp(state: DeviceState, stamper: Stamper): void {
-    const { np, nn } = this;
-    const I = state[S.I];
-    stamper.stampCurrentSource(np, nn, I);
+    const { np, nn, branch } = this;
+    const V = state[S.V];
+    stamper.stampVoltageSource(np, nn, branch, V);
   }
 
   override endEval(state: DeviceState): void {
-    const { np, nn } = this;
-    const V = np.voltage - nn.voltage;
-    const I = state[S.I];
+    const { branch } = this;
+    const I = branch.current;
+    const V = state[S.V];
     const P = V * I;
-    state[S.V] = V;
+    state[S.I] = I;
     state[S.P] = P;
   }
 }

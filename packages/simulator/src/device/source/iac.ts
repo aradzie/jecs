@@ -1,5 +1,5 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
+import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
 const enum S {
@@ -7,17 +7,17 @@ const enum S {
   amplitude,
   omega,
   theta,
-  V,
   I,
+  V,
   P,
   _Size_,
 }
 
 /**
- * AC voltage source.
+ * AC current source.
  */
-export class VacSource extends Device {
-  static override readonly id = "Vac";
+export class Iac extends Device {
+  static override readonly id = "Iac";
   static override readonly numTerminals = 2;
   static override readonly propertiesSchema = {
     offset: Properties.number({ title: "offset", defaultValue: 0 }),
@@ -28,8 +28,8 @@ export class VacSource extends Device {
   static override readonly stateSchema = {
     length: S._Size_,
     ops: [
-      { index: S.V, name: "V", unit: "V" },
       { index: S.I, name: "I", unit: "A" },
+      { index: S.V, name: "V", unit: "V" },
       { index: S.P, name: "P", unit: "W" },
     ],
   };
@@ -38,17 +38,11 @@ export class VacSource extends Device {
   readonly np: Node;
   /** Negative terminal. */
   readonly nn: Node;
-  /** Extra MNA branch. */
-  private branch!: Branch;
 
   constructor(id: string, [np, nn]: readonly Node[]) {
     super(id, [np, nn]);
     this.np = np;
     this.nn = nn;
-  }
-
-  override connect(network: Network): void {
-    this.branch = network.makeBranch(this.np, this.nn);
   }
 
   override deriveState(state: DeviceState): void {
@@ -69,21 +63,21 @@ export class VacSource extends Device {
     const amplitude = state[S.amplitude];
     const omega = state[S.omega];
     const theta = state[S.theta];
-    state[S.V] = offset + amplitude * Math.sin(omega * elapsedTime + theta);
+    state[S.I] = offset + amplitude * Math.sin(omega * elapsedTime + theta);
   }
 
   override stamp(state: DeviceState, stamper: Stamper): void {
-    const { np, nn, branch } = this;
-    const V = state[S.V];
-    stamper.stampVoltageSource(np, nn, branch, V);
+    const { np, nn } = this;
+    const I = state[S.I];
+    stamper.stampCurrentSource(np, nn, I);
   }
 
   override endEval(state: DeviceState): void {
-    const { branch } = this;
-    const I = branch.current;
-    const V = state[S.V];
+    const { np, nn } = this;
+    const V = np.voltage - nn.voltage;
+    const I = state[S.I];
     const P = V * I;
-    state[S.I] = I;
+    state[S.V] = V;
     state[S.P] = P;
   }
 }

@@ -1,7 +1,7 @@
 import { DcAnalysis } from "@jssim/simulator/lib/analysis/analysis.js";
 import { Circuit } from "@jssim/simulator/lib/circuit/circuit.js";
 import { dumpCircuit } from "@jssim/simulator/lib/circuit/debug.js";
-import { Diode, VSource } from "@jssim/simulator/lib/device/index.js";
+import { Diode, Vdc } from "@jssim/simulator/lib/device/index.js";
 import { logger } from "@jssim/simulator/lib/util/logging.js";
 
 // Create an empty circuit.
@@ -14,7 +14,7 @@ const N2 = circuit.makeNode("N2");
 const N3 = circuit.makeNode("N3");
 
 // Create devices.
-const V1 = new VSource("V1", [N1, GND]);
+const V1 = new Vdc("V1", [N1, GND]);
 const D1 = new Diode("D1", [N1, N2]);
 const D2 = new Diode("D2", [N2, N3]);
 const D3 = new Diode("D3", [N3, GND]);

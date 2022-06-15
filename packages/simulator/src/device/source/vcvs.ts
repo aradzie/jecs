@@ -13,7 +13,7 @@ const enum S {
 /**
  * Voltage-controlled voltage source.
  */
-export class VCVSource extends Device {
+export class VCVS extends Device {
   static override readonly id = "VCVS";
   static override readonly numTerminals = 4;
   static override readonly propertiesSchema = {

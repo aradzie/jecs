@@ -11,10 +11,10 @@ const enum S {
 }
 
 /**
- * Voltage-controlled current source.
+ * Current-controlled current source.
  */
-export class VCCSource extends Device {
-  static override readonly id = "VCCS";
+export class CCCS extends Device {
+  static override readonly id = "CCCS";
   static override readonly numTerminals = 4;
   static override readonly propertiesSchema = {
     gain: Properties.number({ title: "gain" }),
@@ -48,7 +48,7 @@ export class VCCSource extends Device {
   }
 
   override connect(network: Network): void {
-    this.branch = network.makeBranch(this.np, this.nn);
+    this.branch = network.makeBranch(this.ncp, this.ncn);
   }
 
   override deriveState(state: DeviceState): void {
@@ -58,16 +58,15 @@ export class VCCSource extends Device {
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn, ncp, ncn, branch } = this;
     const gain = state[S.gain];
-    stamper.stampMatrix(np, branch, 1);
-    stamper.stampMatrix(nn, branch, -1);
-    stamper.stampMatrix(branch, ncp, gain);
-    stamper.stampMatrix(branch, ncn, -gain);
-    stamper.stampMatrix(branch, branch, -1);
+    stamper.stampVoltageSource(ncp, ncn, branch, 0);
+    stamper.stampMatrix(np, branch, gain);
+    stamper.stampMatrix(nn, branch, -gain);
   }
 
   override endEval(state: DeviceState): void {
     const { np, nn, branch } = this;
-    const I = branch.current;
+    const gain = state[S.gain];
+    const I = branch.current * gain;
     const V = np.voltage - nn.voltage;
     const P = V * I;
     state[S.I] = I;

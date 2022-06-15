@@ -4,17 +4,17 @@ import { Properties } from "../../circuit/properties.js";
 
 const enum S {
   gain,
-  I,
   V,
+  I,
   P,
   _Size_,
 }
 
 /**
- * Current-controlled current source.
+ * Current-controlled voltage source.
  */
-export class CCCSource extends Device {
-  static override readonly id = "CCCS";
+export class CCVS extends Device {
+  static override readonly id = "CCVS";
   static override readonly numTerminals = 4;
   static override readonly propertiesSchema = {
     gain: Properties.number({ title: "gain" }),
@@ -22,8 +22,8 @@ export class CCCSource extends Device {
   static override readonly stateSchema = {
     length: S._Size_,
     ops: [
-      { index: S.I, name: "I", unit: "A" },
       { index: S.V, name: "V", unit: "V" },
+      { index: S.I, name: "I", unit: "A" },
       { index: S.P, name: "P", unit: "W" },
     ],
   };
@@ -37,7 +37,9 @@ export class CCCSource extends Device {
   /** Negative control terminal. */
   readonly ncn: Node;
   /** Extra MNA branch. */
-  private branch!: Branch;
+  private branch1!: Branch;
+  /** Extra MNA branch. */
+  private branch2!: Branch;
 
   constructor(id: string, [np, nn, ncp, ncn]: readonly Node[]) {
     super(id, [np, nn, ncp, ncn]);
@@ -48,7 +50,8 @@ export class CCCSource extends Device {
   }
 
   override connect(network: Network): void {
-    this.branch = network.makeBranch(this.ncp, this.ncn);
+    this.branch1 = network.makeBranch(this.np, this.nn);
+    this.branch2 = network.makeBranch(this.ncp, this.ncn);
   }
 
   override deriveState(state: DeviceState): void {
@@ -56,21 +59,20 @@ export class CCCSource extends Device {
   }
 
   override stamp(state: DeviceState, stamper: Stamper): void {
-    const { np, nn, ncp, ncn, branch } = this;
+    const { np, nn, branch1, ncp, ncn, branch2 } = this;
     const gain = state[S.gain];
-    stamper.stampVoltageSource(ncp, ncn, branch, 0);
-    stamper.stampMatrix(np, branch, gain);
-    stamper.stampMatrix(nn, branch, -gain);
+    stamper.stampVoltageSource(np, nn, branch1, 0);
+    stamper.stampVoltageSource(ncp, ncn, branch2, 0);
+    stamper.stampMatrix(branch1, branch2, -gain);
   }
 
   override endEval(state: DeviceState): void {
-    const { np, nn, branch } = this;
-    const gain = state[S.gain];
-    const I = branch.current * gain;
+    const { np, nn, branch1 } = this;
     const V = np.voltage - nn.voltage;
+    const I = branch1.current;
     const P = V * I;
-    state[S.I] = I;
     state[S.V] = V;
+    state[S.I] = I;
     state[S.P] = P;
   }
 }
