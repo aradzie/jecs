@@ -90,11 +90,11 @@ export class TranAnalysis extends Analysis {
             timeStep,
             temp,
           });
-          step += 1;
-          elapsedTime = timeStep * step;
           if (elapsedTime >= startTime) {
             table.capture(elapsedTime);
           }
+          step += 1;
+          elapsedTime = timeStep * step;
         }
       },
       leave: (sweep, level, steps) => {},

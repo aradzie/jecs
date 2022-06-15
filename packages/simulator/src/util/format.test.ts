@@ -1,5 +1,5 @@
 import test from "ava";
-import { formatNumber } from "./format.js";
+import { formatNumber, toExponential } from "./format.js";
 
 test("format number", (t) => {
   t.is(formatNumber(NaN), "NaN");
@@ -67,4 +67,29 @@ test("format number", (t) => {
   t.is(formatNumber(123e8), "12.3G");
   t.is(formatNumber(123.456e9), "123.456G");
   t.is(formatNumber(123e9), "123G");
+});
+
+test("to exponential", (t) => {
+  t.is(toExponential(0, 1), "0.0e+00");
+  t.is(toExponential(0, 3), "0.000e+00");
+
+  t.is(toExponential(1e3, 1), "1.0e+03");
+  t.is(toExponential(1e3, 3), "1.000e+03");
+  t.is(toExponential(1e-3, 1), "1.0e-03");
+  t.is(toExponential(1e-3, 3), "1.000e-03");
+
+  t.is(toExponential(1e13, 1), "1.0e+13");
+  t.is(toExponential(1e13, 3), "1.000e+13");
+  t.is(toExponential(1e-13, 1), "1.0e-13");
+  t.is(toExponential(1e-13, 3), "1.000e-13");
+
+  t.is(toExponential(-1e3, 1), "-1.0e+03");
+  t.is(toExponential(-1e3, 3), "-1.000e+03");
+  t.is(toExponential(-1e-3, 1), "-1.0e-03");
+  t.is(toExponential(-1e-3, 3), "-1.000e-03");
+
+  t.is(toExponential(-1e13, 1), "-1.0e+13");
+  t.is(toExponential(-1e13, 3), "-1.000e+13");
+  t.is(toExponential(-1e-13, 1), "-1.0e-13");
+  t.is(toExponential(-1e-13, 3), "-1.000e-13");
 });

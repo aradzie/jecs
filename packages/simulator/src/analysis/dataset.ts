@@ -1,4 +1,5 @@
 import type { Circuit } from "../circuit/circuit.js";
+import { toExponential } from "../util/format.js";
 
 export interface Column {
   /** Column name which consists of parameter name with node or device name. */
@@ -151,7 +152,10 @@ export const formatSchema = ({ columns }: Table): string => {
   return lines.join("");
 };
 
-export const formatData = ({ columns, rowGroups }: Table): string => {
+export const formatData = (
+  { columns, rowGroups }: Table,
+  { fractionDigits = 10 }: { readonly fractionDigits?: number } = {},
+): string => {
   const lines: string[] = [];
   for (const rowGroup of rowGroups) {
     if (lines.length > 0) {
@@ -164,7 +168,7 @@ export const formatData = ({ columns, rowGroups }: Table): string => {
     for (const row of rowGroup.rows) {
       const line: string[] = [];
       for (let i = 0; i < columns.length; i++) {
-        line.push(row[i].toExponential());
+        line.push(toExponential(row[i], fractionDigits));
       }
       lines.push(line.join(" "));
     }
