@@ -29,7 +29,7 @@
     "@jssim/math": "*"
   },
   "devDependencies": {
-    "peggy": "^2.0.0"
+    "peggy": "^2.0.1"
   },
   "ava": {
     "files": [
