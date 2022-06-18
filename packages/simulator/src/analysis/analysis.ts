@@ -1,10 +1,9 @@
 import type { Circuit } from "../circuit/circuit.js";
-import type { EvalParams } from "../circuit/device.js";
 import { Properties } from "../circuit/properties.js";
 import { logger } from "../util/logging.js";
 import { makeTableBuilder, Table } from "./dataset.js";
 import { dcProperties, getOptions, tranProperties } from "./options.js";
-import { newSimulator } from "./simulator.js";
+import { Solver } from "./solver.js";
 import { groupName, Sweep } from "./sweep.js";
 
 export abstract class Analysis {
@@ -26,7 +25,7 @@ export class DcAnalysis extends Analysis {
     const temp = this.properties.getNumber("temp");
     const options = getOptions(this.properties);
     const table = makeTableBuilder(circuit, false);
-    const simulator = newSimulator(circuit, options);
+    const solver = new Solver(circuit, options);
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {
@@ -36,13 +35,11 @@ export class DcAnalysis extends Analysis {
         circuit.getDevice(instanceId).properties.set(propertyId, value);
       },
       end: () => {
-        const params: EvalParams = {
-          elapsedTime: 0,
-          timeStep: NaN,
-          temp,
-        };
-        circuit.reset(params);
-        simulator(params);
+        circuit.elapsedTime = 0;
+        circuit.timeStep = NaN;
+        circuit.temp = temp;
+        circuit.reset();
+        solver.solve();
         table.capture(NaN);
       },
       leave: (sweep, level, steps) => {},
@@ -66,7 +63,7 @@ export class TranAnalysis extends Analysis {
     const temp = this.properties.getNumber("temp");
     const options = getOptions(this.properties);
     const table = makeTableBuilder(circuit, true);
-    const simulator = newSimulator(circuit, options);
+    const solver = new Solver(circuit, options);
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {},
@@ -77,19 +74,17 @@ export class TranAnalysis extends Analysis {
         if (steps.length > 0) {
           table.group(groupName(steps));
         }
-        circuit.reset({
-          elapsedTime: 0,
-          timeStep: 0,
-          temp,
-        });
+        circuit.elapsedTime = 0;
+        circuit.timeStep = 0;
+        circuit.temp = temp;
+        circuit.reset();
         let step = 0;
         let elapsedTime = 0;
         while (elapsedTime <= stopTime) {
-          simulator({
-            elapsedTime,
-            timeStep,
-            temp,
-          });
+          circuit.elapsedTime = elapsedTime;
+          circuit.timeStep = timeStep;
+          circuit.temp = temp;
+          solver.solve();
           if (elapsedTime >= startTime) {
             table.capture(elapsedTime);
           }

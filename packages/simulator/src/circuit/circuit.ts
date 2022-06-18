@@ -1,13 +1,22 @@
-import type { Vector } from "@jssim/math/lib/types";
-import type { Device, EvalParams } from "./device.js";
+import type { Device } from "./device.js";
 import { CircuitError } from "./error.js";
-import { Branch, groundNode, Network, Node } from "./network.js";
+import { Branch, groundNode, Network, Node, Stamper } from "./network.js";
 
 export class Circuit implements Network {
   readonly #nodes: (Node | Branch)[] = [];
   readonly #nodesById = new Map<string, Node>();
   readonly #devices: Device[] = [];
   readonly #devicesById = new Map<string, Device>();
+
+  elapsedTime: number;
+  timeStep: number;
+  temp: number;
+
+  constructor() {
+    this.elapsedTime = 0;
+    this.timeStep = NaN;
+    this.temp = 0;
+  }
 
   get groundNode(): Node {
     return groundNode;
@@ -21,7 +30,7 @@ export class Circuit implements Network {
     return this.#devices;
   }
 
-  reset(params: EvalParams): void {
+  reset(): void {
     for (const node of this.#nodes) {
       switch (node.type) {
         case "node":
@@ -34,7 +43,7 @@ export class Circuit implements Network {
     }
     for (const device of this.#devices) {
       device.state.fill(0);
-      device.deriveState(device.state, params);
+      device.deriveState(device.state, this);
     }
   }
 
@@ -82,17 +91,27 @@ export class Circuit implements Network {
     return device;
   }
 
-  updateNodes(x: Vector): void {
-    for (let i = 0; i < this.#nodes.length; i++) {
-      const node = this.#nodes[i];
-      switch (node.type) {
-        case "node":
-          node.voltage = x[i];
-          break;
-        case "branch":
-          node.current = x[i];
-          break;
-      }
+  beginEval(): void {
+    for (const device of this.#devices) {
+      device.beginEval(device.state, this);
+    }
+  }
+
+  eval(): void {
+    for (const device of this.#devices) {
+      device.eval(device.state, this);
+    }
+  }
+
+  stamp(stamper: Stamper): void {
+    for (const device of this.#devices) {
+      device.stamp(device.state, stamper);
+    }
+  }
+
+  endEval(): void {
+    for (const device of this.#devices) {
+      device.endEval(device.state, this);
     }
   }
 }
