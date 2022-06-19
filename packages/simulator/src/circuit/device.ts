@@ -48,6 +48,8 @@ export type EvalParams = {
   readonly timeStep: number;
   /** The default temperature of devices. */
   readonly temp: number;
+  /** Voltage or current source value multiplier for the convergence helper. */
+  readonly sourceFactor: number;
 };
 
 export abstract class Device {

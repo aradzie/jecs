@@ -1,8 +1,9 @@
-import { Device, DeviceState } from "../../circuit/device.js";
+import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
 const enum S {
+  V0,
   V,
   I,
   P,
@@ -45,7 +46,12 @@ export class Vdc extends Device {
   }
 
   override deriveState(state: DeviceState): void {
-    state[S.V] = this.properties.getNumber("V");
+    state[S.V0] = this.properties.getNumber("V");
+  }
+
+  override beginEval(state: DeviceState, { sourceFactor }: EvalParams): void {
+    const V0 = state[S.V0];
+    state[S.V] = sourceFactor * V0;
   }
 
   override stamp(state: DeviceState, stamper: Stamper): void {

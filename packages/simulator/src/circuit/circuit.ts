@@ -11,11 +11,13 @@ export class Circuit implements Network {
   elapsedTime: number;
   timeStep: number;
   temp: number;
+  sourceFactor: number;
 
   constructor() {
     this.elapsedTime = 0;
     this.timeStep = NaN;
     this.temp = 0;
+    this.sourceFactor = 1;
   }
 
   get groundNode(): Node {
