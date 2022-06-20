@@ -41,11 +41,11 @@ prints the following result
 
 ```typescript
 [
-  'V(N1)=10V', // voltage at node N1
-  'V(N2)=712.41mV', // voltage at node N2
-  'V1{V=10V,I=-9.288mA,P=-92.876mW}', // voltage source output params
-  'R1{V=9.288V,I=9.288mA,P=86.259mW}', // resistor output params
-  'D1{V=712.41mV,I=9.288mA,P=6.617mW}' // diode output params
+  "V(N1)=10V", // voltage at node N1
+  "V(N2)=712.41mV", // voltage at node N2
+  "V1{V=10V,I=-9.288mA,P=-92.876mW}", // voltage source output params
+  "R1{V=9.288V,I=9.288mA,P=86.259mW}", // resistor output params
+  "D1{V=712.41mV,I=9.288mA,P=6.617mW}", // diode output params
 ];
 ```
 

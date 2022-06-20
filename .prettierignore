@@ -7,3 +7,4 @@ tmp/
 .vscode/
 package-lock.json
 *.snap
+parser.js
