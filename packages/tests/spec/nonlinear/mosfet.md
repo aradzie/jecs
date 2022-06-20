@@ -3,7 +3,7 @@
 ```text
 V:V1 nd gnd V=15
 V:V2 ng gnd V=10
-MOSFET:DUT gnd ng nd gnd @NMOS Is=0
+MOSFET:DUT gnd ng nd gnd @NMOS
 .dc
 ```
 
@@ -22,20 +22,20 @@ DUT{Vgs=10V,Vgd=-5V,Vds=15V,Ids=640mA}
 ## Netlist
 
 ```text
-V:V1 ns gnd V=15
-V:V2 ng gnd V=10
-MOSFET:DUT ns ng gnd ns @NMOS Is=0
+V:V1 ns gnd V=0.7
+V:V2 ng gnd V=0.0
+MOSFET:DUT ns ng gnd ns @NMOS
 .dc
 ```
 
 ## Result
 
 ```text
-V(ns)=15V
-V(ng)=10V
-V1{V=15V,I=-640mA,P=-9.6W}
-V2{V=10V,I=0A,P=0W}
-DUT{Vgs=-5V,Vgd=10V,Vds=-15V,Ids=-640mA}
+V(ns)=700mV
+V(ng)=0V
+V1{V=700mV,I=-5.748mA,P=-4.023mW}
+V2{V=0V,I=0A,P=0W}
+DUT{Vgs=-700mV,Vgd=0V,Vds=-700mV,Ids=0A}
 ```
 
 ---

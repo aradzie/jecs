@@ -23,6 +23,7 @@ export class Capacitor extends Device {
   static override readonly propertiesSchema = {
     C: Properties.number({
       title: "capacitance",
+      range: ["real", ">", 0],
     }),
     V0: Properties.number({
       title: "initial voltage",

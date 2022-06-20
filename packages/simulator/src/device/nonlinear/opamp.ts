@@ -21,12 +21,12 @@ export class OpAmp extends Device {
   static override readonly propertiesSchema = {
     gain: Properties.number({
       defaultValue: 1e6,
-      min: 1,
+      range: ["real", ">", 0],
       title: "gain",
     }),
     Vmax: Properties.number({
       defaultValue: 15,
-      min: 0,
+      range: ["real", ">", 0],
       title: "maximum absolute value of output voltage",
     }),
   };

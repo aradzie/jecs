@@ -56,45 +56,43 @@ export class Bjt extends Device {
   static override readonly id = "BJT";
   static override readonly numTerminals = 3;
   static override readonly propertiesSchema = {
-    polarity: Properties.enum({
-      values: [npn, pnp],
+    polarity: Properties.string({
+      range: [npn, pnp],
       title: "transistor polarity",
     }),
     Bf: Properties.number({
       defaultValue: 100.0,
-      min: 1e-3,
+      range: ["real", ">", 0],
       title: "forward beta",
     }),
     Br: Properties.number({
       defaultValue: 1.0,
-      min: 1e-3,
+      range: ["real", ">", 0],
       title: "reverse beta",
     }),
     Is: Properties.number({
       defaultValue: 1e-14,
-      min: 0,
+      range: ["real", ">", 0],
       title: "saturation current",
     }),
     Nf: Properties.number({
       defaultValue: 1,
-      min: 1e-3,
-      max: 100,
+      range: ["real", ">", 0],
       title: "forward emission coefficient",
     }),
     Nr: Properties.number({
       defaultValue: 1,
-      min: 1e-3,
-      max: 100,
+      range: ["real", ">", 0],
       title: "reverse emission coefficient",
     }),
     Vaf: Properties.number({
       defaultValue: 10.0,
-      min: 0,
+      range: ["real", ">=", 0],
       title: "forward Early voltage",
     }),
     Var: Properties.number({
       defaultValue: 0.0,
-      min: 0,
+      range: ["real", ">=", 0],
       title: "reverse Early voltage",
     }),
     temp: Properties.temp,
@@ -127,7 +125,7 @@ export class Bjt extends Device {
   }
 
   override deriveState(state: DeviceState, params: EvalParams): void {
-    const polarity = this.properties.getEnum("polarity") as BjtPolarity;
+    const polarity = this.properties.getString("polarity") as BjtPolarity;
     const Bf = this.properties.getNumber("Bf");
     const Br = this.properties.getNumber("Br");
     const Is = this.properties.getNumber("Is");

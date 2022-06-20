@@ -23,6 +23,7 @@ export class Inductor extends Device {
   static override readonly propertiesSchema = {
     L: Properties.number({
       title: "inductance",
+      range: ["real", ">", 0],
     }),
     I0: Properties.number({
       title: "initial current",

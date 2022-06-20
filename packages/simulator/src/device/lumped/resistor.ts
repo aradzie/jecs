@@ -19,6 +19,7 @@ export class Resistor extends Device {
   static override readonly propertiesSchema = {
     R: Properties.number({
       title: "resistance",
+      range: ["real", "<>", 0],
     }),
   };
   static override readonly stateSchema = {

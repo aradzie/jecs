@@ -25,13 +25,12 @@ export class Diode extends Device {
   static override readonly propertiesSchema = {
     Is: Properties.number({
       defaultValue: 1e-14,
-      min: 0,
+      range: ["real", ">", 0],
       title: "saturation current",
     }),
     N: Properties.number({
       defaultValue: 1,
-      min: 1e-3,
-      max: 100,
+      range: ["real", ">", 0],
       title: "emission coefficient",
     }),
     temp: Properties.temp,

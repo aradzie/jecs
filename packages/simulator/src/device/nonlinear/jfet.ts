@@ -58,35 +58,33 @@ export class Jfet extends Device {
   static override readonly id = "JFET";
   static override readonly numTerminals = 3;
   static override readonly propertiesSchema = {
-    polarity: Properties.enum({
-      values: [nfet, pfet],
+    polarity: Properties.string({
+      range: [nfet, pfet],
       title: "transistor polarity",
     }),
     Vth: Properties.number({
       defaultValue: -2.0,
-      min: -100,
-      max: +100,
+      range: ["real"],
       title: "threshold voltage",
     }),
     beta: Properties.number({
       defaultValue: 1e-4,
-      min: 1e-6,
+      range: ["real", ">", 0],
       title: "transconductance parameter",
     }),
     lambda: Properties.number({
       defaultValue: 0.0,
-      min: 0,
+      range: ["real", ">=", 0],
       title: "channel-length modulation parameter",
     }),
     Is: Properties.number({
       defaultValue: 1e-14,
-      min: 0,
+      range: ["real", ">", 0],
       title: "saturation current",
     }),
     N: Properties.number({
       defaultValue: 1,
-      min: 1e-3,
-      max: 100,
+      range: ["real", ">", 0],
       title: "emission coefficient",
     }),
     temp: Properties.temp,
@@ -118,7 +116,7 @@ export class Jfet extends Device {
   }
 
   override deriveState(state: DeviceState, params: EvalParams): void {
-    const polarity = this.properties.getEnum("polarity") as FetPolarity;
+    const polarity = this.properties.getString("polarity") as FetPolarity;
     const Vth = this.properties.getNumber("Vth");
     const beta = this.properties.getNumber("beta");
     const lambda = this.properties.getNumber("lambda");
