@@ -20,7 +20,7 @@ export class Solver {
     this.circuit = circuit;
     this.options = options;
     const n = circuit.nodes.length;
-    this.matrix = matMake(n, n);
+    this.matrix = matMake(n);
     this.vector = vecMake(n);
     this.prevVector = vecMake(n);
     this.stamper = new Stamper(this.matrix, this.vector);

@@ -1,6 +1,6 @@
 import { assert } from "./assert.js";
 import { SingularMatrixError } from "./error.js";
-import { matSize, swapRows, vecMake } from "./matrix.js";
+import { swapRows, vecMake } from "./matrix.js";
 import { findPivotRow } from "./pivot.js";
 import type { Matrix, PermVector, Solver, Vector } from "./types.js";
 
@@ -10,9 +10,7 @@ import type { Matrix, PermVector, Solver, Vector } from "./types.js";
  * @param mat A matrix `A`.
  */
 export function createSolver(mat: Matrix): Solver {
-  const [size, w] = matSize(mat);
-
-  assert(size === w);
+  const size = mat.length;
 
   const perm = new Int32Array(size);
   for (let i = 0; i < size; i++) {
