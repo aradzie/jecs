@@ -1,4 +1,5 @@
 import { assert } from "./assert.js";
+import { SingularMatrixError } from "./error.js";
 import { matSize, swapRows } from "./matrix.js";
 import { findPivotRow } from "./pivot.js";
 import type { Matrix, Vector } from "./types.js";
@@ -21,14 +22,15 @@ export function solve(mat: Matrix, vec: Vector): void {
   assert(size === w && size === h);
 
   for (let k = 0; k < size; k++) {
-    pivot(mat, vec, size, k);
-
-    const x = mat[k][k];
-    for (let j = k; j < size; j++) {
-      mat[k][j] /= x;
+    findPivot(mat, vec, size, k);
+    const p = mat[k][k];
+    if (p === 0) {
+      throw new SingularMatrixError();
     }
-    vec[k] /= x;
-
+    for (let j = k; j < size; j++) {
+      mat[k][j] /= p;
+    }
+    vec[k] /= p;
     for (let i = 0; i < size; i++) {
       if (i !== k) {
         const y = mat[i][k];
@@ -41,7 +43,7 @@ export function solve(mat: Matrix, vec: Vector): void {
   }
 }
 
-function pivot(matM: Matrix, vecM: Vector, size: number, k: number): void {
+function findPivot(matM: Matrix, vecM: Vector, size: number, k: number): void {
   const [_, pk] = findPivotRow(matM, size, k, k);
   if (pk !== k) {
     swapRows(matM, k, pk);

@@ -1,8 +1,5 @@
 import type { MatrixLike } from "./types.js";
 
-export type PermVectorLike = ArrayLike<number>;
-export type PermVector = Int32Array;
-
 /**
  * Scans the given column which starts at [i, j] and ends at [size, j],
  * returns index of the row with the largest value in the column.
