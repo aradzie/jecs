@@ -1,51 +1,45 @@
 import type { MatrixLike } from "./types.js";
 
+export function findPartialPivot(A: MatrixLike, size: number, k: number): number {
+  return findPivotRow(A, size, k, k);
+}
+
 /**
  * Scans the given column which starts at [i, j] and ends at [size, j],
  * returns index of the row with the largest value in the column.
  */
-export function findPivotRow(
-  mat: MatrixLike,
-  size: number,
-  i: number,
-  j: number,
-): [value: number, rowIndex: number] {
+function findPivotRow(A: MatrixLike, size: number, i: number, j: number): number {
   let pivotRow = i;
-  let pivotValue = Math.abs(mat[i][j]);
+  let pivotValue = Math.abs(A[i][j]);
   i++;
   while (i < size) {
-    const v = Math.abs(mat[i][j]);
+    const v = Math.abs(A[i][j]);
     if (v > pivotValue) {
       pivotRow = i;
       pivotValue = v;
     }
     i++;
   }
-  return [pivotValue, pivotRow];
+  return pivotRow;
 }
 
 /**
  * Scans the given row which starts at [i, j] and ends at [i, size],
  * returns index of the column with the largest value in the row.
  */
-export function findPivotCol(
-  mat: MatrixLike,
-  size: number,
-  i: number,
-  j: number,
-): [value: number, colIndex: number] {
+function findPivotCol(A: MatrixLike, size: number, i: number, j: number): number {
   let pivotCol = j;
-  let pivotValue = Math.abs(mat[i][j]);
+  let pivotValue = Math.abs(A[i][j]);
   j++;
   while (j < size) {
-    const v = Math.abs(mat[i][j]);
+    const v = Math.abs(A[i][j]);
     if (v > pivotValue) {
       pivotCol = j;
       pivotValue = v;
     }
     j++;
   }
-  return [pivotValue, pivotCol];
+  return pivotCol;
 }
 
 /**
@@ -53,7 +47,7 @@ export function findPivotCol(
  * using the rook pivot strategy.
  */
 export function findRookPivot(
-  mat: MatrixLike,
+  A: MatrixLike,
   size: number,
   k: number,
 ): [rowIndex: number, colIndex: number] {
@@ -62,13 +56,15 @@ export function findRookPivot(
   let v = 0;
   let b = false;
   while (true) {
-    const [colMax, rowIndex] = findPivotRow(mat, size, k, j);
+    const rowIndex = findPivotRow(A, size, k, j);
+    const colMax = Math.abs(A[rowIndex][j]);
     if (colMax <= v && b) {
       break;
     }
     i = rowIndex;
     v = colMax;
-    const [rowMax, colIndex] = findPivotCol(mat, size, i, k);
+    const colIndex = findPivotCol(A, size, i, k);
+    const rowMax = Math.abs(A[i][colIndex]);
     if (rowMax <= v) {
       break;
     }
@@ -80,7 +76,7 @@ export function findRookPivot(
 }
 
 export function findCompletePivot(
-  mat: MatrixLike,
+  A: MatrixLike,
   size: number,
   k: number,
 ): [rowIndex: number, colIndex: number] {
@@ -89,7 +85,7 @@ export function findCompletePivot(
   let pivotValue = 0;
   for (let i = k; i < size; i++) {
     for (let j = k; j < size; j++) {
-      const v = Math.abs(mat[pivotRow][pivotCol]);
+      const v = Math.abs(A[i][j]);
       if (v > pivotValue) {
         pivotRow = i;
         pivotCol = j;
@@ -98,4 +94,10 @@ export function findCompletePivot(
     }
   }
   return [pivotRow, pivotCol];
+}
+
+export function swap<T>(m: { [index: number]: T }, a: number, b: number): void {
+  const t = m[a];
+  m[a] = m[b];
+  m[b] = t;
 }

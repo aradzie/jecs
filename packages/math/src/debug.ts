@@ -1,4 +1,13 @@
+import { matCopy, vecCopy } from "./matrix.js";
+import { SLE } from "./sle.js";
 import type { Matrix, MatrixLike, Vector, VectorLike } from "./types.js";
+
+export function toSle(A: MatrixLike, b: VectorLike): SLE {
+  const sle = new SLE(b.length);
+  matCopy(A, sle.A);
+  vecCopy(b, sle.b);
+  return sle;
+}
 
 export function toVector(data: VectorLike): Vector {
   return new Float64Array(data);
@@ -8,8 +17,12 @@ export function toMatrix(data: MatrixLike): Matrix {
   return Array.from(data).map((row) => toVector(row));
 }
 
-export function toArray(matrix: Matrix): number[][] {
-  return Array.from(matrix).map((row) => [...row]);
+export function matToArray(matrix: Matrix): number[][] {
+  return Array.from(matrix).map((row) => vecToArray(row));
+}
+
+export function vecToArray(vector: Vector): number[] {
+  return Array.from(vector).map((v) => round(v));
 }
 
 export function dumpMatrix(m: MatrixLike, separator = "|"): void {

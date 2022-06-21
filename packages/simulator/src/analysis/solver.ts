@@ -1,6 +1,6 @@
-import { solve } from "@jssim/math/lib/gauss-elimination.js";
-import { matClear, matMake, vecClear, vecCopy, vecMake } from "@jssim/math/lib/matrix.js";
-import type { Matrix, Vector } from "@jssim/math/lib/types.js";
+import { vecClear, vecCopy, vecMake } from "@jssim/math/lib/matrix.js";
+import { Method, SLE } from "@jssim/math/lib/sle.js";
+import type { Vector } from "@jssim/math/lib/types.js";
 import type { Circuit } from "../circuit/circuit.js";
 import { Stamper } from "../circuit/network.js";
 import { logger } from "../util/logging.js";
@@ -10,9 +10,9 @@ import type { SimulationOptions } from "./options.js";
 export class Solver {
   private circuit: Circuit;
   private options: SimulationOptions;
-  private matrix: Matrix;
-  private vector: Vector;
-  private prevVector: Vector;
+  private sle: SLE;
+  private currX: Vector;
+  private prevX: Vector;
   private stamper: Stamper;
   private linear: boolean;
 
@@ -20,10 +20,10 @@ export class Solver {
     this.circuit = circuit;
     this.options = options;
     const n = circuit.nodes.length;
-    this.matrix = matMake(n);
-    this.vector = vecMake(n);
-    this.prevVector = vecMake(n);
-    this.stamper = new Stamper(this.matrix, this.vector);
+    this.sle = new SLE(n);
+    this.currX = this.sle.x;
+    this.prevX = vecMake(n);
+    this.stamper = new Stamper(this.sle.A, this.sle.b);
     this.linear = circuit.devices.every((device) => device.deviceClass.linear);
   }
 
@@ -39,9 +39,8 @@ export class Solver {
   }
 
   private clear(): void {
-    matClear(this.matrix);
-    vecClear(this.vector);
-    vecClear(this.prevVector);
+    this.sle.clear();
+    vecClear(this.prevX);
   }
 
   private solveLinear(): void {
@@ -51,7 +50,7 @@ export class Solver {
   }
 
   private solveNonLinear(): void {
-    const { options, matrix, vector, prevVector } = this;
+    const { options, sle, currX, prevX } = this;
     const { maxIter } = options;
     this.startIteration();
     let iter = 0;
@@ -60,9 +59,8 @@ export class Solver {
       if (iter > 1 && this.converged()) {
         break;
       }
-      vecCopy(vector, prevVector);
-      matClear(matrix);
-      vecClear(vector);
+      vecCopy(currX, prevX);
+      sle.clear();
       iter += 1;
     }
     if (iter === maxIter) {
@@ -79,7 +77,7 @@ export class Solver {
     logger.iterationStarted();
     this.circuit.eval();
     this.circuit.stamp(this.stamper);
-    solve(this.matrix, this.vector);
+    this.sle.solve(Method.Gauss);
     this.saveSolution();
     logger.iterationEnded();
   }
@@ -89,22 +87,22 @@ export class Solver {
   }
 
   private converged(): boolean {
-    const { circuit, options, vector, prevVector } = this;
+    const { circuit, options, currX, prevX } = this;
     const { abstol, vntol, reltol } = options;
     for (const node of circuit.nodes) {
       const { index } = node;
       switch (node.type) {
         case "node": {
-          const prevV = prevVector[index];
-          const currV = vector[index];
+          const prevV = prevX[index];
+          const currV = currX[index];
           if (Math.abs(currV - prevV) >= vntol + reltol * Math.abs(currV)) {
             return false;
           }
           break;
         }
         case "branch": {
-          const prevI = prevVector[index];
-          const currI = vector[index];
+          const prevI = prevX[index];
+          const currI = currX[index];
           if (Math.abs(currI - prevI) >= abstol + reltol * Math.abs(currI)) {
             return false;
           }
@@ -116,15 +114,15 @@ export class Solver {
   }
 
   private saveSolution(): void {
-    const { circuit, vector } = this;
+    const { circuit, currX } = this;
     for (const node of circuit.nodes) {
       const { index } = node;
       switch (node.type) {
         case "node":
-          node.voltage = vector[index];
+          node.voltage = currX[index];
           break;
         case "branch":
-          node.current = vector[index];
+          node.current = currX[index];
           break;
       }
     }

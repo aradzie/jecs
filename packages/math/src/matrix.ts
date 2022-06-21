@@ -1,4 +1,4 @@
-import type { Matrix, MatrixLike, Vector, VectorLike } from "./types.js";
+import type { Matrix, MatrixLike, PermVector, Vector, VectorLike } from "./types.js";
 
 export function matMake(size: number): Matrix {
   const m = new Array<Vector>(size);
@@ -33,22 +33,14 @@ export function vecCopy(a: VectorLike, b: Vector): void {
   b.set(a);
 }
 
-export function swapRows<T>(m: { [index: number]: T }, a: number, b: number): void {
-  const t = m[a];
-  m[a] = m[b];
-  m[b] = t;
+export function permMake(size: number): Int32Array {
+  const perm = new Int32Array(size);
+  permClear(perm);
+  return perm;
 }
 
-export function swapColumns<T>(
-  m: ArrayLike<{ [index: number]: T }>,
-  size: number,
-  a: number,
-  b: number,
-): void {
-  for (let i = 0; i < size; i++) {
-    const row = m[i];
-    const t = row[a];
-    row[a] = row[b];
-    row[b] = t;
+export function permClear(a: PermVector): void {
+  for (let i = 0; i < a.length; i++) {
+    a[i] = i;
   }
 }

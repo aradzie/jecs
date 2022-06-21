@@ -1,40 +1,6 @@
 import test from "ava";
 import { toMatrix } from "./debug.js";
-import { findPivotCol, findPivotRow, findRookPivot } from "./pivot.js";
-
-test("find pivot row", (t) => {
-  {
-    const mat = toMatrix([[1]]);
-    t.deepEqual(findPivotRow(mat, 1, 0, 0), [1, 0]);
-  }
-  {
-    const mat = toMatrix([
-      [1, 2],
-      [3, 4],
-    ]);
-    t.deepEqual(findPivotRow(mat, 2, 0, 0), [3, 1]);
-    t.deepEqual(findPivotRow(mat, 2, 1, 0), [3, 1]);
-    t.deepEqual(findPivotRow(mat, 2, 0, 1), [4, 1]);
-    t.deepEqual(findPivotRow(mat, 2, 1, 1), [4, 1]);
-  }
-});
-
-test("find pivot col", (t) => {
-  {
-    const mat = toMatrix([[1]]);
-    t.deepEqual(findPivotCol(mat, 1, 0, 0), [1, 0]);
-  }
-  {
-    const mat = toMatrix([
-      [1, 2],
-      [3, 4],
-    ]);
-    t.deepEqual(findPivotCol(mat, 2, 0, 0), [2, 1]);
-    t.deepEqual(findPivotCol(mat, 2, 0, 1), [2, 1]);
-    t.deepEqual(findPivotCol(mat, 2, 1, 0), [4, 1]);
-    t.deepEqual(findPivotCol(mat, 2, 1, 1), [4, 1]);
-  }
-});
+import { findRookPivot } from "./pivot.js";
 
 test("find rook pivot", (t) => {
   {
