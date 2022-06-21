@@ -1,4 +1,3 @@
-import { assert } from "./assert.js";
 import type { Matrix, MatrixLike, Vector, VectorLike } from "./types.js";
 
 export function matMake(size: number): Matrix {
@@ -16,10 +15,8 @@ export function matClear(m: Matrix, x = 0): void {
 }
 
 export function matCopy(a: MatrixLike, b: Matrix): void {
-  const aSize = a.length;
-  const bSize = b.length;
-  assert(aSize === bSize);
-  for (let i = 0; i < aSize; i++) {
+  const size = a.length;
+  for (let i = 0; i < size; i++) {
     b[i].set(a[i]);
   }
 }
@@ -33,7 +30,6 @@ export function vecClear(v: Vector, x = 0): void {
 }
 
 export function vecCopy(a: VectorLike, b: Vector): void {
-  assert(a.length === b.length);
   b.set(a);
 }
 

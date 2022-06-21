@@ -1,4 +1,3 @@
-import { assert } from "./assert.js";
 import { SingularMatrixError } from "./error.js";
 import { swapRows, vecMake } from "./matrix.js";
 import { findPivotRow } from "./pivot.js";
@@ -36,8 +35,6 @@ export function createSolver(mat: Matrix): Solver {
   const y = vecMake(size);
 
   return function solver(vec: Vector): void {
-    assert(size === vec.length);
-
     // LUx = b, Ly = b, Ux = y
 
     // Use forward substitution to compute y.
