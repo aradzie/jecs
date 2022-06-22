@@ -2,6 +2,7 @@ import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { celsiusToKelvin } from "../../util/unit.js";
+import { gmin } from "../const.js";
 import {
   FetPolarity,
   fetSign,
@@ -171,9 +172,9 @@ export class Mosfet extends Device {
     // DIODES
 
     const Ibs = pnCurrent(Vbs, Is, Vt);
-    const Gbs = pnConductance(Vbs, Is, Vt);
+    const Gbs = pnConductance(Vbs, Is, Vt) + gmin;
     const Ibd = pnCurrent(Vbd, Is, Vt);
-    const Gbd = pnConductance(Vbd, Is, Vt);
+    const Gbd = pnConductance(Vbd, Is, Vt) + gmin;
 
     // FET
 
@@ -186,7 +187,7 @@ export class Mosfet extends Device {
       if (Vgst <= 0) {
         // Cutoff region.
         Ids = 0;
-        Gds = 0;
+        Gds = gmin;
         Gm = 0;
       } else {
         const c0 = lambda * Vds;
@@ -209,7 +210,7 @@ export class Mosfet extends Device {
       if (Vgdt <= 0) {
         // Cutoff region.
         Ids = 0;
-        Gds = 0;
+        Gds = gmin;
         Gm = 0;
       } else {
         const Vsd = -Vds;
