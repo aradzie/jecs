@@ -7,6 +7,11 @@ import { logger } from "../util/logging.js";
 import { ConvergenceError } from "./error.js";
 import type { SimulationOptions } from "./options.js";
 
+const enum ConvHelper {
+  None,
+  GMinStepping,
+}
+
 export class Solver {
   private readonly circuit: Circuit;
   private readonly options: SimulationOptions;
@@ -19,6 +24,8 @@ export class Solver {
   private readonly tol: Vector;
   private readonly stamper: Stamper;
   private readonly linear: boolean;
+  private helper: ConvHelper;
+  private gMin: number;
 
   constructor(circuit: Circuit, options: SimulationOptions) {
     this.circuit = circuit;
@@ -32,6 +39,8 @@ export class Solver {
     this.tol = vecMake(this.sle.size);
     this.stamper = new Stamper(this.sle.A, this.sle.b);
     this.linear = circuit.devices.every((device) => device.deviceClass.linear);
+    this.helper = ConvHelper.None;
+    this.gMin = 0;
 
     const { abstol, vntol } = this.options;
     for (const node of this.circuit.nodes) {
@@ -53,6 +62,8 @@ export class Solver {
 
   solve(): void {
     logger.simulationStarted();
+    this.helper = ConvHelper.None;
+    this.gMin = 0;
     if (this.linear) {
       this.solveLinear();
     } else {
@@ -77,13 +88,35 @@ export class Solver {
       return;
     }
 
+    // Next strategy.
+
+    this.restoreSolution();
+    vecClear(this.prevX);
+    vecClear(this.prevB);
+    if (this.solveGMinStepping()) {
+      return;
+    }
+
     // All strategies failed.
 
     throw new ConvergenceError(`Simulation did not converge.`);
   }
 
   private solveNormal(): boolean {
+    this.helper = ConvHelper.None;
+    this.gMin = 0;
     return this.iterate(this.options.maxIter);
+  }
+
+  private solveGMinStepping(): boolean {
+    for (const gMin of [1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 0]) {
+      this.helper = ConvHelper.GMinStepping;
+      this.gMin = gMin;
+      if (!this.iterate(this.options.maxIter)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private iterate(maxIter: number): boolean {
@@ -113,6 +146,9 @@ export class Solver {
     this.sle.clear();
     this.circuit.eval();
     this.circuit.stamp(this.stamper);
+    if (this.helper === ConvHelper.GMinStepping) {
+      this.applyGMin();
+    }
     vecCopy(this.sle.b, this.currB);
     this.sle.solve(Method.Gauss);
     vecCopy(this.sle.x, this.currX);
@@ -122,6 +158,14 @@ export class Solver {
 
   private endIteration(): void {
     this.circuit.endEval();
+  }
+
+  private applyGMin(): void {
+    const { sle, gMin } = this;
+    const { size, A } = sle;
+    for (let i = 0; i < size; i++) {
+      A[i][i] += gMin;
+    }
   }
 
   private converged(): boolean {
