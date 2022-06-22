@@ -25,7 +25,6 @@ export class Solver {
   private readonly backupX: Vector;
   private readonly currB: Vector;
   private readonly prevB: Vector;
-  private readonly abstol: Vector;
   private readonly stamper: Stamper;
   private readonly linear: boolean;
   private helper: ConvHelper;
@@ -41,25 +40,11 @@ export class Solver {
     this.backupX = vecMake(this.sle.size);
     this.currB = vecMake(this.sle.size);
     this.prevB = vecMake(this.sle.size);
-    this.abstol = vecMake(this.sle.size);
     this.stamper = new Stamper(this.sle.A, this.sle.b);
     this.linear = circuit.devices.every((device) => device.deviceClass.linear);
     this.helper = ConvHelper.None;
     this.sourceFactor = 1;
     this.gMin = 0;
-
-    const { abstol, vntol } = this.options;
-    for (const node of this.circuit.nodes) {
-      const { index } = node;
-      switch (node.type) {
-        case "node":
-          this.abstol[index] = vntol;
-          break;
-        case "branch":
-          this.abstol[index] = abstol;
-          break;
-      }
-    }
   }
 
   reset(): void {
@@ -200,19 +185,37 @@ export class Solver {
   }
 
   private converged(): boolean {
-    const { reltol } = this.options;
-    const { sle, currX, prevX, currB, prevB, abstol } = this;
-    const { size } = sle;
-    for (let i = 0; i < size; i++) {
-      const x1 = prevX[i];
-      const x2 = currX[i];
-      if (Math.abs(x2 - x1) >= abstol[i] + reltol * Math.abs(x2)) {
-        return false;
-      }
-      const b1 = prevB[i];
-      const b2 = currB[i];
-      if (Math.abs(b2 - b1) >= abstol[i] + reltol * Math.abs(b2)) {
-        return false;
+    const { currX, prevX, currB, prevB } = this;
+    const { abstol, vntol, reltol } = this.options;
+    for (const node of this.circuit.nodes) {
+      const { index } = node;
+      switch (node.type) {
+        case "node": {
+          const v1 = prevX[index];
+          const v2 = currX[index];
+          if (Math.abs(v2 - v1) >= reltol * Math.abs(v2) + vntol) {
+            return false;
+          }
+          const i1 = prevB[index];
+          const i2 = currB[index];
+          if (Math.abs(i2 - i1) >= reltol * Math.abs(i2) + abstol) {
+            return false;
+          }
+          break;
+        }
+        case "branch": {
+          const i1 = prevX[index];
+          const i2 = currX[index];
+          if (Math.abs(i2 - i1) >= reltol * Math.abs(i2) + abstol) {
+            return false;
+          }
+          const v1 = prevB[index];
+          const v2 = currB[index];
+          if (Math.abs(v2 - v1) >= reltol * Math.abs(v2) + vntol) {
+            return false;
+          }
+          break;
+        }
       }
     }
     return true;
