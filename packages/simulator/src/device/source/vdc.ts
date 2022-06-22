@@ -49,7 +49,7 @@ export class Vdc extends Device {
     state[S.V0] = this.properties.getNumber("V");
   }
 
-  override beginEval(state: DeviceState, { sourceFactor }: EvalParams): void {
+  override eval(state: DeviceState, { sourceFactor }: EvalParams): void {
     const V0 = state[S.V0];
     state[S.V] = sourceFactor * V0;
   }

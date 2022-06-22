@@ -60,7 +60,7 @@ export class Vac extends Device {
     state[S.theta] = theta;
   }
 
-  override beginEval(state: DeviceState, { elapsedTime, sourceFactor }: EvalParams): void {
+  override eval(state: DeviceState, { elapsedTime, sourceFactor }: EvalParams): void {
     const amplitude = state[S.amplitude];
     const omega = state[S.omega];
     const theta = state[S.theta];

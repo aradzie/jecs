@@ -43,7 +43,7 @@ export class Idc extends Device {
     state[S.I0] = this.properties.getNumber("I");
   }
 
-  override beginEval(state: DeviceState, { sourceFactor }: EvalParams): void {
+  override eval(state: DeviceState, { sourceFactor }: EvalParams): void {
     const I0 = state[S.I0];
     state[S.I] = sourceFactor * I0;
   }
