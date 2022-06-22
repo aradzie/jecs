@@ -10,4 +10,4 @@ C:Cc2 nc2 nb1 C=18u V0=0.0
 BJT:Q1 gnd nb1 nc1 @NPN
 BJT:Q2 gnd nb2 nc2 @NPN
 
-.tran stopTime=100m timeStep=0.1m maxIter=500
+.tran stopTime=100m timeStep=0.1m maxIter=1000

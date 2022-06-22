@@ -14,6 +14,9 @@ export class Solver {
   private readonly currX: Vector;
   private readonly prevX: Vector;
   private readonly backupX: Vector;
+  private readonly currB: Vector;
+  private readonly prevB: Vector;
+  private readonly tol: Vector;
   private readonly stamper: Stamper;
   private readonly linear: boolean;
 
@@ -21,15 +24,30 @@ export class Solver {
     this.circuit = circuit;
     this.options = options;
     this.sle = new SLE(circuit.nodes.length);
-    this.currX = this.sle.x;
-    this.prevX = vecMake(this.currX.length);
-    this.backupX = vecMake(this.currX.length);
+    this.currX = vecMake(this.sle.size);
+    this.prevX = vecMake(this.sle.size);
+    this.backupX = vecMake(this.sle.size);
+    this.currB = vecMake(this.sle.size);
+    this.prevB = vecMake(this.sle.size);
+    this.tol = vecMake(this.sle.size);
     this.stamper = new Stamper(this.sle.A, this.sle.b);
     this.linear = circuit.devices.every((device) => device.deviceClass.linear);
+
+    const { abstol, vntol } = this.options;
+    for (const node of this.circuit.nodes) {
+      const { index } = node;
+      switch (node.type) {
+        case "node":
+          this.tol[index] = vntol;
+          break;
+        case "branch":
+          this.tol[index] = abstol;
+          break;
+      }
+    }
   }
 
   reset(): void {
-    vecClear(this.prevX);
     vecClear(this.backupX);
   }
 
@@ -52,6 +70,9 @@ export class Solver {
   private solveNonLinear(): void {
     // Next strategy.
 
+    this.backupSolution();
+    vecClear(this.prevX);
+    vecClear(this.prevB);
     if (this.solveNormal()) {
       return;
     }
@@ -66,13 +87,14 @@ export class Solver {
   }
 
   private iterate(maxIter: number): boolean {
-    const { currX, prevX } = this;
+    const { currX, prevX, prevB, currB } = this;
     this.startIteration();
     let iter = 0;
     while (iter < maxIter) {
       this.doIteration();
       const conv = iter > 0 && this.converged();
       vecCopy(currX, prevX);
+      vecCopy(currB, prevB);
       if (conv) {
         this.endIteration();
         return true;
@@ -91,7 +113,9 @@ export class Solver {
     this.sle.clear();
     this.circuit.eval();
     this.circuit.stamp(this.stamper);
+    vecCopy(this.sle.b, this.currB);
     this.sle.solve(Method.Gauss);
+    vecCopy(this.sle.x, this.currX);
     this.saveSolution();
     logger.iterationEnded();
   }
@@ -101,27 +125,19 @@ export class Solver {
   }
 
   private converged(): boolean {
-    const { abstol, vntol, reltol } = this.options;
-    const { currX, prevX } = this;
-    for (const node of this.circuit.nodes) {
-      const { index } = node;
-      switch (node.type) {
-        case "node": {
-          const prevV = prevX[index];
-          const currV = currX[index];
-          if (Math.abs(currV - prevV) >= vntol + reltol * Math.abs(currV)) {
-            return false;
-          }
-          break;
-        }
-        case "branch": {
-          const prevI = prevX[index];
-          const currI = currX[index];
-          if (Math.abs(currI - prevI) >= abstol + reltol * Math.abs(currI)) {
-            return false;
-          }
-          break;
-        }
+    const { reltol } = this.options;
+    const { sle, currX, prevX, currB, prevB, tol } = this;
+    const { size } = sle;
+    for (let i = 0; i < size; i++) {
+      const x1 = prevX[i];
+      const x2 = currX[i];
+      if (Math.abs(x2 - x1) >= tol[i] + reltol * Math.abs(x2)) {
+        return false;
+      }
+      const b1 = prevB[i];
+      const b2 = currB[i];
+      if (Math.abs(b2 - b1) >= tol[i] + reltol * Math.abs(b2)) {
+        return false;
       }
     }
     return true;
