@@ -1,4 +1,4 @@
-import { Properties } from "../circuit/properties.js";
+import { Properties, PropertySchema } from "../circuit/properties.js";
 
 const startTime = Properties.number({
   defaultValue: 0,
@@ -44,7 +44,7 @@ const integrationMethod = Properties.string({
   title: "integration method",
 });
 
-export const dcProperties = {
+export const dcProperties: Record<string, PropertySchema> = {
   temp,
   abstol,
   vntol,
@@ -52,7 +52,7 @@ export const dcProperties = {
   maxIter,
 };
 
-export const tranProperties = {
+export const tranProperties: Record<string, PropertySchema> = {
   startTime,
   stopTime,
   timeStep,

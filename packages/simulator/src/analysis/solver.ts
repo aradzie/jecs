@@ -20,9 +20,9 @@ export class Solver {
   private readonly circuit: Circuit;
   private readonly options: SimulationOptions;
   private readonly sle: SLE;
+  private readonly backupX: Vector;
   private readonly currX: Vector;
   private readonly prevX: Vector;
-  private readonly backupX: Vector;
   private readonly currB: Vector;
   private readonly prevB: Vector;
   private readonly stamper: Stamper;
@@ -35,9 +35,9 @@ export class Solver {
     this.circuit = circuit;
     this.options = options;
     this.sle = new SLE(circuit.nodes.length);
+    this.backupX = vecMake(this.sle.size);
     this.currX = vecMake(this.sle.size);
     this.prevX = vecMake(this.sle.size);
-    this.backupX = vecMake(this.sle.size);
     this.currB = vecMake(this.sle.size);
     this.prevB = vecMake(this.sle.size);
     this.stamper = new Stamper(this.sle.A, this.sle.b);
@@ -76,7 +76,7 @@ export class Solver {
     this.backupSolution();
     vecClear(this.prevX);
     vecClear(this.prevB);
-    if (this.solveNormal()) {
+    if (this.solveNonLinear_Normal()) {
       return;
     }
 
@@ -85,7 +85,7 @@ export class Solver {
     this.restoreSolution();
     vecClear(this.prevX);
     vecClear(this.prevB);
-    if (this.solveSourceStepping()) {
+    if (this.solveNonLinear_SourceStepping()) {
       return;
     }
 
@@ -94,7 +94,7 @@ export class Solver {
     this.restoreSolution();
     vecClear(this.prevX);
     vecClear(this.prevB);
-    if (this.solveGMinStepping()) {
+    if (this.solveNonLinear_GMinStepping()) {
       return;
     }
 
@@ -103,14 +103,14 @@ export class Solver {
     throw new ConvergenceError(`Simulation did not converge.`);
   }
 
-  private solveNormal(): boolean {
+  private solveNonLinear_Normal(): boolean {
     this.helper = ConvHelper.None;
     this.sourceFactor = 1;
     this.gMin = 0;
     return this.iterate(this.options.maxIter);
   }
 
-  private solveSourceStepping(): boolean {
+  private solveNonLinear_SourceStepping(): boolean {
     for (const sourceFactor of sourceFactorList) {
       this.helper = ConvHelper.SourceStepping;
       this.sourceFactor = sourceFactor;
@@ -122,7 +122,7 @@ export class Solver {
     return true;
   }
 
-  private solveGMinStepping(): boolean {
+  private solveNonLinear_GMinStepping(): boolean {
     for (const gMin of gMinList) {
       this.helper = ConvHelper.GMinStepping;
       this.sourceFactor = 1;

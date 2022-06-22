@@ -28,7 +28,12 @@ circuit.addDevice(R1);
 circuit.addDevice(D1);
 
 // Perform DC analysis, compute node voltages and branch currents.
-new DcAnalysis().run(circuit);
+const analysis = new DcAnalysis();
+analysis.properties.set("maxIter", 10);
+analysis.properties.set("abstol", 1e-12);
+analysis.properties.set("vntol", 1e-6);
+analysis.properties.set("reltol", 1e-3);
+analysis.run(circuit);
 
 // Print the operating points.
 console.log(dumpCircuit(circuit));
