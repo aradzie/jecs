@@ -8,39 +8,39 @@ import { ConvergenceError } from "./error.js";
 import type { SimulationOptions } from "./options.js";
 
 export class Solver {
-  private circuit: Circuit;
-  private options: SimulationOptions;
-  private sle: SLE;
-  private currX: Vector;
-  private prevX: Vector;
-  private stamper: Stamper;
-  private linear: boolean;
+  private readonly circuit: Circuit;
+  private readonly options: SimulationOptions;
+  private readonly sle: SLE;
+  private readonly currX: Vector;
+  private readonly prevX: Vector;
+  private readonly backupX: Vector;
+  private readonly stamper: Stamper;
+  private readonly linear: boolean;
 
   constructor(circuit: Circuit, options: SimulationOptions) {
     this.circuit = circuit;
     this.options = options;
-    const n = circuit.nodes.length;
-    this.sle = new SLE(n);
+    this.sle = new SLE(circuit.nodes.length);
     this.currX = this.sle.x;
-    this.prevX = vecMake(n);
+    this.prevX = vecMake(this.currX.length);
+    this.backupX = vecMake(this.currX.length);
     this.stamper = new Stamper(this.sle.A, this.sle.b);
     this.linear = circuit.devices.every((device) => device.deviceClass.linear);
   }
 
+  reset(): void {
+    vecClear(this.prevX);
+    vecClear(this.backupX);
+  }
+
   solve(): void {
     logger.simulationStarted();
-    this.clear();
     if (this.linear) {
       this.solveLinear();
     } else {
       this.solveNonLinear();
     }
     logger.simulationEnded();
-  }
-
-  private clear(): void {
-    this.sle.clear();
-    vecClear(this.prevX);
   }
 
   private solveLinear(): void {
@@ -50,23 +50,36 @@ export class Solver {
   }
 
   private solveNonLinear(): void {
-    const { options, sle, currX, prevX } = this;
-    const { maxIter } = options;
+    // Next strategy.
+
+    if (this.solveNormal()) {
+      return;
+    }
+
+    // All strategies failed.
+
+    throw new ConvergenceError(`Simulation did not converge.`);
+  }
+
+  private solveNormal(): boolean {
+    return this.iterate(this.options.maxIter);
+  }
+
+  private iterate(maxIter: number): boolean {
+    const { currX, prevX } = this;
     this.startIteration();
     let iter = 0;
     while (iter < maxIter) {
       this.doIteration();
-      if (iter > 1 && this.converged()) {
-        break;
-      }
+      const conv = iter > 0 && this.converged();
       vecCopy(currX, prevX);
-      sle.clear();
+      if (conv) {
+        this.endIteration();
+        return true;
+      }
       iter += 1;
     }
-    if (iter === maxIter) {
-      throw new ConvergenceError(`Simulation did not converge after ${iter} iterations.`);
-    }
-    this.endIteration();
+    return false;
   }
 
   private startIteration(): void {
@@ -75,6 +88,7 @@ export class Solver {
 
   private doIteration(): void {
     logger.iterationStarted();
+    this.sle.clear();
     this.circuit.eval();
     this.circuit.stamp(this.stamper);
     this.sle.solve(Method.Gauss);
@@ -87,9 +101,9 @@ export class Solver {
   }
 
   private converged(): boolean {
-    const { circuit, options, currX, prevX } = this;
-    const { abstol, vntol, reltol } = options;
-    for (const node of circuit.nodes) {
+    const { abstol, vntol, reltol } = this.options;
+    const { currX, prevX } = this;
+    for (const node of this.circuit.nodes) {
       const { index } = node;
       switch (node.type) {
         case "node": {
@@ -114,8 +128,8 @@ export class Solver {
   }
 
   private saveSolution(): void {
-    const { circuit, currX } = this;
-    for (const node of circuit.nodes) {
+    const { currX } = this;
+    for (const node of this.circuit.nodes) {
       const { index } = node;
       switch (node.type) {
         case "node":
@@ -123,6 +137,36 @@ export class Solver {
           break;
         case "branch":
           node.current = currX[index];
+          break;
+      }
+    }
+  }
+
+  private backupSolution(): void {
+    const { backupX } = this;
+    for (const node of this.circuit.nodes) {
+      const { index } = node;
+      switch (node.type) {
+        case "node":
+          backupX[index] = node.voltage;
+          break;
+        case "branch":
+          backupX[index] = node.current;
+          break;
+      }
+    }
+  }
+
+  private restoreSolution(): void {
+    const { backupX } = this;
+    for (const node of this.circuit.nodes) {
+      const { index } = node;
+      switch (node.type) {
+        case "node":
+          node.voltage = backupX[index];
+          break;
+        case "branch":
+          node.current = backupX[index];
           break;
       }
     }

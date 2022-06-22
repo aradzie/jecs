@@ -39,6 +39,7 @@ export class DcAnalysis extends Analysis {
         circuit.timeStep = NaN;
         circuit.temp = temp;
         circuit.reset();
+        solver.reset();
         solver.solve();
         table.capture(NaN);
       },
@@ -78,6 +79,7 @@ export class TranAnalysis extends Analysis {
         circuit.timeStep = 0;
         circuit.temp = temp;
         circuit.reset();
+        solver.reset();
         let step = 0;
         let elapsedTime = 0;
         while (elapsedTime <= stopTime) {
