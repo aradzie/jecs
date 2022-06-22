@@ -9,8 +9,12 @@ import type { SimulationOptions } from "./options.js";
 
 const enum ConvHelper {
   None,
+  SourceStepping,
   GMinStepping,
 }
+
+const sourceFactorList = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
+const gMinList = [1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 0];
 
 export class Solver {
   private readonly circuit: Circuit;
@@ -21,10 +25,11 @@ export class Solver {
   private readonly backupX: Vector;
   private readonly currB: Vector;
   private readonly prevB: Vector;
-  private readonly tol: Vector;
+  private readonly abstol: Vector;
   private readonly stamper: Stamper;
   private readonly linear: boolean;
   private helper: ConvHelper;
+  private sourceFactor: number;
   private gMin: number;
 
   constructor(circuit: Circuit, options: SimulationOptions) {
@@ -36,10 +41,11 @@ export class Solver {
     this.backupX = vecMake(this.sle.size);
     this.currB = vecMake(this.sle.size);
     this.prevB = vecMake(this.sle.size);
-    this.tol = vecMake(this.sle.size);
+    this.abstol = vecMake(this.sle.size);
     this.stamper = new Stamper(this.sle.A, this.sle.b);
     this.linear = circuit.devices.every((device) => device.deviceClass.linear);
     this.helper = ConvHelper.None;
+    this.sourceFactor = 1;
     this.gMin = 0;
 
     const { abstol, vntol } = this.options;
@@ -47,10 +53,10 @@ export class Solver {
       const { index } = node;
       switch (node.type) {
         case "node":
-          this.tol[index] = vntol;
+          this.abstol[index] = vntol;
           break;
         case "branch":
-          this.tol[index] = abstol;
+          this.abstol[index] = abstol;
           break;
       }
     }
@@ -62,8 +68,6 @@ export class Solver {
 
   solve(): void {
     logger.simulationStarted();
-    this.helper = ConvHelper.None;
-    this.gMin = 0;
     if (this.linear) {
       this.solveLinear();
     } else {
@@ -73,6 +77,9 @@ export class Solver {
   }
 
   private solveLinear(): void {
+    this.helper = ConvHelper.None;
+    this.sourceFactor = 1;
+    this.gMin = 0;
     this.startIteration();
     this.doIteration();
     this.endIteration();
@@ -93,6 +100,15 @@ export class Solver {
     this.restoreSolution();
     vecClear(this.prevX);
     vecClear(this.prevB);
+    if (this.solveSourceStepping()) {
+      return;
+    }
+
+    // Next strategy.
+
+    this.restoreSolution();
+    vecClear(this.prevX);
+    vecClear(this.prevB);
     if (this.solveGMinStepping()) {
       return;
     }
@@ -104,13 +120,27 @@ export class Solver {
 
   private solveNormal(): boolean {
     this.helper = ConvHelper.None;
+    this.sourceFactor = 1;
     this.gMin = 0;
     return this.iterate(this.options.maxIter);
   }
 
+  private solveSourceStepping(): boolean {
+    for (const sourceFactor of sourceFactorList) {
+      this.helper = ConvHelper.SourceStepping;
+      this.sourceFactor = sourceFactor;
+      this.gMin = 0;
+      if (!this.iterate(this.options.maxIter)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   private solveGMinStepping(): boolean {
-    for (const gMin of [1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 0]) {
+    for (const gMin of gMinList) {
       this.helper = ConvHelper.GMinStepping;
+      this.sourceFactor = 1;
       this.gMin = gMin;
       if (!this.iterate(this.options.maxIter)) {
         return false;
@@ -120,6 +150,7 @@ export class Solver {
   }
 
   private iterate(maxIter: number): boolean {
+    this.circuit.sourceFactor = this.sourceFactor;
     const { currX, prevX, prevB, currB } = this;
     this.startIteration();
     let iter = 0;
@@ -170,17 +201,17 @@ export class Solver {
 
   private converged(): boolean {
     const { reltol } = this.options;
-    const { sle, currX, prevX, currB, prevB, tol } = this;
+    const { sle, currX, prevX, currB, prevB, abstol } = this;
     const { size } = sle;
     for (let i = 0; i < size; i++) {
       const x1 = prevX[i];
       const x2 = currX[i];
-      if (Math.abs(x2 - x1) >= tol[i] + reltol * Math.abs(x2)) {
+      if (Math.abs(x2 - x1) >= abstol[i] + reltol * Math.abs(x2)) {
         return false;
       }
       const b1 = prevB[i];
       const b2 = currB[i];
-      if (Math.abs(b2 - b1) >= tol[i] + reltol * Math.abs(b2)) {
+      if (Math.abs(b2 - b1) >= abstol[i] + reltol * Math.abs(b2)) {
         return false;
       }
     }
