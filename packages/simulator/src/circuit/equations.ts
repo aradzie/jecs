@@ -1,4 +1,4 @@
-import { MathError } from "@jssim/math/lib/error.js";
+import { DivisionByZeroError, NumericOverflowError } from "@jssim/math/lib/error.js";
 import type { Device } from "./device.js";
 import { CircuitError } from "./error.js";
 import type { FunctionDef } from "./functions.js";
@@ -72,18 +72,18 @@ export class BinaryExp extends Exp {
     const arg2 = this.arg2.eval(eq);
     switch (this.op) {
       case "-":
-        return arg1 - arg2;
+        return checkNumber(arg1 - arg2);
       case "+":
-        return arg1 + arg2;
+        return checkNumber(arg1 + arg2);
       case "*":
-        return arg1 * arg2;
+        return checkNumber(arg1 * arg2);
       case "/":
         if (arg2 === 0) {
-          throw new MathError(`Division by zero`);
+          throw new DivisionByZeroError();
         }
-        return arg1 / arg2;
+        return checkNumber(arg1 / arg2);
       case "^":
-        return arg1 ** arg2;
+        return checkNumber(arg1 ** arg2);
     }
   }
 
@@ -106,13 +106,13 @@ export class FunctionExp extends Exp {
     const args = this.args.map((arg) => arg.eval(eq));
     switch (numArgs) {
       case 1:
-        return func(args[0]);
+        return checkNumber(func(args[0]));
       case 2:
-        return func(args[0], args[1]);
+        return checkNumber(func(args[0], args[1]));
       case 3:
-        return func(args[0], args[1], args[2]);
+        return checkNumber(func(args[0], args[1], args[2]));
       default:
-        return func(...args);
+        return checkNumber(func(...args));
     }
   }
 
@@ -159,6 +159,7 @@ export class Binding {
     } catch (err: any) {
       throw new CircuitError(
         `Cannot set property [${this.name}] of device [${this.device.id}]: ${err}`,
+        { cause: err },
       );
     }
   }
@@ -186,4 +187,11 @@ export class Bindings implements Iterable<Binding> {
   [Symbol.iterator](): Iterator<Binding> {
     return this.#list[Symbol.iterator]();
   }
+}
+
+function checkNumber(v: number): number {
+  if (!Number.isFinite(v)) {
+    throw new NumericOverflowError();
+  }
+  return v;
 }
