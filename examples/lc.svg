@@ -124,7 +124,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M64.14,50.45 L431.58,50.45 M566.43,50.45 L574.82,50.45  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M64.14,50.45 L448.36,50.45 M566.43,50.45 L574.82,50.45  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M64.14,50.45 L73.14,50.45 M574.82,50.45 L565.82,50.45  '/>	<g transform="translate(55.75,54.35)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
 		<text><tspan font-family="Arial" > 8</tspan></text>
@@ -209,10 +209,10 @@
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
-	<g id="gnuplot_plot_1" ><title>R1:R=100m</title>
+	<g id="gnuplot_plot_1" ><title>R1=100m</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,39.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >R1:R=100m</tspan></text>
+		<text><tspan font-family="Arial" >R1=100m</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -843,10 +843,10 @@
 		L573.80,172.14 L573.90,172.36 L574.00,172.58 L574.11,172.81 L574.21,173.05 L574.31,173.30 L574.41,173.55 L574.51,173.81
 		L574.62,174.08 L574.72,174.35 L574.82,174.63  '/></g>
 	</g>
-	<g id="gnuplot_plot_2" ><title>R1:R=500m</title>
+	<g id="gnuplot_plot_2" ><title>R1=500m</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,57.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >R1:R=500m</tspan></text>
+		<text><tspan font-family="Arial" >R1=500m</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -1477,10 +1477,10 @@
 		L573.80,177.13 L573.90,177.20 L574.00,177.28 L574.11,177.37 L574.21,177.45 L574.31,177.54 L574.41,177.63 L574.51,177.72
 		L574.62,177.82 L574.72,177.92 L574.82,178.02  '/></g>
 	</g>
-	<g id="gnuplot_plot_3" ><title>R1:R=900m</title>
+	<g id="gnuplot_plot_3" ><title>R1=900m</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,75.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >R1:R=900m</tspan></text>
+		<text><tspan font-family="Arial" >R1=900m</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">

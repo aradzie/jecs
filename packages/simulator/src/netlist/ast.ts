@@ -1,13 +1,3 @@
-const builtinPos = Object.freeze<Position>({
-  offset: 0,
-  line: 0,
-  column: 0,
-});
-const builtinLocation = Object.freeze<Location>({
-  start: builtinPos,
-  end: builtinPos,
-});
-
 export interface Position {
   readonly offset: number;
   readonly line: number;
@@ -96,8 +86,7 @@ export interface TranItemNode extends Node {
 }
 
 export interface SweepNode extends Node {
-  readonly instanceId: Identifier;
-  readonly propertyId: Identifier;
+  readonly id: Identifier;
   readonly from: number;
   readonly to: number;
   readonly points: number;
@@ -106,9 +95,9 @@ export interface SweepNode extends Node {
 export type ExpressionNode =
   | UnaryExpNode
   | BinaryExpNode
-  | LiteralExpNode
-  | VarExpNode
-  | FuncExpNode;
+  | ConstantExpNode
+  | VariableExpNode
+  | FunctionExpNode;
 
 export interface UnaryExpNode extends Node {
   readonly type: "unary";
@@ -123,50 +112,18 @@ export interface BinaryExpNode extends Node {
   readonly arg2: ExpressionNode;
 }
 
-export interface LiteralExpNode extends Node {
-  readonly type: "literal";
+export interface ConstantExpNode extends Node {
+  readonly type: "constant";
   readonly value: number;
 }
 
-export interface VarExpNode extends Node, HasId {
-  readonly type: "var";
+export interface VariableExpNode extends Node, HasId {
+  readonly type: "variable";
   readonly id: Identifier;
 }
 
-export interface FuncExpNode extends Node, HasId {
-  readonly type: "func";
+export interface FunctionExpNode extends Node, HasId {
+  readonly type: "function";
   readonly id: Identifier;
   readonly args: readonly ExpressionNode[];
 }
-
-export function equation(name: string, value: ExpressionNode): EquationItemNode {
-  return {
-    type: "equation",
-    id: { name },
-    value,
-  };
-}
-
-export function literalExp(value: number): LiteralExpNode {
-  return { type: "literal", value };
-}
-
-export function isConstant(exp: ExpressionNode): boolean {
-  switch (exp.type) {
-    case "var":
-      return false;
-    case "literal":
-      return true;
-    case "unary":
-      return isConstant(exp.arg);
-    case "binary":
-      return isConstant(exp.arg1) && isConstant(exp.arg2);
-    case "func":
-      return exp.args.every((arg) => isConstant(arg));
-  }
-}
-
-export const builtins: readonly EquationItemNode[] = [
-  equation("$PI", literalExp(Math.PI)),
-  equation("$E", literalExp(Math.E)),
-];

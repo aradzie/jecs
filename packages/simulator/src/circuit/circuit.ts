@@ -1,4 +1,5 @@
 import type { Device } from "./device.js";
+import { Bindings, ConstantExp, Equations } from "./equations.js";
 import { CircuitError } from "./error.js";
 import { Branch, groundNode, Network, Node, Stamper } from "./network.js";
 
@@ -7,6 +8,8 @@ export class Circuit implements Network {
   readonly #nodesById = new Map<string, Node>();
   readonly #devices: Device[] = [];
   readonly #devicesById = new Map<string, Device>();
+  readonly #equations = new Equations();
+  readonly #bindings = new Bindings(this.#equations);
 
   elapsedTime: number;
   timeStep: number;
@@ -32,7 +35,18 @@ export class Circuit implements Network {
     return this.#devices;
   }
 
+  get equations(): Equations {
+    return this.#equations;
+  }
+
+  get bindings(): Bindings {
+    return this.#bindings;
+  }
+
   reset(): void {
+    this.#equations.set("time", new ConstantExp(this.elapsedTime));
+    this.#equations.set("temp", new ConstantExp(this.temp));
+    this.#bindings.setProperties();
     for (const node of this.#nodes) {
       switch (node.type) {
         case "node":

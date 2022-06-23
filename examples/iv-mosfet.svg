@@ -88,7 +88,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M72.53,110.69 L423.19,110.69 M566.43,110.69 L574.82,110.69  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M72.53,110.69 L439.97,110.69 M566.43,110.69 L574.82,110.69  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M72.53,110.69 L81.53,110.69 M574.82,110.69 L565.82,110.69  '/>	<g transform="translate(64.14,114.59)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
 		<text><tspan font-family="Arial" > 0.5</tspan></text>
@@ -97,7 +97,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M72.53,64.35 L423.19,64.35 M566.43,64.35 L574.82,64.35  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M72.53,64.35 L439.97,64.35 M566.43,64.35 L574.82,64.35  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M72.53,64.35 L81.53,64.35 M574.82,64.35 L565.82,64.35  '/>	<g transform="translate(64.14,68.25)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
 		<text><tspan font-family="Arial" > 0.6</tspan></text>
@@ -182,10 +182,10 @@
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
-	<g id="gnuplot_plot_1" ><title>Vgs:V=3</title>
+	<g id="gnuplot_plot_1" ><title>Vgs=3</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,39.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >Vgs:V=3</tspan></text>
+		<text><tspan font-family="Arial" >Vgs=3</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -203,10 +203,10 @@
 		L508.86,337.77 L513.94,337.77 L519.01,337.77 L524.08,337.77 L529.16,337.77 L534.23,337.77 L539.30,337.77 L544.38,337.77
 		L549.45,337.77 L554.53,337.77 L559.60,337.77 L564.67,337.77 L569.75,337.77 L574.82,337.77  '/></g>
 	</g>
-	<g id="gnuplot_plot_2" ><title>Vgs:V=4.75</title>
+	<g id="gnuplot_plot_2" ><title>Vgs=4.75</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,57.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >Vgs:V=4.75</tspan></text>
+		<text><tspan font-family="Arial" >Vgs=4.75</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -224,10 +224,10 @@
 		L508.86,307.35 L513.94,307.35 L519.01,307.35 L524.08,307.35 L529.16,307.35 L534.23,307.35 L539.30,307.35 L544.38,307.35
 		L549.45,307.35 L554.53,307.35 L559.60,307.35 L564.67,307.35 L569.75,307.35 L574.82,307.35  '/></g>
 	</g>
-	<g id="gnuplot_plot_3" ><title>Vgs:V=6.5</title>
+	<g id="gnuplot_plot_3" ><title>Vgs=6.5</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,75.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >Vgs:V=6.5</tspan></text>
+		<text><tspan font-family="Arial" >Vgs=6.5</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -245,10 +245,10 @@
 		L508.86,248.56 L513.94,248.56 L519.01,248.56 L524.08,248.56 L529.16,248.56 L534.23,248.56 L539.30,248.56 L544.38,248.56
 		L549.45,248.56 L554.53,248.56 L559.60,248.56 L564.67,248.56 L569.75,248.56 L574.82,248.56  '/></g>
 	</g>
-	<g id="gnuplot_plot_4" ><title>Vgs:V=8.25</title>
+	<g id="gnuplot_plot_4" ><title>Vgs=8.25</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,93.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >Vgs:V=8.25</tspan></text>
+		<text><tspan font-family="Arial" >Vgs=8.25</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -266,10 +266,10 @@
 		L508.86,161.38 L513.94,161.38 L519.01,161.38 L524.08,161.38 L529.16,161.38 L534.23,161.38 L539.30,161.38 L544.38,161.38
 		L549.45,161.38 L554.53,161.38 L559.60,161.38 L564.67,161.38 L569.75,161.38 L574.82,161.38  '/></g>
 	</g>
-	<g id="gnuplot_plot_5" ><title>Vgs:V=10</title>
+	<g id="gnuplot_plot_5" ><title>Vgs=10</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,111.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >Vgs:V=10</tspan></text>
+		<text><tspan font-family="Arial" >Vgs=10</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">

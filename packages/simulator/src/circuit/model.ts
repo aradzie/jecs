@@ -1,5 +1,5 @@
 import type { DeviceClass } from "./device.js";
-import { Properties } from "./properties.js";
+import { Properties, PropertyValue } from "./properties.js";
 
 export class Model {
   readonly modelId: string;
@@ -9,7 +9,7 @@ export class Model {
   constructor(
     modelId: string,
     deviceClass: DeviceClass,
-    parameters: Record<string, number | string> = {},
+    parameters: Record<string, PropertyValue> = {},
   ) {
     this.modelId = modelId;
     this.deviceClass = deviceClass;

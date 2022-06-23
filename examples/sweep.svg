@@ -97,7 +97,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M80.92,126.14 L354.85,126.14 M472.92,126.14 L481.31,126.14  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M80.92,126.14 L371.63,126.14 M472.92,126.14 L481.31,126.14  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M80.92,126.14 L89.92,126.14  '/>	<g transform="translate(72.53,130.04)" stroke="none" fill="rgb(148,0,211)" font-family="Arial" font-size="12.00"  text-anchor="end">
 		<text><tspan font-family="Arial" > 0.1</tspan></text>
@@ -106,7 +106,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M80.92,90.10 L354.85,90.10 M472.92,90.10 L481.31,90.10  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M80.92,90.10 L371.63,90.10 M472.92,90.10 L481.31,90.10  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M80.92,90.10 L89.92,90.10  '/>	<g transform="translate(72.53,94.00)" stroke="none" fill="rgb(148,0,211)" font-family="Arial" font-size="12.00"  text-anchor="end">
 		<text><tspan font-family="Arial" > 0.15</tspan></text>
@@ -115,7 +115,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M80.92,54.05 L354.85,54.05 M472.92,54.05 L481.31,54.05  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M80.92,54.05 L371.63,54.05 M472.92,54.05 L481.31,54.05  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M80.92,54.05 L89.92,54.05  '/>	<g transform="translate(72.53,57.95)" stroke="none" fill="rgb(148,0,211)" font-family="Arial" font-size="12.00"  text-anchor="end">
 		<text><tspan font-family="Arial" > 0.2</tspan></text>
@@ -244,10 +244,10 @@
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
-	<g id="gnuplot_plot_1" ><title>C1:C=1μ</title>
+	<g id="gnuplot_plot_1" ><title>C1=1μ</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(413.58,39.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >C1:C=1μ</tspan></text>
+		<text><tspan font-family="Arial" >C1=1μ</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -628,10 +628,10 @@
 		L479.98,303.84 L480.11,303.67 L480.24,303.50 L480.38,303.32 L480.51,303.14 L480.64,302.95 L480.78,302.76 L480.91,302.56
 		L481.04,302.36 L481.18,302.16 L481.31,301.95  '/></g>
 	</g>
-	<g id="gnuplot_plot_2" ><title>C1:C=2μ</title>
+	<g id="gnuplot_plot_2" ><title>C1=2μ</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(413.58,57.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >C1:C=2μ</tspan></text>
+		<text><tspan font-family="Arial" >C1=2μ</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -1012,10 +1012,10 @@
 		L479.98,251.76 L480.11,251.73 L480.24,251.70 L480.38,251.66 L480.51,251.62 L480.64,251.58 L480.78,251.53 L480.91,251.49
 		L481.04,251.44 L481.18,251.39 L481.31,251.33  '/></g>
 	</g>
-	<g id="gnuplot_plot_3" ><title>C1:C=3μ</title>
+	<g id="gnuplot_plot_3" ><title>C1=3μ</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(413.58,75.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >C1:C=3μ</tspan></text>
+		<text><tspan font-family="Arial" >C1=3μ</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -1400,10 +1400,10 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 	</g>
-	<g id="gnuplot_plot_5" ><title>C1:C=1μ</title>
+	<g id="gnuplot_plot_5" ><title>C1=1μ</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(413.58,93.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >C1:C=1μ</tspan></text>
+		<text><tspan font-family="Arial" >C1=1μ</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -1784,10 +1784,10 @@
 		L479.98,117.89 L480.11,117.14 L480.24,116.39 L480.38,115.64 L480.51,114.89 L480.64,114.14 L480.78,113.40 L480.91,112.65
 		L481.04,111.91 L481.18,111.17 L481.31,110.42  '/></g>
 	</g>
-	<g id="gnuplot_plot_6" ><title>C1:C=2μ</title>
+	<g id="gnuplot_plot_6" ><title>C1=2μ</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(413.58,111.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >C1:C=2μ</tspan></text>
+		<text><tspan font-family="Arial" >C1=2μ</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -2168,10 +2168,10 @@
 		L479.98,136.64 L480.11,135.84 L480.24,135.04 L480.38,134.24 L480.51,133.44 L480.64,132.64 L480.78,131.84 L480.91,131.04
 		L481.04,130.24 L481.18,129.44 L481.31,128.65  '/></g>
 	</g>
-	<g id="gnuplot_plot_7" ><title>C1:C=3μ</title>
+	<g id="gnuplot_plot_7" ><title>C1=3μ</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(413.58,129.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >C1:C=3μ</tspan></text>
+		<text><tspan font-family="Arial" >C1=3μ</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">

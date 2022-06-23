@@ -108,7 +108,7 @@
 		M114.48,115.18 L118.98,115.18 M574.82,115.18 L570.32,115.18 M114.48,112.81 L118.98,112.81 M574.82,112.81 L570.32,112.81
 		 '/></g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M114.48,110.69 L414.80,110.69 M566.43,110.69 L574.82,110.69  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M114.48,110.69 L439.97,110.69 M566.43,110.69 L574.82,110.69  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M114.48,110.69 L123.48,110.69 M574.82,110.69 L565.82,110.69  '/>	<g transform="translate(106.09,114.59)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
 		<text><tspan font-family="Arial" >0.0100000</tspan></text>
@@ -121,7 +121,7 @@
 		M114.48,68.84 L118.98,68.84 M574.82,68.84 L570.32,68.84 M114.48,66.47 L118.98,66.47 M574.82,66.47 L570.32,66.47
 		 '/></g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M114.48,64.35 L414.80,64.35 M566.43,64.35 L574.82,64.35  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M114.48,64.35 L439.97,64.35 M566.43,64.35 L574.82,64.35  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M114.48,64.35 L123.48,64.35 M574.82,64.35 L565.82,64.35  '/>	<g transform="translate(106.09,68.25)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
 		<text><tspan font-family="Arial" >0.1000000</tspan></text>
@@ -179,7 +179,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M421.37,342.40 L421.37,135.01 M421.37,27.01 L421.37,18.01  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M421.37,342.40 L421.37,18.01  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M421.37,342.40 L421.37,333.40 M421.37,18.01 L421.37,27.01  '/>	<g transform="translate(421.37,364.30)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="middle">
 		<text><tspan font-family="Arial" > 0.7</tspan></text>
@@ -219,10 +219,10 @@
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
-	<g id="gnuplot_plot_1" ><title>DUT:temp=0</title>
+	<g id="gnuplot_plot_1" ><title>tempd=0</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,39.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >DUT:temp=0</tspan></text>
+		<text><tspan font-family="Arial" >temp</tspan><tspan font-family="Arial"  font-size="9.6" dy="3.60px">d</tspan><tspan font-family="Arial"  font-size="12.0" dy="-3.60px">=0</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -240,10 +240,10 @@
 		L514.37,107.06 L519.02,104.46 L523.67,101.87 L528.32,99.28 L532.97,96.69 L537.62,94.10 L542.27,91.51 L546.92,88.92
 		L551.57,86.33 L556.22,83.74 L560.87,81.15 L565.52,78.55 L570.17,75.96 L574.82,73.37  '/></g>
 	</g>
-	<g id="gnuplot_plot_2" ><title>DUT:temp=10</title>
+	<g id="gnuplot_plot_2" ><title>tempd=10</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,57.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >DUT:temp=10</tspan></text>
+		<text><tspan font-family="Arial" >temp</tspan><tspan font-family="Arial"  font-size="9.6" dy="3.60px">d</tspan><tspan font-family="Arial"  font-size="12.0" dy="-3.60px">=10</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -261,10 +261,10 @@
 		L514.37,94.33 L519.02,91.83 L523.67,89.33 L528.32,86.84 L532.97,84.34 L537.62,81.84 L542.27,79.34 L546.92,76.84
 		L551.57,74.34 L556.22,71.84 L560.87,69.34 L565.52,66.84 L570.17,64.34 L574.82,61.84  '/></g>
 	</g>
-	<g id="gnuplot_plot_3" ><title>DUT:temp=20</title>
+	<g id="gnuplot_plot_3" ><title>tempd=20</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,75.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >DUT:temp=20</tspan></text>
+		<text><tspan font-family="Arial" >temp</tspan><tspan font-family="Arial"  font-size="9.6" dy="3.60px">d</tspan><tspan font-family="Arial"  font-size="12.0" dy="-3.60px">=20</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -282,10 +282,10 @@
 		L514.37,82.41 L519.02,79.99 L523.67,77.58 L528.32,75.16 L532.97,72.75 L537.62,70.34 L542.27,67.92 L546.92,65.51
 		L551.57,63.09 L556.22,60.68 L560.87,58.27 L565.52,55.85 L570.17,53.44 L574.82,51.02  '/></g>
 	</g>
-	<g id="gnuplot_plot_4" ><title>DUT:temp=30</title>
+	<g id="gnuplot_plot_4" ><title>tempd=30</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,93.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >DUT:temp=30</tspan></text>
+		<text><tspan font-family="Arial" >temp</tspan><tspan font-family="Arial"  font-size="9.6" dy="3.60px">d</tspan><tspan font-family="Arial"  font-size="12.0" dy="-3.60px">=30</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -303,10 +303,10 @@
 		L514.37,71.20 L519.02,68.87 L523.67,66.53 L528.32,64.20 L532.97,61.86 L537.62,59.53 L542.27,57.19 L546.92,54.86
 		L551.57,52.52 L556.22,50.19 L560.87,47.85 L565.52,45.52 L570.17,43.18 L574.82,40.85  '/></g>
 	</g>
-	<g id="gnuplot_plot_5" ><title>DUT:temp=40</title>
+	<g id="gnuplot_plot_5" ><title>tempd=40</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,111.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >DUT:temp=40</tspan></text>
+		<text><tspan font-family="Arial" >temp</tspan><tspan font-family="Arial"  font-size="9.6" dy="3.60px">d</tspan><tspan font-family="Arial"  font-size="12.0" dy="-3.60px">=40</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -324,10 +324,10 @@
 		L514.37,60.64 L519.02,58.38 L523.67,56.12 L528.32,53.86 L532.97,51.60 L537.62,49.34 L542.27,47.08 L546.92,44.82
 		L551.57,42.56 L556.22,40.30 L560.87,38.04 L565.52,35.78 L570.17,33.52 L574.82,31.26  '/></g>
 	</g>
-	<g id="gnuplot_plot_6" ><title>DUT:temp=50</title>
+	<g id="gnuplot_plot_6" ><title>tempd=50</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,129.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >DUT:temp=50</tspan></text>
+		<text><tspan font-family="Arial" >temp</tspan><tspan font-family="Arial"  font-size="9.6" dy="3.60px">d</tspan><tspan font-family="Arial"  font-size="12.0" dy="-3.60px">=50</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">

@@ -1,6 +1,6 @@
-V:Vds nd gnd
-V:Vgs ng gnd
+V:Vds nd gnd V=$Vds
+V:Vgs ng gnd V=$Vgs
 MOSFET:DUT gnd ng nd gnd @NMOS
 .dc
-  sweep Vgs V 3 10 5
-  sweep Vds V 0 10 100
+  sweep $Vgs 3 10 5
+  sweep $Vds 0 10 100

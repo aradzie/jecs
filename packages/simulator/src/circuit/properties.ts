@@ -88,6 +88,11 @@ export class Properties {
     return true;
   }
 
+  has(name: string): boolean {
+    this.prop(name);
+    return this.values.has(name);
+  }
+
   set(name: string, value: PropertyValue): this {
     const property = this.prop(name);
     switch (property.type) {

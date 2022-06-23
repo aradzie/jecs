@@ -26,8 +26,8 @@ Item =
 
 InstanceItem
   = deviceId:Identifier ":" instanceId:Identifier
-    _ nodes:NodeList
-    _ modelId:ModelIdentifier?
+    _ nodes:NodeIdList
+    _ modelId:ModelId?
     _ properties:PropertyList
     _ LineEnd
     {
@@ -41,14 +41,14 @@ InstanceItem
       };
     }
 
-ModelIdentifier
+ModelId
   = "@" @Identifier
 
-NodeList
-  = ids:( _ @NodeIdentifier )+
+NodeIdList
+  = ids:( _ @NodeId )+
     { return ids; }
 
-NodeIdentifier
+NodeId
   = @Identifier !( _ "=" )
 
 PropertyList
@@ -68,13 +68,13 @@ PropertyValue
 ModelItem
   = ".model"
     _ deviceId:Identifier
-    _ modelId:ModelIdentifier
+    _ modelId:ModelId
     _ properties:PropertyList
     _ LineEnd
     { return { type: "model", deviceId, modelId, properties }; }
 
 EquationItem
-  = ".eq" _ id:Variable _ "=" _ value:Expression _ LineEnd
+  = ".eq" _ id:VariableId _ "=" _ value:Expression _ LineEnd
     { return { type: "equation", id, value, }; }
 
 ActionItem
@@ -91,12 +91,11 @@ TranAnalysisItem
 
 Sweep
   = "sweep"
-    _ instanceId:Identifier
-    _ propertyId:Identifier
+    _ id:VariableId
     _ from:Number
     _ to:Number
     _ points:Number
-    { return { type: "sweep", instanceId, propertyId, from, to, points } }
+    { return { type: "sweep", id, from, to, points } }
 
 Expression
   = AdditiveExp
@@ -120,29 +119,28 @@ UnaryExp
 
 PrimaryExp
   = "(" _ @Expression _ ")"
-  / LiteralExp
-  / VarExp
-  / FuncExp
+  / ConstantExp
+  / VariableExp
+  / FunctionExp
 
-LiteralExp
+ConstantExp
   = value:Number
-    { return { type: "literal", value }; }
+    { return { type: "constant", value }; }
 
-VarExp
-  = id:Variable
-    { return { type: "var", id }; }
+VariableExp
+  = id:VariableId
+    { return { type: "variable", id }; }
 
-FuncExp
+FunctionExp
   = id:Identifier _ args:Args
-    { return { type: "func", id, args }; }
+    { return { type: "function", id, args }; }
 
 Args
   = "(" _ args:( _ @Expression )* _ ")"
     { return args; }
 
-Variable "variable"
-  = $( "$" [_a-zA-Z] [_a-zA-Z0-9]* )
-    { return { name: text()/*, location: location()*/ }; }
+VariableId
+  = "$" @Identifier
 
 Identifier "identifier"
   = $( [_a-zA-Z] [_a-zA-Z0-9]* )

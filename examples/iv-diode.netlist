@@ -1,5 +1,5 @@
-V:V1 np gnd
-Diode:DUT np gnd @D
+V:V1 np gnd V=$v_d
+Diode:DUT np gnd @D temp=$temp_d
 .dc
-  sweep DUT temp 0 50 6
-  sweep V1 V 0.5 0.8 100
+  sweep $temp_d 0 50 6
+  sweep $v_d 0.5 0.8 100

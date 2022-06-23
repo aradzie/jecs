@@ -2,8 +2,7 @@ import { formatNumber } from "../util/format.js";
 
 export class Sweep implements Iterable<number> {
   constructor(
-    readonly instanceId: string,
-    readonly propertyId: string,
+    readonly variableId: string,
     readonly from: number,
     readonly to: number,
     readonly points: number,
@@ -71,7 +70,7 @@ export type Visitor = {
 };
 
 export const groupName = (steps: readonly Step[]): string => {
-  const stepName = ({ sweep: { instanceId, propertyId }, value }: Step): string =>
-    `${instanceId}:${propertyId}=${formatNumber(value)}`;
+  const stepName = ({ sweep: { variableId }, value }: Step): string =>
+    `${variableId}=${formatNumber(value)}`;
   return `"${steps.map(stepName).join(", ")}"`;
 };

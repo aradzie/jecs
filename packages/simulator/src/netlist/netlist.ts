@@ -1,8 +1,17 @@
 import { Analysis, DcAnalysis, TranAnalysis } from "../analysis/analysis.js";
-import type { Table } from "../analysis/dataset.js";
 import { Sweep } from "../analysis/sweep.js";
 import { Circuit } from "../circuit/circuit.js";
 import { Device, DeviceClass } from "../circuit/device.js";
+import {
+  BinaryExp,
+  Binding,
+  ConstantExp,
+  Exp,
+  FunctionExp,
+  UnaryExp,
+  VariableExp,
+} from "../circuit/equations.js";
+import { getFunction } from "../circuit/functions.js";
 import { getDeviceClass } from "../circuit/library.js";
 import { Model } from "../circuit/model.js";
 import type { Node } from "../circuit/network.js";
@@ -10,6 +19,7 @@ import { standardModels } from "../device/models.js";
 import type {
   DcItemNode,
   EquationItemNode,
+  ExpressionNode,
   InstanceItemNode,
   ModelItemNode,
   NetlistNode,
@@ -19,38 +29,24 @@ import type {
 } from "./ast.js";
 import { NetlistError } from "./error.js";
 import { parse } from "./parser.js";
-import { Variables } from "./variables.js";
 
 export class Netlist {
   static parse(
     content: string,
     {
-      variables = new Variables(),
       models = [],
     }: {
-      readonly variables?: Variables;
       readonly models?: readonly Model[];
     } = {},
   ): Netlist {
     const document = parse(content);
-    const builder = new NetlistBuilder(document, variables);
+    const builder = new NetlistBuilder(document);
     builder.addModels(standardModels);
     builder.addModels(models);
     return builder.build();
   }
 
-  constructor(
-    readonly circuit: Circuit,
-    readonly variables: Variables,
-    readonly analyses: readonly Analysis[],
-  ) {}
-
-  runAnalyses(callback: (analysis: Analysis, table: Table) => void): void {
-    for (const analysis of this.analyses) {
-      const table = analysis.run(this.circuit);
-      callback(analysis, table);
-    }
-  }
+  constructor(readonly circuit: Circuit, readonly analyses: readonly Analysis[]) {}
 }
 
 interface Instance {
@@ -61,21 +57,15 @@ interface Instance {
 }
 
 class NetlistBuilder {
-  readonly circuit = new Circuit();
   readonly document: NetlistNode;
-  readonly variables: Variables;
-  readonly models: Map<string, Model>;
-  readonly nodes: Map<string, Node>;
-  readonly instances: Map<string, Instance>;
-  readonly analyses: Analysis[];
+  readonly circuit = new Circuit();
+  readonly models = new Map<string, Model>();
+  readonly nodes = new Map<string, Node>();
+  readonly instances = new Map<string, Instance>();
+  readonly analyses: Analysis[] = [];
 
-  constructor(document: NetlistNode, variables: Variables) {
+  constructor(document: NetlistNode) {
     this.document = document;
-    this.variables = variables;
-    this.models = new Map();
-    this.nodes = new Map();
-    this.instances = new Map();
-    this.analyses = [];
   }
 
   addModels(models: readonly Model[]): void {
@@ -96,7 +86,7 @@ class NetlistBuilder {
       this.setInstanceProperties(instance);
     }
     this.collectAnalyses();
-    return new Netlist(this.circuit, this.variables, this.analyses);
+    return new Netlist(this.circuit, this.analyses);
   }
 
   collectEquations(): void {
@@ -108,7 +98,7 @@ class NetlistBuilder {
   }
 
   addEquation(item: EquationItemNode): void {
-    this.variables.setEquation(item);
+    this.circuit.equations.set(item.id.name, toExp(item.value));
   }
 
   collectModels(): void {
@@ -124,7 +114,21 @@ class NetlistBuilder {
     const model = new Model(item.modelId.name, deviceClass);
     for (const property of item.properties) {
       try {
-        model.properties.set(property.id.name, this.variables.getValue(property.value));
+        switch (property.value.type) {
+          case "string": {
+            model.properties.set(property.id.name, property.value.value);
+            break;
+          }
+          case "exp": {
+            const exp = toExp(property.value.value);
+            if (exp.isConstant()) {
+              model.properties.set(property.id.name, exp.eval(this.circuit.equations));
+            } else {
+              throw new NetlistError(`Model properties cannot depend on variables.`);
+            }
+            break;
+          }
+        }
       } catch (err: any) {
         throw new NetlistError(
           `Error in model [${item.modelId.name}]: ` +
@@ -208,7 +212,20 @@ class NetlistBuilder {
 
     for (const property of instance.item.properties) {
       try {
-        instance.device.properties.set(property.id.name, this.variables.getValue(property.value));
+        switch (property.value.type) {
+          case "string":
+            instance.device.properties.set(property.id.name, property.value.value);
+            break;
+          case "exp": {
+            const exp = toExp(property.value.value);
+            if (exp.isConstant()) {
+              instance.device.properties.set(property.id.name, exp.eval(this.circuit.equations));
+            } else {
+              this.circuit.bindings.add(new Binding(instance.device, property.id.name, exp));
+              break;
+            }
+          }
+        }
       } catch (err: any) {
         throw new NetlistError(
           `Error in instance [${instance.item.instanceId.name}]: ` +
@@ -245,31 +262,53 @@ class NetlistBuilder {
     this.analyses.push(analysis);
   }
 
-  private setAnalysisProperties(properties: readonly PropertyNode[], analysis: Analysis) {
-    for (const { id, value } of properties) {
+  private setAnalysisProperties(properties: readonly PropertyNode[], analysis: Analysis): void {
+    for (const property of properties) {
       try {
-        analysis.properties.set(id.name, this.variables.getValue(value));
+        switch (property.value.type) {
+          case "string":
+            analysis.properties.set(property.id.name, property.value.value);
+            break;
+          case "exp": {
+            const exp = toExp(property.value.value);
+            if (exp.isConstant()) {
+              analysis.properties.set(property.id.name, exp.eval(this.circuit.equations));
+            } else {
+              throw new NetlistError(`Analysis properties cannot depend on variables.`);
+            }
+            break;
+          }
+        }
       } catch (err: any) {
         throw new NetlistError(
           `Error in analysis properties: ` + //
-            `Invalid property [${id.name}]. ${err.message}`,
+            `Invalid property [${property.id.name}]. ${err.message}`,
         );
       }
     }
   }
 
   private addAnalysisSweeps(sweeps: readonly SweepNode[], analysis: Analysis) {
-    for (const { instanceId, propertyId, from, to, points } of sweeps) {
-      const instance = this.instances.get(instanceId.name);
-      if (instance == null) {
-        throw new NetlistError(`Error in analysis: Unknown sweep instance [${instanceId.name}].`);
-      }
-      try {
-        instance.device.properties.prop(propertyId.name);
-      } catch {
-        throw new NetlistError(`Error in analysis: Unknown sweep property [${propertyId.name}].`);
-      }
-      analysis.sweeps.push(new Sweep(instanceId.name, propertyId.name, from, to, points));
+    for (const { id, from, to, points } of sweeps) {
+      analysis.sweeps.push(new Sweep(id.name, from, to, points));
     }
+  }
+}
+
+function toExp(node: ExpressionNode): Exp {
+  switch (node.type) {
+    case "constant":
+      return new ConstantExp(node.value);
+    case "unary":
+      return new UnaryExp(node.op, toExp(node.arg));
+    case "binary":
+      return new BinaryExp(node.op, toExp(node.arg1), toExp(node.arg2));
+    case "variable":
+      return new VariableExp(node.id.name);
+    case "function":
+      return new FunctionExp(
+        getFunction(node.id.name, node.args.length),
+        node.args.map((arg) => toExp(arg)),
+      );
   }
 }

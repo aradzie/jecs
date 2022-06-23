@@ -1,5 +1,6 @@
 import { EventEmitter } from "events";
 import type { Circuit } from "../circuit/circuit.js";
+import { ConstantExp } from "../circuit/equations.js";
 import { Properties } from "../circuit/properties.js";
 import { logger } from "../util/logging.js";
 import { makeTableBuilder, Table, TableBuilder } from "./dataset.js";
@@ -61,8 +62,8 @@ export class DcAnalysis extends Analysis {
       enter: (sweep, level, steps) => {
         table.group(groupName(steps));
       },
-      set: ({ instanceId, propertyId }, value) => {
-        circuit.getDevice(instanceId).properties.set(propertyId, value);
+      set: ({ variableId }, value) => {
+        circuit.equations.set(variableId, new ConstantExp(value));
       },
       end: () => {
         circuit.elapsedTime = 0;
@@ -97,8 +98,8 @@ export class TranAnalysis extends Analysis {
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {},
-      set: ({ instanceId, propertyId }, value) => {
-        circuit.getDevice(instanceId).properties.set(propertyId, value);
+      set: ({ variableId }, value) => {
+        circuit.equations.set(variableId, new ConstantExp(value));
       },
       end: (steps) => {
         if (steps.length > 0) {

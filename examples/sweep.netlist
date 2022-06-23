@@ -1,5 +1,5 @@
 Vac:Vin pow gnd V=1 f=1k
 R:R1 pow vout R=1k
-C:C1 vout gnd C=100u
+C:C1 vout gnd C=$C1
 R:R2 vout gnd R=1k
-.tran stopTime=3m timeStep=1u sweep C1 C 1u 3u 3
+.tran stopTime=3m timeStep=1u sweep $C1 1u 3u 3

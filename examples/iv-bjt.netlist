@@ -1,6 +1,6 @@
-V:Vce nc gnd
-V:Vbe nb gnd
+V:Vce nc gnd V=$Vce
+V:Vbe nb gnd V=$Vbe
 BJT:DUT gnd nb nc @NPN
 .dc
-  sweep Vbe V 0.625 0.65 5
-  sweep Vce V 0 0.3 100
+  sweep $Vbe 0.625 0.65 5
+  sweep $Vce 0 0.3 100

@@ -1,7 +1,7 @@
 V:Vcc nr gnd V=10
-V:Vbe nb gnd
-R:Rload nr nc
+V:Vbe nb gnd V=$Vbe
+R:Rload nr nc R=$Rload
 BJT:Q1 gnd nb nc @NPN
 .dc
-  sweep Rload R 2000 100 5
-  sweep Vbe V 0.5 0.8 100
+  sweep $Rload 2000 100 5
+  sweep $Vbe 0.5 0.8 100

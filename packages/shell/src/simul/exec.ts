@@ -25,11 +25,13 @@ export type Op = {
 
 export function exec(content: string): Result {
   try {
-    const netlist = Netlist.parse(content);
-    netlist.runAnalyses(() => {});
+    const { circuit, analyses } = Netlist.parse(content);
+    for (const analysis of analyses) {
+      analysis.run(circuit);
+    }
     return {
       type: "ok",
-      ops: getOps(netlist.circuit),
+      ops: getOps(circuit),
     };
   } catch (err: unknown) {
     return {
