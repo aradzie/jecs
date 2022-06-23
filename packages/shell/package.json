@@ -28,6 +28,7 @@
   "dependencies": {
     "@jssim/simulator": "*",
     "clsx": "^1.1.1",
+    "events": "^3.3.0",
     "monaco-editor": "^0.28.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",

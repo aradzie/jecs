@@ -21,6 +21,9 @@ module.exports = {
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".json"],
+    fallback: {
+      events: require.resolve("events/"),
+    },
   },
   module: {
     rules: [

@@ -1,17 +1,46 @@
+import { EventEmitter } from "events";
 import type { Circuit } from "../circuit/circuit.js";
 import { Properties } from "../circuit/properties.js";
 import { logger } from "../util/logging.js";
-import { makeTableBuilder, Table } from "./dataset.js";
+import { makeTableBuilder, Table, TableBuilder } from "./dataset.js";
 import { dcProperties, getOptions, tranProperties } from "./options.js";
 import { Solver } from "./solver.js";
 import { groupName, Sweep } from "./sweep.js";
 
-export abstract class Analysis {
+export const analysisStarted = Symbol();
+export const analysisEnded = Symbol();
+export const analysisError = Symbol();
+
+export abstract class Analysis extends EventEmitter {
   readonly sweeps: Sweep[] = [];
 
-  constructor(readonly properties: Properties) {}
+  constructor(readonly properties: Properties) {
+    super();
+  }
 
-  abstract run(circuit: Circuit): Table;
+  run(circuit: Circuit): Table {
+    logger.reset();
+    this.emit(analysisStarted, this);
+    const table = this.createTable(circuit);
+    let err = null;
+    try {
+      this.runImpl(circuit, table);
+    } catch (arg: any) {
+      err = arg;
+    }
+    if (err != null) {
+      this.emit(analysisError, this, err);
+      throw err;
+    } else {
+      const result = table.build();
+      this.emit(analysisEnded, this, result);
+      return result;
+    }
+  }
+
+  protected abstract createTable(circuit: Circuit): TableBuilder;
+
+  protected abstract runImpl(circuit: Circuit, table: TableBuilder): void;
 }
 
 export class DcAnalysis extends Analysis {
@@ -19,12 +48,13 @@ export class DcAnalysis extends Analysis {
     super(new Properties(dcProperties));
   }
 
-  override run(circuit: Circuit): Table {
-    logger.reset();
+  protected override createTable(circuit: Circuit): TableBuilder {
+    return makeTableBuilder(circuit, false);
+  }
 
+  protected override runImpl(circuit: Circuit, table: TableBuilder): void {
     const temp = this.properties.getNumber("temp");
     const options = getOptions(this.properties);
-    const table = makeTableBuilder(circuit, false);
     const solver = new Solver(circuit, options);
 
     Sweep.walk(this.sweeps, {
@@ -45,8 +75,6 @@ export class DcAnalysis extends Analysis {
       },
       leave: (sweep, level, steps) => {},
     });
-
-    return table.build();
   }
 }
 
@@ -55,15 +83,16 @@ export class TranAnalysis extends Analysis {
     super(new Properties(tranProperties));
   }
 
-  override run(circuit: Circuit): Table {
-    logger.reset();
+  protected override createTable(circuit: Circuit): TableBuilder {
+    return makeTableBuilder(circuit, true);
+  }
 
+  protected override runImpl(circuit: Circuit, table: TableBuilder): void {
     const startTime = this.properties.getNumber("startTime");
     const stopTime = this.properties.getNumber("stopTime");
     const timeStep = this.properties.getNumber("timeStep");
     const temp = this.properties.getNumber("temp");
     const options = getOptions(this.properties);
-    const table = makeTableBuilder(circuit, true);
     const solver = new Solver(circuit, options);
 
     Sweep.walk(this.sweeps, {
@@ -96,7 +125,5 @@ export class TranAnalysis extends Analysis {
       },
       leave: (sweep, level, steps) => {},
     });
-
-    return table.build();
   }
 }
