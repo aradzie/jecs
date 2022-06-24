@@ -1,5 +1,9 @@
 import { Properties, PropertySchema } from "../circuit/properties.js";
 
+export const yes = "yes" as const;
+export const no = "no" as const;
+export type YesNo = typeof yes | typeof no;
+
 const startTime = Properties.number({
   defaultValue: 0,
   range: ["real", ">=", 0],
@@ -12,6 +16,11 @@ const stopTime = Properties.number({
 const timeStep = Properties.number({
   range: ["real", ">", 0],
   title: "simulation time step",
+});
+const dc = Properties.string({
+  defaultValue: "yes",
+  range: ["yes", "no"],
+  title: "start with DC analysis",
 });
 const temp = Properties.number({
   defaultValue: 26.85, // Room temperature.
@@ -56,6 +65,7 @@ export const tranProperties: Record<string, PropertySchema> = {
   startTime,
   stopTime,
   timeStep,
+  dc,
   temp,
   abstol,
   vntol,

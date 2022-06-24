@@ -47,10 +47,6 @@ export class Solver {
     this.gMin = 0;
   }
 
-  reset(): void {
-    vecClear(this.backupX);
-  }
-
   solve(): void {
     logger.simulationStarted();
     if (this.linear) {

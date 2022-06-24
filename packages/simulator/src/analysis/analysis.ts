@@ -70,7 +70,6 @@ export class DcAnalysis extends Analysis {
         circuit.timeStep = NaN;
         circuit.temp = temp;
         circuit.reset();
-        solver.reset();
         solver.solve();
         table.capture(NaN);
       },
@@ -92,6 +91,7 @@ export class TranAnalysis extends Analysis {
     const startTime = this.properties.getNumber("startTime");
     const stopTime = this.properties.getNumber("stopTime");
     const timeStep = this.properties.getNumber("timeStep");
+    const dc = this.properties.getString("dc");
     const temp = this.properties.getNumber("temp");
     const options = getOptions(this.properties);
     const solver = new Solver(circuit, options);
@@ -105,11 +105,18 @@ export class TranAnalysis extends Analysis {
         if (steps.length > 0) {
           table.group(groupName(steps));
         }
-        circuit.elapsedTime = 0;
-        circuit.timeStep = 0;
-        circuit.temp = temp;
-        circuit.reset();
-        solver.reset();
+        if (dc === "yes") {
+          circuit.elapsedTime = 0;
+          circuit.timeStep = NaN;
+          circuit.temp = temp;
+          circuit.reset();
+          solver.solve();
+        } else {
+          circuit.elapsedTime = 0;
+          circuit.timeStep = 0;
+          circuit.temp = temp;
+          circuit.reset();
+        }
         let step = 0;
         let elapsedTime = 0;
         while (elapsedTime <= stopTime) {
