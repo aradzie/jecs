@@ -1,4 +1,4 @@
-import { Device, DeviceState } from "../../circuit/device.js";
+import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
 
 const enum S {
@@ -59,18 +59,20 @@ export class Ammeter extends Device {
     stamper.stampVoltageSource(np, nn, branch, 0);
   }
 
-  override endEval(state: DeviceState): void {
+  override endEval(state: DeviceState, { timeStep }: EvalParams): void {
     const { branch } = this;
     const I = branch.current;
-    const Imax = state[S.Imax];
-    const Imin = state[S.Imin];
-    const rmsSum = state[S.rmsSum] + I * I;
-    const rmsCnt = state[S.rmsCnt] + 1;
     state[S.I] = I;
-    state[S.Imax] = Imax === Imax ? Math.max(Imax, I) : I;
-    state[S.Imin] = Imin === Imin ? Math.min(Imin, I) : I;
-    state[S.Irms] = Math.sqrt(rmsSum / rmsCnt);
-    state[S.rmsSum] = rmsSum;
-    state[S.rmsCnt] = rmsCnt;
+    if (timeStep === timeStep) {
+      const Imax = state[S.Imax];
+      const Imin = state[S.Imin];
+      const rmsSum = state[S.rmsSum] + I * I;
+      const rmsCnt = state[S.rmsCnt] + 1;
+      state[S.Imax] = Imax === Imax ? Math.max(Imax, I) : I;
+      state[S.Imin] = Imin === Imin ? Math.min(Imin, I) : I;
+      state[S.Irms] = Math.sqrt(rmsSum / rmsCnt);
+      state[S.rmsSum] = rmsSum;
+      state[S.rmsCnt] = rmsCnt;
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Device, DeviceState } from "../../circuit/device.js";
+import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Node } from "../../circuit/network.js";
 
 const enum S {
@@ -48,18 +48,20 @@ export class Voltmeter extends Device {
     state[S.rmsCnt] = 0;
   }
 
-  override endEval(state: DeviceState): void {
+  override endEval(state: DeviceState, { timeStep }: EvalParams): void {
     const { np, nn } = this;
     const V = np.voltage - nn.voltage;
-    const Vmax = state[S.Vmax];
-    const Vmin = state[S.Vmin];
-    const rmsSum = state[S.rmsSum] + V * V;
-    const rmsCnt = state[S.rmsCnt] + 1;
     state[S.V] = V;
-    state[S.Vmax] = Vmax === Vmax ? Math.max(Vmax, V) : V;
-    state[S.Vmin] = Vmin === Vmin ? Math.min(Vmin, V) : V;
-    state[S.Vrms] = Math.sqrt(rmsSum / rmsCnt);
-    state[S.rmsSum] = rmsSum;
-    state[S.rmsCnt] = rmsCnt;
+    if (timeStep === timeStep) {
+      const Vmax = state[S.Vmax];
+      const Vmin = state[S.Vmin];
+      const rmsSum = state[S.rmsSum] + V * V;
+      const rmsCnt = state[S.rmsCnt] + 1;
+      state[S.Vmax] = Vmax === Vmax ? Math.max(Vmax, V) : V;
+      state[S.Vmin] = Vmin === Vmin ? Math.min(Vmin, V) : V;
+      state[S.Vrms] = Math.sqrt(rmsSum / rmsCnt);
+      state[S.rmsSum] = rmsSum;
+      state[S.rmsCnt] = rmsCnt;
+    }
   }
 }
