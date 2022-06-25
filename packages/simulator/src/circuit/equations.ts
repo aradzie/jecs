@@ -2,12 +2,13 @@ import { DivisionByZeroError, NumericOverflowError } from "@jssim/math/lib/error
 import type { Device } from "./device.js";
 import { CircuitError } from "./error.js";
 import type { FunctionDef } from "./functions.js";
-import { getFunction } from "./functions.js";
 
 export abstract class Exp {
   abstract eval(eq: Equations): number;
 
   abstract isConstant(): boolean;
+
+  abstract toString(): string;
 }
 
 export class VariableExp extends Exp {
@@ -22,6 +23,10 @@ export class VariableExp extends Exp {
   isConstant(): boolean {
     return false;
   }
+
+  override toString(): string {
+    return `$${this.name}`;
+  }
 }
 
 export class ConstantExp extends Exp {
@@ -35,6 +40,10 @@ export class ConstantExp extends Exp {
 
   isConstant(): boolean {
     return true;
+  }
+
+  toString(): string {
+    return String(this.value);
   }
 }
 
@@ -57,6 +66,15 @@ export class UnaryExp extends Exp {
 
   isConstant(): boolean {
     return this.arg.isConstant();
+  }
+
+  toString(): string {
+    switch (this.op) {
+      case "-":
+        return `-${this.arg}`;
+      case "+":
+        return `+${this.arg}`;
+    }
   }
 }
 
@@ -90,34 +108,27 @@ export class BinaryExp extends Exp {
   isConstant(): boolean {
     return this.arg1.isConstant() && this.arg2.isConstant();
   }
+
+  toString(): string {
+    return `(${this.arg1} ${this.op} ${this.arg2})`;
+  }
 }
 
 export class FunctionExp extends Exp {
-  static forName(name: string, args: readonly Exp[]): FunctionExp {
-    return new FunctionExp(getFunction(name, args.length), args);
-  }
-
-  constructor(readonly func: FunctionDef, readonly args: readonly Exp[]) {
+  constructor(readonly def: FunctionDef, readonly args: readonly Exp[]) {
     super();
   }
 
   eval(eq: Equations): number {
-    const [func, numArgs] = this.func;
-    const args = this.args.map((arg) => arg.eval(eq));
-    switch (numArgs) {
-      case 1:
-        return checkNumber(func(args[0]));
-      case 2:
-        return checkNumber(func(args[0], args[1]));
-      case 3:
-        return checkNumber(func(args[0], args[1], args[2]));
-      default:
-        return checkNumber(func(...args));
-    }
+    return checkNumber(this.def.call(this.args.map((arg) => arg.eval(eq))));
   }
 
   isConstant(): boolean {
     return this.args.every((arg) => arg.isConstant());
+  }
+
+  toString(): string {
+    return `${this.def.name}(${this.args.map((arg) => `${arg}`).join(", ")})`;
   }
 }
 

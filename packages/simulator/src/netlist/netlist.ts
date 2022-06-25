@@ -11,7 +11,7 @@ import {
   UnaryExp,
   VariableExp,
 } from "../circuit/equations.js";
-import { getFunction } from "../circuit/functions.js";
+import { FunctionDef } from "../circuit/functions.js";
 import { getDeviceClass } from "../circuit/library.js";
 import { Model } from "../circuit/model.js";
 import type { Node } from "../circuit/network.js";
@@ -306,9 +306,6 @@ function toExp(node: ExpressionNode): Exp {
     case "variable":
       return new VariableExp(node.id.name);
     case "function":
-      return new FunctionExp(
-        getFunction(node.id.name, node.args.length),
-        node.args.map((arg) => toExp(arg)),
-      );
+      return new FunctionExp(FunctionDef.get(node.id.name), node.args.map(toExp));
   }
 }
