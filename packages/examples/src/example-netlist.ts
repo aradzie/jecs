@@ -12,9 +12,9 @@ BJT:DUT gnd nb nc @NPN
 `);
 
 for (const analysis of analyses) {
-  const table = analysis.run(circuit);
-  console.log(formatSchema(table));
-  console.log(formatData(table));
+  const dataset = analysis.run(circuit);
+  console.log(formatSchema(dataset));
+  console.log(formatData(dataset));
 }
 
 console.log(String(logger));

@@ -3,7 +3,7 @@ import type { Circuit } from "../circuit/circuit.js";
 import { ConstantExp } from "../circuit/equations.js";
 import { Properties } from "../circuit/properties.js";
 import { logger } from "../util/logging.js";
-import { makeTableBuilder, Table, TableBuilder } from "./dataset.js";
+import { Dataset, DatasetBuilder, makeDatasetBuilder } from "./dataset.js";
 import { dcProperties, getOptions, tranProperties } from "./options.js";
 import { Solver } from "./solver.js";
 import { groupName, Sweep } from "./sweep.js";
@@ -19,13 +19,13 @@ export abstract class Analysis extends EventEmitter {
     super();
   }
 
-  run(circuit: Circuit): Table {
+  run(circuit: Circuit): Dataset {
     logger.reset();
     this.emit(analysisStarted, this);
-    const table = this.createTable(circuit);
+    const dataset = this.createDataset(circuit);
     let err = null;
     try {
-      this.runImpl(circuit, table);
+      this.runImpl(circuit, dataset);
     } catch (arg: any) {
       err = arg;
     }
@@ -33,15 +33,15 @@ export abstract class Analysis extends EventEmitter {
       this.emit(analysisError, this, err);
       throw err;
     } else {
-      const result = table.build();
+      const result = dataset.build();
       this.emit(analysisEnded, this, result);
       return result;
     }
   }
 
-  protected abstract createTable(circuit: Circuit): TableBuilder;
+  protected abstract createDataset(circuit: Circuit): DatasetBuilder;
 
-  protected abstract runImpl(circuit: Circuit, table: TableBuilder): void;
+  protected abstract runImpl(circuit: Circuit, dataset: DatasetBuilder): void;
 }
 
 export class DcAnalysis extends Analysis {
@@ -49,18 +49,18 @@ export class DcAnalysis extends Analysis {
     super(new Properties(dcProperties));
   }
 
-  protected override createTable(circuit: Circuit): TableBuilder {
-    return makeTableBuilder(circuit, false);
+  protected override createDataset(circuit: Circuit): DatasetBuilder {
+    return makeDatasetBuilder(circuit, false);
   }
 
-  protected override runImpl(circuit: Circuit, table: TableBuilder): void {
+  protected override runImpl(circuit: Circuit, dataset: DatasetBuilder): void {
     const temp = this.properties.getNumber("temp");
     const options = getOptions(this.properties);
     const solver = new Solver(circuit, options);
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {
-        table.group(groupName(steps));
+        dataset.group(groupName(steps));
       },
       set: ({ variableId }, value) => {
         circuit.equations.set(variableId, new ConstantExp(value));
@@ -71,7 +71,7 @@ export class DcAnalysis extends Analysis {
         circuit.temp = temp;
         circuit.reset();
         solver.solve();
-        table.capture(NaN);
+        dataset.capture(NaN);
       },
       leave: (sweep, level, steps) => {},
     });
@@ -83,11 +83,11 @@ export class TranAnalysis extends Analysis {
     super(new Properties(tranProperties));
   }
 
-  protected override createTable(circuit: Circuit): TableBuilder {
-    return makeTableBuilder(circuit, true);
+  protected override createDataset(circuit: Circuit): DatasetBuilder {
+    return makeDatasetBuilder(circuit, true);
   }
 
-  protected override runImpl(circuit: Circuit, table: TableBuilder): void {
+  protected override runImpl(circuit: Circuit, dataset: DatasetBuilder): void {
     const startTime = this.properties.getNumber("startTime");
     const stopTime = this.properties.getNumber("stopTime");
     const timeStep = this.properties.getNumber("timeStep");
@@ -103,7 +103,7 @@ export class TranAnalysis extends Analysis {
       },
       end: (steps) => {
         if (steps.length > 0) {
-          table.group(groupName(steps));
+          dataset.group(groupName(steps));
         }
         if (dc === "yes") {
           circuit.elapsedTime = 0;
@@ -125,7 +125,7 @@ export class TranAnalysis extends Analysis {
           circuit.temp = temp;
           solver.solve();
           if (elapsedTime >= startTime) {
-            table.capture(elapsedTime);
+            dataset.capture(elapsedTime);
           }
           step += 1;
           elapsedTime = timeStep * step;

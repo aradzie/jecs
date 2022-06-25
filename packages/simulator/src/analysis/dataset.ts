@@ -20,14 +20,14 @@ export interface RowGroup {
 /**
  * A table whose rows are node and device parameters.
  */
-export type Table = {
+export type Dataset = {
   /** Columns. */
   readonly columns: readonly Column[];
   /** Row groups. */
   readonly rowGroups: readonly RowGroup[];
 };
 
-export type TableBuilder = {
+export type DatasetBuilder = {
   /**
    * Start a new row group.
    * @param title Row group title.
@@ -39,9 +39,9 @@ export type TableBuilder = {
    */
   capture(time: number): void;
   /**
-   * Creates and returns a new table with the captured values.
+   * Creates and returns a new dataset with the captured values.
    */
-  build(): Table;
+  build(): Dataset;
 };
 
 type MutableRowGroup = {
@@ -49,10 +49,10 @@ type MutableRowGroup = {
   rows: Float64Array[];
 };
 
-export const makeTableBuilder = (
+export const makeDatasetBuilder = (
   { nodes, devices }: Circuit,
   timeColumn: boolean,
-): TableBuilder => {
+): DatasetBuilder => {
   const columns: Column[] = [];
   const rowGroups: MutableRowGroup[] = [];
 
@@ -93,7 +93,7 @@ export const makeTableBuilder = (
     }
   }
 
-  return new (class implements TableBuilder {
+  return new (class implements DatasetBuilder {
     group(title: string | null): void {
       if (rowGroup.rows.length > 0) {
         rowGroups.push(rowGroup);
@@ -131,7 +131,7 @@ export const makeTableBuilder = (
       rowGroup.rows.push(row);
     }
 
-    build(): Table {
+    build(): Dataset {
       if (rowGroup.rows.length > 0) {
         rowGroups.push(rowGroup);
       }
@@ -144,7 +144,7 @@ export const makeTableBuilder = (
   })();
 };
 
-export const formatSchema = ({ columns }: Table): string => {
+export const formatSchema = ({ columns }: Dataset): string => {
   const lines: string[] = [];
   for (let i = 0; i < columns.length; i++) {
     lines.push(`${i + 1} ${columns[i].name}\n`);
@@ -153,7 +153,7 @@ export const formatSchema = ({ columns }: Table): string => {
 };
 
 export const formatData = (
-  { columns, rowGroups }: Table,
+  { columns, rowGroups }: Dataset,
   { fractionDigits = 10 }: { readonly fractionDigits?: number } = {},
 ): string => {
   const lines: string[] = [];

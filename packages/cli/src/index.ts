@@ -1,4 +1,4 @@
-import { formatData, formatSchema, Table } from "@jssim/simulator/lib/analysis/dataset.js";
+import { Dataset, formatData, formatSchema } from "@jssim/simulator/lib/analysis/dataset.js";
 import { Netlist } from "@jssim/simulator/lib/netlist/netlist.js";
 import { logger } from "@jssim/simulator/lib/util/logging.js";
 import { program } from "commander";
@@ -23,9 +23,9 @@ const run = (name: string, { verbose = false }: { verbose?: boolean }): void => 
   const { circuit, analyses } = Netlist.parse(content);
 
   for (const analysis of analyses) {
-    let table: Table;
+    let dataset: Dataset;
     try {
-      table = analysis.run(circuit);
+      dataset = analysis.run(circuit);
     } catch (err: any) {
       console.error(`Error processing netlist [${netlistPath}]: ${err}`);
       process.exit(1);
@@ -36,14 +36,14 @@ const run = (name: string, { verbose = false }: { verbose?: boolean }): void => 
     const dataPath = join(root, dir, `${name}.data`);
 
     try {
-      writeFileSync(schemaPath, formatSchema(table));
+      writeFileSync(schemaPath, formatSchema(dataset));
     } catch (err: any) {
       console.error(`Cannot write file [${schemaPath}]: ${err}`);
       process.exit(1);
     }
 
     try {
-      writeFileSync(dataPath, formatData(table));
+      writeFileSync(dataPath, formatData(dataset));
     } catch (err: any) {
       console.error(`Cannot write file [${dataPath}]: ${err}`);
       process.exit(1);
