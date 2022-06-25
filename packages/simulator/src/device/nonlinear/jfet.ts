@@ -2,7 +2,7 @@ import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { celsiusToKelvin } from "../../util/unit.js";
-import { gmin } from "../const.js";
+import { gMin } from "../const.js";
 import {
   FetPolarity,
   fetSign,
@@ -158,9 +158,9 @@ export class Jfet extends Device {
     // DIODES
 
     const Igs = pnCurrent(Vgs, Is, Vt);
-    const Ggs = pnConductance(Vgs, Is, Vt) + gmin;
+    const Ggs = pnConductance(Vgs, Is, Vt) + gMin;
     const Igd = pnCurrent(Vgd, Is, Vt);
-    const Ggd = pnConductance(Vgd, Is, Vt) + gmin;
+    const Ggd = pnConductance(Vgd, Is, Vt) + gMin;
 
     // FET
 
@@ -173,7 +173,7 @@ export class Jfet extends Device {
       if (Vgst <= 0) {
         // Cutoff region.
         Ids = 0;
-        Gds = gmin;
+        Gds = gMin;
         Gm = 0;
       } else {
         const c0 = lambda * Vds;
@@ -196,7 +196,7 @@ export class Jfet extends Device {
       if (Vgdt <= 0) {
         // Cutoff region.
         Ids = 0;
-        Gds = gmin;
+        Gds = gMin;
         Gm = 0;
       } else {
         const Vsd = -Vds;

@@ -2,7 +2,7 @@ import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { celsiusToKelvin } from "../../util/unit.js";
-import { gmin } from "../const.js";
+import { gMin } from "../const.js";
 import {
   BjtPolarity,
   bjtSign,
@@ -169,8 +169,8 @@ export class Bjt extends Device {
     const Ir = pnCurrent(Vbc, Is, Vtr);
     const Ie = Ar * Ir - If;
     const Ic = Af * If - Ir;
-    const Gf = pnConductance(Vbe, Is, Vtf) + gmin;
-    const Gr = pnConductance(Vbc, Is, Vtr) + gmin;
+    const Gf = pnConductance(Vbe, Is, Vtf) + gMin;
+    const Gr = pnConductance(Vbc, Is, Vtr) + gMin;
     state[S.Vbe] = pol * Vbe;
     state[S.Vbc] = pol * Vbc;
     state[S.Vce] = pol * (Vbe - Vbc);

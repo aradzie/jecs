@@ -2,7 +2,7 @@ import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { celsiusToKelvin } from "../../util/unit.js";
-import { gmin } from "../const.js";
+import { gMin } from "../const.js";
 import { pnConductance, pnCurrent, pnTemp, pnVoltage } from "./semi.js";
 
 const enum S {
@@ -77,7 +77,7 @@ export class Diode extends Device {
       V = pnVoltage(V, state[S.V], Vt, Vcrit);
     }
     const I = pnCurrent(V, Is, Vt);
-    const G = pnConductance(V, Is, Vt) + gmin;
+    const G = pnConductance(V, Is, Vt) + gMin;
     const P = V * I;
     state[S.V] = V;
     state[S.I] = I;
