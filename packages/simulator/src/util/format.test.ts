@@ -70,26 +70,31 @@ test("format number", (t) => {
 });
 
 test("to exponential", (t) => {
-  t.is(toExponential(0, 1), "0.0e+00");
-  t.is(toExponential(0, 3), "0.000e+00");
+  t.is(toExponential(0, 1), "+0.0e+000");
+  t.is(toExponential(0, 3), "+0.000e+000");
 
-  t.is(toExponential(1e3, 1), "1.0e+03");
-  t.is(toExponential(1e3, 3), "1.000e+03");
-  t.is(toExponential(1e-3, 1), "1.0e-03");
-  t.is(toExponential(1e-3, 3), "1.000e-03");
+  t.is(toExponential(Number.MIN_VALUE, 3), "+4.941e-324");
+  t.is(toExponential(-Number.MIN_VALUE, 3), "-4.941e-324");
+  t.is(toExponential(Number.MAX_VALUE, 3), "+1.798e+308");
+  t.is(toExponential(-Number.MAX_VALUE, 3), "-1.798e+308");
 
-  t.is(toExponential(1e13, 1), "1.0e+13");
-  t.is(toExponential(1e13, 3), "1.000e+13");
-  t.is(toExponential(1e-13, 1), "1.0e-13");
-  t.is(toExponential(1e-13, 3), "1.000e-13");
+  t.is(toExponential(1e3, 1), "+1.0e+003");
+  t.is(toExponential(1e3, 3), "+1.000e+003");
+  t.is(toExponential(1e-3, 1), "+1.0e-003");
+  t.is(toExponential(1e-3, 3), "+1.000e-003");
 
-  t.is(toExponential(-1e3, 1), "-1.0e+03");
-  t.is(toExponential(-1e3, 3), "-1.000e+03");
-  t.is(toExponential(-1e-3, 1), "-1.0e-03");
-  t.is(toExponential(-1e-3, 3), "-1.000e-03");
+  t.is(toExponential(1e13, 1), "+1.0e+013");
+  t.is(toExponential(1e13, 3), "+1.000e+013");
+  t.is(toExponential(1e-13, 1), "+1.0e-013");
+  t.is(toExponential(1e-13, 3), "+1.000e-013");
 
-  t.is(toExponential(-1e13, 1), "-1.0e+13");
-  t.is(toExponential(-1e13, 3), "-1.000e+13");
-  t.is(toExponential(-1e-13, 1), "-1.0e-13");
-  t.is(toExponential(-1e-13, 3), "-1.000e-13");
+  t.is(toExponential(-1e3, 1), "-1.0e+003");
+  t.is(toExponential(-1e3, 3), "-1.000e+003");
+  t.is(toExponential(-1e-3, 1), "-1.0e-003");
+  t.is(toExponential(-1e-3, 3), "-1.000e-003");
+
+  t.is(toExponential(-1e13, 1), "-1.0e+013");
+  t.is(toExponential(-1e13, 3), "-1.000e+013");
+  t.is(toExponential(-1e-13, 1), "-1.0e-013");
+  t.is(toExponential(-1e-13, 3), "-1.000e-013");
 });

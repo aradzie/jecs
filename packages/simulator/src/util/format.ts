@@ -35,11 +35,15 @@ export const formatNumber = (value: number, unit: string | Unit = Unit.UNITLESS)
 };
 
 export const toExponential = (value: number, fractionDigits: number): string => {
-  const s = value.toExponential(fractionDigits);
-  const k = value < 0 ? 1 : 0;
-  if (s.length === fractionDigits + 5 + k) {
-    return s.substring(0, fractionDigits + 4 + k) + "0" + s.substring(fractionDigits + 4 + k);
-  } else {
-    return s;
+  let s = value.toExponential(fractionDigits);
+  if (value >= 0) {
+    s = "+" + s;
   }
+  if (s.length === fractionDigits + 6) {
+    return s.substring(0, fractionDigits + 5) + "00" + s.substring(fractionDigits + 5);
+  }
+  if (s.length === fractionDigits + 7) {
+    return s.substring(0, fractionDigits + 5) + "0" + s.substring(fractionDigits + 5);
+  }
+  return s;
 };
