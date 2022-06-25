@@ -1,4 +1,4 @@
-import { formatNumber } from "../util/format.js";
+import { humanizeNumber } from "../util/format.js";
 
 export class Sweep implements Iterable<number> {
   constructor(
@@ -71,6 +71,6 @@ export type Visitor = {
 
 export const groupName = (steps: readonly Step[]): string => {
   const stepName = ({ sweep: { variableId }, value }: Step): string =>
-    `${variableId}=${formatNumber(value)}`;
+    `${variableId}=${humanizeNumber(value)}`;
   return `"${steps.map(stepName).join(", ")}"`;
 };

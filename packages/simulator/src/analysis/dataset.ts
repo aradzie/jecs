@@ -1,7 +1,7 @@
 import type { Circuit } from "../circuit/circuit.js";
 import type { Device, OutputParam } from "../circuit/device.js";
 import type { Node } from "../circuit/network.js";
-import { toExponential } from "../util/format.js";
+import { FormatNumber, toExponential } from "../util/format.js";
 
 /**
  * Column describes a single dataset value.
@@ -201,7 +201,7 @@ export const formatSchema = ({ columns }: Dataset): string => {
 
 export const formatData = (
   { columns, rowGroups }: Dataset,
-  { fractionDigits = 10 }: { readonly fractionDigits?: number } = {},
+  formatNumber: FormatNumber = toExponential(10),
 ): string => {
   const lines: string[] = [];
   for (const rowGroup of rowGroups) {
@@ -215,7 +215,7 @@ export const formatData = (
     for (const row of rowGroup.rows) {
       const line: string[] = [];
       for (let i = 0; i < columns.length; i++) {
-        line.push(toExponential(row[i], fractionDigits));
+        line.push(formatNumber(row[i]));
       }
       lines.push(line.join(" "));
     }

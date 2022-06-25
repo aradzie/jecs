@@ -1,4 +1,4 @@
-import { formatNumber } from "@jssim/simulator/lib/util/format";
+import { humanizeNumber } from "@jssim/simulator/lib/util/format";
 import clsx from "clsx";
 import type { ReactElement } from "react";
 import type { Result } from "../simul/exec";
@@ -15,7 +15,7 @@ export function ResultPane({ result }: { result: Result }): ReactElement {
                 <tr className={styles.OpTable_row} key={index}>
                   <td className={styles.OpTable__deviceId}>{deviceId}</td>
                   <td className={styles.OpTable__name}>{name}</td>
-                  <td className={styles.OpTable__value}>{formatNumber(value, unit)}</td>
+                  <td className={styles.OpTable__value}>{humanizeNumber(value, unit)}</td>
                 </tr>
               ))}
             </tbody>
