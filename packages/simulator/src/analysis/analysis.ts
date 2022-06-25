@@ -3,7 +3,14 @@ import type { Circuit } from "../circuit/circuit.js";
 import { ConstantExp } from "../circuit/equations.js";
 import { Properties } from "../circuit/properties.js";
 import { logger } from "../util/logging.js";
-import { Dataset, DatasetBuilder, makeDatasetBuilder } from "./dataset.js";
+import {
+  allCircuitProbes,
+  Dataset,
+  DatasetBuilder,
+  makeDatasetBuilder,
+  Probe,
+  timeProbe,
+} from "./dataset.js";
 import { dcProperties, getOptions, tranProperties } from "./options.js";
 import { Solver } from "./solver.js";
 import { groupName, Sweep } from "./sweep.js";
@@ -22,7 +29,7 @@ export abstract class Analysis extends EventEmitter {
   run(circuit: Circuit): Dataset {
     logger.reset();
     this.emit(analysisStarted, this);
-    const dataset = this.createDataset(circuit);
+    const dataset = makeDatasetBuilder(this.getProbes(circuit));
     let err = null;
     try {
       this.runImpl(circuit, dataset);
@@ -39,7 +46,7 @@ export abstract class Analysis extends EventEmitter {
     }
   }
 
-  protected abstract createDataset(circuit: Circuit): DatasetBuilder;
+  protected abstract getProbes(circuit: Circuit): Probe[];
 
   protected abstract runImpl(circuit: Circuit, dataset: DatasetBuilder): void;
 }
@@ -49,8 +56,8 @@ export class DcAnalysis extends Analysis {
     super(new Properties(dcProperties));
   }
 
-  protected override createDataset(circuit: Circuit): DatasetBuilder {
-    return makeDatasetBuilder(circuit, false);
+  protected override getProbes(circuit: Circuit): Probe[] {
+    return [...allCircuitProbes(circuit)];
   }
 
   protected override runImpl(circuit: Circuit, dataset: DatasetBuilder): void {
@@ -71,7 +78,7 @@ export class DcAnalysis extends Analysis {
         circuit.temp = temp;
         circuit.reset();
         solver.solve();
-        dataset.capture(NaN);
+        dataset.capture();
       },
       leave: (sweep, level, steps) => {},
     });
@@ -83,8 +90,8 @@ export class TranAnalysis extends Analysis {
     super(new Properties(tranProperties));
   }
 
-  protected override createDataset(circuit: Circuit): DatasetBuilder {
-    return makeDatasetBuilder(circuit, true);
+  protected override getProbes(circuit: Circuit): Probe[] {
+    return [timeProbe(circuit), ...allCircuitProbes(circuit)];
   }
 
   protected override runImpl(circuit: Circuit, dataset: DatasetBuilder): void {
@@ -125,7 +132,7 @@ export class TranAnalysis extends Analysis {
           circuit.temp = temp;
           solver.solve();
           if (elapsedTime >= startTime) {
-            dataset.capture(elapsedTime);
+            dataset.capture();
           }
           step += 1;
           elapsedTime = timeStep * step;

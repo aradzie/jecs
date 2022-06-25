@@ -1,6 +1,11 @@
 import type { Circuit } from "../circuit/circuit.js";
+import type { Device, OutputParam } from "../circuit/device.js";
+import type { Node } from "../circuit/network.js";
 import { toExponential } from "../util/format.js";
 
+/**
+ * Column describes a single dataset value.
+ */
 export interface Column {
   /** Column name which consists of parameter name with node or device name. */
   readonly name: string;
@@ -10,6 +15,9 @@ export interface Column {
   readonly index: number;
 }
 
+/**
+ * Row group contains all data rows from a single sweep.
+ */
 export interface RowGroup {
   /** Group title. */
   readonly title: string | null;
@@ -18,7 +26,7 @@ export interface RowGroup {
 }
 
 /**
- * A table whose rows are node and device parameters.
+ * Dataset is a simulation result, it contains values captured from a circuit.
  */
 export type Dataset = {
   /** Columns. */
@@ -27,21 +35,104 @@ export type Dataset = {
   readonly rowGroups: readonly RowGroup[];
 };
 
+/**
+ * Probe captures a single dataset value from a circuit after simulation.
+ */
+export type Probe = {
+  /** Probe name. */
+  readonly name: string;
+  /** Probe unit. */
+  readonly unit: string;
+  /** Returns probe value. */
+  measure(): number;
+};
+
+/**
+ * Returns a probe which measures elapsed time from transient simulation.
+ */
+export const timeProbe = (circuit: Circuit): Probe => {
+  return new (class implements Probe {
+    name = "time";
+    unit = "s";
+    measure(): number {
+      return circuit.elapsedTime;
+    }
+  })();
+};
+
+/**
+ * Return a probe which captures node voltage.
+ */
+export const nodeProbe = (node: Node): Probe => {
+  return new (class implements Probe {
+    name = `#${node.id}:V`;
+    unit = "V";
+    measure(): number {
+      return node.voltage;
+    }
+  })();
+};
+
+/**
+ * Returns a probe which captures a device output parameter.
+ */
+export const deviceProbe = (device: Device, op: OutputParam): Probe => {
+  return new (class implements Probe {
+    name = `${device.id}:${op.name}`;
+    unit = op.unit;
+    measure(): number {
+      return device.state[op.index];
+    }
+  })();
+};
+
+export const allNodeProbes = (circuit: Circuit): Probe[] => {
+  const probes: Probe[] = [];
+  for (const node of circuit.nodes) {
+    switch (node.type) {
+      case "node":
+        probes.push(nodeProbe(node));
+        break;
+      case "branch":
+        break;
+    }
+  }
+  return probes;
+};
+
+export const allDeviceProbes = (circuit: Circuit): Probe[] => {
+  const probes: Probe[] = [];
+  for (const device of circuit.devices) {
+    for (const op of device.deviceClass.stateSchema.ops) {
+      probes.push(deviceProbe(device, op));
+    }
+  }
+  return probes;
+};
+
+export const allCircuitProbes = (circuit: Circuit): Probe[] => {
+  return [...allNodeProbes(circuit), ...allDeviceProbes(circuit)];
+};
+
 export type DatasetBuilder = {
   /**
-   * Start a new row group.
+   * Starts a new row group.
    * @param title Row group title.
    */
   group(title: string | null): void;
   /**
-   * Appends a new row to the dataset with node and device output parameters.
-   * @param time The point in time for which the row is captured.
+   * Appends a new row to the dataset with the current probe values.
    */
-  capture(time: number): void;
+  capture(): void;
   /**
-   * Creates and returns a new dataset with the captured values.
+   * Creates and returns a new dataset with all the captured values.
    */
   build(): Dataset;
+};
+
+type ProbeColumn = {
+  readonly probe: Probe;
+  readonly index: number;
 };
 
 type MutableRowGroup = {
@@ -49,11 +140,8 @@ type MutableRowGroup = {
   rows: Float64Array[];
 };
 
-export const makeDatasetBuilder = (
-  { nodes, devices }: Circuit,
-  timeColumn: boolean,
-): DatasetBuilder => {
-  const columns: Column[] = [];
+export const makeDatasetBuilder = (probes: readonly Probe[]): DatasetBuilder => {
+  const columns: ProbeColumn[] = [];
   const rowGroups: MutableRowGroup[] = [];
 
   let rowGroup: MutableRowGroup = {
@@ -61,36 +149,11 @@ export const makeDatasetBuilder = (
     rows: [],
   };
 
-  if (timeColumn) {
-    // Time column.
+  for (const probe of probes) {
     columns.push({
-      name: "time",
-      unit: "S",
+      probe,
       index: columns.length,
     });
-  }
-
-  // Capture node voltages.
-  for (const node of nodes) {
-    if (node.type === "node") {
-      columns.push({
-        name: `#${node.id}:V`,
-        unit: "V",
-        index: columns.length,
-      });
-    }
-  }
-
-  // Capture device output parameters.
-  for (const device of devices) {
-    const { stateSchema } = device.deviceClass;
-    for (const op of stateSchema.ops) {
-      columns.push({
-        name: `${device.id}:${op.name}`,
-        unit: op.unit,
-        index: columns.length,
-      });
-    }
   }
 
   return new (class implements DatasetBuilder {
@@ -104,30 +167,11 @@ export const makeDatasetBuilder = (
       };
     }
 
-    capture(time: number): void {
+    capture(): void {
       const row = new Float64Array(columns.length);
-      let index = 0;
-
-      if (timeColumn) {
-        // Time column.
-        row[index++] = time;
+      for (const { index, probe } of columns) {
+        row[index] = probe.measure();
       }
-
-      // Capture node voltages.
-      for (const node of nodes) {
-        if (node.type === "node") {
-          row[index++] = node.voltage;
-        }
-      }
-
-      // Capture device output parameters.
-      for (const device of devices) {
-        const { stateSchema } = device.deviceClass;
-        for (const op of stateSchema.ops) {
-          row[index++] = device.state[op.index];
-        }
-      }
-
       rowGroup.rows.push(row);
     }
 
@@ -139,7 +183,10 @@ export const makeDatasetBuilder = (
         title: null,
         rows: [],
       };
-      return { columns, rowGroups };
+      return {
+        columns: columns.map(({ probe: { name, unit }, index }) => ({ name, unit, index })),
+        rowGroups,
+      };
     }
   })();
 };
