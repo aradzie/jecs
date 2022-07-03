@@ -1,5 +1,5 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import type { Node, Stamper } from "../../circuit/network.js";
+import type { Network, Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { celsiusToKelvin } from "../../util/unit.js";
 import { gMin } from "../const.js";
@@ -47,12 +47,11 @@ export class Diode extends Device {
   static override readonly linear = false;
 
   /** The anode terminal. */
-  readonly na: Node;
+  private na!: Node;
   /** The cathode terminal. */
-  readonly nc: Node;
+  private nc!: Node;
 
-  constructor(id: string, [na, nc]: readonly Node[]) {
-    super(id, [na, nc]);
+  override connect(network: Network, [na, nc]: readonly Node[]): void {
     this.na = na;
     this.nc = nc;
   }

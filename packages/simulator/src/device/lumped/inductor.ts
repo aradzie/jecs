@@ -40,19 +40,15 @@ export class Inductor extends Device {
   };
 
   /** First terminal. */
-  readonly na: Node;
+  private na!: Node;
   /** Second terminal. */
-  readonly nb: Node;
+  private nb!: Node;
   /** Extra MNA branch. */
   private branch!: Branch;
 
-  constructor(id: string, [na, nb]: readonly Node[]) {
-    super(id, [na, nb]);
+  override connect(network: Network, [na, nb]: readonly Node[]): void {
     this.na = na;
     this.nb = nb;
-  }
-
-  override connect(network: Network): void {
     this.branch = network.makeBranch(this.na, this.nb);
   }
 

@@ -14,19 +14,19 @@ const N2 = circuit.makeNode("N2");
 const N3 = circuit.makeNode("N3");
 
 // Create devices.
-const V1 = new Vdc("V1", [N1, GND]);
-const D1 = new Diode("D1", [N1, N2]);
-const D2 = new Diode("D2", [N2, N3]);
-const D3 = new Diode("D3", [N3, GND]);
+const V1 = new Vdc("V1");
+const D1 = new Diode("D1");
+const D2 = new Diode("D2");
+const D3 = new Diode("D3");
 
 // Set device properties.
 V1.properties.set("V", 0.7 * 3);
 
-// Add devices to the circuit.
-circuit.addDevice(V1);
-circuit.addDevice(D1);
-circuit.addDevice(D2);
-circuit.addDevice(D3);
+// Connect devices in the circuit.
+circuit.connect(V1, [N1, GND]);
+circuit.connect(D1, [N1, N2]);
+circuit.connect(D2, [N2, N3]);
+circuit.connect(D3, [N3, GND]);
 
 // Perform DC analysis, compute node voltages and branch currents.
 const analysis = new DcAnalysis();

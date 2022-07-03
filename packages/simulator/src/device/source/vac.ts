@@ -33,19 +33,15 @@ export class Vac extends Device {
   };
 
   /** Positive terminal. */
-  readonly np: Node;
+  private np!: Node;
   /** Negative terminal. */
-  readonly nn: Node;
+  private nn!: Node;
   /** Extra MNA branch. */
   private branch!: Branch;
 
-  constructor(id: string, [np, nn]: readonly Node[]) {
-    super(id, [np, nn]);
+  override connect(network: Network, [np, nn]: readonly Node[]): void {
     this.np = np;
     this.nn = nn;
-  }
-
-  override connect(network: Network): void {
     this.branch = network.makeBranch(this.np, this.nn);
   }
 

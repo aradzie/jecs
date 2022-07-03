@@ -1,5 +1,5 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import type { Node } from "../../circuit/network.js";
+import type { Network, Node } from "../../circuit/network.js";
 
 const enum S {
   /** Voltage through probe. */
@@ -30,12 +30,11 @@ export class Voltmeter extends Device {
   };
 
   /** Positive terminal. */
-  readonly np: Node;
+  private np!: Node;
   /** Negative terminal. */
-  readonly nn: Node;
+  private nn!: Node;
 
-  constructor(id: string, [np, nn]: readonly Node[]) {
-    super(id, [np, nn]);
+  override connect(network: Network, [np, nn]: readonly Node[]): void {
     this.np = np;
     this.nn = nn;
   }

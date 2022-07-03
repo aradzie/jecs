@@ -85,6 +85,9 @@ class NetlistBuilder {
     for (const instance of this.instances.values()) {
       this.setInstanceProperties(instance);
     }
+    for (const instance of this.instances.values()) {
+      this.circuit.connect(instance.device, instance.nodes);
+    }
     this.collectAnalyses();
     return new Netlist(this.circuit, this.analyses);
   }
@@ -181,10 +184,7 @@ class NetlistBuilder {
           `Expected ${instance.deviceClass.numTerminals}, got ${instance.nodes.length}.`,
       );
     }
-
-    this.circuit.addDevice(
-      (instance.device = new instance.deviceClass(instance.item.instanceId.name, instance.nodes)),
-    );
+    instance.device = new instance.deviceClass(instance.item.instanceId.name);
   }
 
   setInstanceProperties(instance: Instance): void {

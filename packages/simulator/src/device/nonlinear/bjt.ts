@@ -1,5 +1,5 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import type { Node, Stamper } from "../../circuit/network.js";
+import type { Network, Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { celsiusToKelvin } from "../../util/unit.js";
 import { gMin } from "../const.js";
@@ -112,14 +112,13 @@ export class Bjt extends Device {
   static override readonly linear = false;
 
   /** The emitter terminal. */
-  readonly ne: Node;
+  private ne!: Node;
   /** The base terminal. */
-  readonly nb: Node;
+  private nb!: Node;
   /** The collector terminal. */
-  readonly nc: Node;
+  private nc!: Node;
 
-  constructor(id: string, [ne, nb, nc]: readonly Node[]) {
-    super(id, [ne, nb, nc]);
+  override connect(network: Network, [ne, nb, nc]: readonly Node[]): void {
     this.ne = ne;
     this.nb = nb;
     this.nc = nc;

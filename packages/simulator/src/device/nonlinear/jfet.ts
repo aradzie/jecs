@@ -1,5 +1,5 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import type { Node, Stamper } from "../../circuit/network.js";
+import type { Network, Node, Stamper } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { celsiusToKelvin } from "../../util/unit.js";
 import { gMin } from "../const.js";
@@ -103,14 +103,13 @@ export class Jfet extends Device {
   static override readonly linear = false;
 
   /** The source terminal. */
-  readonly ns: Node;
+  private ns!: Node;
   /** The gate terminal. */
-  readonly ng: Node;
+  private ng!: Node;
   /** The drain terminal. */
-  readonly nd: Node;
+  private nd!: Node;
 
-  constructor(id: string, [ns, ng, nd]: readonly Node[]) {
-    super(id, [ns, ng, nd]);
+  override connect(network: Network, [ns, ng, nd]: readonly Node[]): void {
     this.ns = ns;
     this.ng = ng;
     this.nd = nd;

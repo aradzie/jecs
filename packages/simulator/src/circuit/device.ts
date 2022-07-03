@@ -15,9 +15,8 @@ export interface DeviceClass {
   /**
    * Device constructor.
    * @param id Unique device instance identifier.
-   * @param nodes Circuit nodes to which the device terminals are connected.
    */
-  new (id: string, nodes: readonly Node[]): Device;
+  new (id: string): Device;
 }
 
 /**
@@ -63,7 +62,7 @@ export abstract class Device {
     };
 
     constructor() {
-      super("DUMMY", []);
+      super("DUMMY");
     }
   })();
 
@@ -85,18 +84,14 @@ export abstract class Device {
   /** Unique device instance identifier. */
   readonly id: string;
 
-  /** The list of nodes to which the device terminals are connected. */
-  readonly nodes: readonly Node[];
-
   /** Device properties. */
   readonly properties: Properties;
 
   /** Vector with device state variables. */
   state: DeviceState;
 
-  constructor(id: string, nodes: readonly Node[]) {
+  constructor(id: string) {
     this.id = id;
-    this.nodes = nodes;
     const { propertiesSchema, stateSchema } = this.deviceClass;
     this.properties = new Properties(propertiesSchema);
     this.state = new Float64Array(stateSchema.length);
@@ -110,8 +105,9 @@ export abstract class Device {
    * Circuit calls this method to let a device allocate extra nodes and
    * branches.
    * @param network A network which contains allocated nodes and branches.
+   * @param nodes Circuit nodes to which the device terminals are connected.
    */
-  connect(network: Network): void {}
+  connect(network: Network, nodes: readonly Node[]): void {}
 
   /**
    * Derive state from params.

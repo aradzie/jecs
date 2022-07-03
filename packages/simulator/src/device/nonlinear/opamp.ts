@@ -40,22 +40,18 @@ export class OpAmp extends Device {
   static override readonly linear = false;
 
   /** Positive input terminal. */
-  readonly np: Node;
+  private np!: Node;
   /** Negative input terminal. */
-  readonly nn: Node;
+  private nn!: Node;
   /** Output terminal. */
-  readonly no: Node;
+  private no!: Node;
   /** Extra MNA branch. */
   private branch!: Branch;
 
-  constructor(id: string, [np, nn, no]: readonly Node[]) {
-    super(id, [np, nn, no]);
+  override connect(network: Network, [np, nn, no]: readonly Node[]): void {
     this.np = np;
     this.nn = nn;
     this.no = no;
-  }
-
-  override connect(network: Network): void {
     this.branch = network.makeBranch(this.no, network.groundNode);
   }
 

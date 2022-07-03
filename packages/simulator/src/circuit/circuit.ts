@@ -79,16 +79,14 @@ export class Circuit implements Network {
     return branch;
   }
 
-  addDevice(...devices: readonly Device[]): void {
-    for (const device of devices) {
-      const { id } = device;
-      if (this.#devicesById.has(id)) {
-        throw new CircuitError(`Duplicate device instance [${id}]`);
-      }
-      this.#devices.push(device);
-      this.#devicesById.set(device.id, device);
-      device.connect(this);
+  connect(device: Device, nodes: readonly Node[]): void {
+    const { id } = device;
+    if (this.#devicesById.has(id)) {
+      throw new CircuitError(`Duplicate device instance [${id}]`);
     }
+    this.#devices.push(device);
+    this.#devicesById.set(device.id, device);
+    device.connect(this, nodes);
   }
 
   getNode(id: string): Node {

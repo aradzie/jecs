@@ -29,27 +29,23 @@ export class CCVS extends Device {
   };
 
   /** Positive output terminal. */
-  readonly np: Node;
+  private np!: Node;
   /** Negative output terminal. */
-  readonly nn: Node;
+  private nn!: Node;
   /** Positive control terminal. */
-  readonly ncp: Node;
+  private ncp!: Node;
   /** Negative control terminal. */
-  readonly ncn: Node;
+  private ncn!: Node;
   /** Extra MNA branch. */
   private branch1!: Branch;
   /** Extra MNA branch. */
   private branch2!: Branch;
 
-  constructor(id: string, [np, nn, ncp, ncn]: readonly Node[]) {
-    super(id, [np, nn, ncp, ncn]);
+  override connect(network: Network, [np, nn, ncp, ncn]: readonly Node[]): void {
     this.np = np;
     this.nn = nn;
     this.ncp = ncp;
     this.ncn = ncn;
-  }
-
-  override connect(network: Network): void {
     this.branch1 = network.makeBranch(this.np, this.nn);
     this.branch2 = network.makeBranch(this.ncp, this.ncn);
   }
