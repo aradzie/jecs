@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@jssim/tests",
+  "name": "@jecs/tests",
   "version": "1.0.0",
   "description": "A simulator of electronic circuits.",
   "author": "Aliaksandr Radzivanovich",
@@ -11,13 +11,13 @@
     "circuit",
     "spice"
   ],
-  "homepage": "https://github.com/aradzie/jssim#readme",
+  "homepage": "https://github.com/aradzie/jecs#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aradzie/jssim.git"
+    "url": "git+https://github.com/aradzie/jecs.git"
   },
   "bugs": {
-    "url": "https://github.com/aradzie/jssim/issues"
+    "url": "https://github.com/aradzie/jecs/issues"
   },
   "type": "module",
   "scripts": {
@@ -26,7 +26,7 @@
     "test": "ava"
   },
   "dependencies": {
-    "@jssim/simulator": "*",
+    "@jecs/simulator": "*",
     "globby": "^13.1.2",
     "tslib": "^2.4.0"
   },

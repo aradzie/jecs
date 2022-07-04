@@ -1,4 +1,4 @@
-import { humanizeNumber } from "@jssim/simulator/lib/util/format";
+import { humanizeNumber } from "@jecs/simulator/lib/util/format";
 import clsx from "clsx";
 import type { ReactElement } from "react";
 import type { Result } from "../simul/exec";

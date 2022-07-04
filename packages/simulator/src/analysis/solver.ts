@@ -1,6 +1,6 @@
-import { vecClear, vecCopy, vecMake } from "@jssim/math/lib/matrix.js";
-import { Method, SLE } from "@jssim/math/lib/sle.js";
-import type { Vector } from "@jssim/math/lib/types.js";
+import { vecClear, vecCopy, vecMake } from "@jecs/math/lib/matrix.js";
+import { Method, SLE } from "@jecs/math/lib/sle.js";
+import type { Vector } from "@jecs/math/lib/types.js";
 import type { Circuit } from "../circuit/circuit.js";
 import { Stamper } from "../circuit/network.js";
 import { logger } from "../util/logging.js";

@@ -1,5 +1,5 @@
-import type { Circuit } from "@jssim/simulator/lib/circuit/circuit.js";
-import { Netlist } from "@jssim/simulator/lib/netlist/netlist.js";
+import type { Circuit } from "@jecs/simulator/lib/circuit/circuit.js";
+import { Netlist } from "@jecs/simulator/lib/netlist/netlist.js";
 
 export type Result = OkResult | ErrorResult;
 

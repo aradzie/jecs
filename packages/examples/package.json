@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@jssim/examples",
+  "name": "@jecs/examples",
   "version": "1.0.0",
   "description": "Simulation examples.",
   "author": "Aliaksandr Radzivanovich",
@@ -11,13 +11,13 @@
     "circuit",
     "spice"
   ],
-  "homepage": "https://github.com/aradzie/jssim#readme",
+  "homepage": "https://github.com/aradzie/jecs#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aradzie/jssim.git"
+    "url": "git+https://github.com/aradzie/jecs.git"
   },
   "bugs": {
-    "url": "https://github.com/aradzie/jssim/issues"
+    "url": "https://github.com/aradzie/jecs/issues"
   },
   "type": "module",
   "scripts": {
@@ -25,7 +25,7 @@
     "compile": "tsc"
   },
   "dependencies": {
-    "@jssim/simulator": "*",
+    "@jecs/simulator": "*",
     "tslib": "^2.4.0"
   },
   "devDependencies": {}

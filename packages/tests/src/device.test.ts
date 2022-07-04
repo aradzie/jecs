@@ -1,5 +1,5 @@
-import { dumpCircuit } from "@jssim/simulator/lib/circuit/debug.js";
-import { Netlist } from "@jssim/simulator/lib/netlist/netlist.js";
+import { dumpCircuit } from "@jecs/simulator/lib/circuit/debug.js";
+import { Netlist } from "@jecs/simulator/lib/netlist/netlist.js";
 import test from "ava";
 import { globbySync } from "globby";
 import { readFileSync } from "node:fs";

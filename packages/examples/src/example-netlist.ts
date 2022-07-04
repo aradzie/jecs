@@ -1,6 +1,6 @@
-import { formatData, formatSchema } from "@jssim/simulator/lib/analysis/dataset.js";
-import { Netlist } from "@jssim/simulator/lib/netlist/netlist.js";
-import { logger } from "@jssim/simulator/lib/util/logging.js";
+import { formatData, formatSchema } from "@jecs/simulator/lib/analysis/dataset.js";
+import { Netlist } from "@jecs/simulator/lib/netlist/netlist.js";
+import { logger } from "@jecs/simulator/lib/util/logging.js";
 
 const { circuit, analyses } = Netlist.parse(`
 V:Vce nc gnd V=$Vce

@@ -1,6 +1,6 @@
-import { Dataset, formatData, formatSchema } from "@jssim/simulator/lib/analysis/dataset.js";
-import { Netlist } from "@jssim/simulator/lib/netlist/netlist.js";
-import { logger } from "@jssim/simulator/lib/util/logging.js";
+import { Dataset, formatData, formatSchema } from "@jecs/simulator/lib/analysis/dataset.js";
+import { Netlist } from "@jecs/simulator/lib/netlist/netlist.js";
+import { logger } from "@jecs/simulator/lib/util/logging.js";
 import { program } from "commander";
 import * as console from "console";
 import { readFileSync, writeFileSync } from "node:fs";
@@ -56,7 +56,7 @@ const run = (name: string, { verbose = false }: { verbose?: boolean }): void => 
 };
 
 program
-  .name("jssim")
+  .name("jecs")
   .description("Electronic circuit simulator")
   .version("0.1")
   .option("--verbose", "verbose output")

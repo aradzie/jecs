@@ -1,5 +1,5 @@
 {
-  "name": "@jssim/cli",
+  "name": "@jecs/cli",
   "version": "1.0.0",
   "description": "A simulator of electronic circuits.",
   "author": "Aliaksandr Radzivanovich",
@@ -10,24 +10,24 @@
     "circuit",
     "spice"
   ],
-  "homepage": "https://github.com/aradzie/jssim#readme",
+  "homepage": "https://github.com/aradzie/jecs#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aradzie/jssim.git"
+    "url": "git+https://github.com/aradzie/jecs.git"
   },
   "bugs": {
-    "url": "https://github.com/aradzie/jssim/issues"
+    "url": "https://github.com/aradzie/jecs/issues"
   },
   "type": "module",
   "bin": {
-    "jssim": "./jssim.js"
+    "jecs": "./jecs.js"
   },
   "scripts": {
     "clean": "rm -fr lib",
     "compile": "tsc"
   },
   "dependencies": {
-    "@jssim/simulator": "*",
+    "@jecs/simulator": "*",
     "commander": "^9.3.0",
     "tslib": "^2.4.0"
   },

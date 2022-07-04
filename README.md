@@ -1,6 +1,6 @@
 # Electronic Circuit Simulator
 
-**jssim** is an electronic circuit simulator written in TypeScript.
+**jecs** is an electronic circuit simulator written in TypeScript.
 
 ## Example
 
@@ -56,7 +56,7 @@ prints the following result
 
 ## Interactive Shell
 
-An [interactive shell](https://aradzie.github.io/jssim/) is available to play with netlists.
+An [interactive shell](https://aradzie.github.io/jecs/) is available to play with netlists.
 
 ## Virtual Curve Tracer
 

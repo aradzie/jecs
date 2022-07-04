@@ -1,4 +1,4 @@
-import { DivisionByZeroError, NumericOverflowError } from "@jssim/math/lib/error.js";
+import { DivisionByZeroError, NumericOverflowError } from "@jecs/math/lib/error.js";
 import type { Device } from "./device.js";
 import { CircuitError } from "./error.js";
 import type { FunctionDef } from "./functions.js";

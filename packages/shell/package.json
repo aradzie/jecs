@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@jssim/shell",
+  "name": "@jecs/shell",
   "version": "1.0.0",
   "description": "A simulator of electronic circuits.",
   "author": "Aliaksandr Radzivanovich",
@@ -11,13 +11,13 @@
     "circuit",
     "spice"
   ],
-  "homepage": "https://github.com/aradzie/jssim#readme",
+  "homepage": "https://github.com/aradzie/jecs#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aradzie/jssim.git"
+    "url": "git+https://github.com/aradzie/jecs.git"
   },
   "bugs": {
-    "url": "https://github.com/aradzie/jssim/issues"
+    "url": "https://github.com/aradzie/jecs/issues"
   },
   "scripts": {
     "clean": "rm -fr {lib,build}",
@@ -26,7 +26,7 @@
     "publish": "gh-pages -d build"
   },
   "dependencies": {
-    "@jssim/simulator": "*",
+    "@jecs/simulator": "*",
     "clsx": "^1.1.1",
     "events": "^3.3.0",
     "monaco-editor": "^0.28.1",

@@ -1,18 +1,18 @@
 {
   "private": true,
-  "name": "@jssim/root",
+  "name": "@jecs/root",
   "version": "1.0.0",
   "description": "A simulator of electronic circuits.",
   "author": "Aliaksandr Radzivanovich",
   "license": "GPL",
   "keywords": [],
-  "homepage": "https://github.com/aradzie/jssim#readme",
+  "homepage": "https://github.com/aradzie/jecs#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aradzie/jssim.git"
+    "url": "git+https://github.com/aradzie/jecs.git"
   },
   "bugs": {
-    "url": "https://github.com/aradzie/jssim/issues"
+    "url": "https://github.com/aradzie/jecs/issues"
   },
   "scripts": {
     "postinstall": "lerna bootstrap",
