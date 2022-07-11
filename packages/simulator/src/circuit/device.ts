@@ -134,17 +134,4 @@ export abstract class Device {
   stamp(state: DeviceState, stamper: Stamper): void {}
 
   endEval(state: DeviceState, params: EvalParams): void {}
-
-  /**
-   * Returns value of an output parameter with the given name.
-   */
-  op(name: string): number {
-    const { stateSchema } = this.deviceClass;
-    for (const op of stateSchema.ops) {
-      if (name === op.name) {
-        return this.state[op.index];
-      }
-    }
-    throw new TypeError(`Unknown output param [${name}]`);
-  }
 }

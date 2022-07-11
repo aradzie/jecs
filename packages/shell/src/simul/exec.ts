@@ -64,7 +64,7 @@ function getOps(circuit: Circuit): readonly Op[] {
       ops.push({
         deviceId: `${classId}:${device.id}`,
         name: op.name,
-        value: device.op(op.name),
+        value: device.state[op.index],
         unit: op.unit,
       });
     }
