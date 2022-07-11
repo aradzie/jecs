@@ -1,5 +1,6 @@
 import { Device, DeviceState } from "../../circuit/device.js";
-import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
+import type { Stamper } from "../../circuit/mna.js";
+import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
 const enum S {
@@ -54,11 +55,11 @@ export class VCCS extends Device {
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn, ncp, ncn, branch } = this;
     const gain = state[S.gain];
-    stamper.stampMatrix(np, branch, 1);
-    stamper.stampMatrix(nn, branch, -1);
-    stamper.stampMatrix(branch, ncp, gain);
-    stamper.stampMatrix(branch, ncn, -gain);
-    stamper.stampMatrix(branch, branch, -1);
+    stamper.stampA(np, branch, 1);
+    stamper.stampA(nn, branch, -1);
+    stamper.stampA(branch, ncp, gain);
+    stamper.stampA(branch, ncn, -gain);
+    stamper.stampA(branch, branch, -1);
   }
 
   override endEval(state: DeviceState): void {

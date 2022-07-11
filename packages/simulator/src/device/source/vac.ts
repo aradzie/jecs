@@ -1,5 +1,6 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
+import { Stamper, stampVoltageSource } from "../../circuit/mna.js";
+import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
 const enum S {
@@ -66,7 +67,7 @@ export class Vac extends Device {
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn, branch } = this;
     const V = state[S.V];
-    stamper.stampVoltageSource(np, nn, branch, V);
+    stampVoltageSource(stamper, np, nn, branch, V);
   }
 
   override endEval(state: DeviceState): void {

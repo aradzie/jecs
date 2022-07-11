@@ -1,5 +1,6 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
+import { Stamper, stampVoltageSource } from "../../circuit/mna.js";
+import type { Branch, Network, Node } from "../../circuit/network.js";
 
 const enum S {
   /** Current through probe. */
@@ -52,7 +53,7 @@ export class Ammeter extends Device {
 
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn, branch } = this;
-    stamper.stampVoltageSource(np, nn, branch, 0);
+    stampVoltageSource(stamper, np, nn, branch, 0);
   }
 
   override endEval(state: DeviceState, { timeStep }: EvalParams): void {

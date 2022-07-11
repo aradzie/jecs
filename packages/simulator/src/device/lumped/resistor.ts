@@ -1,5 +1,6 @@
 import { Device, DeviceState } from "../../circuit/device.js";
-import type { Network, Node, Stamper } from "../../circuit/network.js";
+import { stampConductance, Stamper } from "../../circuit/mna.js";
+import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
 const enum S {
@@ -49,7 +50,7 @@ export class Resistor extends Device {
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { na, nb } = this;
     const G = state[S.G];
-    stamper.stampConductance(na, nb, G);
+    stampConductance(stamper, na, nb, G);
   }
 
   override endEval(state: DeviceState): void {

@@ -1,5 +1,11 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import type { Network, Node, Stamper } from "../../circuit/network.js";
+import {
+  stampConductance,
+  stampCurrentSource,
+  Stamper,
+  stampTransconductance,
+} from "../../circuit/mna.js";
+import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { celsiusToKelvin } from "../../util/unit.js";
 import { gMin } from "../const.js";
@@ -255,17 +261,17 @@ export class Jfet extends Device {
 
     // DIODES
 
-    stamper.stampConductance(ng, ns, Ggs);
-    stamper.stampCurrentSource(ng, ns, pol * (Igs - Ggs * Vgs));
+    stampConductance(stamper, ng, ns, Ggs);
+    stampCurrentSource(stamper, ng, ns, pol * (Igs - Ggs * Vgs));
 
-    stamper.stampConductance(ng, nd, Ggd);
-    stamper.stampCurrentSource(ng, nd, pol * (Igd - Ggd * Vgd));
+    stampConductance(stamper, ng, nd, Ggd);
+    stampCurrentSource(stamper, ng, nd, pol * (Igd - Ggd * Vgd));
 
     // FET
 
-    stamper.stampConductance(nd, ns, Gds);
-    stamper.stampTransconductance(nd, ns, ng, ns, Gm);
-    stamper.stampCurrentSource(nd, ns, pol * (Ids - Gds * Vds - Gm * Vgs));
+    stampConductance(stamper, nd, ns, Gds);
+    stampTransconductance(stamper, nd, ns, ng, ns, Gm);
+    stampCurrentSource(stamper, nd, ns, pol * (Ids - Gds * Vds - Gm * Vgs));
   }
 
   override endEval(state: DeviceState): void {

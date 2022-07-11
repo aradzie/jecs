@@ -1,5 +1,11 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import type { Network, Node, Stamper } from "../../circuit/network.js";
+import {
+  stampConductance,
+  stampCurrentSource,
+  Stamper,
+  stampTransconductance,
+} from "../../circuit/mna.js";
+import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { celsiusToKelvin } from "../../util/unit.js";
 import { gMin } from "../const.js";
@@ -273,22 +279,22 @@ export class Mosfet extends Device {
 
     // DIODES
 
-    stamper.stampConductance(nb, ns, Gbs);
-    stamper.stampCurrentSource(nb, ns, pol * (Ibs - Gbs * Vbs));
+    stampConductance(stamper, nb, ns, Gbs);
+    stampCurrentSource(stamper, nb, ns, pol * (Ibs - Gbs * Vbs));
 
-    stamper.stampConductance(nb, nd, Gbd);
-    stamper.stampCurrentSource(nb, nd, pol * (Ibd - Gbd * Vbd));
+    stampConductance(stamper, nb, nd, Gbd);
+    stampCurrentSource(stamper, nb, nd, pol * (Ibd - Gbd * Vbd));
 
     // FET
 
     if (Vds > 0) {
-      stamper.stampConductance(nd, ns, Gds);
-      stamper.stampTransconductance(nd, ns, ng, ns, Gm);
-      stamper.stampCurrentSource(nd, ns, pol * (Ids - Gds * Vds - Gm * Vgs));
+      stampConductance(stamper, nd, ns, Gds);
+      stampTransconductance(stamper, nd, ns, ng, ns, Gm);
+      stampCurrentSource(stamper, nd, ns, pol * (Ids - Gds * Vds - Gm * Vgs));
     } else {
-      stamper.stampConductance(nd, ns, Gds);
-      stamper.stampTransconductance(nd, ns, ng, nd, Gm);
-      stamper.stampCurrentSource(nd, ns, pol * (Ids - Gds * Vds - Gm * Vgd));
+      stampConductance(stamper, nd, ns, Gds);
+      stampTransconductance(stamper, nd, ns, ng, nd, Gm);
+      stampCurrentSource(stamper, nd, ns, pol * (Ids - Gds * Vds - Gm * Vgd));
     }
   }
 

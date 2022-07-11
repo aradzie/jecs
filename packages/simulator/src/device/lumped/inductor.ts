@@ -1,5 +1,6 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
+import { Stamper, stampVoltageSource } from "../../circuit/mna.js";
+import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { method } from "../integration.js";
 
@@ -94,8 +95,8 @@ export class Inductor extends Device {
     const { na, nb, branch } = this;
     const Req = state[S.Req];
     const Veq = state[S.Veq];
-    stamper.stampMatrix(branch, branch, -Req);
-    stamper.stampVoltageSource(na, nb, branch, Veq);
+    stamper.stampA(branch, branch, -Req);
+    stampVoltageSource(stamper, na, nb, branch, Veq);
   }
 
   override endEval(state: DeviceState, { timeStep }: EvalParams): void {

@@ -1,4 +1,5 @@
-import type { Network, Node, Stamper } from "./network.js";
+import type { Stamper } from "./mna.js";
+import type { Network, Node } from "./network.js";
 import { Properties, PropertiesSchema } from "./properties.js";
 
 export interface DeviceClass {

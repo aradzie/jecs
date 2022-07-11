@@ -1,5 +1,11 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import type { Network, Node, Stamper } from "../../circuit/network.js";
+import {
+  stampConductance,
+  stampCurrentSource,
+  Stamper,
+  stampTransconductance,
+} from "../../circuit/mna.js";
+import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { celsiusToKelvin } from "../../util/unit.js";
 import { gMin } from "../const.js";
@@ -199,12 +205,12 @@ export class Bjt extends Device {
     const Gcc = -Gr;
     const Gec = Ar * Gr;
     const Gce = Af * Gf;
-    stamper.stampConductance(ne, nb, -Gee);
-    stamper.stampConductance(nc, nb, -Gcc);
-    stamper.stampTransconductance(ne, nb, nc, nb, -Gec);
-    stamper.stampTransconductance(nc, nb, ne, nb, -Gce);
-    stamper.stampCurrentSource(ne, nb, pol * (Ie - Gee * Vbe - Gec * Vbc));
-    stamper.stampCurrentSource(nc, nb, pol * (Ic - Gce * Vbe - Gcc * Vbc));
+    stampConductance(stamper, ne, nb, -Gee);
+    stampConductance(stamper, nc, nb, -Gcc);
+    stampTransconductance(stamper, ne, nb, nc, nb, -Gec);
+    stampTransconductance(stamper, nc, nb, ne, nb, -Gce);
+    stampCurrentSource(stamper, ne, nb, pol * (Ie - Gee * Vbe - Gec * Vbc));
+    stampCurrentSource(stamper, nc, nb, pol * (Ic - Gce * Vbe - Gcc * Vbc));
   }
 
   override endEval(state: DeviceState): void {

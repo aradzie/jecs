@@ -1,5 +1,6 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import type { Network, Node, Stamper } from "../../circuit/network.js";
+import { stampCurrentSource, Stamper } from "../../circuit/mna.js";
+import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
 const enum S {
@@ -50,7 +51,7 @@ export class Idc extends Device {
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn } = this;
     const I = state[S.I];
-    stamper.stampCurrentSource(np, nn, I);
+    stampCurrentSource(stamper, np, nn, I);
   }
 
   override endEval(state: DeviceState): void {

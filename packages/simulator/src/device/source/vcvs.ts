@@ -1,5 +1,6 @@
 import { Device, DeviceState } from "../../circuit/device.js";
-import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
+import { Stamper, stampVoltageSource } from "../../circuit/mna.js";
+import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
 const enum S {
@@ -54,9 +55,9 @@ export class VCVS extends Device {
   override stamp(state: DeviceState, stamper: Stamper): void {
     const { np, nn, ncp, ncn, branch } = this;
     const gain = state[S.gain];
-    stamper.stampVoltageSource(np, nn, branch, 0);
-    stamper.stampMatrix(branch, ncp, -gain);
-    stamper.stampMatrix(branch, ncn, gain);
+    stampVoltageSource(stamper, np, nn, branch, 0);
+    stamper.stampA(branch, ncp, -gain);
+    stamper.stampA(branch, ncn, gain);
   }
 
   override endEval(state: DeviceState): void {

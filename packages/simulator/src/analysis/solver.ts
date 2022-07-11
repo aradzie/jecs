@@ -2,7 +2,7 @@ import { vecClear, vecCopy, vecMake } from "@jecs/math/lib/matrix.js";
 import { Method, SLE } from "@jecs/math/lib/sle.js";
 import type { Vector } from "@jecs/math/lib/types.js";
 import type { Circuit } from "../circuit/circuit.js";
-import { Stamper } from "../circuit/network.js";
+import { Stamper } from "../circuit/mna.js";
 import { logger } from "../util/logging.js";
 import { ConvergenceError } from "./error.js";
 import type { SimulationOptions } from "./options.js";

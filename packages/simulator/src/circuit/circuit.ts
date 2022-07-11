@@ -1,7 +1,8 @@
 import type { Device } from "./device.js";
 import { Bindings, ConstantExp, Equations } from "./equations.js";
 import { CircuitError } from "./error.js";
-import { Branch, groundNode, Network, Node, Stamper } from "./network.js";
+import type { Stamper } from "./mna.js";
+import { Branch, groundNode, Network, Node } from "./network.js";
 
 export class Circuit implements Network {
   readonly #nodes: (Node | Branch)[] = [];

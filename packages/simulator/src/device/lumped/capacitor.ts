@@ -1,5 +1,6 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import type { Network, Node, Stamper } from "../../circuit/network.js";
+import { stampConductance, stampCurrentSource, Stamper } from "../../circuit/mna.js";
+import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { method } from "../integration.js";
 
@@ -91,8 +92,8 @@ export class Capacitor extends Device {
     const { na, nb } = this;
     const Geq = state[S.Geq];
     const Ieq = state[S.Ieq];
-    stamper.stampConductance(na, nb, Geq);
-    stamper.stampCurrentSource(na, nb, Ieq);
+    stampConductance(stamper, na, nb, Geq);
+    stampCurrentSource(stamper, na, nb, Ieq);
   }
 
   override endEval(state: DeviceState, { timeStep }: EvalParams): void {

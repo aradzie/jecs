@@ -1,5 +1,6 @@
 import { Device, DeviceState } from "../../circuit/device.js";
-import type { Branch, Network, Node, Stamper } from "../../circuit/network.js";
+import type { Stamper } from "../../circuit/mna.js";
+import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { gMin, piOverTwo, twoOverPi } from "../const.js";
 
@@ -80,10 +81,10 @@ export class OpAmp extends Device {
     const Vin = state[S.Vin];
     const Vout = state[S.Vout];
     const gv = state[S.gv];
-    stamper.stampMatrix(no, branch, 1);
-    stamper.stampMatrix(branch, np, gv);
-    stamper.stampMatrix(branch, nn, -gv);
-    stamper.stampMatrix(branch, no, -1);
-    stamper.stampRightSide(branch, gv * Vin - Vout);
+    stamper.stampA(no, branch, 1);
+    stamper.stampA(branch, np, gv);
+    stamper.stampA(branch, nn, -gv);
+    stamper.stampA(branch, no, -1);
+    stamper.stampB(branch, gv * Vin - Vout);
   }
 }
