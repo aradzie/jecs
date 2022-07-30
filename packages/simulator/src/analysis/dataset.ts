@@ -1,6 +1,4 @@
-import type { Circuit } from "../circuit/circuit.js";
-import type { Device, OutputParam } from "../circuit/device.js";
-import type { Node } from "../circuit/network.js";
+import type { Probe } from "../circuit/probe.js";
 import { FormatNumber, toExponential } from "../util/format.js";
 
 /**
@@ -33,85 +31,6 @@ export type Dataset = {
   readonly columns: readonly Column[];
   /** Row groups. */
   readonly rowGroups: readonly RowGroup[];
-};
-
-/**
- * Probe captures a single dataset value from a circuit after simulation.
- */
-export type Probe = {
-  /** Probe name. */
-  readonly name: string;
-  /** Probe unit. */
-  readonly unit: string;
-  /** Returns probe value. */
-  measure(): number;
-};
-
-/**
- * Returns a probe which measures elapsed time from transient simulation.
- */
-export const timeProbe = (circuit: Circuit): Probe => {
-  return new (class implements Probe {
-    name = "time";
-    unit = "s";
-    measure(): number {
-      return circuit.elapsedTime;
-    }
-  })();
-};
-
-/**
- * Return a probe which captures node voltage.
- */
-export const nodeProbe = (node: Node): Probe => {
-  return new (class implements Probe {
-    name = `#${node.id}:V`;
-    unit = "V";
-    measure(): number {
-      return node.voltage;
-    }
-  })();
-};
-
-/**
- * Returns a probe which captures a device output parameter.
- */
-export const deviceProbe = (device: Device, op: OutputParam): Probe => {
-  return new (class implements Probe {
-    name = `${device.id}:${op.name}`;
-    unit = op.unit;
-    measure(): number {
-      return device.state[op.index];
-    }
-  })();
-};
-
-export const allNodeProbes = (circuit: Circuit): Probe[] => {
-  const probes: Probe[] = [];
-  for (const node of circuit.nodes) {
-    switch (node.type) {
-      case "node":
-        probes.push(nodeProbe(node));
-        break;
-      case "branch":
-        break;
-    }
-  }
-  return probes;
-};
-
-export const allDeviceProbes = (circuit: Circuit): Probe[] => {
-  const probes: Probe[] = [];
-  for (const device of circuit.devices) {
-    for (const op of device.deviceClass.stateSchema.ops) {
-      probes.push(deviceProbe(device, op));
-    }
-  }
-  return probes;
-};
-
-export const allCircuitProbes = (circuit: Circuit): Probe[] => {
-  return [...allNodeProbes(circuit), ...allDeviceProbes(circuit)];
 };
 
 export type DatasetBuilder = {

@@ -1,16 +1,11 @@
 import { EventEmitter } from "events";
 import type { Circuit } from "../circuit/circuit.js";
 import { ConstantExp } from "../circuit/equations.js";
+import type { Probe } from "../circuit/probe.js";
+import { allCircuitProbes, timeProbe } from "../circuit/probe.js";
 import { Properties } from "../circuit/properties.js";
 import { logger } from "../util/logging.js";
-import {
-  allCircuitProbes,
-  Dataset,
-  DatasetBuilder,
-  makeDatasetBuilder,
-  Probe,
-  timeProbe,
-} from "./dataset.js";
+import { Dataset, DatasetBuilder, makeDatasetBuilder } from "./dataset.js";
 import { dcProperties, getOptions, tranProperties } from "./options.js";
 import { Solver } from "./solver.js";
 import { groupName, Sweep } from "./sweep.js";
