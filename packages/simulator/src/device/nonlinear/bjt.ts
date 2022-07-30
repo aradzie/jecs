@@ -186,12 +186,9 @@ export class Bjt extends Device {
     state[S.Gr] = Gr;
   }
 
-  override eval(state: DeviceState): void {
-    this.eval0(state, true);
-  }
-
-  override stamp(state: DeviceState, stamper: Stamper): void {
+  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
     const { ne, nb, nc } = this;
+    this.eval0(state, true);
     const pol = state[S.pol];
     const Af = state[S.Af];
     const Ar = state[S.Ar];

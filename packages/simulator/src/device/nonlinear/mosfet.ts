@@ -257,12 +257,9 @@ export class Mosfet extends Device {
     state[S.Gm] = Gm;
   }
 
-  override eval(state: DeviceState): void {
-    this.eval0(state, true);
-  }
-
-  override stamp(state: DeviceState, stamper: Stamper): void {
+  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
     const { ns, ng, nd, nb } = this;
+    this.eval0(state, true);
     const pol = state[S.pol];
     const Vbs = pol * state[S.Vbs];
     const Vbd = pol * state[S.Vbd];

@@ -1,4 +1,4 @@
-import { Device, DeviceState } from "../../circuit/device.js";
+import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import { Stamper, stampVoltageSource } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
@@ -55,7 +55,7 @@ export class CCVS extends Device {
     state[S.gain] = this.properties.getNumber("gain");
   }
 
-  override stamp(state: DeviceState, stamper: Stamper): void {
+  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
     const { np, nn, branch1, ncp, ncn, branch2 } = this;
     const gain = state[S.gain];
     stampVoltageSource(stamper, np, nn, branch1, 0);

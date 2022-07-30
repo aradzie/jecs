@@ -88,7 +88,7 @@ export class Capacitor extends Device {
     }
   }
 
-  override stamp(state: DeviceState, stamper: Stamper): void {
+  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
     const { na, nb } = this;
     const Geq = state[S.Geq];
     const Ieq = state[S.Ieq];

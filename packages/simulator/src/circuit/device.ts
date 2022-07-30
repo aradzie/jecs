@@ -110,28 +110,11 @@ export abstract class Device {
    */
   connect(network: Network, nodes: readonly Node[]): void {}
 
-  /**
-   * Derive state from params.
-   */
   deriveState(state: DeviceState, params: EvalParams): void {}
 
   beginEval(state: DeviceState, params: EvalParams): void {}
 
-  /**
-   * Circuit calls this method to let a device compute its state
-   * from the current node voltages and branch currents.
-   * @param state Device state which is saved between iterations.
-   * @param params Evaluation parameters.
-   */
-  eval(state: DeviceState, params: EvalParams): void {}
-
-  /**
-   * Circuit calls this method to let a device stamp the MNA matrix
-   * with values obtained from the previously computed state.
-   * @param state Device state which is saved between iterations.
-   * @param stamper A stamper which updates MNA matrix and RHS vector.
-   */
-  stamp(state: DeviceState, stamper: Stamper): void {}
+  eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {}
 
   endEval(state: DeviceState, params: EvalParams): void {}
 }

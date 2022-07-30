@@ -46,14 +46,11 @@ export class Vdc extends Device {
     state[S.V0] = this.properties.getNumber("V");
   }
 
-  override eval(state: DeviceState, { sourceFactor }: EvalParams): void {
-    const V0 = state[S.V0];
-    state[S.V] = sourceFactor * V0;
-  }
-
-  override stamp(state: DeviceState, stamper: Stamper): void {
+  override eval(state: DeviceState, { sourceFactor }: EvalParams, stamper: Stamper): void {
     const { np, nn, branch } = this;
-    const V = state[S.V];
+    const V0 = state[S.V0];
+    const V = sourceFactor * V0;
+    state[S.V] = V;
     stampVoltageSource(stamper, np, nn, branch, V);
   }
 

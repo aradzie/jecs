@@ -1,4 +1,4 @@
-import { Device, DeviceState } from "../../circuit/device.js";
+import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import type { Stamper } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
@@ -63,8 +63,8 @@ export class OpAmp extends Device {
     state[S.Vmax] = Vmax;
   }
 
-  override eval(state: DeviceState): void {
-    const { np, nn } = this;
+  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
+    const { np, nn, no, branch } = this;
     const gain = state[S.gain];
     const Vmax = state[S.Vmax];
     const Vin = np.voltage - nn.voltage;
@@ -74,13 +74,6 @@ export class OpAmp extends Device {
     state[S.Vin] = Vin;
     state[S.Vout] = Vout;
     state[S.gv] = gv;
-  }
-
-  override stamp(state: DeviceState, stamper: Stamper): void {
-    const { np, nn, no, branch } = this;
-    const Vin = state[S.Vin];
-    const Vout = state[S.Vout];
-    const gv = state[S.gv];
     stamper.stampA(no, branch, 1);
     stamper.stampA(branch, np, gv);
     stamper.stampA(branch, nn, -gv);

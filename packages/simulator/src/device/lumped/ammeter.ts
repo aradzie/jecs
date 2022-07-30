@@ -51,7 +51,7 @@ export class Ammeter extends Device {
     state[S.rmsCnt] = 0;
   }
 
-  override stamp(state: DeviceState, stamper: Stamper): void {
+  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
     const { np, nn, branch } = this;
     stampVoltageSource(stamper, np, nn, branch, 0);
   }

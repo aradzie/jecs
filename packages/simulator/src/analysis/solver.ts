@@ -156,8 +156,7 @@ export class Solver {
   private doIteration(): void {
     logger.iterationStarted();
     this.sle.clear();
-    this.circuit.eval();
-    this.circuit.stamp(this.stamper);
+    this.circuit.eval(this.stamper);
     if (this.helper === ConvHelper.GMinStepping) {
       this.applyGMin();
     }

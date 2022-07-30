@@ -43,14 +43,11 @@ export class Idc extends Device {
     state[S.I0] = this.properties.getNumber("I");
   }
 
-  override eval(state: DeviceState, { sourceFactor }: EvalParams): void {
-    const I0 = state[S.I0];
-    state[S.I] = sourceFactor * I0;
-  }
-
-  override stamp(state: DeviceState, stamper: Stamper): void {
+  override eval(state: DeviceState, { sourceFactor }: EvalParams, stamper: Stamper): void {
     const { np, nn } = this;
-    const I = state[S.I];
+    const I0 = state[S.I0];
+    const I = sourceFactor * I0;
+    state[S.I] = I;
     stampCurrentSource(stamper, np, nn, I);
   }
 

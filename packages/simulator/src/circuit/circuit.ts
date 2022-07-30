@@ -112,15 +112,9 @@ export class Circuit implements Network {
     }
   }
 
-  eval(): void {
+  eval(stamper: Stamper): void {
     for (const device of this.#devices) {
-      device.eval(device.state, this);
-    }
-  }
-
-  stamp(stamper: Stamper): void {
-    for (const device of this.#devices) {
-      device.stamp(device.state, stamper);
+      device.eval(device.state, this, stamper);
     }
   }
 

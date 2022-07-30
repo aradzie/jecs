@@ -57,16 +57,17 @@ export class Vac extends Device {
     state[S.theta] = theta;
   }
 
-  override eval(state: DeviceState, { elapsedTime, sourceFactor }: EvalParams): void {
+  override eval(
+    state: DeviceState,
+    { elapsedTime, sourceFactor }: EvalParams,
+    stamper: Stamper,
+  ): void {
+    const { np, nn, branch } = this;
     const amplitude = state[S.amplitude];
     const omega = state[S.omega];
     const theta = state[S.theta];
-    state[S.V] = sourceFactor * amplitude * Math.sin(omega * elapsedTime + theta);
-  }
-
-  override stamp(state: DeviceState, stamper: Stamper): void {
-    const { np, nn, branch } = this;
-    const V = state[S.V];
+    const V = sourceFactor * amplitude * Math.sin(omega * elapsedTime + theta);
+    state[S.V] = V;
     stampVoltageSource(stamper, np, nn, branch, V);
   }
 

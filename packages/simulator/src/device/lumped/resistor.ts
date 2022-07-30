@@ -1,4 +1,4 @@
-import { Device, DeviceState } from "../../circuit/device.js";
+import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
 import { stampConductance, Stamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
@@ -47,7 +47,7 @@ export class Resistor extends Device {
     state[S.G] = 1 / R;
   }
 
-  override stamp(state: DeviceState, stamper: Stamper): void {
+  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
     const { na, nb } = this;
     const G = state[S.G];
     stampConductance(stamper, na, nb, G);

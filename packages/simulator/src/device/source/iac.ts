@@ -54,16 +54,17 @@ export class Iac extends Device {
     state[S.theta] = theta;
   }
 
-  override eval(state: DeviceState, { elapsedTime, sourceFactor }: EvalParams): void {
+  override eval(
+    state: DeviceState,
+    { elapsedTime, sourceFactor }: EvalParams,
+    stamper: Stamper,
+  ): void {
+    const { np, nn } = this;
     const amplitude = state[S.amplitude];
     const omega = state[S.omega];
     const theta = state[S.theta];
-    state[S.I] = sourceFactor * amplitude * Math.sin(omega * elapsedTime + theta);
-  }
-
-  override stamp(state: DeviceState, stamper: Stamper): void {
-    const { np, nn } = this;
-    const I = state[S.I];
+    const I = sourceFactor * amplitude * Math.sin(omega * elapsedTime + theta);
+    state[S.I] = I;
     stampCurrentSource(stamper, np, nn, I);
   }
 

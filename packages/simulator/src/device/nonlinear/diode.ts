@@ -85,12 +85,9 @@ export class Diode extends Device {
     state[S.P] = P;
   }
 
-  override eval(state: DeviceState): void {
-    this.eval0(state, true);
-  }
-
-  override stamp(state: DeviceState, stamper: Stamper): void {
+  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
     const { na, nc } = this;
+    this.eval0(state, true);
     const V = state[S.V];
     const I = state[S.I];
     const G = state[S.G];

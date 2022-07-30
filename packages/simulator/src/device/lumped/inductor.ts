@@ -91,7 +91,7 @@ export class Inductor extends Device {
     }
   }
 
-  override stamp(state: DeviceState, stamper: Stamper): void {
+  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
     const { na, nb, branch } = this;
     const Req = state[S.Req];
     const Veq = state[S.Veq];
