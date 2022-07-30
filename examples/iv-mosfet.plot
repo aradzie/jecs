@@ -7,6 +7,6 @@ set ylabel "Id / A"
 plot for [IDX=0:*] \
   "iv-mosfet.data" \
   index IDX \
-  using 11:12 \
+  using 9:10 \
   with lines lw 1 \
   title columnheader(1)

@@ -14,7 +14,6 @@ const enum S {
   V,
   I,
   G,
-  P,
   _Size_,
 }
 
@@ -42,7 +41,6 @@ export class Diode extends Device {
     ops: [
       { index: S.V, name: "V", unit: "V" },
       { index: S.I, name: "I", unit: "A" },
-      { index: S.P, name: "P", unit: "W" },
     ],
   };
   static override readonly linear = false;
@@ -78,11 +76,9 @@ export class Diode extends Device {
     }
     const I = pnCurrent(V, Is, Vt);
     const G = pnConductance(V, Is, Vt) + gMin;
-    const P = V * I;
     state[S.V] = V;
     state[S.I] = I;
     state[S.G] = G;
-    state[S.P] = P;
   }
 
   override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {

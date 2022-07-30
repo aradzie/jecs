@@ -9,7 +9,6 @@ const enum S {
   theta,
   I,
   V,
-  P,
   _Size_,
 }
 
@@ -29,7 +28,6 @@ export class Iac extends Device {
     ops: [
       { index: S.I, name: "I", unit: "A" },
       { index: S.V, name: "V", unit: "V" },
-      { index: S.P, name: "P", unit: "W" },
     ],
   };
 
@@ -71,9 +69,6 @@ export class Iac extends Device {
   override endEval(state: DeviceState): void {
     const { np, nn } = this;
     const V = np.voltage - nn.voltage;
-    const I = state[S.I];
-    const P = V * I;
     state[S.V] = V;
-    state[S.P] = P;
   }
 }

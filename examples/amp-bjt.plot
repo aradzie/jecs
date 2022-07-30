@@ -6,6 +6,6 @@ set xlabel "Vbe / V"
 plot for [IDX=0:*] \
   "amp-bjt.data" \
   index IDX \
-  using 13:3 \
+  using 10:3 \
   with lines lw 1 \
   title columnheader(1)

@@ -12,7 +12,7 @@ L:DUT n2 gnd L=1e-3
 ```text
 V(n1)=5V
 V(n2)=0V
-V1{V=5V,I=-1A,P=-5W}
-R1{V=5V,I=1A,P=5W}
-DUT{V=0V,I=1A,P=0W}
+V1{V=5V,I=-1A}
+R1{V=5V,I=1A}
+DUT{V=0V,I=1A}
 ```

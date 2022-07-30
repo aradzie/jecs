@@ -7,7 +7,6 @@ const enum S {
   G,
   V,
   I,
-  P,
   _Size_,
 }
 
@@ -28,7 +27,6 @@ export class Resistor extends Device {
     ops: [
       { index: S.V, name: "V", unit: "V" },
       { index: S.I, name: "I", unit: "A" },
-      { index: S.P, name: "P", unit: "W" },
     ],
   };
 
@@ -58,9 +56,7 @@ export class Resistor extends Device {
     const G = state[S.G];
     const V = na.voltage - nb.voltage;
     const I = V * G;
-    const P = V * I;
     state[S.V] = V;
     state[S.I] = I;
-    state[S.P] = P;
   }
 }

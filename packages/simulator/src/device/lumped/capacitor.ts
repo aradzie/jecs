@@ -9,7 +9,6 @@ const enum S {
   V0,
   V,
   I,
-  P,
   Geq,
   Ieq,
   _Size_,
@@ -36,7 +35,6 @@ export class Capacitor extends Device {
     ops: [
       { index: S.V, name: "V", unit: "V" },
       { index: S.I, name: "I", unit: "A" },
-      { index: S.P, name: "P", unit: "W" },
     ],
   };
 
@@ -103,16 +101,13 @@ export class Capacitor extends Device {
       // DC analysis.
       state[S.V] = V;
       state[S.I] = 0;
-      state[S.P] = 0;
     } else {
       // Transient analysis.
       const Geq = state[S.Geq];
       const Ieq = state[S.Ieq];
       const I = V * Geq + Ieq;
-      const P = V * I;
       state[S.V] = V;
       state[S.I] = I;
-      state[S.P] = P;
     }
   }
 }

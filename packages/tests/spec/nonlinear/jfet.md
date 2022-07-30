@@ -12,8 +12,8 @@ JFET:DUT gnd ng nd @NFET
 ```text
 V(nd)=5V
 V(ng)=0V
-VDS{V=5V,I=-400μA,P=-2mW}
-VGS{V=0V,I=0A,P=0W}
+VDS{V=5V,I=-400μA}
+VGS{V=0V,I=0A}
 DUT{Vgs=0V,Vgd=-5V,Vds=5V,Ids=400μA}
 ```
 
@@ -33,8 +33,8 @@ JFET:DUT gnd ng nd @NFET
 ```text
 V(nd)=5V
 V(ng)=-5V
-VDS{V=5V,I=0A,P=0W}
-VGS{V=-5V,I=0A,P=0W}
+VDS{V=5V,I=0A}
+VGS{V=-5V,I=0A}
 DUT{Vgs=-5V,Vgd=-10V,Vds=5V,Ids=0A}
 ```
 
@@ -52,7 +52,7 @@ JFET:DUT nc gnd nc @NFET
 
 ```text
 V(nc)=-700mV
-V1{V=700mV,I=-11.495mA,P=-8.047mW}
+V1{V=700mV,I=-11.495mA}
 DUT{Vgs=700mV,Vgd=700mV,Vds=0V,Ids=0A}
 ```
 
@@ -70,7 +70,7 @@ JFET:DUT nc gnd nc @NFET
 
 ```text
 V(nc)=700mV
-V1{V=700mV,I=0A,P=0W}
+V1{V=700mV,I=0A}
 DUT{Vgs=-700mV,Vgd=-700mV,Vds=0V,Ids=0A}
 ```
 
@@ -88,7 +88,7 @@ JFET:DUT nc gnd nc @PFET
 
 ```text
 V(nc)=700mV
-V1{V=700mV,I=-11.495mA,P=-8.047mW}
+V1{V=700mV,I=-11.495mA}
 DUT{Vgs=-700mV,Vgd=-700mV,Vds=0V,Ids=0A}
 ```
 
@@ -106,6 +106,6 @@ JFET:DUT nc gnd nc @PFET
 
 ```text
 V(nc)=-700mV
-V1{V=700mV,I=0A,P=0W}
+V1{V=700mV,I=0A}
 DUT{Vgs=700mV,Vgd=700mV,Vds=0V,Ids=0A}
 ```

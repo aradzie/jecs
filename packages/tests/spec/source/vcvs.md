@@ -12,7 +12,7 @@ R:R1 nop gnd R=10
 ```text
 V(ncp)=5V
 V(nop)=10V
-V1{V=5V,I=0A,P=0W}
-DUT{V=10V,I=-1A,P=-10W}
-R1{V=10V,I=1A,P=10W}
+V1{V=5V,I=0A}
+DUT{V=10V,I=-1A}
+R1{V=10V,I=1A}
 ```

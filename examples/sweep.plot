@@ -11,14 +11,14 @@ plot \
   for [IDX=0:*] \
   "sweep.data" \
   index IDX \
-  using 1:10 \
+  using 1:8 \
   axes x1y1 \
   with lines lw 1 \
   title columnheader(1), \
   for [IDX=0:*] \
   "sweep.data" \
   index IDX \
-  using 1:11 \
+  using 1:9 \
   axes x1y2 \
   with lines lw 1 \
   title columnheader(1)

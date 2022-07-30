@@ -8,6 +8,6 @@ set logscale y
 plot for [IDX=0:*] \
   "iv-diode.data" \
   index IDX \
-  using 5:6 \
+  using 4:5 \
   with lines lw 1 \
   title columnheader(1)

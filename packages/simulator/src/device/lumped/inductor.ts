@@ -9,7 +9,6 @@ const enum S {
   I0,
   V,
   I,
-  P,
   Req,
   Veq,
   _Size_,
@@ -36,7 +35,6 @@ export class Inductor extends Device {
     ops: [
       { index: S.V, name: "V", unit: "V" },
       { index: S.I, name: "I", unit: "A" },
-      { index: S.P, name: "P", unit: "W" },
     ],
   };
 
@@ -106,16 +104,13 @@ export class Inductor extends Device {
       // DC analysis.
       state[S.V] = 0;
       state[S.I] = I;
-      state[S.P] = 0;
     } else {
       // Transient analysis.
       const Req = state[S.Req];
       const Veq = state[S.Veq];
       const V = I * Req + Veq;
-      const P = V * I;
       state[S.V] = V;
       state[S.I] = I;
-      state[S.P] = P;
     }
   }
 }

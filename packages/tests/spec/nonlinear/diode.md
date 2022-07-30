@@ -10,8 +10,8 @@ Diode:DUT gnd np
 
 ```text
 V(np)=5V
-V1{V=5V,I=0A,P=0W}
-DUT{V=-5V,I=0A,P=0W}
+V1{V=5V,I=0A}
+DUT{V=-5V,I=0A}
 ```
 
 ---
@@ -28,8 +28,8 @@ Diode:DUT np gnd
 
 ```text
 V(np)=773.844mV
-I1{I=100mA,V=-773.844mV,P=-77.384mW}
-DUT{V=773.844mV,I=100mA,P=77.384mW}
+I1{I=100mA,V=-773.844mV}
+DUT{V=773.844mV,I=100mA}
 ```
 
 ---
@@ -48,9 +48,9 @@ Diode:DUT2 nm gnd
 ```text
 V(np)=1.667V
 V(nm)=833.37mV
-I1{I=1A,V=-1.667V,P=-1.667W}
-DUT1{V=833.37mV,I=1000mA,P=833.37mW}
-DUT2{V=833.37mV,I=1000mA,P=833.37mW}
+I1{I=1A,V=-1.667V}
+DUT1{V=833.37mV,I=1000mA}
+DUT2{V=833.37mV,I=1000mA}
 ```
 
 ---
@@ -67,8 +67,8 @@ Diode:DUT np gnd
 
 ```text
 V(np)=800mV
-V1{V=800mV,I=-275.048mA,P=-220.038mW}
-DUT{V=800mV,I=275.048mA,P=220.038mW}
+V1{V=800mV,I=-275.048mA}
+DUT{V=800mV,I=275.048mA}
 ```
 
 ---
@@ -87,7 +87,7 @@ Diode:DUT2 nm gnd
 ```text
 V(np)=1.6V
 V(nm)=800mV
-V1{V=1.6V,I=-275.048mA,P=-440.077mW}
-DUT1{V=800mV,I=275.048mA,P=220.038mW}
-DUT2{V=800mV,I=275.048mA,P=220.038mW}
+V1{V=1.6V,I=-275.048mA}
+DUT1{V=800mV,I=275.048mA}
+DUT2{V=800mV,I=275.048mA}
 ```

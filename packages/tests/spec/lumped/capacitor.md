@@ -10,6 +10,6 @@ C:DUT n1 gnd C=1e-3
 
 ```text
 V(n1)=5V
-V1{V=5V,I=0A,P=0W}
-DUT{V=5V,I=0A,P=0W}
+V1{V=5V,I=0A}
+DUT{V=5V,I=0A}
 ```

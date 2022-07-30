@@ -7,7 +7,6 @@ const enum S {
   V0,
   V,
   I,
-  P,
   _Size_,
 }
 
@@ -25,7 +24,6 @@ export class Vdc extends Device {
     ops: [
       { index: S.V, name: "V", unit: "V" },
       { index: S.I, name: "I", unit: "A" },
-      { index: S.P, name: "P", unit: "W" },
     ],
   };
 
@@ -57,9 +55,6 @@ export class Vdc extends Device {
   override endEval(state: DeviceState): void {
     const { branch } = this;
     const I = branch.current;
-    const V = state[S.V];
-    const P = V * I;
     state[S.I] = I;
-    state[S.P] = P;
   }
 }

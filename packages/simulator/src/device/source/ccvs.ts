@@ -7,7 +7,6 @@ const enum S {
   gain,
   V,
   I,
-  P,
   _Size_,
 }
 
@@ -25,7 +24,6 @@ export class CCVS extends Device {
     ops: [
       { index: S.V, name: "V", unit: "V" },
       { index: S.I, name: "I", unit: "A" },
-      { index: S.P, name: "P", unit: "W" },
     ],
   };
 
@@ -67,9 +65,7 @@ export class CCVS extends Device {
     const { np, nn, branch1 } = this;
     const V = np.voltage - nn.voltage;
     const I = branch1.current;
-    const P = V * I;
     state[S.V] = V;
     state[S.I] = I;
-    state[S.P] = P;
   }
 }

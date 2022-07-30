@@ -8,5 +8,5 @@ set ylabel "voltage, V" tc lt 1
 set y2tics nomirror tc lt 2
 set y2label "current, A" tc lt 2
 plot \
-  "ac-c.data" using 1:6 axes x1y1 with lines lw 1 title "Vc", \
-  "ac-c.data" using 1:7 axes x1y2 with lines lw 1 title "Ic"
+  "ac-c.data" using 1:5 axes x1y1 with lines lw 1 title "Vc", \
+  "ac-c.data" using 1:6 axes x1y2 with lines lw 1 title "Ic"

@@ -2,11 +2,9 @@
 2 #ng:V
 3 Vds:V
 4 Vds:I
-5 Vds:P
-6 Vgs:V
-7 Vgs:I
-8 Vgs:P
-9 DUT:Vgs
-10 DUT:Vgd
-11 DUT:Vds
-12 DUT:Ids
+5 Vgs:V
+6 Vgs:I
+7 DUT:Vgs
+8 DUT:Vgd
+9 DUT:Vds
+10 DUT:Ids

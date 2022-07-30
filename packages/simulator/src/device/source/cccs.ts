@@ -7,7 +7,6 @@ const enum S {
   gain,
   I,
   V,
-  P,
   _Size_,
 }
 
@@ -25,7 +24,6 @@ export class CCCS extends Device {
     ops: [
       { index: S.I, name: "I", unit: "A" },
       { index: S.V, name: "V", unit: "V" },
-      { index: S.P, name: "P", unit: "W" },
     ],
   };
 
@@ -65,9 +63,7 @@ export class CCCS extends Device {
     const gain = state[S.gain];
     const I = branch.current * gain;
     const V = np.voltage - nn.voltage;
-    const P = V * I;
     state[S.I] = I;
     state[S.V] = V;
-    state[S.P] = P;
   }
 }

@@ -2,7 +2,5 @@
 2 #n1:V
 3 Vin:V
 4 Vin:I
-5 Vin:P
-6 Cload:V
-7 Cload:I
-8 Cload:P
+5 Cload:V
+6 Cload:I

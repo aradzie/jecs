@@ -10,8 +10,8 @@ R:DUT n1 gnd R=1000
 
 ```text
 V(n1)=5V
-V1{V=5V,I=-5mA,P=-25mW}
-DUT{V=5V,I=5mA,P=25mW}
+V1{V=5V,I=-5mA}
+DUT{V=5V,I=5mA}
 ```
 
 ---
@@ -28,6 +28,6 @@ R:DUT n1 gnd R=-1000
 
 ```text
 V(n1)=5V
-V1{V=5V,I=5mA,P=25mW}
-DUT{V=5V,I=-5mA,P=-25mW}
+V1{V=5V,I=5mA}
+DUT{V=5V,I=-5mA}
 ```
