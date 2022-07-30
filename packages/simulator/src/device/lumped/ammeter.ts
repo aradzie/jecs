@@ -19,16 +19,15 @@ const enum S {
 export class Ammeter extends Device {
   static override readonly id = "Ammeter";
   static override readonly numTerminals = 2;
+  static override readonly stateSize = S._Size_;
   static override readonly propertiesSchema = {};
-  static override readonly stateSchema = {
-    length: S._Size_,
-    ops: [
-      { index: S.I, name: "I", unit: "A" },
-      { index: S.Imax, name: "Imax", unit: "A" },
-      { index: S.Imin, name: "Imin", unit: "A" },
-      { index: S.Irms, name: "Irms", unit: "A" },
-    ],
-  };
+
+  override readonly probes = [
+    { name: "I", unit: "A", measure: () => this.state[S.I] },
+    { name: "Imax", unit: "A", measure: () => this.state[S.Imax] },
+    { name: "Imin", unit: "A", measure: () => this.state[S.Imin] },
+    { name: "Irms", unit: "A", measure: () => this.state[S.Irms] },
+  ];
 
   /** Positive terminal. */
   private np!: Node;

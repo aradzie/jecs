@@ -19,6 +19,7 @@ const enum S {
 export class OpAmp extends Device {
   static override readonly id = "OpAmp";
   static override readonly numTerminals = 3;
+  static override readonly stateSize = S._Size_;
   static override readonly propertiesSchema = {
     gain: Properties.number({
       defaultValue: 1e6,
@@ -31,14 +32,12 @@ export class OpAmp extends Device {
       title: "maximum absolute value of output voltage",
     }),
   };
-  static override readonly stateSchema = {
-    length: S._Size_,
-    ops: [
-      { index: S.Vin, name: "Vin", unit: "V" },
-      { index: S.Vout, name: "Vout", unit: "V" },
-    ],
-  };
   static override readonly linear = false;
+
+  override readonly probes = [
+    { name: "Vin", unit: "V", measure: () => this.state[S.Vin] },
+    { name: "Vout", unit: "V", measure: () => this.state[S.Vout] },
+  ];
 
   /** Positive input terminal. */
   private np!: Node;

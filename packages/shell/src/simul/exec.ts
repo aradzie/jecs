@@ -59,13 +59,13 @@ function getOps(circuit: Circuit): readonly Op[] {
     }
   }
   for (const device of circuit.devices) {
-    const { id: classId, stateSchema } = device.deviceClass;
-    for (const op of stateSchema.ops) {
+    const { id: classId } = device.deviceClass;
+    for (const { name, unit, measure } of device.probes) {
       ops.push({
         deviceId: `${classId}:${device.id}`,
-        name: op.name,
-        value: device.state[op.index],
-        unit: op.unit,
+        name,
+        unit,
+        value: measure(),
       });
     }
   }

@@ -1,5 +1,6 @@
 import type { Stamper } from "./mna.js";
 import type { Network, Node } from "./network.js";
+import type { Probe } from "./probe.js";
 import { Properties, PropertiesSchema } from "./properties.js";
 
 export interface DeviceClass {
@@ -7,12 +8,13 @@ export interface DeviceClass {
   readonly id: string;
   /** The number of terminals in the device. */
   readonly numTerminals: number;
+  /** Number of elements in the state vector. */
+  readonly stateSize: number;
   /** Schema of the device parameters. */
   readonly propertiesSchema: PropertiesSchema;
-  /** Schema of the device state vector. */
-  readonly stateSchema: StateSchema;
   /** Whether this device is linear. */
   readonly linear: boolean;
+
   /**
    * Device constructor.
    * @param id Unique device instance identifier.
@@ -34,13 +36,6 @@ export interface OutputParam {
   readonly unit: string;
 }
 
-export interface StateSchema {
-  /** Length of the state vector. */
-  readonly length: number;
-  /** Output parameters from the state vector. */
-  readonly ops: readonly OutputParam[];
-}
-
 export type EvalParams = {
   /** Elapsed simulation time. */
   readonly elapsedTime: number;
@@ -56,11 +51,8 @@ export abstract class Device {
   static readonly dummy = new (class Dummy extends Device {
     static override readonly id = "DUMMY";
     static override readonly numTerminals = 0;
+    static override readonly stateSize = 0;
     static override readonly propertiesSchema = {};
-    static override readonly stateSchema = {
-      length: 0,
-      ops: [],
-    };
 
     constructor() {
       super("DUMMY");
@@ -73,11 +65,11 @@ export abstract class Device {
   /** The number of terminals in the device. */
   static readonly numTerminals: number;
 
+  /** Schema of the device state vector. */
+  static readonly stateSize: number;
+
   /** Schema of the device parameters. */
   static readonly propertiesSchema: PropertiesSchema;
-
-  /** Schema of the device state vector. */
-  static readonly stateSchema: StateSchema;
 
   /** Whether this device is linear. Most devices are linear. */
   static readonly linear: boolean = true;
@@ -88,14 +80,17 @@ export abstract class Device {
   /** Device properties. */
   readonly properties: Properties;
 
+  /** Probes to measure device output parameters. */
+  readonly probes: readonly Probe[] = [];
+
   /** Vector with device state variables. */
   state: DeviceState;
 
   constructor(id: string) {
     this.id = id;
-    const { propertiesSchema, stateSchema } = this.deviceClass;
+    const { stateSize, propertiesSchema } = this.deviceClass;
     this.properties = new Properties(propertiesSchema);
-    this.state = new Float64Array(stateSchema.length);
+    this.state = new Float64Array(stateSize);
   }
 
   get deviceClass(): DeviceClass {

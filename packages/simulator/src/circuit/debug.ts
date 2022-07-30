@@ -1,5 +1,4 @@
 import { humanizeNumber } from "../util/format.js";
-import { Unit } from "../util/unit.js";
 import type { Circuit } from "./circuit.js";
 
 export function dumpCircuit(circuit: Circuit): string[] {
@@ -7,15 +6,16 @@ export function dumpCircuit(circuit: Circuit): string[] {
   for (const node of circuit.nodes) {
     switch (node.type) {
       case "node":
-        lines.push(`V(${node.id})=${humanizeNumber(node.voltage, Unit.VOLT)}`);
+        for (const probe of node.probes) {
+          lines.push(`${probe.unit}(${node.id})=${humanizeNumber(node.voltage, probe.unit)}`);
+        }
         break;
     }
   }
   for (const device of circuit.devices) {
     const items: string[] = [];
-    const { stateSchema } = device.deviceClass;
-    for (const op of stateSchema.ops) {
-      items.push(`${op.name}=${humanizeNumber(device.state[op.index], op.unit)}`);
+    for (const probe of device.probes) {
+      items.push(`${probe.name}=${humanizeNumber(probe.measure(), probe.unit)}`);
     }
     lines.push(`${device.id}{${items.join(",")}}`);
   }

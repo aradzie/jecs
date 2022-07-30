@@ -18,18 +18,17 @@ const enum S {
 export class Iac extends Device {
   static override readonly id = "Iac";
   static override readonly numTerminals = 2;
+  static override readonly stateSize = S._Size_;
   static override readonly propertiesSchema = {
     I: Properties.number({ title: "amplitude" }),
     f: Properties.number({ title: "frequency" }),
     phase: Properties.number({ title: "phase", defaultValue: 0 }),
   };
-  static override readonly stateSchema = {
-    length: S._Size_,
-    ops: [
-      { index: S.I, name: "I", unit: "A" },
-      { index: S.V, name: "V", unit: "V" },
-    ],
-  };
+
+  override readonly probes = [
+    { name: "I", unit: "A", measure: () => this.state[S.I] },
+    { name: "V", unit: "V", measure: () => this.state[S.V] },
+  ];
 
   /** Positive terminal. */
   private np!: Node;

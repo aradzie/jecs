@@ -16,16 +16,15 @@ const enum S {
 export class CCCS extends Device {
   static override readonly id = "CCCS";
   static override readonly numTerminals = 4;
+  static override readonly stateSize = S._Size_;
   static override readonly propertiesSchema = {
     gain: Properties.number({ title: "gain" }),
   };
-  static override readonly stateSchema = {
-    length: S._Size_,
-    ops: [
-      { index: S.I, name: "I", unit: "A" },
-      { index: S.V, name: "V", unit: "V" },
-    ],
-  };
+
+  override readonly probes = [
+    { name: "I", unit: "A", measure: () => this.state[S.I] },
+    { name: "V", unit: "V", measure: () => this.state[S.V] },
+  ];
 
   /** Positive output terminal. */
   private np!: Node;

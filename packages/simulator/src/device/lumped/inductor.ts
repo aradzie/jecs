@@ -1,5 +1,5 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import { Stamper, stampVoltageSource } from "../../circuit/mna.js";
+import { type Stamper, stampVoltageSource } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { method } from "../integration.js";
@@ -20,6 +20,7 @@ const enum S {
 export class Inductor extends Device {
   static override readonly id = "L";
   static override readonly numTerminals = 2;
+  static override readonly stateSize = S._Size_;
   static override readonly propertiesSchema = {
     L: Properties.number({
       title: "inductance",
@@ -30,13 +31,11 @@ export class Inductor extends Device {
       defaultValue: 0,
     }),
   };
-  static override readonly stateSchema = {
-    length: S._Size_,
-    ops: [
-      { index: S.V, name: "V", unit: "V" },
-      { index: S.I, name: "I", unit: "A" },
-    ],
-  };
+
+  override readonly probes = [
+    { name: "V", unit: "V", measure: () => this.state[S.V] },
+    { name: "I", unit: "A", measure: () => this.state[S.I] },
+  ];
 
   /** First terminal. */
   private na!: Node;
