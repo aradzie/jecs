@@ -1,3 +1,4 @@
+import { NumericOverflowError } from "@jecs/math/lib/error.js";
 import type { Matrix, Vector } from "@jecs/math/lib/types.js";
 import { Branch, groundNode, Node } from "./network.js";
 
@@ -17,6 +18,9 @@ export class Stamper {
    * @param x Stamp value.
    */
   stampA(i: Node | Branch, j: Node | Branch, x: number): void {
+    if (!Number.isFinite(x)) {
+      throw new NumericOverflowError();
+    }
     if (i !== groundNode && j !== groundNode) {
       this.A[i.index][j.index] += x;
     }
@@ -28,6 +32,9 @@ export class Stamper {
    * @param x Stamp value.
    */
   stampB(i: Node | Branch, x: number): void {
+    if (!Number.isFinite(x)) {
+      throw new NumericOverflowError();
+    }
     if (i !== groundNode) {
       this.b[i.index] += x;
     }
@@ -47,31 +54,43 @@ export class AcStamper {
    * Stamps the MNA matrix with the given complex value.
    * @param i Row index.
    * @param j Column index.
-   * @param x Real stamp value.
-   * @param y Imaginary stamp value.
+   * @param xr Real stamp value.
+   * @param xi Imaginary stamp value.
    */
-  stampA(i: Node | Branch, j: Node | Branch, x: number, y: number): void {
+  stampA(i: Node | Branch, j: Node | Branch, xr: number, xi: number): void {
+    if (!Number.isFinite(xr)) {
+      throw new NumericOverflowError();
+    }
+    if (!Number.isFinite(xi)) {
+      throw new NumericOverflowError();
+    }
     if (i !== groundNode && j !== groundNode) {
       const r = i.index * 2;
       const c = j.index * 2;
-      this.A[r][c] += x;
-      this.A[r][c + 1] -= y;
-      this.A[r + 1][c] += y;
-      this.A[r + 1][c + 1] += x;
+      this.A[r][c] += xr;
+      this.A[r][c + 1] -= xi;
+      this.A[r + 1][c] += xi;
+      this.A[r + 1][c + 1] += xr;
     }
   }
 
   /**
    * Stamps RHS vector with the given complex value.
    * @param i Element index.
-   * @param x Real stamp value.
-   * @param y Imaginary stamp value.
+   * @param xr Real stamp value.
+   * @param xi Imaginary stamp value.
    */
-  stampB(i: Node | Branch, x: number, y: number): void {
+  stampB(i: Node | Branch, xr: number, xi: number): void {
+    if (!Number.isFinite(xr)) {
+      throw new NumericOverflowError();
+    }
+    if (!Number.isFinite(xi)) {
+      throw new NumericOverflowError();
+    }
     if (i !== groundNode) {
       const r = i.index * 2;
-      this.b[r] += x;
-      this.b[r + 1] += y;
+      this.b[r] += xr;
+      this.b[r + 1] += xi;
     }
   }
 }
