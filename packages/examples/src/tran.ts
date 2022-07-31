@@ -31,7 +31,6 @@ circuit.connect(R1, [N2, GND]);
 
 // Perform DC analysis, compute node voltages and branch currents.
 const analysis = new TrAnalysis();
-analysis.properties.set("dc", "no");
 analysis.properties.set("stopTime", 1e-3);
 analysis.properties.set("timeStep", 1e-4);
 analysis.properties.set("maxIter", 10);

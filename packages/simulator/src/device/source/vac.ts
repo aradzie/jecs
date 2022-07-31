@@ -57,7 +57,10 @@ export class Vac extends Device {
 
   override initDc(state: DeviceState, params: DcParams): void {}
 
-  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {}
+  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
+    const { np, nn, branch } = this;
+    stampVoltageSource(stamper, np, nn, branch, 0);
+  }
 
   override endDc(state: DeviceState, params: DcParams): void {
     state[S.V] = 0;
