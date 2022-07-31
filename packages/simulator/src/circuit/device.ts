@@ -41,7 +41,14 @@ export interface StateSchema {
   readonly ops: readonly OutputParam[];
 }
 
-export type EvalParams = {
+export type DcParams = {
+  /** The default temperature of devices. */
+  readonly temp: number;
+  /** Voltage or current source value multiplier for the convergence helper. */
+  readonly sourceFactor: number;
+};
+
+export type TrParams = {
   /** Elapsed simulation time. */
   readonly elapsedTime: number;
   /** Time step from the last simulation. */
@@ -110,13 +117,21 @@ export abstract class Device {
    */
   connect(network: Network, nodes: readonly Node[]): void {}
 
-  deriveState(state: DeviceState, params: EvalParams): void {}
+  init(state: DeviceState): void {}
 
-  beginEval(state: DeviceState, params: EvalParams): void {}
+  initDc(state: DeviceState, params: DcParams): void {}
 
-  eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {}
+  loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {}
 
-  endEval(state: DeviceState, params: EvalParams): void {}
+  endDc(state: DeviceState, params: DcParams): void {}
+
+  initTr(state: DeviceState, params: TrParams): void {}
+
+  loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {}
+
+  endTr(state: DeviceState, params: TrParams): void {}
+
+  initAc(state: DeviceState): void {}
 
   loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {}
 }

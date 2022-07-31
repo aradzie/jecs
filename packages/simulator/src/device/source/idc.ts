@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
+import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
 import { stampCurrentSource, Stamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
@@ -37,11 +37,13 @@ export class Idc extends Device {
     this.nn = nn;
   }
 
-  override deriveState(state: DeviceState): void {
+  override init(state: DeviceState): void {
     state[S.I0] = this.properties.getNumber("I");
   }
 
-  override eval(state: DeviceState, { sourceFactor }: EvalParams, stamper: Stamper): void {
+  override initDc(state: DeviceState, params: DcParams): void {}
+
+  override loadDc(state: DeviceState, { sourceFactor }: DcParams, stamper: Stamper): void {
     const { np, nn } = this;
     const I0 = state[S.I0];
     const I = sourceFactor * I0;
@@ -49,9 +51,21 @@ export class Idc extends Device {
     stampCurrentSource(stamper, np, nn, I);
   }
 
-  override endEval(state: DeviceState): void {
+  override endDc(state: DeviceState, params: DcParams): void {
     const { np, nn } = this;
     const V = np.voltage - nn.voltage;
     state[S.V] = V;
+  }
+
+  override initTr(state: DeviceState, params: TrParams): void {
+    this.initDc(state, params);
+  }
+
+  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
+    this.loadDc(state, params, stamper);
+  }
+
+  override endTr(state: DeviceState, params: TrParams): void {
+    this.endDc(state, params);
   }
 }

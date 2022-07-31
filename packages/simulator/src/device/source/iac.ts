@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
+import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
 import { AcStamper, stampCurrentSource, stampCurrentSourceAc, Stamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
@@ -41,7 +41,7 @@ export class Iac extends Device {
     this.nn = nn;
   }
 
-  override deriveState(state: DeviceState): void {
+  override init(state: DeviceState): void {
     const amplitude = this.properties.getNumber("I");
     const frequency = this.properties.getNumber("f");
     const phase = this.properties.getNumber("phase");
@@ -52,9 +52,20 @@ export class Iac extends Device {
     state[S.theta] = theta;
   }
 
-  override eval(
+  override initDc(state: DeviceState, params: DcParams): void {}
+
+  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {}
+
+  override endDc(state: DeviceState, params: DcParams): void {
+    state[S.I] = 0;
+    state[S.V] = 0;
+  }
+
+  override initTr(state: DeviceState, params: TrParams): void {}
+
+  override loadTr(
     state: DeviceState,
-    { elapsedTime, sourceFactor }: EvalParams,
+    { elapsedTime, sourceFactor }: TrParams,
     stamper: Stamper,
   ): void {
     const { np, nn } = this;
@@ -66,7 +77,7 @@ export class Iac extends Device {
     stampCurrentSource(stamper, np, nn, I);
   }
 
-  override endEval(state: DeviceState): void {
+  override endTr(state: DeviceState, params: TrParams): void {
     const { np, nn } = this;
     const V = np.voltage - nn.voltage;
     state[S.V] = V;

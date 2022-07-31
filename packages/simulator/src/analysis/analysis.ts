@@ -68,10 +68,11 @@ export class DcAnalysis extends Analysis {
         circuit.equations.set(variableId, new ConstantExp(value));
       },
       end: () => {
-        circuit.elapsedTime = 0;
+        circuit.elapsedTime = NaN;
         circuit.timeStep = NaN;
         circuit.temp = temp;
         circuit.reset();
+        solver.useDc();
         solver.solve();
         dataset.capture();
       },
@@ -107,18 +108,15 @@ export class TrAnalysis extends Analysis {
         if (steps.length > 0) {
           dataset.group(groupName(steps));
         }
+        circuit.elapsedTime = NaN;
+        circuit.timeStep = NaN;
+        circuit.temp = temp;
+        circuit.reset();
         if (dc === "yes") {
-          circuit.elapsedTime = 0;
-          circuit.timeStep = NaN;
-          circuit.temp = temp;
-          circuit.reset();
+          solver.useDc();
           solver.solve();
-        } else {
-          circuit.elapsedTime = 0;
-          circuit.timeStep = 0;
-          circuit.temp = temp;
-          circuit.reset();
         }
+        solver.useTr();
         let step = 0;
         let elapsedTime = 0;
         while (elapsedTime <= stopTime) {

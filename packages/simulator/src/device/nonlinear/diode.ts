@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
+import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
 import { stampConductance, stampCurrentSource, Stamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
@@ -55,7 +55,7 @@ export class Diode extends Device {
     this.nc = nc;
   }
 
-  override deriveState(state: DeviceState, params: EvalParams): void {
+  override initDc(state: DeviceState, params: DcParams): void {
     const Is = this.properties.getNumber("Is");
     const N = this.properties.getNumber("N");
     const temp = celsiusToKelvin(this.properties.getNumber("temp", params.temp));
@@ -65,7 +65,7 @@ export class Diode extends Device {
     state[S.Vcrit] = Vcrit;
   }
 
-  private eval0(state: DeviceState, damped: boolean): void {
+  private eval(state: DeviceState, damped: boolean): void {
     const { na, nc } = this;
     const Is = state[S.Is];
     const Vt = state[S.Vt];
@@ -81,9 +81,9 @@ export class Diode extends Device {
     state[S.G] = G;
   }
 
-  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
+  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
     const { na, nc } = this;
-    this.eval0(state, true);
+    this.eval(state, true);
     const V = state[S.V];
     const I = state[S.I];
     const G = state[S.G];
@@ -91,7 +91,19 @@ export class Diode extends Device {
     stampCurrentSource(stamper, na, nc, I - G * V);
   }
 
-  override endEval(state: DeviceState): void {
-    this.eval0(state, false);
+  override endDc(state: DeviceState, params: DcParams): void {
+    this.eval(state, false);
+  }
+
+  override initTr(state: DeviceState, params: TrParams): void {
+    this.initDc(state, params);
+  }
+
+  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
+    this.loadDc(state, params, stamper);
+  }
+
+  override endTr(state: DeviceState, params: TrParams): void {
+    this.endDc(state, params);
   }
 }

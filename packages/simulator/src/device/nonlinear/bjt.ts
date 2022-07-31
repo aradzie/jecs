@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
+import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
 import {
   stampConductance,
   stampCurrentSource,
@@ -130,7 +130,7 @@ export class Bjt extends Device {
     this.nc = nc;
   }
 
-  override deriveState(state: DeviceState, params: EvalParams): void {
+  override initDc(state: DeviceState, params: DcParams): void {
     const polarity = this.properties.getString("polarity") as BjtPolarity;
     const Bf = this.properties.getNumber("Bf");
     const Br = this.properties.getNumber("Br");
@@ -154,7 +154,7 @@ export class Bjt extends Device {
     state[S.Vcritr] = Vcritr;
   }
 
-  private eval0(state: DeviceState, damped: boolean): void {
+  private eval(state: DeviceState, damped: boolean): void {
     const { ne, nb, nc } = this;
     const pol = state[S.pol];
     const Af = state[S.Af];
@@ -186,9 +186,9 @@ export class Bjt extends Device {
     state[S.Gr] = Gr;
   }
 
-  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
+  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
     const { ne, nb, nc } = this;
-    this.eval0(state, true);
+    this.eval(state, true);
     const pol = state[S.pol];
     const Af = state[S.Af];
     const Ar = state[S.Ar];
@@ -210,7 +210,19 @@ export class Bjt extends Device {
     stampCurrentSource(stamper, nc, nb, pol * (Ic - Gce * Vbe - Gcc * Vbc));
   }
 
-  override endEval(state: DeviceState): void {
-    this.eval0(state, false);
+  override endDc(state: DeviceState, params: DcParams): void {
+    this.eval(state, false);
+  }
+
+  override initTr(state: DeviceState, params: TrParams): void {
+    this.initDc(state, params);
+  }
+
+  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
+    this.loadDc(state, params, stamper);
+  }
+
+  override endTr(state: DeviceState, params: TrParams): void {
+    this.endDc(state, params);
   }
 }

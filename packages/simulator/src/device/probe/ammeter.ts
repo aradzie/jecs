@@ -1,15 +1,10 @@
-import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
+import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
 import { Stamper, stampVoltageSource } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 
 const enum S {
   /** Current through probe. */
   I,
-  Imax,
-  Imin,
-  Irms,
-  rmsSum,
-  rmsCnt,
   _Size_,
 }
 
@@ -22,12 +17,7 @@ export class Ammeter extends Device {
   static override readonly propertiesSchema = {};
   static override readonly stateSchema = {
     length: S._Size_,
-    ops: [
-      { index: S.I, name: "I", unit: "A" },
-      { index: S.Imax, name: "Imax", unit: "A" },
-      { index: S.Imin, name: "Imin", unit: "A" },
-      { index: S.Irms, name: "Irms", unit: "A" },
-    ],
+    ops: [{ index: S.I, name: "I", unit: "A" }],
   };
 
   /** Positive terminal. */
@@ -43,33 +33,28 @@ export class Ammeter extends Device {
     this.branch = network.makeBranch(this.np, this.nn);
   }
 
-  override deriveState(state: DeviceState): void {
-    state[S.Imax] = NaN;
-    state[S.Imin] = NaN;
-    state[S.Irms] = NaN;
-    state[S.rmsSum] = 0;
-    state[S.rmsCnt] = 0;
-  }
+  override initDc(state: DeviceState, params: DcParams): void {}
 
-  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
+  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
     const { np, nn, branch } = this;
     stampVoltageSource(stamper, np, nn, branch, 0);
   }
 
-  override endEval(state: DeviceState, { timeStep }: EvalParams): void {
+  override endDc(state: DeviceState, params: DcParams): void {
     const { branch } = this;
     const I = branch.current;
     state[S.I] = I;
-    if (timeStep === timeStep) {
-      const Imax = state[S.Imax];
-      const Imin = state[S.Imin];
-      const rmsSum = state[S.rmsSum] + I * I;
-      const rmsCnt = state[S.rmsCnt] + 1;
-      state[S.Imax] = Imax === Imax ? Math.max(Imax, I) : I;
-      state[S.Imin] = Imin === Imin ? Math.min(Imin, I) : I;
-      state[S.Irms] = Math.sqrt(rmsSum / rmsCnt);
-      state[S.rmsSum] = rmsSum;
-      state[S.rmsCnt] = rmsCnt;
-    }
+  }
+
+  override initTr(state: DeviceState, params: TrParams): void {
+    this.initDc(state, params);
+  }
+
+  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
+    this.loadDc(state, params, stamper);
+  }
+
+  override endTr(state: DeviceState, params: TrParams): void {
+    this.endDc(state, params);
   }
 }

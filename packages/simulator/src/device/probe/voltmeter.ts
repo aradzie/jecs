@@ -1,14 +1,10 @@
-import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
+import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
+import type { Stamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 
 const enum S {
   /** Voltage through probe. */
   V,
-  Vmax,
-  Vmin,
-  Vrms,
-  rmsSum,
-  rmsCnt,
   _Size_,
 }
 
@@ -21,12 +17,7 @@ export class Voltmeter extends Device {
   static override readonly propertiesSchema = {};
   static override readonly stateSchema = {
     length: S._Size_,
-    ops: [
-      { index: S.V, name: "V", unit: "V" },
-      { index: S.Vmax, name: "Vmax", unit: "V" },
-      { index: S.Vmin, name: "Vmin", unit: "V" },
-      { index: S.Vrms, name: "Vrms", unit: "V" },
-    ],
+    ops: [{ index: S.V, name: "V", unit: "V" }],
   };
 
   /** Positive terminal. */
@@ -39,28 +30,25 @@ export class Voltmeter extends Device {
     this.nn = nn;
   }
 
-  override deriveState(state: DeviceState): void {
-    state[S.Vmax] = NaN;
-    state[S.Vmin] = NaN;
-    state[S.Vrms] = NaN;
-    state[S.rmsSum] = 0;
-    state[S.rmsCnt] = 0;
-  }
+  override initDc(state: DeviceState, params: DcParams): void {}
 
-  override endEval(state: DeviceState, { timeStep }: EvalParams): void {
+  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {}
+
+  override endDc(state: DeviceState, params: DcParams): void {
     const { np, nn } = this;
     const V = np.voltage - nn.voltage;
     state[S.V] = V;
-    if (timeStep === timeStep) {
-      const Vmax = state[S.Vmax];
-      const Vmin = state[S.Vmin];
-      const rmsSum = state[S.rmsSum] + V * V;
-      const rmsCnt = state[S.rmsCnt] + 1;
-      state[S.Vmax] = Vmax === Vmax ? Math.max(Vmax, V) : V;
-      state[S.Vmin] = Vmin === Vmin ? Math.min(Vmin, V) : V;
-      state[S.Vrms] = Math.sqrt(rmsSum / rmsCnt);
-      state[S.rmsSum] = rmsSum;
-      state[S.rmsCnt] = rmsCnt;
-    }
+  }
+
+  override initTr(state: DeviceState, params: TrParams): void {
+    this.initDc(state, params);
+  }
+
+  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
+    this.loadDc(state, params, stamper);
+  }
+
+  override endTr(state: DeviceState, params: TrParams): void {
+    this.endDc(state, params);
   }
 }

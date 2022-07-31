@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
+import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
 import {
   stampConductance,
   stampCurrentSource,
@@ -128,7 +128,7 @@ export class Mosfet extends Device {
     this.nb = nb;
   }
 
-  override deriveState(state: DeviceState, params: EvalParams): void {
+  override initDc(state: DeviceState, params: DcParams): void {
     const polarity = this.properties.getString("polarity") as FetPolarity;
     const Vth = this.properties.getNumber("Vth");
     const beta = this.properties.getNumber("beta");
@@ -147,7 +147,7 @@ export class Mosfet extends Device {
     state[S.Vcrit] = Vcrit;
   }
 
-  private eval0(state: DeviceState, damped: boolean): void {
+  private eval(state: DeviceState, damped: boolean): void {
     const { ns, ng, nd, nb } = this;
     const pol = state[S.pol];
     const Vth = state[S.Vth];
@@ -257,9 +257,9 @@ export class Mosfet extends Device {
     state[S.Gm] = Gm;
   }
 
-  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
+  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
     const { ns, ng, nd, nb } = this;
-    this.eval0(state, true);
+    this.eval(state, true);
     const pol = state[S.pol];
     const Vbs = pol * state[S.Vbs];
     const Vbd = pol * state[S.Vbd];
@@ -295,7 +295,19 @@ export class Mosfet extends Device {
     }
   }
 
-  override endEval(state: DeviceState): void {
-    this.eval0(state, false);
+  override endDc(state: DeviceState, params: DcParams): void {
+    this.eval(state, false);
+  }
+
+  override initTr(state: DeviceState, params: TrParams): void {
+    this.initDc(state, params);
+  }
+
+  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
+    this.loadDc(state, params, stamper);
+  }
+
+  override endTr(state: DeviceState, params: TrParams): void {
+    this.endDc(state, params);
   }
 }

@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
+import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
 import {
   AcStamper,
   stampConductance,
@@ -54,45 +54,46 @@ export class Capacitor extends Device {
     this.nb = nb;
   }
 
-  override deriveState(state: DeviceState): void {
+  override init(state: DeviceState): void {
     state[S.C] = this.properties.getNumber("C");
     state[S.V0] = this.properties.getNumber("V0");
   }
 
-  override beginEval(state: DeviceState, { elapsedTime, timeStep }: EvalParams): void {
+  override initDc(state: DeviceState, params: DcParams): void {}
+
+  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {}
+
+  override endDc(state: DeviceState, params: DcParams): void {
     const { na, nb } = this;
-    if (timeStep !== timeStep) {
-      // DC analysis.
-      state[S.Geq] = 0;
-      state[S.Ieq] = 0;
-    } else {
-      // Transient analysis.
-      const C = state[S.C];
-      let V = na.voltage - nb.voltage;
-      if (elapsedTime === 0) {
-        V = state[S.V0];
-      }
-      let Geq: number;
-      let Ieq: number;
-      switch (method) {
-        case "euler": {
-          Geq = C / timeStep;
-          Ieq = -V * Geq;
-          break;
-        }
-        case "trapezoidal": {
-          const I = state[S.I];
-          Geq = (2 * C) / timeStep;
-          Ieq = -V * Geq - I;
-          break;
-        }
-      }
-      state[S.Geq] = Geq;
-      state[S.Ieq] = Ieq;
-    }
+    const V = na.voltage - nb.voltage;
+    state[S.V] = V;
+    state[S.I] = 0;
   }
 
-  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
+  override initTr(state: DeviceState, { elapsedTime, timeStep }: TrParams): void {
+    const { na, nb } = this;
+    const C = state[S.C];
+    const V = elapsedTime > 0 ? na.voltage - nb.voltage : state[S.V0];
+    let Geq: number;
+    let Ieq: number;
+    switch (method) {
+      case "euler": {
+        Geq = C / timeStep;
+        Ieq = -V * Geq;
+        break;
+      }
+      case "trapezoidal": {
+        const I = state[S.I];
+        Geq = (2 * C) / timeStep;
+        Ieq = -V * Geq - I;
+        break;
+      }
+    }
+    state[S.Geq] = Geq;
+    state[S.Ieq] = Ieq;
+  }
+
+  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
     const { na, nb } = this;
     const Geq = state[S.Geq];
     const Ieq = state[S.Ieq];
@@ -100,21 +101,14 @@ export class Capacitor extends Device {
     stampCurrentSource(stamper, na, nb, Ieq);
   }
 
-  override endEval(state: DeviceState, { timeStep }: EvalParams): void {
+  override endTr(state: DeviceState, params: TrParams): void {
     const { na, nb } = this;
     const V = na.voltage - nb.voltage;
-    if (timeStep !== timeStep) {
-      // DC analysis.
-      state[S.V] = V;
-      state[S.I] = 0;
-    } else {
-      // Transient analysis.
-      const Geq = state[S.Geq];
-      const Ieq = state[S.Ieq];
-      const I = V * Geq + Ieq;
-      state[S.V] = V;
-      state[S.I] = I;
-    }
+    const Geq = state[S.Geq];
+    const Ieq = state[S.Ieq];
+    const I = V * Geq + Ieq;
+    state[S.V] = V;
+    state[S.I] = I;
   }
 
   override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {

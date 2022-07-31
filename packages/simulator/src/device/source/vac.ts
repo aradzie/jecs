@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
+import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
 import { AcStamper, Stamper, stampVoltageSource, stampVoltageSourceAc } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
@@ -44,7 +44,7 @@ export class Vac extends Device {
     this.branch = network.makeBranch(this.np, this.nn);
   }
 
-  override deriveState(state: DeviceState): void {
+  override init(state: DeviceState): void {
     const amplitude = this.properties.getNumber("V");
     const frequency = this.properties.getNumber("f");
     const phase = this.properties.getNumber("phase");
@@ -55,9 +55,20 @@ export class Vac extends Device {
     state[S.theta] = theta;
   }
 
-  override eval(
+  override initDc(state: DeviceState, params: DcParams): void {}
+
+  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {}
+
+  override endDc(state: DeviceState, params: DcParams): void {
+    state[S.V] = 0;
+    state[S.I] = 0;
+  }
+
+  override initTr(state: DeviceState, params: TrParams): void {}
+
+  override loadTr(
     state: DeviceState,
-    { elapsedTime, sourceFactor }: EvalParams,
+    { elapsedTime, sourceFactor }: TrParams,
     stamper: Stamper,
   ): void {
     const { np, nn, branch } = this;
@@ -69,7 +80,7 @@ export class Vac extends Device {
     stampVoltageSource(stamper, np, nn, branch, V);
   }
 
-  override endEval(state: DeviceState): void {
+  override endTr(state: DeviceState, params: TrParams): void {
     const { branch } = this;
     const I = branch.current;
     state[S.I] = I;

@@ -31,6 +31,10 @@ export class Solver {
   private sourceFactor: number;
   private gMin: number;
 
+  private init: () => void = () => {};
+  private load: (stamper: Stamper) => void = () => {};
+  private end: () => void = () => {};
+
   constructor(circuit: Circuit, options: SimulationOptions) {
     this.circuit = circuit;
     this.options = options;
@@ -45,6 +49,30 @@ export class Solver {
     this.helper = ConvHelper.None;
     this.sourceFactor = 1;
     this.gMin = 0;
+  }
+
+  useDc() {
+    this.init = () => {
+      this.circuit.initDc();
+    };
+    this.load = (stamper) => {
+      this.circuit.loadDc(stamper);
+    };
+    this.end = () => {
+      this.circuit.endDc();
+    };
+  }
+
+  useTr() {
+    this.init = () => {
+      this.circuit.initTr();
+    };
+    this.load = (stamper) => {
+      this.circuit.loadTr(stamper);
+    };
+    this.end = () => {
+      this.circuit.endTr();
+    };
   }
 
   solve(): void {
@@ -150,13 +178,13 @@ export class Solver {
   }
 
   private startIteration(): void {
-    this.circuit.beginEval();
+    this.init();
   }
 
   private doIteration(): void {
     logger.iterationStarted();
     this.sle.clear();
-    this.circuit.eval(this.stamper);
+    this.load(this.stamper);
     if (this.helper === ConvHelper.GMinStepping) {
       this.applyGMin();
     }
@@ -168,7 +196,7 @@ export class Solver {
   }
 
   private endIteration(): void {
-    this.circuit.endEval();
+    this.end();
   }
 
   private applyGMin(): void {

@@ -1,5 +1,5 @@
-import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import { Stamper, stampVoltageSource } from "../../circuit/mna.js";
+import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
+import { AcStamper, stampConductanceAc, Stamper, stampVoltageSource } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { method } from "../integration.js";
@@ -51,45 +51,49 @@ export class Inductor extends Device {
     this.branch = network.makeBranch(this.na, this.nb);
   }
 
-  override deriveState(state: DeviceState): void {
+  override init(state: DeviceState): void {
     state[S.L] = this.properties.getNumber("L");
     state[S.I0] = this.properties.getNumber("I0");
   }
 
-  override beginEval(state: DeviceState, { elapsedTime, timeStep }: EvalParams): void {
-    const { branch } = this;
-    if (timeStep !== timeStep) {
-      // DC analysis.
-      state[S.Req] = 0;
-      state[S.Veq] = 0;
-    } else {
-      // Transient analysis.
-      const L = state[S.L];
-      let I = branch.current;
-      if (elapsedTime === 0) {
-        I = state[S.I0];
-      }
-      let Req: number;
-      let Veq: number;
-      switch (method) {
-        case "euler": {
-          Req = L / timeStep;
-          Veq = -I * Req;
-          break;
-        }
-        case "trapezoidal": {
-          const V = state[S.V];
-          Req = (2 * L) / timeStep;
-          Veq = -I * Req - V;
-          break;
-        }
-      }
-      state[S.Req] = Req;
-      state[S.Veq] = Veq;
-    }
+  override initDc(state: DeviceState, params: DcParams): void {}
+
+  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
+    const { na, nb, branch } = this;
+    stampVoltageSource(stamper, na, nb, branch, 0);
   }
 
-  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
+  override endDc(state: DeviceState, params: DcParams): void {
+    const { branch } = this;
+    const I = branch.current;
+    state[S.V] = 0;
+    state[S.I] = I;
+  }
+
+  override initTr(state: DeviceState, { elapsedTime, timeStep }: TrParams): void {
+    const { branch } = this;
+    const L = state[S.L];
+    const I = elapsedTime > 0 ? branch.current : state[S.I0];
+    let Req: number;
+    let Veq: number;
+    switch (method) {
+      case "euler": {
+        Req = L / timeStep;
+        Veq = -I * Req;
+        break;
+      }
+      case "trapezoidal": {
+        const V = state[S.V];
+        Req = (2 * L) / timeStep;
+        Veq = -I * Req - V;
+        break;
+      }
+    }
+    state[S.Req] = Req;
+    state[S.Veq] = Veq;
+  }
+
+  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
     const { na, nb, branch } = this;
     const Req = state[S.Req];
     const Veq = state[S.Veq];
@@ -97,20 +101,20 @@ export class Inductor extends Device {
     stampVoltageSource(stamper, na, nb, branch, Veq);
   }
 
-  override endEval(state: DeviceState, { timeStep }: EvalParams): void {
+  override endTr(state: DeviceState, params: TrParams): void {
     const { branch } = this;
     const I = branch.current;
-    if (timeStep !== timeStep) {
-      // DC analysis.
-      state[S.V] = 0;
-      state[S.I] = I;
-    } else {
-      // Transient analysis.
-      const Req = state[S.Req];
-      const Veq = state[S.Veq];
-      const V = I * Req + Veq;
-      state[S.V] = V;
-      state[S.I] = I;
-    }
+    const Req = state[S.Req];
+    const Veq = state[S.Veq];
+    const V = I * Req + Veq;
+    state[S.V] = V;
+    state[S.I] = I;
+  }
+
+  override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
+    const { na, nb } = this;
+    const L = state[S.L];
+    const Y = -1 / (2 * Math.PI * frequency * L);
+    stampConductanceAc(stamper, na, nb, 0, Y);
   }
 }

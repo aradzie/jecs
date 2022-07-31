@@ -60,7 +60,7 @@ export class Circuit implements Network {
     }
     for (const device of this.#devices) {
       device.state.fill(0);
-      device.deriveState(device.state, this);
+      device.init(device.state);
     }
   }
 
@@ -106,21 +106,39 @@ export class Circuit implements Network {
     return device;
   }
 
-  beginEval(): void {
+  initDc(): void {
     for (const device of this.#devices) {
-      device.beginEval(device.state, this);
+      device.initDc(device.state, this);
     }
   }
 
-  eval(stamper: Stamper): void {
+  loadDc(stamper: Stamper): void {
     for (const device of this.#devices) {
-      device.eval(device.state, this, stamper);
+      device.loadDc(device.state, this, stamper);
     }
   }
 
-  endEval(): void {
+  endDc(): void {
     for (const device of this.#devices) {
-      device.endEval(device.state, this);
+      device.endDc(device.state, this);
+    }
+  }
+
+  initTr(): void {
+    for (const device of this.#devices) {
+      device.initTr(device.state, this);
+    }
+  }
+
+  loadTr(stamper: Stamper): void {
+    for (const device of this.#devices) {
+      device.loadTr(device.state, this, stamper);
+    }
+  }
+
+  endTr(): void {
+    for (const device of this.#devices) {
+      device.endTr(device.state, this);
     }
   }
 }

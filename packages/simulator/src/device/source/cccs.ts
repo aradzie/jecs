@@ -1,4 +1,4 @@
-import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
+import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
 import { Stamper, stampVoltageSource } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
@@ -46,11 +46,13 @@ export class CCCS extends Device {
     this.branch = network.makeBranch(this.ncp, this.ncn);
   }
 
-  override deriveState(state: DeviceState): void {
+  override init(state: DeviceState): void {
     state[S.gain] = this.properties.getNumber("gain");
   }
 
-  override eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {
+  override initDc(state: DeviceState, params: DcParams): void {}
+
+  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
     const { np, nn, ncp, ncn, branch } = this;
     const gain = state[S.gain];
     stampVoltageSource(stamper, ncp, ncn, branch, 0);
@@ -58,12 +60,24 @@ export class CCCS extends Device {
     stamper.stampA(nn, branch, -gain);
   }
 
-  override endEval(state: DeviceState): void {
+  override endDc(state: DeviceState, params: DcParams): void {
     const { np, nn, branch } = this;
     const gain = state[S.gain];
     const I = branch.current * gain;
     const V = np.voltage - nn.voltage;
     state[S.I] = I;
     state[S.V] = V;
+  }
+
+  override initTr(state: DeviceState, params: TrParams): void {
+    this.initDc(state, params);
+  }
+
+  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
+    this.loadDc(state, params, stamper);
+  }
+
+  override endTr(state: DeviceState, params: TrParams): void {
+    this.endDc(state, params);
   }
 }
