@@ -64,7 +64,6 @@ const enum S {
 export class Jfet extends Device {
   static override readonly id = "JFET";
   static override readonly numTerminals = 3;
-  static override readonly stateSize = S._Size_;
   static override readonly propertiesSchema = {
     polarity: Properties.string({
       range: [nfet, pfet],
@@ -97,14 +96,17 @@ export class Jfet extends Device {
     }),
     temp: Properties.temp,
   };
+  static override readonly stateSchema = {
+    length: S._Size_,
+    ops: [
+      { index: S.Vgs, name: "Vgs", unit: "V" },
+      { index: S.Vgd, name: "Vgd", unit: "V" },
+      { index: S.Vds, name: "Vds", unit: "V" },
+      { index: S.Ids, name: "Ids", unit: "A" },
+      // { index: S.Gm, name: "gm", unit: "A/V" },
+    ],
+  };
   static override readonly linear = false;
-
-  override readonly probes = [
-    { name: "Vgs", unit: "V", measure: () => this.state[S.Vgs] },
-    { name: "Vgd", unit: "V", measure: () => this.state[S.Vgd] },
-    { name: "Vds", unit: "V", measure: () => this.state[S.Vds] },
-    { name: "Ids", unit: "A", measure: () => this.state[S.Ids] },
-  ];
 
   /** The source terminal. */
   private ns!: Node;

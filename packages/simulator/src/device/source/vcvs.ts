@@ -16,15 +16,16 @@ const enum S {
 export class VCVS extends Device {
   static override readonly id = "VCVS";
   static override readonly numTerminals = 4;
-  static override readonly stateSize = S._Size_;
   static override readonly propertiesSchema = {
     gain: Properties.number({ title: "gain" }),
   };
-
-  override readonly probes = [
-    { name: "V", unit: "V", measure: () => this.state[S.V] },
-    { name: "I", unit: "A", measure: () => this.state[S.I] },
-  ];
+  static override readonly stateSchema = {
+    length: S._Size_,
+    ops: [
+      { index: S.V, name: "V", unit: "V" },
+      { index: S.I, name: "I", unit: "A" },
+    ],
+  };
 
   /** Positive output terminal. */
   private np!: Node;

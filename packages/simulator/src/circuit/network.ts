@@ -1,5 +1,3 @@
-import type { Probe } from "./probe.js";
-
 export interface Network {
   /**
    * The only ground node in the whole circuit.
@@ -42,13 +40,6 @@ export class Node {
    */
   voltage = 0;
 
-  /**
-   * AC phase.
-   */
-  phase = 0;
-
-  readonly probes: readonly Probe[] = [{ name: "V", unit: "V", measure: () => this.voltage }];
-
   constructor(index: number, id: string) {
     this.index = index;
     this.id = id;
@@ -84,13 +75,6 @@ export class Branch {
    * Computed branch current.
    */
   current = 0;
-
-  /**
-   * AC phase.
-   */
-  phase = 0;
-
-  readonly probes: readonly Probe[] = [];
 
   constructor(index: number, a: Node, b: Node) {
     this.index = index;

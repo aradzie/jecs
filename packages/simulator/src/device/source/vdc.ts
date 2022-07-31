@@ -16,15 +16,16 @@ const enum S {
 export class Vdc extends Device {
   static override readonly id = "V";
   static override readonly numTerminals = 2;
-  static override readonly stateSize = S._Size_;
   static override readonly propertiesSchema = {
     V: Properties.number({ title: "voltage" }),
   };
-
-  override readonly probes = [
-    { name: "V", unit: "V", measure: () => this.state[S.V] },
-    { name: "I", unit: "A", measure: () => this.state[S.I] },
-  ];
+  static override readonly stateSchema = {
+    length: S._Size_,
+    ops: [
+      { index: S.V, name: "V", unit: "V" },
+      { index: S.I, name: "I", unit: "A" },
+    ],
+  };
 
   /** Positive terminal. */
   private np!: Node;

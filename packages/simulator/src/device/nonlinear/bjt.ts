@@ -62,7 +62,6 @@ const enum S {
 export class Bjt extends Device {
   static override readonly id = "BJT";
   static override readonly numTerminals = 3;
-  static override readonly stateSize = S._Size_;
   static override readonly propertiesSchema = {
     polarity: Properties.string({
       range: [npn, pnp],
@@ -105,16 +104,18 @@ export class Bjt extends Device {
     }),
     temp: Properties.temp,
   };
+  static override readonly stateSchema = {
+    length: S._Size_,
+    ops: [
+      { index: S.Vbe, name: "Vbe", unit: "V" },
+      { index: S.Vbc, name: "Vbc", unit: "V" },
+      { index: S.Vce, name: "Vce", unit: "V" },
+      { index: S.Ie, name: "Ie", unit: "A" },
+      { index: S.Ic, name: "Ic", unit: "A" },
+      { index: S.Ib, name: "Ib", unit: "A" },
+    ],
+  };
   static override readonly linear = false;
-
-  override readonly probes = [
-    { name: "Vbe", unit: "V", measure: () => this.state[S.Vbe] },
-    { name: "Vbc", unit: "V", measure: () => this.state[S.Vbc] },
-    { name: "Vce", unit: "V", measure: () => this.state[S.Vce] },
-    { name: "Ie", unit: "A", measure: () => this.state[S.Ie] },
-    { name: "Ic", unit: "A", measure: () => this.state[S.Ic] },
-    { name: "Ib", unit: "A", measure: () => this.state[S.Ib] },
-  ];
 
   /** The emitter terminal. */
   private ne!: Node;

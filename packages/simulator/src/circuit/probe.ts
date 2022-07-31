@@ -1,4 +1,6 @@
 import type { Circuit } from "./circuit.js";
+import type { Device, OutputParam } from "./device.js";
+import type { Node } from "./network.js";
 
 /**
  * Probe captures a single dataset value from a circuit or node or device after simulation.
@@ -25,18 +27,40 @@ export const timeProbe = (circuit: Circuit): Probe => {
   })();
 };
 
+/**
+ * Return a probe which captures node voltage.
+ */
+export const nodeProbe = (node: Node): Probe => {
+  return new (class implements Probe {
+    name = `#${node.id}:V`;
+    unit = "V";
+    measure(): number {
+      return node.voltage;
+    }
+  })();
+};
+
+/**
+ * Returns a probe which captures a device output parameter.
+ */
+export const deviceProbe = (device: Device, op: OutputParam): Probe => {
+  return new (class implements Probe {
+    name = `${device.id}:${op.name}`;
+    unit = op.unit;
+    measure(): number {
+      return device.state[op.index];
+    }
+  })();
+};
+
 export const allNodeProbes = (circuit: Circuit): Probe[] => {
   const probes: Probe[] = [];
   for (const node of circuit.nodes) {
     switch (node.type) {
       case "node":
-        probes.push(
-          ...node.probes.map(({ name, unit, measure }) => ({
-            name: `#${node.id}:${name}`,
-            unit,
-            measure,
-          })),
-        );
+        probes.push(nodeProbe(node));
+        break;
+      case "branch":
         break;
     }
   }
@@ -46,13 +70,9 @@ export const allNodeProbes = (circuit: Circuit): Probe[] => {
 export const allDeviceProbes = (circuit: Circuit): Probe[] => {
   const probes: Probe[] = [];
   for (const device of circuit.devices) {
-    probes.push(
-      ...device.probes.map(({ name, unit, measure }) => ({
-        name: `${device.id}:${name}`,
-        unit,
-        measure,
-      })),
-    );
+    for (const op of device.deviceClass.stateSchema.ops) {
+      probes.push(deviceProbe(device, op));
+    }
   }
   return probes;
 };

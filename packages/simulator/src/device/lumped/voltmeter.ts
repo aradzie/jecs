@@ -18,15 +18,16 @@ const enum S {
 export class Voltmeter extends Device {
   static override readonly id = "Voltmeter";
   static override readonly numTerminals = 2;
-  static override readonly stateSize = S._Size_;
   static override readonly propertiesSchema = {};
-
-  override readonly probes = [
-    { name: "V", unit: "V", measure: () => this.state[S.V] },
-    { name: "Vmax", unit: "V", measure: () => this.state[S.Vmax] },
-    { name: "Vmin", unit: "V", measure: () => this.state[S.Vmin] },
-    { name: "Vrms", unit: "V", measure: () => this.state[S.Vrms] },
-  ];
+  static override readonly stateSchema = {
+    length: S._Size_,
+    ops: [
+      { index: S.V, name: "V", unit: "V" },
+      { index: S.Vmax, name: "Vmax", unit: "V" },
+      { index: S.Vmin, name: "Vmin", unit: "V" },
+      { index: S.Vrms, name: "Vrms", unit: "V" },
+    ],
+  };
 
   /** Positive terminal. */
   private np!: Node;
