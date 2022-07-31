@@ -1,14 +1,14 @@
 import type { DeviceClass } from "../circuit/device.js";
-import { Ammeter } from "./lumped/ammeter.js";
 import { Capacitor } from "./lumped/capacitor.js";
 import { Inductor } from "./lumped/inductor.js";
 import { Resistor } from "./lumped/resistor.js";
-import { Voltmeter } from "./lumped/voltmeter.js";
 import { Bjt } from "./nonlinear/bjt.js";
 import { Diode } from "./nonlinear/diode.js";
 import { Jfet } from "./nonlinear/jfet.js";
 import { Mosfet } from "./nonlinear/mosfet.js";
 import { OpAmp } from "./nonlinear/opamp.js";
+import { Ammeter } from "./probe/ammeter.js";
+import { Voltmeter } from "./probe/voltmeter.js";
 import { CCCS } from "./source/cccs.js";
 import { CCVS } from "./source/ccvs.js";
 import { Iac } from "./source/iac.js";
