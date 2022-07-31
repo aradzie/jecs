@@ -26,7 +26,6 @@ export class Solver {
   private readonly currB: Vector;
   private readonly prevB: Vector;
   private readonly stamper: Stamper;
-  private readonly linear: boolean;
   private helper: ConvHelper;
   private sourceFactor: number;
   private gMin: number;
@@ -45,7 +44,6 @@ export class Solver {
     this.currB = vecMake(this.sle.size);
     this.prevB = vecMake(this.sle.size);
     this.stamper = new Stamper(this.sle.A, this.sle.b);
-    this.linear = circuit.devices.every((device) => device.deviceClass.linear);
     this.helper = ConvHelper.None;
     this.sourceFactor = 1;
     this.gMin = 0;
@@ -77,21 +75,8 @@ export class Solver {
 
   solve(): void {
     logger.simulationStarted();
-    if (this.linear) {
-      this.solveLinear();
-    } else {
-      this.solveNonLinear();
-    }
+    this.solveNonLinear();
     logger.simulationEnded();
-  }
-
-  private solveLinear(): void {
-    this.helper = ConvHelper.None;
-    this.sourceFactor = 1;
-    this.gMin = 0;
-    this.startIteration();
-    this.doIteration();
-    this.endIteration();
   }
 
   private solveNonLinear(): void {
