@@ -80,7 +80,7 @@ export class DcAnalysis extends Analysis {
   }
 }
 
-export class TranAnalysis extends Analysis {
+export class TrAnalysis extends Analysis {
   constructor() {
     super(new Properties(tranProperties));
   }

@@ -1,5 +1,5 @@
 import test from "ava";
-import { DcAnalysis, TranAnalysis } from "../analysis/analysis.js";
+import { DcAnalysis, TrAnalysis } from "../analysis/analysis.js";
 import type { Branch, Node } from "../circuit/network.js";
 import { Netlist } from "./netlist.js";
 
@@ -84,7 +84,7 @@ R:R3 n1 gnd @R3
   const [dc, tran] = analyses;
 
   t.true(dc instanceof DcAnalysis);
-  t.true(tran instanceof TranAnalysis);
+  t.true(tran instanceof TrAnalysis);
   t.is(dc.properties.getNumber("maxIter"), 20);
   t.is(tran.properties.getNumber("maxIter"), 10);
   t.is(tran.properties.getNumber("startTime"), 5e-4);

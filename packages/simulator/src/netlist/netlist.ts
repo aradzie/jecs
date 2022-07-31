@@ -1,4 +1,4 @@
-import { Analysis, DcAnalysis, TranAnalysis } from "../analysis/analysis.js";
+import { Analysis, DcAnalysis, TrAnalysis } from "../analysis/analysis.js";
 import { Sweep } from "../analysis/sweep.js";
 import { Circuit } from "../circuit/circuit.js";
 import { Device, DeviceClass } from "../circuit/device.js";
@@ -256,7 +256,7 @@ class NetlistBuilder {
   }
 
   addTranAnalysis(item: TranItemNode): void {
-    const analysis = new TranAnalysis();
+    const analysis = new TrAnalysis();
     this.setAnalysisProperties(item.properties, analysis);
     this.addAnalysisSweeps(item.sweeps, analysis);
     this.analyses.push(analysis);

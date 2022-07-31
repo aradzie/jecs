@@ -1,4 +1,4 @@
-import { TranAnalysis } from "@jecs/simulator/lib/analysis/analysis.js";
+import { TrAnalysis } from "@jecs/simulator/lib/analysis/analysis.js";
 import { Circuit } from "@jecs/simulator/lib/circuit/circuit.js";
 import { dumpCircuit } from "@jecs/simulator/lib/circuit/debug.js";
 import { Capacitor, Resistor, Vac } from "@jecs/simulator/lib/device/index.js";
@@ -30,7 +30,7 @@ circuit.connect(C1, [N1, N2]);
 circuit.connect(R1, [N2, GND]);
 
 // Perform DC analysis, compute node voltages and branch currents.
-const analysis = new TranAnalysis();
+const analysis = new TrAnalysis();
 analysis.properties.set("stopTime", 1e-3);
 analysis.properties.set("timeStep", 1e-4);
 analysis.properties.set("maxIter", 10);
