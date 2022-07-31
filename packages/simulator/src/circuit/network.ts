@@ -42,6 +42,11 @@ export class Node {
    */
   voltage = 0;
 
+  /**
+   * AC phase.
+   */
+  phase = 0;
+
   readonly probes: readonly Probe[] = [{ name: "V", unit: "V", measure: () => this.voltage }];
 
   constructor(index: number, id: string) {
@@ -79,6 +84,11 @@ export class Branch {
    * Computed branch current.
    */
   current = 0;
+
+  /**
+   * AC phase.
+   */
+  phase = 0;
 
   readonly probes: readonly Probe[] = [];
 

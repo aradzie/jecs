@@ -83,6 +83,13 @@ export function stampConductance(s: Stamper, i: Node, j: Node, x: number): void 
   s.stampA(j, j, x);
 }
 
+export function stampConductanceAc(s: AcStamper, i: Node, j: Node, xr: number, xi: number): void {
+  s.stampA(i, i, xr, xi);
+  s.stampA(i, j, -xr, -xi);
+  s.stampA(j, i, -xr, -xi);
+  s.stampA(j, j, xr, xi);
+}
+
 export function stampTransconductance(
   s: Stamper,
   a: Node,
@@ -105,7 +112,27 @@ export function stampVoltageSource(s: Stamper, i: Node, j: Node, b: Branch, x: n
   s.stampB(b, x);
 }
 
+export function stampVoltageSourceAc(
+  s: AcStamper,
+  i: Node,
+  j: Node,
+  b: Branch,
+  xr: number,
+  xi: number,
+): void {
+  s.stampA(i, b, 1, 0);
+  s.stampA(j, b, -1, 0);
+  s.stampA(b, i, 1, 0);
+  s.stampA(b, j, -1, 0);
+  s.stampB(b, xr, xi);
+}
+
 export function stampCurrentSource(s: Stamper, i: Node, j: Node, x: number): void {
   s.stampB(i, -x);
   s.stampB(j, x);
+}
+
+export function stampCurrentSourceAc(s: AcStamper, i: Node, j: Node, xr: number, xi: number): void {
+  s.stampB(i, -xr, -xi);
+  s.stampB(j, xr, xi);
 }

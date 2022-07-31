@@ -1,5 +1,11 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import { stampConductance, stampCurrentSource, Stamper } from "../../circuit/mna.js";
+import {
+  AcStamper,
+  stampConductance,
+  stampConductanceAc,
+  stampCurrentSource,
+  Stamper,
+} from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { method } from "../integration.js";
@@ -108,5 +114,12 @@ export class Capacitor extends Device {
       state[S.V] = V;
       state[S.I] = I;
     }
+  }
+
+  override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
+    const { na, nb } = this;
+    const C = state[S.C];
+    const Y = 2 * Math.PI * frequency * C;
+    stampConductanceAc(stamper, na, nb, 0, Y);
   }
 }

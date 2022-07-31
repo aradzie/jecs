@@ -1,5 +1,5 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import { stampCurrentSource, Stamper } from "../../circuit/mna.js";
+import { AcStamper, stampCurrentSource, stampCurrentSourceAc, Stamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -69,5 +69,14 @@ export class Iac extends Device {
     const { np, nn } = this;
     const V = np.voltage - nn.voltage;
     state[S.V] = V;
+  }
+
+  override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
+    const { np, nn } = this;
+    const amplitude = state[S.amplitude];
+    const theta = state[S.theta];
+    const Ir = amplitude * Math.cos(theta);
+    const Ii = amplitude * Math.sin(theta);
+    stampCurrentSourceAc(stamper, np, nn, Ir, Ii);
   }
 }

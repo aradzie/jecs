@@ -1,5 +1,5 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import { Stamper, stampVoltageSource } from "../../circuit/mna.js";
+import { AcStamper, Stamper, stampVoltageSource, stampVoltageSourceAc } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -72,5 +72,14 @@ export class Vac extends Device {
     const { branch } = this;
     const I = branch.current;
     state[S.I] = I;
+  }
+
+  override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
+    const { np, nn, branch } = this;
+    const amplitude = state[S.amplitude];
+    const theta = state[S.theta];
+    const Vr = amplitude * Math.cos(theta);
+    const Vi = amplitude * Math.sin(theta);
+    stampVoltageSourceAc(stamper, np, nn, branch, Vr, Vi);
   }
 }

@@ -1,5 +1,5 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import { type Stamper, stampVoltageSource } from "../../circuit/mna.js";
+import { AcStamper, stampConductanceAc, Stamper, stampVoltageSource } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { method } from "../integration.js";
@@ -111,5 +111,12 @@ export class Inductor extends Device {
       state[S.V] = V;
       state[S.I] = I;
     }
+  }
+
+  override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
+    const { na, nb } = this;
+    const L = state[S.L];
+    const Y = -1 / (2 * Math.PI * frequency * L);
+    stampConductanceAc(stamper, na, nb, 0, Y);
   }
 }

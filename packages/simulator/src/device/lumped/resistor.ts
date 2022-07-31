@@ -1,5 +1,5 @@
 import { Device, DeviceState, EvalParams } from "../../circuit/device.js";
-import { stampConductance, Stamper } from "../../circuit/mna.js";
+import { AcStamper, stampConductance, stampConductanceAc, Stamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -57,5 +57,11 @@ export class Resistor extends Device {
     const I = V * G;
     state[S.V] = V;
     state[S.I] = I;
+  }
+
+  override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
+    const { na, nb } = this;
+    const G = state[S.G];
+    stampConductanceAc(stamper, na, nb, G, 0);
   }
 }

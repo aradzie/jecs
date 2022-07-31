@@ -1,4 +1,4 @@
-import type { Stamper } from "./mna.js";
+import type { AcStamper, Stamper } from "./mna.js";
 import type { Network, Node } from "./network.js";
 import type { Probe } from "./probe.js";
 import { Properties, PropertiesSchema } from "./properties.js";
@@ -112,4 +112,6 @@ export abstract class Device {
   eval(state: DeviceState, params: EvalParams, stamper: Stamper): void {}
 
   endEval(state: DeviceState, params: EvalParams): void {}
+
+  loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {}
 }
