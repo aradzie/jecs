@@ -4,7 +4,7 @@ import { allCircuitProbes, Probe, timeProbe } from "../circuit/probe.js";
 import { Properties, PropertiesSchema } from "../circuit/properties.js";
 import { Analysis } from "./analysis.js";
 import type { DatasetBuilder } from "./dataset.js";
-import { Solver } from "./solver.js";
+import { NonlinearSolver } from "./solver-nonlinear.js";
 import { groupName, Sweep } from "./sweep.js";
 
 export class TrAnalysis extends Analysis {
@@ -33,7 +33,7 @@ export class TrAnalysis extends Analysis {
       title: "start with DC analysis",
     }),
     ...Circuit.propertiesSchema,
-    ...Solver.propertiesSchema,
+    ...NonlinearSolver.propertiesSchema,
   };
 
   constructor() {
@@ -51,7 +51,7 @@ export class TrAnalysis extends Analysis {
     const timeStep = properties.getNumber("timeStep");
     const dc = properties.getString("dc");
     const temp = properties.getNumber("temp");
-    const solver = new Solver(circuit, properties);
+    const solver = new NonlinearSolver(circuit, properties);
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {},
