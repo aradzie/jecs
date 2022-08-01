@@ -52,6 +52,22 @@ const integrationMethod = Properties.string({
   range: ["trapezoidal", "euler"],
   title: "integration method",
 });
+const type = Properties.string({
+  range: ["lin", "log"],
+  title: "sweep type",
+});
+const start = Properties.number({
+  range: ["real", ">=", 0],
+  title: "start frequency",
+});
+const stop = Properties.number({
+  range: ["real", ">=", 0],
+  title: "stop frequency",
+});
+const points = Properties.number({
+  range: ["integer", ">", 1],
+  title: "number of points",
+});
 
 export const dcProperties: Record<string, PropertySchema> = {
   temp,
@@ -61,7 +77,7 @@ export const dcProperties: Record<string, PropertySchema> = {
   maxIter,
 };
 
-export const tranProperties: Record<string, PropertySchema> = {
+export const trProperties: Record<string, PropertySchema> = {
   startTime,
   stopTime,
   timeStep,
@@ -72,6 +88,13 @@ export const tranProperties: Record<string, PropertySchema> = {
   reltol,
   maxIter,
   integrationMethod,
+};
+
+export const acProperties: Record<string, PropertySchema> = {
+  type,
+  start,
+  stop,
+  points,
 };
 
 export interface ConvergenceOptions {

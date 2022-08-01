@@ -1,4 +1,4 @@
-import { DcAnalysis } from "@jecs/simulator/lib/analysis/analysis.js";
+import { DcAnalysis } from "@jecs/simulator/lib/analysis/analysis-dc.js";
 import { Circuit } from "@jecs/simulator/lib/circuit/circuit.js";
 import { dumpCircuit } from "@jecs/simulator/lib/circuit/debug.js";
 import { Diode, Resistor, Vdc } from "@jecs/simulator/lib/device/index.js";

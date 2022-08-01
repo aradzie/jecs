@@ -1,5 +1,6 @@
 import test from "ava";
-import { DcAnalysis, TrAnalysis } from "../analysis/analysis.js";
+import { DcAnalysis } from "../analysis/analysis-dc.js";
+import { TrAnalysis } from "../analysis/analysis-tr.js";
 import type { Branch, Node } from "../circuit/network.js";
 import { Netlist } from "./netlist.js";
 

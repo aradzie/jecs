@@ -1,4 +1,6 @@
-import { Analysis, DcAnalysis, TrAnalysis } from "../analysis/analysis.js";
+import { DcAnalysis } from "../analysis/analysis-dc.js";
+import { TrAnalysis } from "../analysis/analysis-tr.js";
+import type { Analysis } from "../analysis/analysis.js";
 import { Sweep } from "../analysis/sweep.js";
 import { Circuit } from "../circuit/circuit.js";
 import { Device, DeviceClass } from "../circuit/device.js";

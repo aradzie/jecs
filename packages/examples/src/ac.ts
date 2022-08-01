@@ -1,4 +1,4 @@
-import { TrAnalysis } from "@jecs/simulator/lib/analysis/analysis.js";
+import { AcAnalysis } from "@jecs/simulator/lib/analysis/analysis-ac.js";
 import { Circuit } from "@jecs/simulator/lib/circuit/circuit.js";
 import { dumpCircuit } from "@jecs/simulator/lib/circuit/debug.js";
 import { Capacitor, Resistor, Vac } from "@jecs/simulator/lib/device/index.js";
@@ -30,13 +30,11 @@ circuit.connect(C1, [N1, N2]);
 circuit.connect(R1, [N2, GND]);
 
 // Perform DC analysis, compute node voltages and branch currents.
-const analysis = new TrAnalysis();
-analysis.properties.set("stopTime", 1e-3);
-analysis.properties.set("timeStep", 1e-4);
-analysis.properties.set("maxIter", 10);
-analysis.properties.set("abstol", 1e-12);
-analysis.properties.set("vntol", 1e-6);
-analysis.properties.set("reltol", 1e-3);
+const analysis = new AcAnalysis();
+analysis.properties.set("type", "lin");
+analysis.properties.set("start", 1);
+analysis.properties.set("stop", 1e6);
+analysis.properties.set("points", 1001);
 analysis.run(circuit);
 
 // Print the operating points.
