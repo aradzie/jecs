@@ -3,8 +3,17 @@ import { Bindings, ConstantExp, Equations } from "./equations.js";
 import { CircuitError } from "./error.js";
 import type { Stamper } from "./mna.js";
 import { Branch, groundNode, Network, Node } from "./network.js";
+import { Properties, PropertiesSchema } from "./properties.js";
 
 export class Circuit implements Network {
+  static readonly propertiesSchema: PropertiesSchema = {
+    temp: Properties.number({
+      defaultValue: 26.85, // Room temperature.
+      range: ["real", ">", -273.15], // Absolute zero.
+      title: "default device temperature in degrees Celsius",
+    }),
+  };
+
   readonly #nodes: (Node | Branch)[] = [];
   readonly #nodesById = new Map<string, Node>();
   readonly #devices: Device[] = [];
@@ -12,15 +21,15 @@ export class Circuit implements Network {
   readonly #equations = new Equations();
   readonly #bindings = new Bindings(this.#equations);
 
+  temp: number;
   elapsedTime: number;
   timeStep: number;
-  temp: number;
   sourceFactor: number;
 
   constructor() {
+    this.temp = 0;
     this.elapsedTime = 0;
     this.timeStep = NaN;
-    this.temp = 0;
     this.sourceFactor = 1;
   }
 
@@ -45,8 +54,8 @@ export class Circuit implements Network {
   }
 
   reset(): void {
-    this.#equations.set("time", new ConstantExp(this.elapsedTime));
     this.#equations.set("temp", new ConstantExp(this.temp));
+    this.#equations.set("time", new ConstantExp(this.elapsedTime));
     this.#bindings.setProperties();
     for (const node of this.#nodes) {
       switch (node.type) {

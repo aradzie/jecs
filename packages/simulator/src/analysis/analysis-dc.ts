@@ -1,16 +1,20 @@
-import type { Circuit } from "../circuit/circuit.js";
+import { Circuit } from "../circuit/circuit.js";
 import { ConstantExp } from "../circuit/equations.js";
 import { allCircuitProbes, Probe } from "../circuit/probe.js";
-import { Properties } from "../circuit/properties.js";
+import type { PropertiesSchema } from "../circuit/properties.js";
 import { Analysis } from "./analysis.js";
 import type { DatasetBuilder } from "./dataset.js";
-import { dcProperties, getOptions } from "./options.js";
 import { Solver } from "./solver.js";
 import { groupName, Sweep } from "./sweep.js";
 
 export class DcAnalysis extends Analysis {
+  static readonly propertiesSchema: PropertiesSchema = {
+    ...Circuit.propertiesSchema,
+    ...Solver.propertiesSchema,
+  };
+
   constructor() {
-    super(new Properties(dcProperties));
+    super(DcAnalysis.propertiesSchema);
   }
 
   protected override getProbes(circuit: Circuit): Probe[] {
@@ -18,9 +22,9 @@ export class DcAnalysis extends Analysis {
   }
 
   protected override runImpl(circuit: Circuit, dataset: DatasetBuilder): void {
-    const temp = this.properties.getNumber("temp");
-    const options = getOptions(this.properties);
-    const solver = new Solver(circuit, options);
+    const { properties } = this;
+    const temp = properties.getNumber("temp");
+    const solver = new Solver(circuit, properties);
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {
@@ -30,9 +34,9 @@ export class DcAnalysis extends Analysis {
         circuit.equations.set(variableId, new ConstantExp(value));
       },
       end: () => {
+        circuit.temp = temp;
         circuit.elapsedTime = NaN;
         circuit.timeStep = NaN;
-        circuit.temp = temp;
         circuit.reset();
         solver.useDc();
         solver.solve();

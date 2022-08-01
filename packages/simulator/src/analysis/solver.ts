@@ -3,9 +3,9 @@ import { Method, SLE } from "@jecs/math/lib/sle.js";
 import type { Vector } from "@jecs/math/lib/types.js";
 import type { Circuit } from "../circuit/circuit.js";
 import { Stamper } from "../circuit/mna.js";
+import { Properties, PropertiesSchema } from "../circuit/properties.js";
 import { logger } from "../util/logging.js";
 import { ConvergenceError } from "./error.js";
-import type { SimulationOptions } from "./options.js";
 
 const enum ConvHelper {
   None,
@@ -17,8 +17,31 @@ const sourceFactorList = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
 const gMinList = [1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 0];
 
 export class Solver {
+  static readonly propertiesSchema: PropertiesSchema = {
+    abstol: Properties.number({
+      defaultValue: 1e-12, // 1pA
+      range: ["real", ">", 0],
+      title: "absolute current error tolerance in amperes",
+    }),
+    vntol: Properties.number({
+      defaultValue: 1e-6, // 1uV
+      range: ["real", ">", 0],
+      title: "absolute voltage error tolerance in volts",
+    }),
+    reltol: Properties.number({
+      defaultValue: 1e-3,
+      range: ["real", ">", 0],
+      title: "relative error tolerance",
+    }),
+    maxIter: Properties.number({
+      defaultValue: 150,
+      range: ["integer", ">", 1],
+      title: "maximum number of iterations",
+    }),
+  };
+
   private readonly circuit: Circuit;
-  private readonly options: SimulationOptions;
+  private readonly options: ConvergenceOptions;
   private readonly sle: SLE;
   private readonly backupX: Vector;
   private readonly currX: Vector;
@@ -34,9 +57,9 @@ export class Solver {
   private load: (stamper: Stamper) => void = () => {};
   private end: () => void = () => {};
 
-  constructor(circuit: Circuit, options: SimulationOptions) {
+  constructor(circuit: Circuit, properties: Properties) {
     this.circuit = circuit;
-    this.options = options;
+    this.options = getConvergenceOptions(properties);
     this.sle = new SLE(circuit.nodes.length);
     this.backupX = vecMake(this.sle.size);
     this.currX = vecMake(this.sle.size);
@@ -273,4 +296,24 @@ export class Solver {
       }
     }
   }
+}
+
+interface ConvergenceOptions {
+  /** Absolute current error tolerance, `A`. */
+  readonly abstol: number;
+  /** Absolute voltage error tolerance, `V`. */
+  readonly vntol: number;
+  /** Relative error tolerance. */
+  readonly reltol: number;
+  /** Maximum number of non-linear iterations. */
+  readonly maxIter: number;
+}
+
+function getConvergenceOptions(properties: Properties): ConvergenceOptions {
+  return {
+    abstol: properties.getNumber("abstol"),
+    vntol: properties.getNumber("vntol"),
+    reltol: properties.getNumber("reltol"),
+    maxIter: properties.getNumber("maxIter"),
+  };
 }
