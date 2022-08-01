@@ -1,3 +1,4 @@
+import { AcAnalysis } from "../analysis/analysis-ac.js";
 import { DcAnalysis } from "../analysis/analysis-dc.js";
 import { TrAnalysis } from "../analysis/analysis-tr.js";
 import type { Analysis } from "../analysis/analysis.js";
@@ -8,6 +9,7 @@ import {
   BinaryExp,
   Binding,
   ConstantExp,
+  Equations,
   Exp,
   FunctionExp,
   UnaryExp,
@@ -17,8 +19,10 @@ import { FunctionDef } from "../circuit/functions.js";
 import { getDeviceClass } from "../circuit/library.js";
 import { Model } from "../circuit/model.js";
 import type { Node } from "../circuit/network.js";
+import type { Properties } from "../circuit/properties.js";
 import { standardModels } from "../device/models.js";
 import type {
+  AcItemNode,
   DcItemNode,
   EquationItemNode,
   ExpressionNode,
@@ -27,10 +31,12 @@ import type {
   NetlistNode,
   PropertyNode,
   SweepNode,
-  TranItemNode,
+  TrItemNode,
 } from "./ast.js";
 import { NetlistError } from "./error.js";
 import { parse } from "./parser.js";
+
+const constants = new Equations();
 
 export class Netlist {
   static parse(
@@ -117,27 +123,13 @@ class NetlistBuilder {
   addModel(item: ModelItemNode): void {
     const deviceClass = getDeviceClass(item.deviceId.name);
     const model = new Model(item.modelId.name, deviceClass);
-    for (const property of item.properties) {
+    for (const node of item.properties) {
       try {
-        switch (property.value.type) {
-          case "string": {
-            model.properties.set(property.id.name, property.value.value);
-            break;
-          }
-          case "exp": {
-            const exp = toExp(property.value.value);
-            if (exp.isConstant()) {
-              model.properties.set(property.id.name, exp.eval(this.circuit.equations));
-            } else {
-              throw new NetlistError(`Model properties cannot depend on variables.`);
-            }
-            break;
-          }
-        }
+        this.setConstantProperty(model.properties, node);
       } catch (err: any) {
         throw new NetlistError(
           `Error in model [${item.modelId.name}]: ` +
-            `Invalid property [${property.id.name}]. ${err.message}`,
+            `Invalid property [${node.id.name}]. ${err.message}`,
         );
       }
     }
@@ -212,26 +204,13 @@ class NetlistBuilder {
 
     // Set properties from instance properties.
 
-    for (const property of instance.item.properties) {
+    for (const node of instance.item.properties) {
       try {
-        switch (property.value.type) {
-          case "string":
-            instance.device.properties.set(property.id.name, property.value.value);
-            break;
-          case "exp": {
-            const exp = toExp(property.value.value);
-            if (exp.isConstant()) {
-              instance.device.properties.set(property.id.name, exp.eval(this.circuit.equations));
-            } else {
-              this.circuit.bindings.add(new Binding(instance.device, property.id.name, exp));
-              break;
-            }
-          }
-        }
+        this.setProperty(instance.device, node);
       } catch (err: any) {
         throw new NetlistError(
           `Error in instance [${instance.item.instanceId.name}]: ` +
-            `Invalid property [${property.id.name}]. ${err.message}`,
+            `Invalid property [${node.id.name}]. ${err.message}`,
         );
       }
     }
@@ -243,56 +222,100 @@ class NetlistBuilder {
         case "dc":
           this.addDcAnalysis(item);
           break;
-        case "tran":
-          this.addTranAnalysis(item);
+        case "tr":
+          this.addTrAnalysis(item);
+          break;
+        case "ac":
+          this.addAcAnalysis(item);
           break;
       }
     }
   }
 
-  addDcAnalysis(item: DcItemNode): void {
+  addDcAnalysis(node: DcItemNode): void {
     const analysis = new DcAnalysis();
-    this.setAnalysisProperties(item.properties, analysis);
-    this.addAnalysisSweeps(item.sweeps, analysis);
+    this.setAnalysisProperties(analysis, node.properties);
+    this.addAnalysisSweeps(analysis, node.sweeps);
     this.analyses.push(analysis);
   }
 
-  addTranAnalysis(item: TranItemNode): void {
+  addTrAnalysis(node: TrItemNode): void {
     const analysis = new TrAnalysis();
-    this.setAnalysisProperties(item.properties, analysis);
-    this.addAnalysisSweeps(item.sweeps, analysis);
+    this.setAnalysisProperties(analysis, node.properties);
+    this.addAnalysisSweeps(analysis, node.sweeps);
     this.analyses.push(analysis);
   }
 
-  private setAnalysisProperties(properties: readonly PropertyNode[], analysis: Analysis): void {
-    for (const property of properties) {
+  addAcAnalysis(node: AcItemNode): void {
+    const analysis = new AcAnalysis();
+    this.setAnalysisProperties(analysis, node.properties);
+    this.addAnalysisSweeps(analysis, node.sweeps);
+    this.analyses.push(analysis);
+  }
+
+  private setAnalysisProperties(analysis: Analysis, nodes: readonly PropertyNode[]): void {
+    for (const node of nodes) {
       try {
-        switch (property.value.type) {
-          case "string":
-            analysis.properties.set(property.id.name, property.value.value);
-            break;
-          case "exp": {
-            const exp = toExp(property.value.value);
-            if (exp.isConstant()) {
-              analysis.properties.set(property.id.name, exp.eval(this.circuit.equations));
-            } else {
-              throw new NetlistError(`Analysis properties cannot depend on variables.`);
-            }
-            break;
-          }
-        }
+        this.setConstantProperty(analysis.properties, node);
       } catch (err: any) {
         throw new NetlistError(
-          `Error in analysis properties: ` + //
-            `Invalid property [${property.id.name}]. ${err.message}`,
+          `Error in an analysis: ` + //
+            `Invalid property [${node.id.name}]. ${err.message}`,
         );
       }
     }
   }
 
-  private addAnalysisSweeps(sweeps: readonly SweepNode[], analysis: Analysis) {
-    for (const { id, from, to, points } of sweeps) {
-      analysis.sweeps.push(new Sweep(id.name, from, to, points));
+  private addAnalysisSweeps(analysis: Analysis, nodes: readonly SweepNode[]) {
+    for (const node of nodes) {
+      const sweep = new Sweep();
+      this.setSweepProperties(sweep, node.properties);
+      analysis.sweeps.push(sweep);
+    }
+  }
+
+  private setSweepProperties(sweep: Sweep, nodes: readonly PropertyNode[]): void {
+    for (const node of nodes) {
+      try {
+        this.setConstantProperty(sweep.properties, node);
+      } catch (err: any) {
+        throw new NetlistError(
+          `Error in a sweep: ` + //
+            `Invalid property [${node.id.name}]. ${err.message}`,
+        );
+      }
+    }
+  }
+
+  private setProperty(device: Device, node: PropertyNode): void {
+    switch (node.value.type) {
+      case "string": {
+        device.properties.set(node.id.name, node.value.value);
+        break;
+      }
+      case "exp": {
+        const exp = toExp(node.value.value);
+        if (exp.isConstant()) {
+          device.properties.set(node.id.name, exp.eval(this.circuit.equations));
+        } else {
+          this.circuit.bindings.add(new Binding(device, node.id.name, exp));
+        }
+        break;
+      }
+    }
+  }
+
+  private setConstantProperty(properties: Properties, node: PropertyNode): void {
+    switch (node.value.type) {
+      case "string": {
+        properties.set(node.id.name, node.value.value);
+        break;
+      }
+      case "exp": {
+        const exp = toExp(node.value.value);
+        properties.set(node.id.name, exp.eval(constants));
+        break;
+      }
     }
   }
 }

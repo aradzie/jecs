@@ -32,7 +32,8 @@ export type ItemNode =
   | ModelItemNode
   | EquationItemNode
   | DcItemNode
-  | TranItemNode;
+  | TrItemNode
+  | AcItemNode;
 
 export interface InstanceItemNode extends Node {
   readonly type: "instance";
@@ -79,17 +80,21 @@ export interface DcItemNode extends Node {
   readonly sweeps: readonly SweepNode[];
 }
 
-export interface TranItemNode extends Node {
-  readonly type: "tran";
+export interface TrItemNode extends Node {
+  readonly type: "tr";
+  readonly properties: readonly PropertyNode[];
+  readonly sweeps: readonly SweepNode[];
+}
+
+export interface AcItemNode extends Node {
+  readonly type: "ac";
   readonly properties: readonly PropertyNode[];
   readonly sweeps: readonly SweepNode[];
 }
 
 export interface SweepNode extends Node {
-  readonly id: Identifier;
-  readonly from: number;
-  readonly to: number;
-  readonly points: number;
+  readonly type: "sweep";
+  readonly properties: readonly PropertyNode[];
 }
 
 export type ExpressionNode =

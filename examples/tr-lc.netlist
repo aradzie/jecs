@@ -1,5 +1,15 @@
 # Damped LC circuit
+
 C:C1 gnd n1 C=1u V0=10
 L:L1 n1 n2 L=1m
 R:R1 n2 gnd R=$R1
-.tran stopTime=5m timeStep=1u sweep $R1 0.1 0.9 3
+
+.tr
+  stopTime=5m
+  timeStep=1u
+  .sweep
+    param="R1"
+    type="lin"
+    start=0.1
+    stop=0.9
+    points=3

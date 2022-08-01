@@ -1,19 +1,69 @@
+import { Properties, PropertiesSchema } from "../circuit/properties.js";
 import { humanizeNumber } from "../util/format.js";
 
 export class Sweep implements Iterable<number> {
-  constructor(
-    readonly variableId: string,
-    readonly from: number,
-    readonly to: number,
-    readonly points: number,
-  ) {}
+  static readonly propertiesSchema: PropertiesSchema = {
+    param: Properties.string({
+      title: "parameter to sweep",
+    }),
+    type: Properties.string({
+      range: ["lin", "log"],
+      title: "parameter sweep type",
+    }),
+    start: Properties.number({
+      range: ["real"],
+      title: "parameter start value",
+    }),
+    stop: Properties.number({
+      range: ["real"],
+      title: "parameter stop value",
+    }),
+    points: Properties.number({
+      range: ["integer", ">", 1],
+      title: "number of points",
+    }),
+  };
+
+  readonly properties = new Properties(Sweep.propertiesSchema);
+
+  get param(): string {
+    return this.properties.getString("param");
+  }
 
   *[Symbol.iterator](): Iterator<number> {
-    const { from, to, points } = this;
-    const n = Math.max(2, Math.floor(points));
-    const delta = (to - from) / (n - 1);
-    for (let i = 0; i < n; i++) {
-      yield from + i * delta;
+    const { properties } = this;
+    yield* Sweep.iter(properties);
+  }
+
+  static *iter(properties: Properties): Iterable<number> {
+    const type = properties.getString("type");
+    const start = properties.getNumber("start");
+    const stop = properties.getNumber("stop");
+    const points = properties.getNumber("points");
+    switch (type) {
+      case "lin":
+        yield* Sweep.linIter(start, stop, points);
+        break;
+      case "log": {
+        yield* Sweep.logIter(start, stop, points);
+        break;
+      }
+      default:
+        throw new TypeError();
+    }
+  }
+
+  static *linIter(start: number, stop: number, points: number): Iterable<number> {
+    const step = (stop - start) / (points - 1);
+    for (let i = 0; i < points; i++) {
+      yield start + i * step;
+    }
+  }
+
+  static *logIter(start: number, stop: number, points: number): Iterable<number> {
+    const step = (Math.log(Math.abs(stop)) - Math.log(Math.abs(start))) / (points - 1);
+    for (let i = 0; i < points; i++) {
+      yield start * Math.exp(i * step);
     }
   }
 
@@ -70,7 +120,7 @@ export type Visitor = {
 };
 
 export const groupName = (steps: readonly Step[]): string => {
-  const stepName = ({ sweep: { variableId }, value }: Step): string =>
-    `${variableId}=${humanizeNumber(value)}`;
+  const stepName = ({ sweep: { param }, value }: Step): string =>
+    `${param}=${humanizeNumber(value)}`;
   return `"${steps.map(stepName).join(", ")}"`;
 };

@@ -7,8 +7,8 @@ V:Vce nc gnd V=$Vce
 V:Vbe nb gnd V=$Vbe
 BJT:DUT gnd nb nc @NPN
 .dc
-  sweep $Vbe 0.625 0.65 5
-  sweep $Vce 0 0.3 10
+  .sweep param="Vbe" type="lin" start=0.625 stop=0.65 points=5
+  .sweep param="Vce" type="lin" start=0 stop=0.3 points=10
 `);
 
 for (const analysis of analyses) {

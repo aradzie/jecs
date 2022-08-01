@@ -79,23 +79,25 @@ EquationItem
 
 ActionItem
   = DcAnalysisItem
-  / TranAnalysisItem
+  / TrAnalysisItem
+  / AcAnalysisItem
 
 DcAnalysisItem
   = ".dc" _ properties:PropertyList sweeps:( _ @Sweep )* _ LineEnd
     { return { type: "dc", properties, sweeps }; }
 
-TranAnalysisItem
-  = ".tran" _ properties:PropertyList sweeps:( _ @Sweep )* _ LineEnd
-    { return { type: "tran", properties, sweeps }; }
+TrAnalysisItem
+  = ".tr" _ properties:PropertyList sweeps:( _ @Sweep )* _ LineEnd
+    { return { type: "tr", properties, sweeps }; }
+
+AcAnalysisItem
+  = ".ac" _ properties:PropertyList sweeps:( _ @Sweep )* _ LineEnd
+    { return { type: "ac", properties, sweeps }; }
 
 Sweep
-  = "sweep"
-    _ id:VariableId
-    _ from:Number
-    _ to:Number
-    _ points:Number
-    { return { type: "sweep", id, from, to, points } }
+  = ".sweep"
+    _ properties:PropertyList
+    { return { type: "sweep", properties } }
 
 Expression
   = AdditiveExp

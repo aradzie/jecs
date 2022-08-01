@@ -1,4 +1,5 @@
 import test from "ava";
+import { AcAnalysis } from "../analysis/analysis-ac.js";
 import { DcAnalysis } from "../analysis/analysis-dc.js";
 import { TrAnalysis } from "../analysis/analysis-tr.js";
 import type { Branch, Node } from "../circuit/network.js";
@@ -21,15 +22,22 @@ R:R3 n1 gnd @R3
 .eq $c = -+sin($pi / 2)
 .dc
   maxIter=20
-  sweep $R1 1 5 5
-  sweep $R2 1 10 10
-.tran
+  .sweep param="R1" type="lin" start=1 stop=5 points=5
+  .sweep param="R2" type="lin" start=1 stop=10 points=10
+.tr
   maxIter=10
   startTime=0.5m
   stopTime=1m
   timeStep=1u
-  sweep $R1 1 5 5
-  sweep $R2 1 10 10
+  .sweep param="R1" type="lin" start=1 stop=5 points=5
+  .sweep param="R2" type="lin" start=1 stop=10 points=10
+.ac
+  type="lin"
+  start=1
+  stop=1M
+  points=1M
+  .sweep param="R1" type="lin" start=1 stop=5 points=5
+  .sweep param="R2" type="lin" start=1 stop=10 points=10
 `;
 
   // Act.
@@ -80,15 +88,22 @@ R:R3 n1 gnd @R3
 
   // Assert analyses.
 
-  t.is(analyses.length, 2);
+  t.is(analyses.length, 3);
 
-  const [dc, tran] = analyses;
+  const [dc, tr, ac] = analyses;
 
   t.true(dc instanceof DcAnalysis);
-  t.true(tran instanceof TrAnalysis);
   t.is(dc.properties.getNumber("maxIter"), 20);
-  t.is(tran.properties.getNumber("maxIter"), 10);
-  t.is(tran.properties.getNumber("startTime"), 5e-4);
-  t.is(tran.properties.getNumber("stopTime"), 1e-3);
-  t.is(tran.properties.getNumber("timeStep"), 1e-6);
+
+  t.true(tr instanceof TrAnalysis);
+  t.is(tr.properties.getNumber("maxIter"), 10);
+  t.is(tr.properties.getNumber("startTime"), 5e-4);
+  t.is(tr.properties.getNumber("stopTime"), 1e-3);
+  t.is(tr.properties.getNumber("timeStep"), 1e-6);
+
+  t.true(ac instanceof AcAnalysis);
+  t.is(ac.properties.getString("type"), "lin");
+  t.is(ac.properties.getNumber("start"), 1);
+  t.is(ac.properties.getNumber("stop"), 1e6);
+  t.is(ac.properties.getNumber("points"), 1e6);
 });

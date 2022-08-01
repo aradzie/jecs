@@ -3,6 +3,7 @@ import type { Probe } from "../circuit/probe.js";
 import { Properties, PropertiesSchema } from "../circuit/properties.js";
 import { Analysis } from "./analysis.js";
 import type { DatasetBuilder } from "./dataset.js";
+import { Sweep } from "./sweep.js";
 
 export class AcAnalysis extends Analysis {
   static readonly propertiesSchema: PropertiesSchema = {
@@ -34,9 +35,8 @@ export class AcAnalysis extends Analysis {
 
   protected runImpl(circuit: Circuit, dataset: DatasetBuilder): void {
     const { properties } = this;
-    const type = properties.getString("type");
-    const start = properties.getNumber("start");
-    const stop = properties.getNumber("stop");
-    const points = properties.getNumber("points");
+    for (const frequency of Sweep.iter(properties)) {
+      //
+    }
   }
 }

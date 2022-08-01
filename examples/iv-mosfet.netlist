@@ -2,5 +2,5 @@ V:Vds nd gnd V=$Vds
 V:Vgs ng gnd V=$Vgs
 MOSFET:DUT gnd ng nd gnd @NMOS
 .dc
-  sweep $Vgs 3 10 5
-  sweep $Vds 0 10 100
+  .sweep param="Vgs" type="lin" start=3 stop=10 points=5
+  .sweep param="Vds" type="lin" start=0 stop=10 points=100

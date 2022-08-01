@@ -1,3 +1,3 @@
 Iac:Iin gnd n1 I=1 f=1k
 L:Lload n1 gnd L=100u
-.tran stopTime=3m timeStep=1u
+.tr stopTime=3m timeStep=1u
