@@ -40,6 +40,11 @@ export class Node {
    */
   voltage = 0;
 
+  /**
+   * Computed node AC phase.
+   */
+  phase = 0;
+
   constructor(index: number, id: string) {
     this.index = index;
     this.id = id;
@@ -76,6 +81,11 @@ export class Branch {
    */
   current = 0;
 
+  /**
+   * Computed branch AC phase.
+   */
+  phase = 0;
+
   constructor(index: number, a: Node, b: Node) {
     this.index = index;
     this.a = a;
@@ -83,7 +93,7 @@ export class Branch {
   }
 
   toString(): string {
-    return `Branch[${this.a}->${this.b}]`;
+    return `${this.a}~${this.b}`;
   }
 }
 

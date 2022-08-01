@@ -134,4 +134,6 @@ export abstract class Device {
   initAc(state: DeviceState): void {}
 
   loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {}
+
+  endAc(state: DeviceState): void {}
 }

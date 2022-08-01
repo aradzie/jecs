@@ -1,6 +1,6 @@
 import type { Circuit } from "./circuit.js";
 import type { Device, OutputParam } from "./device.js";
-import type { Node } from "./network.js";
+import type { Branch, Node } from "./network.js";
 
 /**
  * Probe captures a single dataset value from a circuit or node or device after simulation.
@@ -15,7 +15,7 @@ export type Probe = {
 };
 
 /**
- * Returns a probe which measures elapsed time from transient simulation.
+ * Returns a probe which measures elapsed time from TR simulation.
  */
 export const timeProbe = (circuit: Circuit): Probe => {
   return new (class implements Probe {
@@ -28,14 +28,66 @@ export const timeProbe = (circuit: Circuit): Probe => {
 };
 
 /**
+ * Returns a probe which measures frequency from AC simulation.
+ */
+export const frequencyProbe = (circuit: Circuit): Probe => {
+  return new (class implements Probe {
+    name = "frequency";
+    unit = "Hz";
+    measure(): number {
+      return circuit.frequency;
+    }
+  })();
+};
+
+/**
  * Return a probe which captures node voltage.
  */
-export const nodeProbe = (node: Node): Probe => {
+export const nodeVoltageProbe = (node: Node): Probe => {
   return new (class implements Probe {
     name = `#${node.id}:V`;
     unit = "V";
     measure(): number {
       return node.voltage;
+    }
+  })();
+};
+
+/**
+ * Return a probe which captures node AC phase.
+ */
+export const nodePhaseProbe = (node: Node): Probe => {
+  return new (class implements Probe {
+    name = `#${node.id}:phase`;
+    unit = "angle";
+    measure(): number {
+      return node.phase;
+    }
+  })();
+};
+
+/**
+ * Return a probe which captures branch current.
+ */
+export const branchCurrentProbe = (branch: Branch): Probe => {
+  return new (class implements Probe {
+    name = `#${branch}:I`;
+    unit = "V";
+    measure(): number {
+      return branch.current;
+    }
+  })();
+};
+
+/**
+ * Return a probe which captures branch AC phase.
+ */
+export const branchPhaseProbe = (branch: Branch): Probe => {
+  return new (class implements Probe {
+    name = `#${branch}:phase`;
+    unit = "angle";
+    measure(): number {
+      return branch.phase;
     }
   })();
 };
@@ -53,12 +105,15 @@ export const deviceProbe = (device: Device, op: OutputParam): Probe => {
   })();
 };
 
-export const allNodeProbes = (circuit: Circuit): Probe[] => {
+export const allNodeProbes = (circuit: Circuit, ac = false): Probe[] => {
   const probes: Probe[] = [];
   for (const node of circuit.nodes) {
     switch (node.type) {
       case "node":
-        probes.push(nodeProbe(node));
+        probes.push(nodeVoltageProbe(node));
+        if (ac) {
+          probes.push(nodePhaseProbe(node));
+        }
         break;
       case "branch":
         break;
@@ -75,8 +130,4 @@ export const allDeviceProbes = (circuit: Circuit): Probe[] => {
     }
   }
   return probes;
-};
-
-export const allCircuitProbes = (circuit: Circuit): Probe[] => {
-  return [...allNodeProbes(circuit), ...allDeviceProbes(circuit)];
 };

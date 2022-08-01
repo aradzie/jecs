@@ -1,0 +1,5 @@
+Vac:Vin pow gnd V=1 f=1k
+R:R1 pow out R=1k
+C:C1 out gnd C=50u
+L:L1 out gnd L=5.066u
+.ac type="log" start=100 stop=1M points=1k

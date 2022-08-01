@@ -1,7 +1,7 @@
 import type { Device } from "./device.js";
 import { Bindings, ConstantExp, Equations } from "./equations.js";
 import { CircuitError } from "./error.js";
-import type { Stamper } from "./mna.js";
+import type { AcStamper, Stamper } from "./mna.js";
 import { Branch, groundNode, Network, Node } from "./network.js";
 import { Properties, PropertiesSchema } from "./properties.js";
 
@@ -24,12 +24,14 @@ export class Circuit implements Network {
   temp: number;
   elapsedTime: number;
   timeStep: number;
+  frequency: number;
   sourceFactor: number;
 
   constructor() {
     this.temp = 0;
     this.elapsedTime = 0;
     this.timeStep = NaN;
+    this.frequency = 0;
     this.sourceFactor = 1;
   }
 
@@ -56,14 +58,17 @@ export class Circuit implements Network {
   reset(): void {
     this.#equations.set("temp", new ConstantExp(this.temp));
     this.#equations.set("time", new ConstantExp(this.elapsedTime));
+    this.#equations.set("frequency", new ConstantExp(this.frequency));
     this.#bindings.setProperties();
     for (const node of this.#nodes) {
       switch (node.type) {
         case "node":
           node.voltage = 0;
+          node.phase = 0;
           break;
         case "branch":
           node.current = 0;
+          node.phase = 0;
           break;
       }
     }
@@ -148,6 +153,24 @@ export class Circuit implements Network {
   endTr(): void {
     for (const device of this.#devices) {
       device.endTr(device.state, this);
+    }
+  }
+
+  initAc(): void {
+    for (const device of this.#devices) {
+      device.initAc(device.state);
+    }
+  }
+
+  loadAc(stamper: AcStamper): void {
+    for (const device of this.#devices) {
+      device.loadAc(device.state, this.frequency, stamper);
+    }
+  }
+
+  endAc(): void {
+    for (const device of this.#devices) {
+      device.endAc(device.state);
     }
   }
 }

@@ -1,6 +1,6 @@
 import { Circuit } from "../circuit/circuit.js";
 import { ConstantExp } from "../circuit/equations.js";
-import { allCircuitProbes, Probe } from "../circuit/probe.js";
+import { allDeviceProbes, allNodeProbes, Probe } from "../circuit/probe.js";
 import type { PropertiesSchema } from "../circuit/properties.js";
 import { Analysis } from "./analysis.js";
 import type { DatasetBuilder } from "./dataset.js";
@@ -18,7 +18,7 @@ export class DcAnalysis extends Analysis {
   }
 
   protected override getProbes(circuit: Circuit): Probe[] {
-    return [...allCircuitProbes(circuit)];
+    return [...allNodeProbes(circuit), ...allDeviceProbes(circuit)];
   }
 
   protected override runImpl(circuit: Circuit, dataset: DatasetBuilder): void {

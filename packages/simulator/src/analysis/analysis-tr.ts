@@ -1,6 +1,6 @@
 import { Circuit } from "../circuit/circuit.js";
 import { ConstantExp } from "../circuit/equations.js";
-import { allCircuitProbes, Probe, timeProbe } from "../circuit/probe.js";
+import { allDeviceProbes, allNodeProbes, Probe, timeProbe } from "../circuit/probe.js";
 import { Properties, PropertiesSchema } from "../circuit/properties.js";
 import { Analysis } from "./analysis.js";
 import type { DatasetBuilder } from "./dataset.js";
@@ -41,7 +41,7 @@ export class TrAnalysis extends Analysis {
   }
 
   protected override getProbes(circuit: Circuit): Probe[] {
-    return [timeProbe(circuit), ...allCircuitProbes(circuit)];
+    return [timeProbe(circuit), ...allNodeProbes(circuit), ...allDeviceProbes(circuit)];
   }
 
   protected override runImpl(circuit: Circuit, dataset: DatasetBuilder): void {

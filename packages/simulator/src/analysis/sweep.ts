@@ -24,6 +24,12 @@ export class Sweep implements Iterable<number> {
     }),
   };
 
+  static from(properties: Properties): Sweep {
+    const sweep = new Sweep();
+    sweep.properties.from(properties);
+    return sweep;
+  }
+
   readonly properties = new Properties(Sweep.propertiesSchema);
 
   get param(): string {

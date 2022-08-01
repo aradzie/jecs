@@ -1,0 +1,6 @@
+Vac:Vin pow gnd V=1 f=1k
+R:R1 pow out R=1k
+C:C1 out gnd C=$C
+.ac
+  type="log" start=1 stop=1M points=1k
+  .sweep param="C" type="log" start=10n stop=200n points=3
