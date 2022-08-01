@@ -147,7 +147,7 @@ export class Equations implements Iterable<string> {
   get(name: string): Exp {
     const exp = this.#map.get(name);
     if (exp == null) {
-      throw new CircuitError(`Unknown variable [${name}]`);
+      throw new CircuitError(`Unknown variable [${name}].`);
     }
     return exp;
   }
@@ -168,10 +168,9 @@ export class Binding {
     try {
       this.device.properties.set(this.name, this.value.eval(eq));
     } catch (err: any) {
-      throw new CircuitError(
-        `Cannot set property [${this.name}] of device [${this.device.id}]: ${err}`,
-        { cause: err },
-      );
+      throw new CircuitError(`Cannot configure device [${this.device.id}]: ${err.message}`, {
+        // cause: err
+      });
     }
   }
 }

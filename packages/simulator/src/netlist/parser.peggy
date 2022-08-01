@@ -32,6 +32,7 @@ InstanceItem
     _ LineEnd
     {
       return {
+        location: location(),
         type: "instance",
         deviceId,
         modelId,
@@ -57,13 +58,13 @@ PropertyList
 
 Property
   = id:Identifier _ "=" _ value:PropertyValue
-    { return { id, value }; }
+    { return { location: location(), id, value }; }
 
 PropertyValue
   = value:String
-    { return { type: "string", value }; }
+    { return { location: location(), type: "string", value }; }
   / value:Expression
-    { return { type: "exp", value }; }
+    { return { location: location(), type: "exp", value }; }
 
 ModelItem
   = ".model"
@@ -71,11 +72,11 @@ ModelItem
     _ modelId:ModelId
     _ properties:PropertyList
     _ LineEnd
-    { return { type: "model", deviceId, modelId, properties }; }
+    { return { location: location(), type: "model", deviceId, modelId, properties }; }
 
 EquationItem
   = ".eq" _ id:VariableId _ "=" _ value:Expression _ LineEnd
-    { return { type: "equation", id, value, }; }
+    { return { location: location(), type: "equation", id, value, }; }
 
 ActionItem
   = DcAnalysisItem
@@ -84,20 +85,20 @@ ActionItem
 
 DcAnalysisItem
   = ".dc" _ properties:PropertyList sweeps:( _ @Sweep )* _ LineEnd
-    { return { type: "dc", properties, sweeps }; }
+    { return { location: location(), type: "dc", properties, sweeps }; }
 
 TrAnalysisItem
   = ".tr" _ properties:PropertyList sweeps:( _ @Sweep )* _ LineEnd
-    { return { type: "tr", properties, sweeps }; }
+    { return { location: location(), type: "tr", properties, sweeps }; }
 
 AcAnalysisItem
   = ".ac" _ properties:PropertyList sweeps:( _ @Sweep )* _ LineEnd
-    { return { type: "ac", properties, sweeps }; }
+    { return { location: location(), type: "ac", properties, sweeps }; }
 
 Sweep
   = ".sweep"
     _ id:VariableId _ properties:PropertyList
-    { return { type: "sweep", id, properties } }
+    { return { location: location(), type: "sweep", id, properties } }
 
 Expression
   = AdditiveExp
@@ -116,7 +117,7 @@ ExponentiationExp
 
 UnaryExp
   = op:( "-" / "+" ) _ arg:UnaryExp
-    { return { type: "unary", op, arg }; }
+    { return { location: location(), type: "unary", op, arg }; }
   / PrimaryExp
 
 PrimaryExp
@@ -127,15 +128,15 @@ PrimaryExp
 
 ConstantExp
   = value:Number
-    { return { type: "constant", value }; }
+    { return { location: location(), type: "constant", value }; }
 
 VariableExp
   = id:VariableId
-    { return { type: "variable", id }; }
+    { return { location: location(), type: "variable", id }; }
 
 FunctionExp
   = id:Identifier _ args:Args
-    { return { type: "function", id, args }; }
+    { return { location: location(), type: "function", id, args }; }
 
 Args
   = "(" _ args:( _ @Expression )* _ ")"
@@ -146,7 +147,7 @@ VariableId
 
 Identifier "identifier"
   = $( [_a-zA-Z] [_a-zA-Z0-9]* )
-    { return { name: text()/*, location: location()*/ }; }
+    { return { location: location(), name: text() }; }
 
 String "string"
   = '"' chars:$( !( '"' / "\n" / "\r" ) . )* '"'

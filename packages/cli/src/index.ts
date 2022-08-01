@@ -1,57 +1,89 @@
-import { Dataset, formatData, formatSchema } from "@jecs/simulator/lib/analysis/dataset.js";
+import type { Analysis } from "@jecs/simulator/lib/analysis/analysis.js";
+import { formatData, formatSchema } from "@jecs/simulator/lib/analysis/dataset.js";
+import type { Circuit } from "@jecs/simulator/lib/circuit/circuit.js";
 import { Netlist } from "@jecs/simulator/lib/netlist/netlist.js";
 import { logger } from "@jecs/simulator/lib/util/logging.js";
 import { program } from "commander";
-import * as console from "console";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, parse, resolve } from "node:path";
 
-const run = (name: string, { verbose = false }: { verbose?: boolean }): void => {
-  const netlistPath = resolve(name);
+const runAnalysis = (
+  circuit: Circuit,
+  analysis: Analysis,
+  netlistPath: string,
+  verbose: boolean,
+): void => {
+  const dataset = analysis.run(circuit);
+
+  const { root, dir, name } = parse(netlistPath);
+  const schemaPath = join(root, dir, `${name}.schema`);
+  const dataPath = join(root, dir, `${name}.data`);
+
+  try {
+    writeFileSync(schemaPath, formatSchema(dataset));
+  } catch (err: any) {
+    throw new Error(`Cannot write file [${schemaPath}].`, { cause: err });
+  }
+
+  try {
+    writeFileSync(dataPath, formatData(dataset));
+  } catch (err: any) {
+    throw new Error(`Cannot write file [${dataPath}].`, { cause: err });
+  }
+
+  if (verbose) {
+    console.log(String(logger));
+  }
+};
+
+const run0 = (netlistPath: string, { verbose = false }: { verbose?: boolean }): void => {
   let content: string;
   try {
     content = readFileSync(netlistPath, "utf-8");
   } catch (err: any) {
     if (err.code === "ENOENT") {
-      console.error(`File [${netlistPath}] not found.`);
+      throw new Error(`File [${netlistPath}] not found.`);
     } else {
-      console.error(`File [${netlistPath}] cannot be read: ${err}.`);
+      throw new Error(`File [${netlistPath}] cannot be read.`, { cause: err });
     }
-    process.exit(1);
   }
 
-  const { circuit, analyses } = Netlist.parse(content);
+  const { circuit, analyses } = Netlist.parse({ content, location: netlistPath });
 
   for (const analysis of analyses) {
-    let dataset: Dataset;
-    try {
-      dataset = analysis.run(circuit);
-    } catch (err: any) {
-      console.error(`Error processing netlist [${netlistPath}]: ${err}`);
-      process.exit(1);
+    runAnalysis(circuit, analysis, netlistPath, verbose);
+  }
+};
+
+const run = (name: string, { verbose = false }: { verbose?: boolean }): void => {
+  const netlistPath = resolve(name);
+  try {
+    run0(netlistPath, { verbose });
+  } catch (err: any) {
+    // Print error.
+    console.error(`${err.name}: ${err.message}`);
+
+    // Print cause.
+    let { cause } = err;
+    while (cause) {
+      console.error(`  ${cause.name}: ${cause.message}`);
+      cause = cause.cause;
     }
 
-    const { root, dir, name } = parse(netlistPath);
-    const schemaPath = join(root, dir, `${name}.schema`);
-    const dataPath = join(root, dir, `${name}.data`);
-
-    try {
-      writeFileSync(schemaPath, formatSchema(dataset));
-    } catch (err: any) {
-      console.error(`Cannot write file [${schemaPath}]: ${err}`);
-      process.exit(1);
+    // Print location.
+    const { location } = err;
+    if (location) {
+      const {
+        source,
+        start: { line, column },
+      } = location;
+      console.error(`  at ${source}:${line}:${column}`);
+    } else {
+      console.error(`  at ${netlistPath}`);
     }
 
-    try {
-      writeFileSync(dataPath, formatData(dataset));
-    } catch (err: any) {
-      console.error(`Cannot write file [${dataPath}]: ${err}`);
-      process.exit(1);
-    }
-
-    if (verbose) {
-      console.log(String(logger));
-    }
+    // Terminate.
+    process.exit(1);
   }
 };
 

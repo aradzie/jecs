@@ -40,14 +40,24 @@ const constants = new Equations();
 
 export class Netlist {
   static parse(
-    content: string,
+    content:
+      | string
+      | {
+          readonly content: string;
+          readonly location: string | undefined;
+        },
     {
       models = [],
     }: {
       readonly models?: readonly Model[];
     } = {},
   ): Netlist {
-    const document = parse(content);
+    if (typeof content === "string") {
+      content = { content, location: undefined };
+    }
+    const document = parse(content.content, {
+      grammarSource: content.location,
+    });
     const builder = new NetlistBuilder(document);
     builder.addModels(standardModels);
     builder.addModels(models);
@@ -121,18 +131,17 @@ class NetlistBuilder {
   }
 
   addModel(item: ModelItemNode): void {
-    const deviceClass = getDeviceClass(item.deviceId.name);
-    const model = new Model(item.modelId.name, deviceClass);
-    for (const node of item.properties) {
-      try {
-        this.setConstantProperty(model.properties, node);
-      } catch (err: any) {
-        throw new NetlistError(
-          `Error in model [${item.modelId.name}]: ` +
-            `Invalid property [${node.id.name}]. ${err.message}`,
-        );
-      }
+    let deviceClass: DeviceClass;
+    try {
+      deviceClass = getDeviceClass(item.deviceId.name);
+    } catch (err: any) {
+      throw new NetlistError(err.message, {
+        // cause: err,
+        location: item.location,
+      });
     }
+    const model = new Model(item.modelId.name, deviceClass);
+    this.setConstantProperties(model.properties, item.properties);
     this.models.set(model.modelId, model);
   }
 
@@ -145,9 +154,19 @@ class NetlistBuilder {
   }
 
   addInstance(item: InstanceItemNode): void {
-    const deviceClass = getDeviceClass(item.deviceId.name);
+    let deviceClass: DeviceClass;
+    try {
+      deviceClass = getDeviceClass(item.deviceId.name);
+    } catch (err: any) {
+      throw new NetlistError(err.message, {
+        // cause: err,
+        location: item.location,
+      });
+    }
     if (this.instances.has(item.instanceId.name)) {
-      throw new NetlistError(`Duplicate instance identifier [${item.instanceId.name}].`);
+      throw new NetlistError(`Duplicate instance identifier [${item.instanceId.name}].`, {
+        location: item.location,
+      });
     }
     this.instances.set(item.instanceId.name, {
       item,
@@ -174,8 +193,9 @@ class NetlistBuilder {
   createInstance(instance: Instance): void {
     if (instance.nodes.length !== instance.deviceClass.numTerminals) {
       throw new NetlistError(
-        `Error in instance [${instance.item.instanceId.name}]: Invalid number of nodes. ` +
+        `Invalid number of nodes. ` +
           `Expected ${instance.deviceClass.numTerminals}, got ${instance.nodes.length}.`,
+        { location: instance.item.location },
       );
     }
     instance.device = new instance.deviceClass(instance.item.instanceId.name);
@@ -187,16 +207,15 @@ class NetlistBuilder {
     if (instance.item.modelId != null) {
       const model = this.models.get(instance.item.modelId.name);
       if (model == null) {
-        throw new NetlistError(
-          `Error in instance [${instance.item.instanceId.name}]: ` +
-            `Model [${instance.item.modelId.name}] not found.`,
-        );
+        throw new NetlistError(`Model [${instance.item.modelId.name}] not found.`, {
+          location: instance.item.location,
+        });
       }
       if (model.deviceClass.id !== instance.deviceClass.id) {
         throw new NetlistError(
-          `Error in instance [${instance.item.instanceId.name}]: ` +
-            `Invalid device of model [${instance.item.modelId.name}]. ` +
+          `Invalid device of model [${instance.item.modelId.name}]. ` +
             `Expected [${instance.deviceClass.id}], got [${model.deviceClass.id}].`,
+          { location: instance.item.location },
         );
       }
       instance.device.properties.from(model.properties);
@@ -204,16 +223,7 @@ class NetlistBuilder {
 
     // Set properties from instance properties.
 
-    for (const node of instance.item.properties) {
-      try {
-        this.setProperty(instance.device, node);
-      } catch (err: any) {
-        throw new NetlistError(
-          `Error in instance [${instance.item.instanceId.name}]: ` +
-            `Invalid property [${node.id.name}]. ${err.message}`,
-        );
-      }
-    }
+    this.setDeviceProperties(instance.device, instance.item.properties);
   }
 
   collectAnalyses(): void {
@@ -234,87 +244,79 @@ class NetlistBuilder {
 
   addDcAnalysis(node: DcItemNode): void {
     const analysis = new DcAnalysis();
-    this.setAnalysisProperties(analysis, node.properties);
+    this.setConstantProperties(analysis.properties, node.properties);
     this.addAnalysisSweeps(analysis, node.sweeps);
     this.analyses.push(analysis);
   }
 
   addTrAnalysis(node: TrItemNode): void {
     const analysis = new TrAnalysis();
-    this.setAnalysisProperties(analysis, node.properties);
+    this.setConstantProperties(analysis.properties, node.properties);
     this.addAnalysisSweeps(analysis, node.sweeps);
     this.analyses.push(analysis);
   }
 
   addAcAnalysis(node: AcItemNode): void {
     const analysis = new AcAnalysis();
-    this.setAnalysisProperties(analysis, node.properties);
+    this.setConstantProperties(analysis.properties, node.properties);
     this.addAnalysisSweeps(analysis, node.sweeps);
     this.analyses.push(analysis);
-  }
-
-  private setAnalysisProperties(analysis: Analysis, nodes: readonly PropertyNode[]): void {
-    for (const node of nodes) {
-      try {
-        this.setConstantProperty(analysis.properties, node);
-      } catch (err: any) {
-        throw new NetlistError(
-          `Error in an analysis: ` + //
-            `Invalid property [${node.id.name}]. ${err.message}`,
-        );
-      }
-    }
   }
 
   private addAnalysisSweeps(analysis: Analysis, nodes: readonly SweepNode[]) {
     for (const node of nodes) {
       const sweep = new Sweep(node.id.name);
-      this.setSweepProperties(sweep, node.properties);
+      this.setConstantProperties(sweep.properties, node.properties);
       analysis.sweeps.push(sweep);
     }
   }
 
-  private setSweepProperties(sweep: Sweep, nodes: readonly PropertyNode[]): void {
+  private setDeviceProperties(device: Device, nodes: readonly PropertyNode[]): void {
     for (const node of nodes) {
       try {
-        this.setConstantProperty(sweep.properties, node);
-      } catch (err: any) {
-        throw new NetlistError(
-          `Error in a sweep: ` + //
-            `Invalid property [${node.id.name}]. ${err.message}`,
-        );
-      }
-    }
-  }
-
-  private setProperty(device: Device, node: PropertyNode): void {
-    switch (node.value.type) {
-      case "string": {
-        device.properties.set(node.id.name, node.value.value);
-        break;
-      }
-      case "exp": {
-        const exp = toExp(node.value.value);
-        if (exp.isConstant()) {
-          device.properties.set(node.id.name, exp.eval(this.circuit.equations));
-        } else {
-          this.circuit.bindings.add(new Binding(device, node.id.name, exp));
+        switch (node.value.type) {
+          case "string": {
+            device.properties.set(node.id.name, node.value.value);
+            break;
+          }
+          case "exp": {
+            const exp = toExp(node.value.value);
+            if (exp.isConstant()) {
+              device.properties.set(node.id.name, exp.eval(this.circuit.equations));
+            } else {
+              this.circuit.bindings.add(new Binding(device, node.id.name, exp));
+            }
+            break;
+          }
         }
-        break;
+      } catch (err: any) {
+        throw new NetlistError(err.message, {
+          // cause: err,
+          location: node.location,
+        });
       }
     }
   }
 
-  private setConstantProperty(properties: Properties, node: PropertyNode): void {
-    switch (node.value.type) {
-      case "string": {
-        properties.set(node.id.name, node.value.value);
-        break;
-      }
-      case "exp": {
-        const exp = toExp(node.value.value);
-        properties.set(node.id.name, exp.eval(constants));
-        break;
+  private setConstantProperties(properties: Properties, nodes: readonly PropertyNode[]): void {
+    for (const node of nodes) {
+      try {
+        switch (node.value.type) {
+          case "string": {
+            properties.set(node.id.name, node.value.value);
+            break;
+          }
+          case "exp": {
+            const exp = toExp(node.value.value);
+            properties.set(node.id.name, exp.eval(constants));
+            break;
+          }
+        }
+      } catch (err: any) {
+        throw new NetlistError(err.message, {
+          // cause: err,
+          location: node.location,
+        });
       }
     }
   }

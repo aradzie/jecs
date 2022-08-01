@@ -4,9 +4,12 @@ import { Properties } from "./properties.js";
 test("validate properties", (t) => {
   t.throws(
     () => {
-      new Properties({}).set("x", 0);
+      new Properties({
+        a: Properties.number({ title: "a" }),
+        b: Properties.number({ title: "b" }),
+      }).set("x", 0);
     },
-    { message: `Unknown property [x]` },
+    { message: `Unknown property [x]. Expected one of [a], [b].` },
   );
 });
 
@@ -19,8 +22,8 @@ test("validate number properties", (t) => {
     },
     {
       message:
-        `Invalid value for property [prop], ` + //
-        `expected a number, got "omg"`,
+        `Invalid value for property [prop]. ` + //
+        `Expected a number, got "omg".`,
     },
   );
   t.throws(
@@ -31,8 +34,8 @@ test("validate number properties", (t) => {
     },
     {
       message:
-        `Invalid value for property [prop], ` + //
-        `not a finite value`,
+        `Invalid value for property [prop]. ` + //
+        `Not a finite value.`,
     },
   );
   t.throws(
@@ -43,8 +46,8 @@ test("validate number properties", (t) => {
     },
     {
       message:
-        `Invalid value for property [prop], ` + //
-        `not an integer value`,
+        `Invalid value for property [prop]. ` + //
+        `Not an integer value.`,
     },
   );
   t.throws(
@@ -55,8 +58,8 @@ test("validate number properties", (t) => {
     },
     {
       message:
-        `Invalid value for property [prop], ` + //
-        `expected a value larger than 0, got 0`,
+        `Invalid value for property [prop]. ` + //
+        `Expected a value larger than 0, got 0.`,
     },
   );
   t.throws(
@@ -67,8 +70,8 @@ test("validate number properties", (t) => {
     },
     {
       message:
-        `Invalid value for property [prop], ` + //
-        `expected a value less than 0, got 0`,
+        `Invalid value for property [prop]. ` + //
+        `Expected a value less than 0, got 0.`,
     },
   );
   t.throws(
@@ -79,8 +82,8 @@ test("validate number properties", (t) => {
     },
     {
       message:
-        `Invalid value for property [prop], ` + //
-        `expected a value not equal to 0`,
+        `Invalid value for property [prop]. ` + //
+        `Expected a value not equal to 0.`,
     },
   );
 });
@@ -94,8 +97,8 @@ test("validate string properties", (t) => {
     },
     {
       message:
-        `Invalid value for property [prop], ` + //
-        `expected a string, got 1`,
+        `Invalid value for property [prop]. ` + //
+        `Expected a string, got 1.`,
     },
   );
   t.throws(
@@ -106,8 +109,8 @@ test("validate string properties", (t) => {
     },
     {
       message:
-        `Invalid value for property [prop], ` + //
-        `expected one of {"one", "two"}, got "zero"`,
+        `Invalid value for property [prop]. ` + //
+        `Expected one of "one", "two", got "zero".`,
     },
   );
 });

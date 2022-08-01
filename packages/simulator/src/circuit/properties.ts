@@ -65,10 +65,18 @@ export class Properties {
     }
   }
 
+  names(): string[] {
+    return [...this.schema.keys()];
+  }
+
   prop(name: string): PropertySchema {
     const property = this.schema.get(name);
     if (property == null) {
-      throw new CircuitError(`Unknown property [${name}]`);
+      const names = this.names();
+      throw new CircuitError(
+        `Unknown property [${name}]. ` + //
+          `Expected one of ${names.map((v) => `[${v}]`).join(", ")}.`,
+      );
     }
     return property;
   }
@@ -112,11 +120,11 @@ export class Properties {
   getNumber(name: string, defaultValue: number | null = null): number {
     const property = this.prop(name);
     if (property.type !== "number") {
-      throw new Error(`Property [${name}] is not a number`);
+      throw new CircuitError(`Property [${name}] is not a number.`);
     }
     const value = this.values.get(name) ?? defaultValue ?? property.defaultValue;
     if (value == null) {
-      throw new Error(`Property [${name}] has no value`);
+      throw new CircuitError(`Property [${name}] has no value.`);
     }
     return value as number;
   }
@@ -124,11 +132,11 @@ export class Properties {
   getString(name: string, defaultValue: string | null = null): string {
     const property = this.prop(name);
     if (property.type !== "string") {
-      throw new Error(`Property [${name}] is not a string`);
+      throw new CircuitError(`Property [${name}] is not a string.`);
     }
     const value = this.values.get(name) ?? defaultValue ?? property.defaultValue;
     if (value == null) {
-      throw new Error(`Property [${name}] has no value`);
+      throw new CircuitError(`Property [${name}] has no value.`);
     }
     return value as string;
   }
@@ -137,8 +145,8 @@ export class Properties {
 function checkNumber(property: NumberPropertySchema, name: string, value: unknown): void {
   if (typeof value !== "number") {
     throw new CircuitError(
-      `Invalid value for property [${name}], ` + //
-        `expected a number, got ${quote(value)}`,
+      `Invalid value for property [${name}]. ` + //
+        `Expected a number, got ${quote(value)}.`,
     );
   }
   const { range = ["real"] } = property;
@@ -147,16 +155,16 @@ function checkNumber(property: NumberPropertySchema, name: string, value: unknow
     case "real":
       if (!Number.isFinite(value)) {
         throw new CircuitError(
-          `Invalid value for property [${name}], ` + //
-            `not a finite value`,
+          `Invalid value for property [${name}]. ` + //
+            `Not a finite value.`,
         );
       }
       break;
     case "integer":
       if (!Number.isInteger(value)) {
         throw new CircuitError(
-          `Invalid value for property [${name}], ` + //
-            `not an integer value`,
+          `Invalid value for property [${name}]. ` + //
+            `Not an integer value.`,
         );
       }
       break;
@@ -169,44 +177,44 @@ function checkNumber(property: NumberPropertySchema, name: string, value: unknow
       case ">":
         if (value <= limit) {
           throw new CircuitError(
-            `Invalid value for property [${name}], ` + //
-              `expected a value larger than ${limit}, ` +
-              `got ${quote(value)}`,
+            `Invalid value for property [${name}]. ` + //
+              `Expected a value larger than ${limit}, ` +
+              `got ${quote(value)}.`,
           );
         }
         break;
       case ">=":
         if (value < limit) {
           throw new CircuitError(
-            `Invalid value for property [${name}], ` + //
-              `expected a value larger than or equal to ${limit}, ` +
-              `got ${quote(value)}`,
+            `Invalid value for property [${name}]. ` + //
+              `Expected a value larger than or equal to ${limit}, ` +
+              `got ${quote(value)}.`,
           );
         }
         break;
       case "<":
         if (value >= limit) {
           throw new CircuitError(
-            `Invalid value for property [${name}], ` + //
-              `expected a value less than ${limit}, ` +
-              `got ${quote(value)}`,
+            `Invalid value for property [${name}]. ` + //
+              `Expected a value less than ${limit}, ` +
+              `got ${quote(value)}.`,
           );
         }
         break;
       case "<=":
         if (value > limit) {
           throw new CircuitError(
-            `Invalid value for property [${name}], ` + //
-              `expected a value less than or equal to ${limit}, ` +
-              `got ${quote(value)}`,
+            `Invalid value for property [${name}]. ` + //
+              `Expected a value less than or equal to ${limit}, ` +
+              `got ${quote(value)}.`,
           );
         }
         break;
       case "<>":
         if (value === limit) {
           throw new CircuitError(
-            `Invalid value for property [${name}], ` + //
-              `expected a value not equal to ${limit}`,
+            `Invalid value for property [${name}]. ` + //
+              `Expected a value not equal to ${limit}.`,
           );
         }
         break;
@@ -217,16 +225,16 @@ function checkNumber(property: NumberPropertySchema, name: string, value: unknow
 function checkString(property: StringPropertySchema, name: string, value: unknown): void {
   if (typeof value !== "string") {
     throw new CircuitError(
-      `Invalid value for property [${name}], ` + //
-        `expected a string, got ${quote(value)}`,
+      `Invalid value for property [${name}]. ` + //
+        `Expected a string, got ${quote(value)}.`,
     );
   }
   const { range = [] } = property;
   if (range.length > 0 && !range.includes(value)) {
     throw new CircuitError(
-      `Invalid value for property [${name}], ` + //
-        `expected one of {${range.map((v) => quote(v)).join(", ")}}, ` +
-        `got ${quote(value)}`,
+      `Invalid value for property [${name}]. ` + //
+        `Expected one of ${range.map((v) => quote(v)).join(", ")}, ` +
+        `got ${quote(value)}.`,
     );
   }
 }

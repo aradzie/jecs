@@ -5,6 +5,7 @@ export interface Position {
 }
 
 export interface Location {
+  readonly source: string | undefined;
   readonly start: Position;
   readonly end: Position;
 }
@@ -17,7 +18,7 @@ export interface HasId {
   readonly id: Identifier;
 }
 
-export interface Node {}
+export interface Node extends HasLocation {}
 
 export interface NetlistNode extends Node {
   readonly items: readonly ItemNode[];
@@ -92,7 +93,7 @@ export interface AcItemNode extends Node {
   readonly sweeps: readonly SweepNode[];
 }
 
-export interface SweepNode extends Node {
+export interface SweepNode extends Node, HasId {
   readonly type: "sweep";
   readonly id: Identifier;
   readonly properties: readonly PropertyNode[];

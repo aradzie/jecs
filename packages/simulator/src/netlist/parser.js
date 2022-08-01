@@ -276,6 +276,7 @@ function peg$parse(input, options) {
   var peg$f0 = function(items) { return { items }; };
   var peg$f1 = function(deviceId, instanceId, nodes, modelId, properties) {
       return {
+        location: location(),
         type: "instance",
         deviceId,
         modelId,
@@ -286,24 +287,24 @@ function peg$parse(input, options) {
     };
   var peg$f2 = function(ids) { return ids; };
   var peg$f3 = function(properties) { return properties; };
-  var peg$f4 = function(id, value) { return { id, value }; };
-  var peg$f5 = function(value) { return { type: "string", value }; };
-  var peg$f6 = function(value) { return { type: "exp", value }; };
-  var peg$f7 = function(deviceId, modelId, properties) { return { type: "model", deviceId, modelId, properties }; };
-  var peg$f8 = function(id, value) { return { type: "equation", id, value, }; };
-  var peg$f9 = function(properties, sweeps) { return { type: "dc", properties, sweeps }; };
-  var peg$f10 = function(properties, sweeps) { return { type: "tr", properties, sweeps }; };
-  var peg$f11 = function(properties, sweeps) { return { type: "ac", properties, sweeps }; };
-  var peg$f12 = function(id, properties) { return { type: "sweep", id, properties } };
+  var peg$f4 = function(id, value) { return { location: location(), id, value }; };
+  var peg$f5 = function(value) { return { location: location(), type: "string", value }; };
+  var peg$f6 = function(value) { return { location: location(), type: "exp", value }; };
+  var peg$f7 = function(deviceId, modelId, properties) { return { location: location(), type: "model", deviceId, modelId, properties }; };
+  var peg$f8 = function(id, value) { return { location: location(), type: "equation", id, value, }; };
+  var peg$f9 = function(properties, sweeps) { return { location: location(), type: "dc", properties, sweeps }; };
+  var peg$f10 = function(properties, sweeps) { return { location: location(), type: "tr", properties, sweeps }; };
+  var peg$f11 = function(properties, sweeps) { return { location: location(), type: "ac", properties, sweeps }; };
+  var peg$f12 = function(id, properties) { return { location: location(), type: "sweep", id, properties } };
   var peg$f13 = function(head, tail) { return binaryExp(head, tail); };
   var peg$f14 = function(head, tail) { return binaryExp(head, tail); };
   var peg$f15 = function(head, tail) { return binaryExp(head, tail); };
-  var peg$f16 = function(op, arg) { return { type: "unary", op, arg }; };
-  var peg$f17 = function(value) { return { type: "constant", value }; };
-  var peg$f18 = function(id) { return { type: "variable", id }; };
-  var peg$f19 = function(id, args) { return { type: "function", id, args }; };
+  var peg$f16 = function(op, arg) { return { location: location(), type: "unary", op, arg }; };
+  var peg$f17 = function(value) { return { location: location(), type: "constant", value }; };
+  var peg$f18 = function(id) { return { location: location(), type: "variable", id }; };
+  var peg$f19 = function(id, args) { return { location: location(), type: "function", id, args }; };
   var peg$f20 = function(args) { return args; };
-  var peg$f21 = function() { return { name: text()/*, location: location()*/ }; };
+  var peg$f21 = function() { return { location: location(), name: text() }; };
   var peg$f22 = function(chars) { return chars; };
   var peg$f23 = function(m) { return Number.parseFloat(text()) * (m ?? 1); };
   var peg$f24 = function() { return 1e+12; };
