@@ -94,6 +94,7 @@ export interface AcItemNode extends Node {
 
 export interface SweepNode extends Node {
   readonly type: "sweep";
+  readonly id: Identifier;
   readonly properties: readonly PropertyNode[];
 }
 

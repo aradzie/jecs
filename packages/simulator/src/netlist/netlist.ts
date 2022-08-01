@@ -268,7 +268,7 @@ class NetlistBuilder {
 
   private addAnalysisSweeps(analysis: Analysis, nodes: readonly SweepNode[]) {
     for (const node of nodes) {
-      const sweep = new Sweep();
+      const sweep = new Sweep(node.id.name);
       this.setSweepProperties(sweep, node.properties);
       analysis.sweeps.push(sweep);
     }

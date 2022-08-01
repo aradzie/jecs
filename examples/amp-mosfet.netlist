@@ -3,5 +3,5 @@ V:Vgs ng gnd V=$Vgs
 R:Rload nr nd R=$Rload
 MOSFET:Q1 gnd ng nd gnd @NMOS
 .dc
-  .sweep param="Rload" type="lin" start=2000 stop=100 points=5
-  .sweep param="Vgs" type="lin" start=2 stop=4 points=100
+  .sweep $Rload type="lin" start=2000 stop=100 points=5
+  .sweep $Vgs type="lin" start=2 stop=4 points=100

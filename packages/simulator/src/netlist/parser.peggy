@@ -96,8 +96,8 @@ AcAnalysisItem
 
 Sweep
   = ".sweep"
-    _ properties:PropertyList
-    { return { type: "sweep", properties } }
+    _ id:VariableId _ properties:PropertyList
+    { return { type: "sweep", id, properties } }
 
 Expression
   = AdditiveExp

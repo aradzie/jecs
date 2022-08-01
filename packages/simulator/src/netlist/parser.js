@@ -294,7 +294,7 @@ function peg$parse(input, options) {
   var peg$f9 = function(properties, sweeps) { return { type: "dc", properties, sweeps }; };
   var peg$f10 = function(properties, sweeps) { return { type: "tr", properties, sweeps }; };
   var peg$f11 = function(properties, sweeps) { return { type: "ac", properties, sweeps }; };
-  var peg$f12 = function(properties) { return { type: "sweep", properties } };
+  var peg$f12 = function(id, properties) { return { type: "sweep", id, properties } };
   var peg$f13 = function(head, tail) { return binaryExp(head, tail); };
   var peg$f14 = function(head, tail) { return binaryExp(head, tail); };
   var peg$f15 = function(head, tail) { return binaryExp(head, tail); };
@@ -1124,7 +1124,7 @@ function peg$parse(input, options) {
   }
 
   function peg$parseSweep() {
-    var s0, s1, s2, s3;
+    var s0, s1, s2, s3, s4, s5;
 
     s0 = peg$currPos;
     if (input.substr(peg$currPos, 6) === peg$c8) {
@@ -1136,9 +1136,16 @@ function peg$parse(input, options) {
     }
     if (s1 !== peg$FAILED) {
       s2 = peg$parse_();
-      s3 = peg$parsePropertyList();
-      peg$savedPos = s0;
-      s0 = peg$f12(s3);
+      s3 = peg$parseVariableId();
+      if (s3 !== peg$FAILED) {
+        s4 = peg$parse_();
+        s5 = peg$parsePropertyList();
+        peg$savedPos = s0;
+        s0 = peg$f12(s3, s5);
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
     } else {
       peg$currPos = s0;
       s0 = peg$FAILED;

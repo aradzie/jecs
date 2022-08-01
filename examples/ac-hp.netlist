@@ -3,4 +3,4 @@ C:C1 pow out C=$C
 R:R1 out gnd R=1k
 .ac
   type="log" start=1 stop=1M points=1k
-  .sweep param="C" type="log" start=10n stop=200n points=3
+  .sweep $C type="log" start=10n stop=200n points=3

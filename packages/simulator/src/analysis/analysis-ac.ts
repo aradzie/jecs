@@ -40,13 +40,13 @@ export class AcAnalysis extends Analysis {
   protected runImpl(circuit: Circuit, dataset: DatasetBuilder): void {
     const { properties } = this;
     const temp = properties.getNumber("temp");
-    const sweep = Sweep.from(properties);
+    const sweep = Sweep.from("frequency", properties);
     const solver = new AcSolver(circuit);
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {},
-      set: ({ param }, value) => {
-        circuit.equations.set(param, new ConstantExp(value));
+      set: ({ id }, value) => {
+        circuit.equations.set(id, new ConstantExp(value));
       },
       end: (steps) => {
         if (steps.length > 0) {

@@ -30,8 +30,8 @@ export class DcAnalysis extends Analysis {
       enter: (sweep, level, steps) => {
         dataset.group(groupName(steps));
       },
-      set: ({ param }, value) => {
-        circuit.equations.set(param, new ConstantExp(value));
+      set: ({ id }, value) => {
+        circuit.equations.set(id, new ConstantExp(value));
       },
       end: () => {
         circuit.temp = temp;

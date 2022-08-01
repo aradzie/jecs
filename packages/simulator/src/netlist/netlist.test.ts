@@ -22,22 +22,22 @@ R:R3 n1 gnd @R3
 .eq $c = -+sin($pi / 2)
 .dc
   maxIter=20
-  .sweep param="R1" type="lin" start=1 stop=5 points=5
-  .sweep param="R2" type="lin" start=1 stop=10 points=10
+  .sweep $R1 type="lin" start=1 stop=5 points=5
+  .sweep $R2 type="lin" start=1 stop=10 points=10
 .tr
   maxIter=10
   startTime=0.5m
   stopTime=1m
   timeStep=1u
-  .sweep param="R1" type="lin" start=1 stop=5 points=5
-  .sweep param="R2" type="lin" start=1 stop=10 points=10
+  .sweep $R1 type="lin" start=1 stop=5 points=5
+  .sweep $R2 type="lin" start=1 stop=10 points=10
 .ac
   type="lin"
   start=1
   stop=1M
   points=1M
-  .sweep param="R1" type="lin" start=1 stop=5 points=5
-  .sweep param="R2" type="lin" start=1 stop=10 points=10
+  .sweep $R1 type="lin" start=1 stop=5 points=5
+  .sweep $R2 type="lin" start=1 stop=10 points=10
 `;
 
   // Act.

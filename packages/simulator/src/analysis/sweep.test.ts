@@ -4,11 +4,10 @@ import { Sweep } from "./sweep.js";
 test("sweep", (t) => {
   // Arrange.
 
-  const sweep = new Sweep();
+  const sweep = new Sweep("x");
 
   // Act.
 
-  sweep.properties.set("param", "x");
   sweep.properties.set("type", "lin");
   sweep.properties.set("start", 1);
   sweep.properties.set("stop", 5);
@@ -20,7 +19,6 @@ test("sweep", (t) => {
 
   // Act.
 
-  sweep.properties.set("param", "x");
   sweep.properties.set("type", "lin");
   sweep.properties.set("start", 5);
   sweep.properties.set("stop", 1);

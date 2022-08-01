@@ -7,7 +7,7 @@ R:R2 vout gnd R=1k
   stopTime=3m
   timeStep=1u
   .sweep
-    param="C1"
+    $C1
     type="lin"
     start=1u
     stop=3u

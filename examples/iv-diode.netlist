@@ -1,5 +1,5 @@
 V:V1 np gnd V=$v_d
 Diode:DUT np gnd @D temp=$temp_d
 .dc
-  .sweep param="temp_d" type="lin" start=0 stop=50 points=6
-  .sweep param="v_d" type="lin" start=0.5 stop=0.8 points=100
+  .sweep $temp_d type="lin" start=0 stop=50 points=6
+  .sweep $v_d type="lin" start=0.5 stop=0.8 points=100

@@ -8,7 +8,7 @@ R:R1 n2 gnd R=$R1
   stopTime=5m
   timeStep=1u
   .sweep
-    param="R1"
+    $R1
     type="lin"
     start=0.1
     stop=0.9

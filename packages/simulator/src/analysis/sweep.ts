@@ -3,9 +3,6 @@ import { humanizeNumber } from "../util/format.js";
 
 export class Sweep implements Iterable<number> {
   static readonly propertiesSchema: PropertiesSchema = {
-    param: Properties.string({
-      title: "parameter to sweep",
-    }),
     type: Properties.string({
       range: ["lin", "log"],
       title: "parameter sweep type",
@@ -24,35 +21,31 @@ export class Sweep implements Iterable<number> {
     }),
   };
 
-  static from(properties: Properties): Sweep {
-    const sweep = new Sweep();
+  static from(id: string, properties: Properties): Sweep {
+    const sweep = new Sweep(id);
     sweep.properties.from(properties);
     return sweep;
   }
 
   readonly properties = new Properties(Sweep.propertiesSchema);
 
-  get param(): string {
-    return this.properties.getString("param");
-  }
+  constructor(readonly id: string) {}
 
   *[Symbol.iterator](): Iterator<number> {
     const { properties } = this;
     yield* Sweep.iter(properties);
   }
 
-  static *iter(properties: Properties): Iterable<number> {
+  static iter(properties: Properties): Iterable<number> {
     const type = properties.getString("type");
     const start = properties.getNumber("start");
     const stop = properties.getNumber("stop");
     const points = properties.getNumber("points");
     switch (type) {
       case "lin":
-        yield* Sweep.linIter(start, stop, points);
-        break;
+        return Sweep.linIter(start, stop, points);
       case "log": {
-        yield* Sweep.logIter(start, stop, points);
-        break;
+        return Sweep.logIter(start, stop, points);
       }
       default:
         throw new TypeError();
@@ -126,7 +119,6 @@ export type Visitor = {
 };
 
 export const groupName = (steps: readonly Step[]): string => {
-  const stepName = ({ sweep: { param }, value }: Step): string =>
-    `${param}=${humanizeNumber(value)}`;
+  const stepName = ({ sweep: { id }, value }: Step): string => `${id}=${humanizeNumber(value)}`;
   return `"${steps.map(stepName).join(", ")}"`;
 };

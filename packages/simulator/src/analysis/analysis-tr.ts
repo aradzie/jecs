@@ -55,8 +55,8 @@ export class TrAnalysis extends Analysis {
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {},
-      set: ({ param }, value) => {
-        circuit.equations.set(param, new ConstantExp(value));
+      set: ({ id }, value) => {
+        circuit.equations.set(id, new ConstantExp(value));
       },
       end: (steps) => {
         if (steps.length > 0) {
