@@ -1,3 +1,4 @@
+# RC highpass filter
 Vac:Vin pow gnd V=1 f=1k
 C:C1 pow out C=$C
 R:R1 out gnd R=1k

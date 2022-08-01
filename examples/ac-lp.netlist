@@ -1,3 +1,4 @@
+# RC lowpass filter
 Vac:Vin pow gnd V=1 f=1k
 R:R1 pow out R=1k
 C:C1 out gnd C=$C

@@ -1,5 +1,9 @@
 1 frequency
-2 #pow:V
-3 #pow:phase
-4 #out:V
-5 #out:phase
+2 #n1:V
+3 #n1:phase
+4 #n2:V
+5 #n2:phase
+6 #n3:V
+7 #n3:phase
+8 #n4:V
+9 #n4:phase

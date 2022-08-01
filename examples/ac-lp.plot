@@ -2,7 +2,7 @@ set term svg size 600, 400 dynamic
 set output "ac-lp.svg"
 set border lw 1
 set grid lw 1
-set xlabel "time"
+set xlabel "frequency"
 set ytics nomirror tc lt 1
 set ylabel "voltage, V" tc lt 1
 set y2tics nomirror tc lt 2

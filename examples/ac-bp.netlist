@@ -1,5 +1,11 @@
-Vac:Vin pow gnd V=1 f=1k
-R:R1 pow out R=1k
-C:C1 out gnd C=50u
-L:L1 out gnd L=5.066u
-.ac type="log" start=100 stop=1M points=1k
+# 3rd order Butterworth bandpass filter
+Vac:Vin n1 gnd V=1 f=1k
+R:R1 n1 n2 R=50
+C:C1 n2 gnd C=159.2p
+L:L1 n2 gnd L=16.08n
+C:C2 n2 n3 C=3.215p
+L:L2 n3 n4 L=759.8n
+C:C3 n4 gnd C=159.2p
+L:L3 n4 gnd L=16.08n
+R:RL n4 gnd R=50
+.ac type="log" start=50M stop=200M points=1k
