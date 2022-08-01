@@ -2,9 +2,33 @@
 
 **jecs** is an electronic circuit simulator written in TypeScript.
 
+It supports AC, DC and transient analyses.
+
 ## Example
 
-The following code
+Create a netlist file `netlist.txt`:
+
+```text
+Vac:Vin pow gnd V=1 f=1k
+R:R1 pow vout R=1k
+C:C1 vout gnd C=$C1
+R:R2 vout gnd R=1k
+.tr
+  stopTime=3m timeStep=1u
+  .sweep $C1 type="lin" start=1u stop=3u points=3
+```
+
+and run the simulator in the terminal:
+
+```shell
+jecs --verbose netlist.txt
+```
+
+The simulator will produce a dataset file `netlist.data`.
+
+## Example
+
+The following code:
 
 ```typescript
 // Create an empty circuit.
@@ -42,7 +66,7 @@ analysis.run(circuit);
 console.log(dumpCircuit(circuit));
 ```
 
-prints the following result
+prints the following result:
 
 ```typescript
 [
