@@ -7,8 +7,9 @@ export type Network = {
   /**
    * Adds a new voltage node to the MNA matrix.
    * @param id Unique node id.
+   * @param internal Whether this is an internal node.
    */
-  makeNode(id: string): Node;
+  makeNode(id: string, internal?: boolean): Node;
 
   /**
    * Adds a new current branch to the MNA matrix.
@@ -36,6 +37,11 @@ export class Node {
   readonly id: string;
 
   /**
+   * Whether this is an internal node.
+   */
+  readonly internal: boolean;
+
+  /**
    * Computed node voltage.
    */
   voltage = 0;
@@ -45,9 +51,10 @@ export class Node {
    */
   phase = 0;
 
-  constructor(index: number, id: string) {
+  constructor(index: number, id: string, internal = false) {
     this.index = index;
     this.id = id;
+    this.internal = internal;
   }
 
   toString(): string {

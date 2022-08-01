@@ -1,4 +1,5 @@
 import { type DeviceClass } from "@jecs/simulator";
+import { SubCircuit } from "./composite/subcircuit.js";
 import { Ground } from "./ground.js";
 import { Capacitor } from "./linear/capacitor.js";
 import { Inductor } from "./linear/inductor.js";
@@ -38,6 +39,7 @@ export {
   OpAmp,
   Port,
   Resistor,
+  SubCircuit,
   Vac,
   VCCS,
   VCVS,
@@ -59,6 +61,7 @@ export const devices: readonly DeviceClass[] = [
   Mosfet,
   OpAmp,
   Resistor,
+  SubCircuit,
   Vac,
   VCCS,
   VCVS,
