@@ -1,7 +1,7 @@
 import { humanizeNumber } from "@jecs/simulator/lib/util/format";
 import { clsx } from "clsx";
 import type { ReactElement } from "react";
-import type { Result } from "../simul/exec";
+import type { Result } from "../simul/types.js";
 import styles from "./ResultPane.css";
 
 export function ResultPane({ result }: { result: Result }): ReactElement {
