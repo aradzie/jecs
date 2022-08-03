@@ -1,4 +1,4 @@
-import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
+import { DcParams, Device, DeviceState } from "../../circuit/device.js";
 import { stampConductance, stampCurrentSource, Stamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
@@ -20,7 +20,7 @@ const enum S {
 /**
  * Diode.
  */
-export class Diode extends Device {
+export class Diode extends Device.Dc {
   static override readonly id = "Diode";
   static override readonly numTerminals = 2;
   static override readonly propertiesSchema = {
@@ -93,17 +93,5 @@ export class Diode extends Device {
 
   override endDc(state: DeviceState, params: DcParams): void {
     this.eval(state, false);
-  }
-
-  override initTr(state: DeviceState, params: TrParams): void {
-    this.initDc(state, params);
-  }
-
-  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
-    this.loadDc(state, params, stamper);
-  }
-
-  override endTr(state: DeviceState, params: TrParams): void {
-    this.endDc(state, params);
   }
 }

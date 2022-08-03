@@ -52,16 +52,10 @@ export class Iac extends Device {
     state[S.theta] = theta;
   }
 
-  override initDc(state: DeviceState, params: DcParams): void {}
-
-  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {}
-
   override endDc(state: DeviceState, params: DcParams): void {
     state[S.I] = 0;
     state[S.V] = 0;
   }
-
-  override initTr(state: DeviceState, params: TrParams): void {}
 
   override loadTr(state: DeviceState, { time, sourceFactor }: TrParams, stamper: Stamper): void {
     const { np, nn } = this;
@@ -75,8 +69,7 @@ export class Iac extends Device {
 
   override endTr(state: DeviceState, params: TrParams): void {
     const { np, nn } = this;
-    const V = np.voltage - nn.voltage;
-    state[S.V] = V;
+    state[S.V] = np.voltage - nn.voltage;
   }
 
   override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {

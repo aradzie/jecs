@@ -55,8 +55,6 @@ export class Vac extends Device {
     state[S.theta] = theta;
   }
 
-  override initDc(state: DeviceState, params: DcParams): void {}
-
   override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
     const { np, nn, branch } = this;
     stampVoltageSource(stamper, np, nn, branch, 0);
@@ -66,8 +64,6 @@ export class Vac extends Device {
     state[S.V] = 0;
     state[S.I] = 0;
   }
-
-  override initTr(state: DeviceState, params: TrParams): void {}
 
   override loadTr(state: DeviceState, { time, sourceFactor }: TrParams, stamper: Stamper): void {
     const { np, nn, branch } = this;

@@ -1,4 +1,4 @@
-import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
+import { DcParams, Device, DeviceState } from "../../circuit/device.js";
 import type { Stamper } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
@@ -13,7 +13,7 @@ const enum S {
 /**
  * Voltage-controlled current source.
  */
-export class VCCS extends Device {
+export class VCCS extends Device.Dc {
   static override readonly id = "VCCS";
   static override readonly numTerminals = 4;
   static override readonly propertiesSchema = {
@@ -50,8 +50,6 @@ export class VCCS extends Device {
     state[S.gain] = this.properties.getNumber("gain");
   }
 
-  override initDc(state: DeviceState, params: DcParams): void {}
-
   override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
     const { np, nn, ncp, ncn, branch } = this;
     const gain = state[S.gain];
@@ -64,21 +62,7 @@ export class VCCS extends Device {
 
   override endDc(state: DeviceState, params: DcParams): void {
     const { np, nn, branch } = this;
-    const I = branch.current;
-    const V = np.voltage - nn.voltage;
-    state[S.I] = I;
-    state[S.V] = V;
-  }
-
-  override initTr(state: DeviceState, params: TrParams): void {
-    this.initDc(state, params);
-  }
-
-  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
-    this.loadDc(state, params, stamper);
-  }
-
-  override endTr(state: DeviceState, params: TrParams): void {
-    this.endDc(state, params);
+    state[S.I] = branch.current;
+    state[S.V] = np.voltage - nn.voltage;
   }
 }

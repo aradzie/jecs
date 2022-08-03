@@ -1,4 +1,4 @@
-import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
+import { DcParams, Device, DeviceState } from "../../circuit/device.js";
 import {
   stampConductance,
   stampCurrentSource,
@@ -61,7 +61,7 @@ const enum S {
 /**
  * Junction field-effect transistor, JFET.
  */
-export class Jfet extends Device {
+export class Jfet extends Device.Dc {
   static override readonly id = "JFET";
   static override readonly numTerminals = 3;
   static override readonly propertiesSchema = {
@@ -273,17 +273,5 @@ export class Jfet extends Device {
 
   override endDc(state: DeviceState, params: DcParams): void {
     this.eval(state, false);
-  }
-
-  override initTr(state: DeviceState, params: TrParams): void {
-    this.initDc(state, params);
-  }
-
-  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
-    this.loadDc(state, params, stamper);
-  }
-
-  override endTr(state: DeviceState, params: TrParams): void {
-    this.endDc(state, params);
   }
 }

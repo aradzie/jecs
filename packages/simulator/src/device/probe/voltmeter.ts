@@ -1,5 +1,4 @@
-import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
-import type { Stamper } from "../../circuit/mna.js";
+import { DcParams, Device, DeviceState } from "../../circuit/device.js";
 import type { Network, Node } from "../../circuit/network.js";
 
 const enum S {
@@ -11,7 +10,7 @@ const enum S {
 /**
  * Voltmeter.
  */
-export class Voltmeter extends Device {
+export class Voltmeter extends Device.Dc {
   static override readonly id = "Voltmeter";
   static override readonly numTerminals = 2;
   static override readonly propertiesSchema = {};
@@ -30,25 +29,8 @@ export class Voltmeter extends Device {
     this.nn = nn;
   }
 
-  override initDc(state: DeviceState, params: DcParams): void {}
-
-  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {}
-
   override endDc(state: DeviceState, params: DcParams): void {
     const { np, nn } = this;
-    const V = np.voltage - nn.voltage;
-    state[S.V] = V;
-  }
-
-  override initTr(state: DeviceState, params: TrParams): void {
-    this.initDc(state, params);
-  }
-
-  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
-    this.loadDc(state, params, stamper);
-  }
-
-  override endTr(state: DeviceState, params: TrParams): void {
-    this.endDc(state, params);
+    state[S.V] = np.voltage - nn.voltage;
   }
 }

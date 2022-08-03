@@ -64,17 +64,11 @@ export class Capacitor extends Device {
     state[S.V0] = this.properties.getNumber("V0");
   }
 
-  override initDc(state: DeviceState, params: DcParams): void {}
-
-  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {}
-
   override endDc(state: DeviceState, params: DcParams): void {
     const { na, nb } = this;
     state[S.V] = na.voltage - nb.voltage;
     state[S.I] = 0;
   }
-
-  override initTr(state: DeviceState, params: TrParams): void {}
 
   override loadTr(state: DeviceState, { time }: TrParams, stamper: Stamper): void {
     const { diff, na, nb } = this;
@@ -86,8 +80,6 @@ export class Capacitor extends Device {
     stampConductance(stamper, na, nb, diff.Geq);
     stampCurrentSource(stamper, na, nb, diff.Ieq);
   }
-
-  override endTr(state: DeviceState, params: TrParams): void {}
 
   override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
     const { na, nb } = this;

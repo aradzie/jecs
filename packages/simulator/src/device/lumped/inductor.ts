@@ -61,8 +61,6 @@ export class Inductor extends Device {
     state[S.I0] = this.properties.getNumber("I0");
   }
 
-  override initDc(state: DeviceState, params: DcParams): void {}
-
   override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
     const { na, nb, branch } = this;
     stampVoltageSource(stamper, na, nb, branch, 0);
@@ -74,8 +72,6 @@ export class Inductor extends Device {
     state[S.I] = branch.current;
   }
 
-  override initTr(state: DeviceState, params: TrParams): void {}
-
   override loadTr(state: DeviceState, { time }: TrParams, stamper: Stamper): void {
     const { diff, na, nb, branch } = this;
     const L = state[S.L];
@@ -86,8 +82,6 @@ export class Inductor extends Device {
     stamper.stampA(branch, branch, -diff.Geq);
     stampVoltageSource(stamper, na, nb, branch, diff.Ieq);
   }
-
-  override endTr(state: DeviceState, params: TrParams): void {}
 
   override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
     const { na, nb } = this;

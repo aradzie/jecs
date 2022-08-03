@@ -84,6 +84,21 @@ export abstract class Device implements DiffOwner {
   /** Whether this device is linear. Most devices are linear. */
   static readonly linear: boolean = true;
 
+  /** A device whose TR behaviour is the same as DC behaviour. */
+  static readonly Dc = class DcDevice extends Device {
+    override initTr(state: DeviceState, params: TrParams) {
+      this.initDc(state, params);
+    }
+
+    override loadTr(state: DeviceState, params: TrParams, stamper: Stamper) {
+      this.loadDc(state, params, stamper);
+    }
+
+    override endTr(state: DeviceState, params: TrParams) {
+      this.endDc(state, params);
+    }
+  };
+
   /** Unique device instance identifier. */
   readonly id: string;
 
