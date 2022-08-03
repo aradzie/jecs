@@ -69,16 +69,12 @@ export class Vac extends Device {
 
   override initTr(state: DeviceState, params: TrParams): void {}
 
-  override loadTr(
-    state: DeviceState,
-    { elapsedTime, sourceFactor }: TrParams,
-    stamper: Stamper,
-  ): void {
+  override loadTr(state: DeviceState, { time, sourceFactor }: TrParams, stamper: Stamper): void {
     const { np, nn, branch } = this;
     const amplitude = state[S.amplitude];
     const omega = state[S.omega];
     const theta = state[S.theta];
-    const V = sourceFactor * amplitude * Math.sin(omega * elapsedTime + theta);
+    const V = sourceFactor * amplitude * Math.sin(omega * time + theta);
     state[S.V] = V;
     stampVoltageSource(stamper, np, nn, branch, V);
   }

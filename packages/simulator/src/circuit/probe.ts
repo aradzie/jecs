@@ -22,7 +22,7 @@ export const timeProbe = (circuit: Circuit): Probe => {
     name = "time";
     unit = "s";
     measure(): number {
-      return circuit.elapsedTime;
+      return circuit.time;
     }
   })();
 };

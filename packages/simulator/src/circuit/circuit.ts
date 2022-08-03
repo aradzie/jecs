@@ -22,15 +22,13 @@ export class Circuit implements Network {
   readonly #bindings = new Bindings(this.#equations);
 
   temp: number;
-  elapsedTime: number;
-  timeStep: number;
+  time: number;
   frequency: number;
   sourceFactor: number;
 
   constructor() {
     this.temp = 0;
-    this.elapsedTime = 0;
-    this.timeStep = NaN;
+    this.time = 0;
     this.frequency = 0;
     this.sourceFactor = 1;
   }
@@ -57,7 +55,7 @@ export class Circuit implements Network {
 
   reset(): void {
     this.#equations.set("temp", new ConstantExp(this.temp));
-    this.#equations.set("time", new ConstantExp(this.elapsedTime));
+    this.#equations.set("time", new ConstantExp(this.time));
     this.#equations.set("frequency", new ConstantExp(this.frequency));
     this.#bindings.setProperties();
     for (const node of this.#nodes) {

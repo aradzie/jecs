@@ -2,6 +2,7 @@ import { Circuit } from "../circuit/circuit.js";
 import { ConstantExp } from "../circuit/equations.js";
 import { allDeviceProbes, allNodeProbes, Probe, timeProbe } from "../circuit/probe.js";
 import { Properties, PropertiesSchema } from "../circuit/properties.js";
+import { MAX_ORDER, MIN_ORDER, Tran } from "../circuit/transient.js";
 import { Analysis } from "./analysis.js";
 import type { DatasetBuilder } from "./dataset.js";
 import { NonlinearSolver } from "./solver-nonlinear.js";
@@ -22,10 +23,15 @@ export class TrAnalysis extends Analysis {
       range: ["real", ">", 0],
       title: "simulation time step",
     }),
-    integrationMethod: Properties.string({
-      defaultValue: "trapezoidal",
-      range: ["trapezoidal", "euler"],
+    method: Properties.string({
+      defaultValue: "euler",
+      range: ["euler", "trapezoidal", "gear"],
       title: "integration method",
+    }),
+    order: Properties.number({
+      defaultValue: MIN_ORDER,
+      range: ["integer", ">=", MIN_ORDER, "<=", MAX_ORDER],
+      title: "integration order",
     }),
     dc: Properties.string({
       defaultValue: "yes",
@@ -63,26 +69,28 @@ export class TrAnalysis extends Analysis {
           dataset.group(groupName(steps));
         }
         circuit.temp = temp;
-        circuit.elapsedTime = NaN;
-        circuit.timeStep = NaN;
+        circuit.time = NaN;
+        circuit.frequency = NaN;
         circuit.reset();
         if (dc === "yes") {
           solver.useDc();
           solver.solve();
         }
         solver.useTr();
+        const tran = new Tran(circuit.devices);
         let step = 0;
-        let elapsedTime = 0;
-        while (elapsedTime <= stopTime) {
+        let time = 0;
+        while (time <= stopTime) {
           circuit.temp = temp;
-          circuit.elapsedTime = elapsedTime;
-          circuit.timeStep = timeStep;
+          circuit.time = time;
+          circuit.frequency = NaN;
+          tran.nextStep(time, timeStep);
           solver.solve();
-          if (elapsedTime >= startTime) {
+          if (time >= startTime) {
             dataset.capture();
           }
           step += 1;
-          elapsedTime = timeStep * step;
+          time = timeStep * step;
         }
       },
       leave: (sweep, level, steps) => {},

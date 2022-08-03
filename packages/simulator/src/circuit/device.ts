@@ -1,6 +1,7 @@
 import type { AcStamper, Stamper } from "./mna.js";
 import type { Network, Node } from "./network.js";
 import { Properties, PropertiesSchema } from "./properties.js";
+import type { Diff, DiffOwner } from "./transient.js";
 
 export interface DeviceClass {
   /** Unique device class identifier. */
@@ -48,18 +49,12 @@ export type DcParams = {
   readonly sourceFactor: number;
 };
 
-export type TrParams = {
+export type TrParams = DcParams & {
   /** Elapsed simulation time. */
-  readonly elapsedTime: number;
-  /** Time step from the last simulation. */
-  readonly timeStep: number;
-  /** The default temperature of devices. */
-  readonly temp: number;
-  /** Voltage or current source value multiplier for the convergence helper. */
-  readonly sourceFactor: number;
+  readonly time: number;
 };
 
-export abstract class Device {
+export abstract class Device implements DiffOwner {
   static readonly dummy = new (class Dummy extends Device {
     static override readonly id = "DUMMY";
     static override readonly numTerminals = 0;
@@ -96,7 +91,10 @@ export abstract class Device {
   readonly properties: Properties;
 
   /** Vector with device state variables. */
-  state: DeviceState;
+  readonly state: DeviceState;
+
+  /** Transient device behaviours. */
+  readonly diffs: Diff[] = [];
 
   constructor(id: string) {
     this.id = id;

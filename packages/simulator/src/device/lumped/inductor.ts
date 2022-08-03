@@ -2,15 +2,13 @@ import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js
 import { AcStamper, stampConductanceAc, Stamper, stampVoltageSource } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
-import { method } from "../integration.js";
+import { Diff } from "../../circuit/transient.js";
 
 const enum S {
   L,
   I0,
   V,
   I,
-  Req,
-  Veq,
   _Size_,
 }
 
@@ -38,12 +36,19 @@ export class Inductor extends Device {
     ],
   };
 
+  private readonly diff = new Diff();
+
   /** First terminal. */
   private na!: Node;
   /** Second terminal. */
   private nb!: Node;
   /** Extra MNA branch. */
   private branch!: Branch;
+
+  constructor(id: string) {
+    super(id);
+    this.diffs.push(this.diff);
+  }
 
   override connect(network: Network, [na, nb]: readonly Node[]): void {
     this.na = na;
@@ -65,51 +70,24 @@ export class Inductor extends Device {
 
   override endDc(state: DeviceState, params: DcParams): void {
     const { branch } = this;
-    const I = branch.current;
     state[S.V] = 0;
-    state[S.I] = I;
+    state[S.I] = branch.current;
   }
 
-  override initTr(state: DeviceState, { elapsedTime, timeStep }: TrParams): void {
-    const { branch } = this;
+  override initTr(state: DeviceState, params: TrParams): void {}
+
+  override loadTr(state: DeviceState, { time }: TrParams, stamper: Stamper): void {
+    const { diff, na, nb, branch } = this;
     const L = state[S.L];
-    const I = elapsedTime > 0 ? branch.current : state[S.I0];
-    let Req: number;
-    let Veq: number;
-    switch (method) {
-      case "euler": {
-        Req = L / timeStep;
-        Veq = -I * Req;
-        break;
-      }
-      case "trapezoidal": {
-        const V = state[S.V];
-        Req = (2 * L) / timeStep;
-        Veq = -I * Req - V;
-        break;
-      }
-    }
-    state[S.Req] = Req;
-    state[S.Veq] = Veq;
+    const I = time > 0 ? branch.current : state[S.I0];
+    diff.diff(I, L);
+    state[S.V] = diff.I;
+    state[S.I] = diff.V;
+    stamper.stampA(branch, branch, -diff.Geq);
+    stampVoltageSource(stamper, na, nb, branch, diff.Ieq);
   }
 
-  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
-    const { na, nb, branch } = this;
-    const Req = state[S.Req];
-    const Veq = state[S.Veq];
-    stamper.stampA(branch, branch, -Req);
-    stampVoltageSource(stamper, na, nb, branch, Veq);
-  }
-
-  override endTr(state: DeviceState, params: TrParams): void {
-    const { branch } = this;
-    const I = branch.current;
-    const Req = state[S.Req];
-    const Veq = state[S.Veq];
-    const V = I * Req + Veq;
-    state[S.V] = V;
-    state[S.I] = I;
-  }
+  override endTr(state: DeviceState, params: TrParams): void {}
 
   override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
     const { na, nb } = this;

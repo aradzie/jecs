@@ -35,8 +35,8 @@ export class DcAnalysis extends Analysis {
       },
       end: () => {
         circuit.temp = temp;
-        circuit.elapsedTime = NaN;
-        circuit.timeStep = NaN;
+        circuit.time = NaN;
+        circuit.frequency = NaN;
         circuit.reset();
         solver.useDc();
         solver.solve();

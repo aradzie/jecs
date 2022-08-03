@@ -63,16 +63,12 @@ export class Iac extends Device {
 
   override initTr(state: DeviceState, params: TrParams): void {}
 
-  override loadTr(
-    state: DeviceState,
-    { elapsedTime, sourceFactor }: TrParams,
-    stamper: Stamper,
-  ): void {
+  override loadTr(state: DeviceState, { time, sourceFactor }: TrParams, stamper: Stamper): void {
     const { np, nn } = this;
     const amplitude = state[S.amplitude];
     const omega = state[S.omega];
     const theta = state[S.theta];
-    const I = sourceFactor * amplitude * Math.sin(omega * elapsedTime + theta);
+    const I = sourceFactor * amplitude * Math.sin(omega * time + theta);
     state[S.I] = I;
     stampCurrentSource(stamper, np, nn, I);
   }

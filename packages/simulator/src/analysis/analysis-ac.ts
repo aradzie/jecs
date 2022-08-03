@@ -55,8 +55,7 @@ export class AcAnalysis extends Analysis {
 
         for (const frequency of sweep) {
           circuit.temp = temp;
-          circuit.elapsedTime = NaN;
-          circuit.timeStep = NaN;
+          circuit.time = NaN;
           circuit.frequency = frequency;
           circuit.reset();
           solver.solve();

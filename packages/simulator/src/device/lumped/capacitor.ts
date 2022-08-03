@@ -8,15 +8,13 @@ import {
 } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
-import { method } from "../integration.js";
+import { Diff } from "../../circuit/transient.js";
 
 const enum S {
   C,
   V0,
   V,
   I,
-  Geq,
-  Ieq,
   _Size_,
 }
 
@@ -44,10 +42,17 @@ export class Capacitor extends Device {
     ],
   };
 
+  private readonly diff = new Diff();
+
   /** First terminal. */
   private na!: Node;
   /** Second terminal. */
   private nb!: Node;
+
+  constructor(id: string) {
+    super(id);
+    this.diffs.push(this.diff);
+  }
 
   override connect(network: Network, [na, nb]: readonly Node[]): void {
     this.na = na;
@@ -65,51 +70,24 @@ export class Capacitor extends Device {
 
   override endDc(state: DeviceState, params: DcParams): void {
     const { na, nb } = this;
-    const V = na.voltage - nb.voltage;
-    state[S.V] = V;
+    state[S.V] = na.voltage - nb.voltage;
     state[S.I] = 0;
   }
 
-  override initTr(state: DeviceState, { elapsedTime, timeStep }: TrParams): void {
-    const { na, nb } = this;
+  override initTr(state: DeviceState, params: TrParams): void {}
+
+  override loadTr(state: DeviceState, { time }: TrParams, stamper: Stamper): void {
+    const { diff, na, nb } = this;
     const C = state[S.C];
-    const V = elapsedTime > 0 ? na.voltage - nb.voltage : state[S.V0];
-    let Geq: number;
-    let Ieq: number;
-    switch (method) {
-      case "euler": {
-        Geq = C / timeStep;
-        Ieq = -V * Geq;
-        break;
-      }
-      case "trapezoidal": {
-        const I = state[S.I];
-        Geq = (2 * C) / timeStep;
-        Ieq = -V * Geq - I;
-        break;
-      }
-    }
-    state[S.Geq] = Geq;
-    state[S.Ieq] = Ieq;
+    const V = time > 0 ? na.voltage - nb.voltage : state[S.V0];
+    diff.diff(V, C);
+    state[S.V] = diff.V;
+    state[S.I] = diff.I;
+    stampConductance(stamper, na, nb, diff.Geq);
+    stampCurrentSource(stamper, na, nb, diff.Ieq);
   }
 
-  override loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {
-    const { na, nb } = this;
-    const Geq = state[S.Geq];
-    const Ieq = state[S.Ieq];
-    stampConductance(stamper, na, nb, Geq);
-    stampCurrentSource(stamper, na, nb, Ieq);
-  }
-
-  override endTr(state: DeviceState, params: TrParams): void {
-    const { na, nb } = this;
-    const V = na.voltage - nb.voltage;
-    const Geq = state[S.Geq];
-    const Ieq = state[S.Ieq];
-    const I = V * Geq + Ieq;
-    state[S.V] = V;
-    state[S.I] = I;
-  }
+  override endTr(state: DeviceState, params: TrParams): void {}
 
   override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
     const { na, nb } = this;
