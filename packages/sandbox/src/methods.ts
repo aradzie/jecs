@@ -1,5 +1,5 @@
 import { adamsBashforth, forwardEuler, noPredictor, rungeKutta2, rungeKutta4 } from "./explicit.js";
-import { adamsMoulton, backwardEuler, trapezoidal } from "./implicit.js";
+import { adamsMoulton, backwardEuler, simpson, trapezoidal } from "./implicit.js";
 import { ExactMethod, ExplicitMethod, ImplicitMethod, type Method } from "./method.js";
 
 export const EXACT = new ExactMethod();
@@ -8,6 +8,8 @@ export const RK2 = new ExplicitMethod(rungeKutta2);
 export const RK4 = new ExplicitMethod(rungeKutta4);
 export const AB2 = new ExplicitMethod(adamsBashforth(2));
 export const AB5 = new ExplicitMethod(adamsBashforth(5));
+export const SIMPSON = new ImplicitMethod(simpson, noPredictor);
+export const SIMPSON_AB2 = new ImplicitMethod(simpson, adamsBashforth(2));
 export const BE = new ImplicitMethod(backwardEuler, noPredictor);
 export const BE_FE = new ImplicitMethod(backwardEuler, forwardEuler);
 export const BE_RK2 = new ImplicitMethod(backwardEuler, rungeKutta2);
@@ -28,6 +30,8 @@ export const methods: readonly Method[] = [
   RK4,
   AB2,
   AB5,
+  SIMPSON,
+  SIMPSON_AB2,
   BE,
   BE_FE,
   BE_RK2,

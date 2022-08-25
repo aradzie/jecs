@@ -31,6 +31,20 @@ export const trapezoidal: Implicit = (state, f) => {
   return y1 + (h / 2) * (f(x, y) + f(x1, y1));
 };
 
+const simpsonCoeff: Coeff = [
+  [0, 1 / 3],
+  [0, 4 / 3],
+  [1, 1 / 3],
+];
+
+export const simpson: Implicit = (state, f) => {
+  if (state.index < 2) {
+    return trapezoidal(state, f);
+  } else {
+    return state.implicit(simpsonCoeff, f);
+  }
+};
+
 const adamsMoultonCoeff: readonly Coeff[] = [
   [
     // padding

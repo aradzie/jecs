@@ -88,6 +88,9 @@ export class State {
       const step = this.step(i + 1);
       y += a * step.y + b * step.h * f(step.x, step.y);
     }
+    if (!Number.isFinite(y)) {
+      throw new TypeError("Overflow");
+    }
     return y;
   }
 
@@ -97,6 +100,9 @@ export class State {
       const [a, b] = coeff[i];
       const step = this.step(i);
       y += a * step.y + b * step.h * f(step.x, step.y);
+    }
+    if (!Number.isFinite(y)) {
+      throw new TypeError("Overflow");
     }
     return y;
   }

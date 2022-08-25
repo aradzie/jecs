@@ -1,11 +1,16 @@
-import { func1 } from "./func.js";
-import type { Problem } from "./method.js";
+import { examples, Func } from "./func.js";
 import { methods } from "./methods.js";
 
-const run = (problem: Problem): void => {
+const run = (func: Func): void => {
   for (const method of methods) {
-    const [x, y] = method.run(problem);
-    const exact = problem.f.exact(x);
+    const [x, y] = method.run({
+      f: func,
+      h: 0.05,
+      x1: func.x1,
+      y1: func.y1,
+      end: 10,
+    });
+    const exact = func.exact(x);
     const err = Math.abs(y - exact) / exact;
     console.log(
       "%s  x=%s  y=%s  err=%s  iter=%d",
@@ -18,10 +23,9 @@ const run = (problem: Problem): void => {
   }
 };
 
-run({
-  f: func1,
-  h: 0.05,
-  x1: 0,
-  y1: 1,
-  end: 10,
-});
+for (const example of examples) {
+  console.log();
+  console.log(`====================== ${example.name} ======================`);
+  console.log();
+  run(example);
+}
