@@ -33,13 +33,16 @@ export abstract class Method {
     state.setH(h);
     state.setX(x1);
     state.setY(y1);
+    state.setF(f(x1, y1));
     while (true) {
       this.iter += 1;
       const x = state.x(0) + h;
+      let y;
       state.shift();
       state.setH(h);
       state.setX(x);
-      state.setY(this.compute(f));
+      state.setY((y = this.compute(f)));
+      state.setF(f(x, y));
       if (x >= end) {
         break;
       }
@@ -65,14 +68,18 @@ export class ImplicitMethod extends Method {
 
   protected override compute(f: Func): number {
     const { state } = this;
-    state.setY(this.predictor(this.state, f));
+    const x = state.x(0);
+    const yp = this.predictor(this.state, f);
+    state.setY(yp);
+    state.setF(f(x, yp));
     while (true) {
       this.iter += 1;
-      const y = this.corrector(this.state, f);
-      if (Math.abs(state.y(0) - y) < e) {
-        return y;
+      const yc = this.corrector(this.state, f);
+      if (Math.abs(state.y(0) - yc) < e) {
+        return yc;
       }
-      state.setY(y);
+      state.setY(yc);
+      state.setF(f(x, yc));
     }
   }
 }

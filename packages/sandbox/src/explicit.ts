@@ -13,9 +13,9 @@ export type Explicit = {
  */
 export const forwardEuler: Explicit = (state, f) => {
   const h = state.h(0);
-  const x1 = state.x(1);
   const y1 = state.y(1);
-  return y1 + h * f(x1, y1);
+  const f1 = state.f(1);
+  return y1 + h * f1;
 };
 
 /**
@@ -82,7 +82,7 @@ const adamsBashforthList: readonly Explicit[] = adamsBashforthCoeff.map((coeff, 
     if (state.index < order) {
       return adamsBashforthList[state.index](state, f);
     } else {
-      return state.explicit(coeff, f);
+      return state.explicit(coeff);
     }
   };
   Object.defineProperties(adamsBashforth, {

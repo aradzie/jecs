@@ -1,5 +1,3 @@
-import type { Func } from "./func.js";
-
 export const MIN_ORDER = 1;
 export const MAX_ORDER = 5;
 
@@ -9,6 +7,7 @@ export class Step {
   h!: number;
   x!: number;
   y!: number;
+  f!: number;
 
   constructor() {
     this.reset();
@@ -18,6 +17,7 @@ export class Step {
     this.h = NaN;
     this.x = NaN;
     this.y = NaN;
+    this.f = NaN;
   }
 }
 
@@ -69,6 +69,10 @@ export class State {
     return this.step(n).y;
   }
 
+  f(n: number): number {
+    return this.step(n).f;
+  }
+
   setH(h: number): void {
     this.step(0).h = h;
   }
@@ -81,12 +85,16 @@ export class State {
     this.step(0).y = y;
   }
 
-  explicit(coeff: Coeff, f: Func): number {
+  setF(f: number): void {
+    this.step(0).f = f;
+  }
+
+  explicit(coeff: Coeff): number {
     let y = 0;
     for (let i = 0; i < coeff.length; i++) {
       const [a, b] = coeff[i];
       const step = this.step(i + 1);
-      y += a * step.y + b * step.h * f(step.x, step.y);
+      y += a * step.y + b * step.h * step.f;
     }
     if (!Number.isFinite(y)) {
       throw new TypeError("Overflow");
@@ -94,12 +102,12 @@ export class State {
     return y;
   }
 
-  implicit(coeff: Coeff, f: Func): number {
+  implicit(coeff: Coeff): number {
     let y = 0;
     for (let i = 0; i < coeff.length; i++) {
       const [a, b] = coeff[i];
       const step = this.step(i);
-      y += a * step.y + b * step.h * f(step.x, step.y);
+      y += a * step.y + b * step.h * step.f;
     }
     if (!Number.isFinite(y)) {
       throw new TypeError("Overflow");

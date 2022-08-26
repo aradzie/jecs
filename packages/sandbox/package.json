@@ -26,6 +26,7 @@
     "test": "ava"
   },
   "dependencies": {
+    "@jecs/math": "^1.0.0",
     "tslib": "^2.4.0"
   },
   "devDependencies": {},

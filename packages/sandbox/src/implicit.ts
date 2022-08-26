@@ -13,10 +13,9 @@ export type Implicit = {
  */
 export const backwardEuler: Implicit = (state, f) => {
   const h = state.h(0);
-  const x = state.x(0);
-  const y = state.y(0);
   const y1 = state.y(1);
-  return y1 + h * f(x, y);
+  const f0 = state.f(0);
+  return y1 + h * f0;
 };
 
 /**
@@ -24,11 +23,10 @@ export const backwardEuler: Implicit = (state, f) => {
  */
 export const trapezoidal: Implicit = (state, f) => {
   const h = state.h(0);
-  const x = state.x(0);
-  const y = state.y(0);
-  const x1 = state.x(1);
   const y1 = state.y(1);
-  return y1 + (h / 2) * (f(x, y) + f(x1, y1));
+  const f0 = state.f(0);
+  const f1 = state.f(1);
+  return y1 + (h / 2) * (f0 + f1);
 };
 
 const simpsonCoeff: Coeff = [
@@ -41,7 +39,7 @@ export const simpson: Implicit = (state, f) => {
   if (state.index < 2) {
     return trapezoidal(state, f);
   } else {
-    return state.implicit(simpsonCoeff, f);
+    return state.implicit(simpsonCoeff);
   }
 };
 
@@ -84,7 +82,7 @@ const adamsMoultonList: readonly Implicit[] = adamsMoultonCoeff.map((coeff, orde
     if (state.index < order) {
       return adamsMoultonList[state.index](state, f);
     } else {
-      return state.implicit(coeff, f);
+      return state.implicit(coeff);
     }
   };
   Object.defineProperties(adamsMoulton, {
