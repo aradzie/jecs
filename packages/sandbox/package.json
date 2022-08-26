@@ -22,18 +22,11 @@
   "type": "module",
   "scripts": {
     "clean": "rm -fr lib",
-    "compile": "tsc",
-    "test": "ava"
+    "compile": "tsc"
   },
   "dependencies": {
     "@jecs/math": "^1.0.0",
     "tslib": "^2.4.0"
   },
-  "devDependencies": {},
-  "ava": {
-    "files": [
-      "lib/**/*.test.*",
-      "lib/**/__test__/*"
-    ]
-  }
+  "devDependencies": {}
 }

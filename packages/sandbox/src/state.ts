@@ -1,3 +1,19 @@
+import type { Func } from "./func.js";
+
+/**
+ * Explicit method.
+ */
+export type Explicit = {
+  (state: State, f: Func): number;
+};
+
+/**
+ * Implicit method.
+ */
+export type Implicit = {
+  (state: State, f: Func): number;
+};
+
 export const MIN_ORDER = 1;
 export const MAX_ORDER = 5;
 
@@ -115,3 +131,31 @@ export class State {
     return y;
   }
 }
+
+export const makeExplicit = (name: string, order: number, coeff: readonly Coeff[]): Explicit => {
+  if (!Number.isInteger(order) || order < 2 || order >= coeff.length) {
+    throw new Error();
+  }
+  const solver: Explicit = (state, f) => {
+    return state.explicit(coeff[Math.min(state.index, order)]);
+  };
+  Object.defineProperties(solver, {
+    order: { value: order, writable: false },
+    name: { value: `${name}${order}`, writable: false },
+  });
+  return solver;
+};
+
+export const makeImplicit = (name: string, order: number, coeff: readonly Coeff[]): Explicit => {
+  if (!Number.isInteger(order) || order < 2 || order >= coeff.length) {
+    throw new Error();
+  }
+  const solver: Explicit = (state, f) => {
+    return state.implicit(coeff[Math.min(state.index, order)]);
+  };
+  Object.defineProperties(solver, {
+    order: { value: order, writable: false },
+    name: { value: `${name}${order}`, writable: false },
+  });
+  return solver;
+};
