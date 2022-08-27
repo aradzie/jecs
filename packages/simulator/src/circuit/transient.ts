@@ -1,3 +1,4 @@
+import { Sle, SleMethod } from "@jecs/math/lib/sle.js";
 import { rotateRight } from "../util/array.js";
 
 export enum DiffMethod {
@@ -34,7 +35,6 @@ export const MAX_ORDER = 6;
 type Step = {
   time: number;
   delta: number;
-  coeff: number;
   states: State[];
 };
 
@@ -44,25 +44,38 @@ type State = {
   I: number;
 };
 
+const slePool: readonly Sle[] = (() => {
+  const list = new Array<Sle>();
+  for (let i = 0; i <= MAX_ORDER + 1; i++) {
+    list.push(new Sle(i));
+  }
+  return list;
+})();
+
 export class Tran {
-  private readonly steps: Step[] = [];
   private readonly diffs: Diff[] = [];
-  private method!: DiffMethod;
-  private order!: number;
+  private readonly steps: Step[] = [];
+  private readonly coeff: Float64Array;
+  private index: number;
+  private configMethod!: DiffMethod; // user requested method
+  private configOrder!: number; // user requested order
+  private method!: DiffMethod; // current method
+  private order!: number; // current order
 
   constructor(devices: readonly DiffOwner[] = []) {
-    for (let i = 0; i <= MAX_ORDER; i++) {
+    for (let i = 0; i < MAX_ORDER + 1; i++) {
       this.steps.push({
         time: 0,
         delta: 0,
-        coeff: 0,
         states: [],
       });
     }
+    this.coeff = new Float64Array(MAX_ORDER + 1);
+    this.index = 0;
+    this.setMethod(DiffMethod.Gear, MAX_ORDER);
     for (const { diffs } of devices) {
       this.register(diffs);
     }
-    this.setMethod(DiffMethod.Euler, 1);
   }
 
   register(list: readonly Diff[]): void {
@@ -80,23 +93,23 @@ export class Tran {
   setMethod(method: DiffMethod, order: number): void {
     switch (method) {
       case DiffMethod.Euler:
-        this.method = DiffMethod.Euler;
-        this.order = 1;
+        this.configMethod = DiffMethod.Euler;
+        this.configOrder = 1;
         break;
       case DiffMethod.Trapezoidal:
-        this.method = DiffMethod.Trapezoidal;
-        this.order = 2;
+        this.configMethod = DiffMethod.Trapezoidal;
+        this.configOrder = 2;
         break;
       case DiffMethod.Gear:
         order = Math.max(MIN_ORDER, Math.min(MAX_ORDER, order));
         switch (order) {
           case 1:
-            this.method = DiffMethod.Euler;
-            this.order = 1;
+            this.configMethod = DiffMethod.Euler;
+            this.configOrder = 1;
             break;
           default:
-            this.method = DiffMethod.Gear;
-            this.order = order;
+            this.configMethod = DiffMethod.Gear;
+            this.configOrder = order;
             break;
         }
         break;
@@ -106,27 +119,74 @@ export class Tran {
   nextStep(time: number, delta: number): void {
     const { steps } = this;
     rotateRight(steps);
+    this.index += 1;
+    this.computeOrder();
     this.computeCoeff(time, delta);
   }
 
+  private computeOrder(): void {
+    switch (this.configMethod) {
+      case DiffMethod.Euler:
+        this.method = DiffMethod.Euler;
+        this.order = 1;
+        break;
+      case DiffMethod.Trapezoidal:
+        if (this.index < 2) {
+          this.method = DiffMethod.Euler;
+          this.order = 1;
+        } else {
+          this.method = DiffMethod.Trapezoidal;
+          this.order = 2;
+        }
+        break;
+      case DiffMethod.Gear:
+        if (this.index < 2) {
+          this.method = DiffMethod.Euler;
+          this.order = 1;
+        } else {
+          this.method = DiffMethod.Gear;
+          this.order = Math.min(this.index, this.configOrder);
+        }
+        break;
+    }
+  }
+
   private computeCoeff(time: number, delta: number): void {
-    const { steps } = this;
+    const { steps, coeff, order } = this;
     steps[0].time = time;
     steps[0].delta = delta;
     switch (this.method) {
-      case DiffMethod.Euler:
-        steps[0].coeff = +1 / delta;
-        steps[1].coeff = -1 / delta;
+      case DiffMethod.Euler: {
+        coeff[0] = +1 / delta;
+        coeff[1] = -1 / delta;
         break;
-      case DiffMethod.Trapezoidal:
-        steps[0].coeff = +2 / delta;
-        steps[1].coeff = -2 / delta;
+      }
+      case DiffMethod.Trapezoidal: {
+        coeff[0] = +2 / delta;
+        coeff[1] = -2 / delta;
         break;
-      case DiffMethod.Gear:
-        for (let i = 0; i <= MAX_ORDER; i++) {
-          steps[i].coeff = 0;
+      }
+      case DiffMethod.Gear: {
+        const sle = slePool[order + 1];
+        const { A, x, b } = sle;
+        sle.clear();
+        for (let c = 0; c < order + 1; c++) {
+          A[0][c] = 1;
         }
+        let hs = 0;
+        for (let c = 0; c < order; c++) {
+          hs += steps[c].delta;
+          let a = 1;
+          for (let r = 0; r < order; r++) {
+            a *= hs / steps[0].delta;
+            A[r + 1][c + 1] = a;
+          }
+        }
+        b[1] = -1 / steps[0].delta;
+        sle.solve(SleMethod.Gauss);
+        coeff.set(x);
         break;
+      }
     }
   }
 
@@ -145,18 +205,16 @@ export class Tran {
   }
 
   private diffEuler(diff: Diff, V: number, C: number): void {
-    const { steps } = this;
+    const { steps, coeff } = this;
     const index = diff[sIndex];
     const step0 = steps[0];
-    const coeff0 = step0.coeff;
     const state0 = step0.states[index];
     const step1 = steps[1];
-    const coeff1 = step1.coeff;
     const state1 = step1.states[index];
 
-    const Geq = coeff0 * C;
-    const Ieq = coeff1 * state1.V * state1.C;
-    const I = coeff0 * C * V + Ieq;
+    const Geq = coeff[0] * C;
+    const Ieq = coeff[1] * state1.V * state1.C;
+    const I = coeff[0] * C * V + Ieq;
 
     diff.V = state0.V = V;
     diff.C = state0.C = C;
@@ -166,18 +224,16 @@ export class Tran {
   }
 
   private diffTrapezoidal(diff: Diff, V: number, C: number): void {
-    const { steps } = this;
+    const { steps, coeff } = this;
     const index = diff[sIndex];
     const step0 = steps[0];
-    const coeff0 = step0.coeff;
     const state0 = step0.states[index];
     const step1 = steps[1];
-    const coeff1 = step1.coeff;
     const state1 = step1.states[index];
 
-    const Geq = coeff0 * C;
-    const Ieq = coeff1 * state1.V * state1.C - state1.I;
-    const I = coeff0 * C * V + Ieq;
+    const Geq = coeff[0] * C;
+    const Ieq = coeff[1] * state1.V * state1.C - state1.I;
+    const I = coeff[0] * C * V + Ieq;
 
     diff.V = state0.V = V;
     diff.C = state0.C = C;
@@ -187,30 +243,24 @@ export class Tran {
   }
 
   private diffGear(diff: Diff, V: number, C: number): void {
-    const { steps, order } = this;
+    const { steps, coeff, order } = this;
     const index = diff[sIndex];
     const step0 = steps[0];
-    const coeff0 = step0.coeff;
     const state0 = step0.states[index];
 
-    const Geq = coeff0 * C;
+    const Geq = coeff[0] * C;
     let Ieq = 0;
-    for (let i = 1; i <= order; i++) {
+    for (let i = 1; i < order + 1; i++) {
       const stepI = steps[i];
-      const coeffI = stepI.coeff;
       const stateI = stepI.states[index];
-      Ieq += coeffI * stateI.V * stateI.C;
+      Ieq += coeff[i] * stateI.V * stateI.C;
     }
-    const I = coeff0 * C * V + Ieq;
+    const I = coeff[0] * C * V + Ieq;
 
     diff.V = state0.V = V;
     diff.C = state0.C = C;
     diff.I = state0.I = I;
     diff.Geq = Geq;
     diff.Ieq = Ieq;
-  }
-
-  private getState(diff: Diff, step: number): State {
-    return this.steps[step].states[diff[sIndex]];
   }
 }
