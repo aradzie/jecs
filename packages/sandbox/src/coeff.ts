@@ -1,4 +1,4 @@
-import { Method, SLE } from "@jecs/math/lib/sle.js";
+import { Sle, SleMethod } from "@jecs/math/lib/sle.js";
 import type { Coeff } from "./state.js";
 
 /**
@@ -8,14 +8,14 @@ export const adamsBashforthCoeff = (order: number): Coeff => {
   if (order === 0) {
     return [];
   }
-  const sle = new SLE(order);
+  const sle = new Sle(order);
   for (let i = 0; i < order; i++) {
     for (let j = 0; j < order; j++) {
       sle.A[i][j] = j ** i;
     }
     sle.b[i] = (-1) ** i / (i + 1);
   }
-  sle.solve(Method.Gauss);
+  sle.solve(SleMethod.Gauss);
   const coeff: [number, number][] = [];
   for (let i = 0; i < order; i++) {
     coeff.push([i === 0 ? 1 : 0, sle.x[i]]);
@@ -37,14 +37,14 @@ export const adamsMoultonCoeff = (order: number): Coeff => {
       [1, 0],
     ];
   }
-  const sle = new SLE(order);
+  const sle = new Sle(order);
   for (let i = 0; i < order; i++) {
     for (let j = 0; j < order; j++) {
       sle.A[i][j] = (j - 1) ** i;
     }
     sle.b[i] = (-1) ** i / (i + 1);
   }
-  sle.solve(Method.Gauss);
+  sle.solve(SleMethod.Gauss);
   const coeff: [number, number][] = [];
   for (let i = 0; i < order; i++) {
     coeff.push([i === 1 ? 1 : 0, sle.x[i]]);

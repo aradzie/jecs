@@ -1,16 +1,16 @@
-import { Method, SLE } from "@jecs/math/lib/sle.js";
+import { Sle, SleMethod } from "@jecs/math/lib/sle.js";
 import type { Circuit } from "../circuit/circuit.js";
 import { AcStamper } from "../circuit/mna.js";
 import { logger } from "../util/logging.js";
 
 export class AcSolver {
   private readonly circuit: Circuit;
-  private readonly sle: SLE;
+  private readonly sle: Sle;
   private readonly stamper: AcStamper;
 
   constructor(circuit: Circuit) {
     this.circuit = circuit;
-    this.sle = new SLE(circuit.nodes.length * 2);
+    this.sle = new Sle(circuit.nodes.length * 2);
     this.stamper = new AcStamper(this.sle.A, this.sle.b);
   }
 
@@ -20,7 +20,7 @@ export class AcSolver {
     logger.iterationStarted();
     this.sle.clear();
     this.circuit.loadAc(this.stamper);
-    this.sle.solve(Method.Gauss);
+    this.sle.solve(SleMethod.Gauss);
     this.saveSolution();
     logger.iterationEnded();
     this.circuit.endAc();

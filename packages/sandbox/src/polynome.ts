@@ -1,7 +1,7 @@
-import { Method, SLE } from "@jecs/math/lib/sle.js";
+import { Sle, SleMethod } from "@jecs/math/lib/sle.js";
 
 export const interpolate = (x: Float64Array, y: Float64Array, size: number): Float64Array => {
-  const sle = new SLE(size);
+  const sle = new Sle(size);
   for (let i = 0; i < size; i++) {
     sle.b[i] = y[i];
     let a = 1;
@@ -10,7 +10,7 @@ export const interpolate = (x: Float64Array, y: Float64Array, size: number): Flo
       a *= x[i];
     }
   }
-  sle.solve(Method.Gauss);
+  sle.solve(SleMethod.Gauss);
   return new Float64Array(sle.x);
 };
 

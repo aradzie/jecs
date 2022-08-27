@@ -5,7 +5,7 @@ import { solveGauss } from "./solve-gauss.js";
 import { factorLu, solveLu } from "./solve-lu.js";
 import type { Matrix, PermVector, Vector } from "./types.js";
 
-export const enum Method {
+export enum SleMethod {
   Gauss,
   GaussJordan,
   LU,
@@ -14,7 +14,7 @@ export const enum Method {
 /**
  * A system of linear equations.
  */
-export class SLE {
+export class Sle {
   /** The number of variables in this SLE. */
   readonly size: number;
   /** The left-hand side matrix. */
@@ -47,15 +47,15 @@ export class SLE {
   /**
    * Solves `A * x = b` using the specified method.
    */
-  solve(method: Method): void {
+  solve(method: SleMethod): void {
     switch (method) {
-      case Method.Gauss:
+      case SleMethod.Gauss:
         solveGauss(this);
         break;
-      case Method.GaussJordan:
+      case SleMethod.GaussJordan:
         solveGaussJordan(this);
         break;
-      case Method.LU:
+      case SleMethod.LU:
         factorLu(this);
         solveLu(this);
         break;

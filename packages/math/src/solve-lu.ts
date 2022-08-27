@@ -1,13 +1,13 @@
 import { SingularMatrixError } from "./error.js";
 import { vecCopy } from "./matrix.js";
 import { findPartialPivot, swap } from "./pivot.js";
-import type { SLE } from "./sle.js";
+import type { Sle } from "./sle.js";
 import type { Matrix, PermVector } from "./types.js";
 
 /**
  * Solves `A * x = b` using the LU decomposition method.
  */
-export function factorLu(sle: SLE): void {
+export function factorLu(sle: Sle): void {
   const { size, A, perm } = sle;
   for (let k = 0; k < size; k++) {
     findPivot(A, perm, size, k);
@@ -26,7 +26,7 @@ export function factorLu(sle: SLE): void {
   }
 }
 
-export function solveLu(sle: SLE): void {
+export function solveLu(sle: Sle): void {
   const { size, A, x, b, perm } = sle;
   for (let k = 0; k < size; k++) {
     let sum = 0;

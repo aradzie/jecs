@@ -1,5 +1,5 @@
 import { vecClear, vecCopy, vecMake } from "@jecs/math/lib/matrix.js";
-import { Method, SLE } from "@jecs/math/lib/sle.js";
+import { Sle, SleMethod } from "@jecs/math/lib/sle.js";
 import type { Vector } from "@jecs/math/lib/types.js";
 import type { Circuit } from "../circuit/circuit.js";
 import { Stamper } from "../circuit/mna.js";
@@ -42,7 +42,7 @@ export class NonlinearSolver {
 
   private readonly circuit: Circuit;
   private readonly options: ConvergenceOptions;
-  private readonly sle: SLE;
+  private readonly sle: Sle;
   private readonly backupX: Vector;
   private readonly currX: Vector;
   private readonly prevX: Vector;
@@ -60,7 +60,7 @@ export class NonlinearSolver {
   constructor(circuit: Circuit, properties: Properties) {
     this.circuit = circuit;
     this.options = getConvergenceOptions(properties);
-    this.sle = new SLE(circuit.nodes.length);
+    this.sle = new Sle(circuit.nodes.length);
     this.backupX = vecMake(this.sle.size);
     this.currX = vecMake(this.sle.size);
     this.prevX = vecMake(this.sle.size);
@@ -197,7 +197,7 @@ export class NonlinearSolver {
       this.applyGMin();
     }
     vecCopy(this.sle.b, this.currB);
-    this.sle.solve(Method.Gauss);
+    this.sle.solve(SleMethod.Gauss);
     vecCopy(this.sle.x, this.currX);
     this.saveSolution();
     logger.iterationEnded();

@@ -1,11 +1,11 @@
 import { SingularMatrixError } from "./error.js";
 import { vecCopy } from "./matrix.js";
-import type { SLE } from "./sle.js";
+import type { Sle } from "./sle.js";
 
 /**
  * Solves `A * x = b` using the Gaussian elimination method.
  */
-export function solveGauss(sle: SLE): void {
+export function solveGauss(sle: Sle): void {
   const { size, A, x, b } = sle;
   for (let k = 0; k < size - 1; k++) {
     sle.findPivot(k);

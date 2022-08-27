@@ -1,6 +1,6 @@
 import { rotateRight } from "../util/array.js";
 
-export enum Method {
+export enum DiffMethod {
   Euler,
   Trapezoidal,
   Gear,
@@ -47,7 +47,7 @@ type State = {
 export class Tran {
   private readonly steps: Step[] = [];
   private readonly diffs: Diff[] = [];
-  private method!: Method;
+  private method!: DiffMethod;
   private order!: number;
 
   constructor(devices: readonly DiffOwner[] = []) {
@@ -62,7 +62,7 @@ export class Tran {
     for (const { diffs } of devices) {
       this.register(diffs);
     }
-    this.setMethod(Method.Euler, 1);
+    this.setMethod(DiffMethod.Euler, 1);
   }
 
   register(list: readonly Diff[]): void {
@@ -77,25 +77,25 @@ export class Tran {
     }
   }
 
-  setMethod(method: Method, order: number): void {
+  setMethod(method: DiffMethod, order: number): void {
     switch (method) {
-      case Method.Euler:
-        this.method = Method.Euler;
+      case DiffMethod.Euler:
+        this.method = DiffMethod.Euler;
         this.order = 1;
         break;
-      case Method.Trapezoidal:
-        this.method = Method.Trapezoidal;
+      case DiffMethod.Trapezoidal:
+        this.method = DiffMethod.Trapezoidal;
         this.order = 2;
         break;
-      case Method.Gear:
+      case DiffMethod.Gear:
         order = Math.max(MIN_ORDER, Math.min(MAX_ORDER, order));
         switch (order) {
           case 1:
-            this.method = Method.Euler;
+            this.method = DiffMethod.Euler;
             this.order = 1;
             break;
           default:
-            this.method = Method.Gear;
+            this.method = DiffMethod.Gear;
             this.order = order;
             break;
         }
@@ -114,15 +114,15 @@ export class Tran {
     steps[0].time = time;
     steps[0].delta = delta;
     switch (this.method) {
-      case Method.Euler:
+      case DiffMethod.Euler:
         steps[0].coeff = +1 / delta;
         steps[1].coeff = -1 / delta;
         break;
-      case Method.Trapezoidal:
+      case DiffMethod.Trapezoidal:
         steps[0].coeff = +2 / delta;
         steps[1].coeff = -2 / delta;
         break;
-      case Method.Gear:
+      case DiffMethod.Gear:
         for (let i = 0; i <= MAX_ORDER; i++) {
           steps[i].coeff = 0;
         }
@@ -132,13 +132,13 @@ export class Tran {
 
   diff(diff: Diff, V: number, C: number): void {
     switch (this.method) {
-      case Method.Euler:
+      case DiffMethod.Euler:
         this.diffEuler(diff, V, C);
         break;
-      case Method.Trapezoidal:
+      case DiffMethod.Trapezoidal:
         this.diffTrapezoidal(diff, V, C);
         break;
-      case Method.Gear:
+      case DiffMethod.Gear:
         this.diffGear(diff, V, C);
         break;
     }
