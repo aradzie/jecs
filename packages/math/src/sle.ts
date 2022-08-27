@@ -6,9 +6,9 @@ import { factorLu, solveLu } from "./solve-lu.js";
 import type { Matrix, PermVector, Vector } from "./types.js";
 
 export enum SleMethod {
-  Gauss,
-  GaussJordan,
-  LU,
+  Gauss = "gauss",
+  GaussJordan = "gauss-jordan",
+  LU = "lu",
 }
 
 /**

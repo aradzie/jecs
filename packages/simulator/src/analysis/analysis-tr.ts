@@ -2,7 +2,7 @@ import { Circuit } from "../circuit/circuit.js";
 import { ConstantExp } from "../circuit/equations.js";
 import { allDeviceProbes, allNodeProbes, Probe, timeProbe } from "../circuit/probe.js";
 import { Properties, PropertiesSchema } from "../circuit/properties.js";
-import { MAX_ORDER, MIN_ORDER, Tran } from "../circuit/transient.js";
+import { DiffMethod, MAX_ORDER, MIN_ORDER, Tran } from "../circuit/transient.js";
 import { Analysis } from "./analysis.js";
 import type { DatasetBuilder } from "./dataset.js";
 import { NonlinearSolver } from "./solver-nonlinear.js";
@@ -24,12 +24,12 @@ export class TrAnalysis extends Analysis {
       title: "simulation time step",
     }),
     method: Properties.string({
-      defaultValue: "euler",
-      range: ["euler", "trapezoidal", "gear"],
+      defaultValue: DiffMethod.Gear,
+      range: [DiffMethod.Euler, DiffMethod.Trapezoidal, DiffMethod.Gear],
       title: "integration method",
     }),
     order: Properties.number({
-      defaultValue: MIN_ORDER,
+      defaultValue: MAX_ORDER,
       range: ["integer", ">=", MIN_ORDER, "<=", MAX_ORDER],
       title: "integration order",
     }),
@@ -55,6 +55,8 @@ export class TrAnalysis extends Analysis {
     const startTime = properties.getNumber("startTime");
     const stopTime = properties.getNumber("stopTime");
     const timeStep = properties.getNumber("timeStep");
+    const method = properties.getString("method") as DiffMethod;
+    const order = properties.getNumber("order");
     const dc = properties.getString("dc");
     const temp = properties.getNumber("temp");
     const solver = new NonlinearSolver(circuit, properties);
@@ -78,6 +80,7 @@ export class TrAnalysis extends Analysis {
         }
         solver.useTr();
         const tran = new Tran(circuit.devices);
+        tran.setMethod(method, order);
         let step = 0;
         let time = 0;
         while (time <= stopTime) {

@@ -2,9 +2,9 @@ import { Sle, SleMethod } from "@jecs/math/lib/sle.js";
 import { rotateRight } from "../util/array.js";
 
 export enum DiffMethod {
-  Euler,
-  Trapezoidal,
-  Gear,
+  Euler = "euler",
+  Trapezoidal = "trapezoidal",
+  Gear = "gear",
 }
 
 export type DiffOwner = {
