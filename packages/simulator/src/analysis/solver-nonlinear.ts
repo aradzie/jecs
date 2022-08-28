@@ -2,7 +2,7 @@ import { vecClear, vecCopy, vecMake } from "@jecs/math/lib/matrix.js";
 import { Sle, SleMethod } from "@jecs/math/lib/sle.js";
 import type { Vector } from "@jecs/math/lib/types.js";
 import type { Circuit } from "../circuit/circuit.js";
-import { Stamper } from "../circuit/mna.js";
+import { RealStamper } from "../circuit/mna.js";
 import { Properties, PropertiesSchema } from "../circuit/properties.js";
 import { logger } from "../util/logging.js";
 import { ConvergenceError } from "./error.js";
@@ -48,13 +48,13 @@ export class NonlinearSolver {
   private readonly prevX: Vector;
   private readonly currB: Vector;
   private readonly prevB: Vector;
-  private readonly stamper: Stamper;
+  private readonly stamper: RealStamper;
   private helper: ConvHelper;
   private sourceFactor: number;
   private gMin: number;
 
   private init: () => void = () => {};
-  private load: (stamper: Stamper) => void = () => {};
+  private load: (stamper: RealStamper) => void = () => {};
   private end: () => void = () => {};
 
   constructor(circuit: Circuit, properties: Properties) {
@@ -66,7 +66,7 @@ export class NonlinearSolver {
     this.prevX = vecMake(this.sle.size);
     this.currB = vecMake(this.sle.size);
     this.prevB = vecMake(this.sle.size);
-    this.stamper = new Stamper(this.sle.A, this.sle.b);
+    this.stamper = new RealStamper(this.sle.A, this.sle.b);
     this.helper = ConvHelper.None;
     this.sourceFactor = 1;
     this.gMin = 0;

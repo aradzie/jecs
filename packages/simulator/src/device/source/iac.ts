@@ -1,5 +1,5 @@
 import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
-import { AcStamper, stampCurrentSource, stampCurrentSourceAc, Stamper } from "../../circuit/mna.js";
+import type { ComplexStamper, RealStamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -57,14 +57,18 @@ export class Iac extends Device {
     state[S.V] = 0;
   }
 
-  override loadTr(state: DeviceState, { time, sourceFactor }: TrParams, stamper: Stamper): void {
+  override loadTr(
+    state: DeviceState,
+    { time, sourceFactor }: TrParams,
+    stamper: RealStamper,
+  ): void {
     const { np, nn } = this;
     const amplitude = state[S.amplitude];
     const omega = state[S.omega];
     const theta = state[S.theta];
     const I = sourceFactor * amplitude * Math.sin(omega * time + theta);
     state[S.I] = I;
-    stampCurrentSource(stamper, np, nn, I);
+    stamper.stampCurrentSource(np, nn, I);
   }
 
   override endTr(state: DeviceState, params: TrParams): void {
@@ -72,12 +76,12 @@ export class Iac extends Device {
     state[S.V] = np.voltage - nn.voltage;
   }
 
-  override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
+  override loadAc(state: DeviceState, frequency: number, stamper: ComplexStamper): void {
     const { np, nn } = this;
     const amplitude = state[S.amplitude];
     const theta = state[S.theta];
     const Ir = amplitude * Math.cos(theta);
     const Ii = amplitude * Math.sin(theta);
-    stampCurrentSourceAc(stamper, np, nn, Ir, Ii);
+    stamper.stampCurrentSource(np, nn, Ir, Ii);
   }
 }

@@ -1,7 +1,7 @@
 import type { Device } from "./device.js";
 import { Bindings, ConstantExp, Equations } from "./equations.js";
 import { CircuitError } from "./error.js";
-import type { AcStamper, Stamper } from "./mna.js";
+import type { ComplexStamper, RealStamper } from "./mna.js";
 import { Branch, groundNode, Network, Node } from "./network.js";
 import { Properties, PropertiesSchema } from "./properties.js";
 
@@ -124,7 +124,7 @@ export class Circuit implements Network {
     }
   }
 
-  loadDc(stamper: Stamper): void {
+  loadDc(stamper: RealStamper): void {
     for (const device of this.#devices) {
       device.loadDc(device.state, this, stamper);
     }
@@ -142,7 +142,7 @@ export class Circuit implements Network {
     }
   }
 
-  loadTr(stamper: Stamper): void {
+  loadTr(stamper: RealStamper): void {
     for (const device of this.#devices) {
       device.loadTr(device.state, this, stamper);
     }
@@ -160,7 +160,7 @@ export class Circuit implements Network {
     }
   }
 
-  loadAc(stamper: AcStamper): void {
+  loadAc(stamper: ComplexStamper): void {
     for (const device of this.#devices) {
       device.loadAc(device.state, this.frequency, stamper);
     }

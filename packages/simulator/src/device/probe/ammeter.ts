@@ -1,5 +1,5 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
-import { Stamper, stampVoltageSource } from "../../circuit/mna.js";
+import type { RealStamper } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 
 const enum S {
@@ -33,9 +33,9 @@ export class Ammeter extends Device.Dc {
     this.branch = network.makeBranch(this.np, this.nn);
   }
 
-  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
+  override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {
     const { np, nn, branch } = this;
-    stampVoltageSource(stamper, np, nn, branch, 0);
+    stamper.stampVoltageSource(np, nn, branch, 0);
   }
 
   override endDc(state: DeviceState, params: DcParams): void {

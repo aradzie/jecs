@@ -1,17 +1,17 @@
 import { Sle, SleMethod } from "@jecs/math/lib/sle.js";
 import type { Circuit } from "../circuit/circuit.js";
-import { AcStamper } from "../circuit/mna.js";
+import { ComplexStamper } from "../circuit/mna.js";
 import { logger } from "../util/logging.js";
 
 export class AcSolver {
   private readonly circuit: Circuit;
   private readonly sle: Sle;
-  private readonly stamper: AcStamper;
+  private readonly stamper: ComplexStamper;
 
   constructor(circuit: Circuit) {
     this.circuit = circuit;
     this.sle = new Sle(circuit.nodes.length * 2);
-    this.stamper = new AcStamper(this.sle.A, this.sle.b);
+    this.stamper = new ComplexStamper(this.sle.A, this.sle.b);
   }
 
   solve(): void {

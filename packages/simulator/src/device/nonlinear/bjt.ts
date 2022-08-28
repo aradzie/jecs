@@ -1,10 +1,5 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
-import {
-  stampConductance,
-  stampCurrentSource,
-  Stamper,
-  stampTransconductance,
-} from "../../circuit/mna.js";
+import type { RealStamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { celsiusToKelvin } from "../../util/unit.js";
@@ -186,7 +181,7 @@ export class Bjt extends Device.Dc {
     state[S.Gr] = Gr;
   }
 
-  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
+  override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {
     const { ne, nb, nc } = this;
     this.eval(state, true);
     const pol = state[S.pol];
@@ -202,12 +197,12 @@ export class Bjt extends Device.Dc {
     const Gcc = -Gr;
     const Gec = Ar * Gr;
     const Gce = Af * Gf;
-    stampConductance(stamper, ne, nb, -Gee);
-    stampConductance(stamper, nc, nb, -Gcc);
-    stampTransconductance(stamper, ne, nb, nc, nb, -Gec);
-    stampTransconductance(stamper, nc, nb, ne, nb, -Gce);
-    stampCurrentSource(stamper, ne, nb, pol * (Ie - Gee * Vbe - Gec * Vbc));
-    stampCurrentSource(stamper, nc, nb, pol * (Ic - Gce * Vbe - Gcc * Vbc));
+    stamper.stampConductance(ne, nb, -Gee);
+    stamper.stampConductance(nc, nb, -Gcc);
+    stamper.stampTransconductance(ne, nb, nc, nb, -Gec);
+    stamper.stampTransconductance(nc, nb, ne, nb, -Gce);
+    stamper.stampCurrentSource(ne, nb, pol * (Ie - Gee * Vbe - Gec * Vbc));
+    stamper.stampCurrentSource(nc, nb, pol * (Ic - Gce * Vbe - Gcc * Vbc));
   }
 
   override endDc(state: DeviceState, params: DcParams): void {

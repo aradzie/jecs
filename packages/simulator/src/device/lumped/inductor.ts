@@ -1,5 +1,5 @@
 import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
-import { AcStamper, stampConductanceAc, Stamper, stampVoltageSource } from "../../circuit/mna.js";
+import type { ComplexStamper, RealStamper } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { Diff } from "../../circuit/transient.js";
@@ -61,9 +61,9 @@ export class Inductor extends Device {
     state[S.I0] = this.properties.getNumber("I0");
   }
 
-  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
+  override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {
     const { na, nb, branch } = this;
-    stampVoltageSource(stamper, na, nb, branch, 0);
+    stamper.stampVoltageSource(na, nb, branch, 0);
   }
 
   override endDc(state: DeviceState, params: DcParams): void {
@@ -72,7 +72,7 @@ export class Inductor extends Device {
     state[S.I] = branch.current;
   }
 
-  override loadTr(state: DeviceState, { time }: TrParams, stamper: Stamper): void {
+  override loadTr(state: DeviceState, { time }: TrParams, stamper: RealStamper): void {
     const { diff, na, nb, branch } = this;
     const L = state[S.L];
     const I = time > 0 ? branch.current : state[S.I0];
@@ -80,13 +80,13 @@ export class Inductor extends Device {
     state[S.V] = diff.I;
     state[S.I] = diff.V;
     stamper.stampA(branch, branch, -diff.Geq);
-    stampVoltageSource(stamper, na, nb, branch, diff.Ieq);
+    stamper.stampVoltageSource(na, nb, branch, diff.Ieq);
   }
 
-  override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
+  override loadAc(state: DeviceState, frequency: number, stamper: ComplexStamper): void {
     const { na, nb } = this;
     const L = state[S.L];
     const Y = -1 / (2 * Math.PI * frequency * L);
-    stampConductanceAc(stamper, na, nb, 0, Y);
+    stamper.stampConductance(na, nb, 0, Y);
   }
 }

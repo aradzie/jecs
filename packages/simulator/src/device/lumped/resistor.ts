@@ -1,5 +1,5 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
-import { AcStamper, stampConductance, stampConductanceAc, Stamper } from "../../circuit/mna.js";
+import type { ComplexStamper, RealStamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -45,10 +45,10 @@ export class Resistor extends Device.Dc {
     state[S.G] = 1 / R;
   }
 
-  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
+  override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {
     const { na, nb } = this;
     const G = state[S.G];
-    stampConductance(stamper, na, nb, G);
+    stamper.stampConductance(na, nb, G);
   }
 
   override endDc(state: DeviceState, params: DcParams): void {
@@ -60,9 +60,9 @@ export class Resistor extends Device.Dc {
     state[S.I] = I;
   }
 
-  override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
+  override loadAc(state: DeviceState, frequency: number, stamper: ComplexStamper): void {
     const { na, nb } = this;
     const G = state[S.G];
-    stampConductanceAc(stamper, na, nb, G, 0);
+    stamper.stampConductance(na, nb, G, 0);
   }
 }

@@ -1,11 +1,5 @@
 import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
-import {
-  AcStamper,
-  stampConductance,
-  stampConductanceAc,
-  stampCurrentSource,
-  Stamper,
-} from "../../circuit/mna.js";
+import type { ComplexStamper, RealStamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { Diff } from "../../circuit/transient.js";
@@ -70,21 +64,21 @@ export class Capacitor extends Device {
     state[S.I] = 0;
   }
 
-  override loadTr(state: DeviceState, { time }: TrParams, stamper: Stamper): void {
+  override loadTr(state: DeviceState, { time }: TrParams, stamper: RealStamper): void {
     const { diff, na, nb } = this;
     const C = state[S.C];
     const V = time > 0 ? na.voltage - nb.voltage : state[S.V0];
     diff.diff(V, C);
     state[S.V] = diff.V;
     state[S.I] = diff.I;
-    stampConductance(stamper, na, nb, diff.Geq);
-    stampCurrentSource(stamper, na, nb, diff.Ieq);
+    stamper.stampConductance(na, nb, diff.Geq);
+    stamper.stampCurrentSource(na, nb, diff.Ieq);
   }
 
-  override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
+  override loadAc(state: DeviceState, frequency: number, stamper: ComplexStamper): void {
     const { na, nb } = this;
     const C = state[S.C];
     const Y = 2 * Math.PI * frequency * C;
-    stampConductanceAc(stamper, na, nb, 0, Y);
+    stamper.stampConductance(na, nb, 0, Y);
   }
 }

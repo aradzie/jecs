@@ -1,10 +1,5 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
-import {
-  stampConductance,
-  stampCurrentSource,
-  Stamper,
-  stampTransconductance,
-} from "../../circuit/mna.js";
+import type { RealStamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { celsiusToKelvin } from "../../util/unit.js";
@@ -257,7 +252,7 @@ export class Mosfet extends Device.Dc {
     state[S.Gm] = Gm;
   }
 
-  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
+  override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {
     const { ns, ng, nd, nb } = this;
     this.eval(state, true);
     const pol = state[S.pol];
@@ -276,22 +271,22 @@ export class Mosfet extends Device.Dc {
 
     // DIODES
 
-    stampConductance(stamper, nb, ns, Gbs);
-    stampCurrentSource(stamper, nb, ns, pol * (Ibs - Gbs * Vbs));
+    stamper.stampConductance(nb, ns, Gbs);
+    stamper.stampCurrentSource(nb, ns, pol * (Ibs - Gbs * Vbs));
 
-    stampConductance(stamper, nb, nd, Gbd);
-    stampCurrentSource(stamper, nb, nd, pol * (Ibd - Gbd * Vbd));
+    stamper.stampConductance(nb, nd, Gbd);
+    stamper.stampCurrentSource(nb, nd, pol * (Ibd - Gbd * Vbd));
 
     // FET
 
     if (Vds > 0) {
-      stampConductance(stamper, nd, ns, Gds);
-      stampTransconductance(stamper, nd, ns, ng, ns, Gm);
-      stampCurrentSource(stamper, nd, ns, pol * (Ids - Gds * Vds - Gm * Vgs));
+      stamper.stampConductance(nd, ns, Gds);
+      stamper.stampTransconductance(nd, ns, ng, ns, Gm);
+      stamper.stampCurrentSource(nd, ns, pol * (Ids - Gds * Vds - Gm * Vgs));
     } else {
-      stampConductance(stamper, nd, ns, Gds);
-      stampTransconductance(stamper, nd, ns, ng, nd, Gm);
-      stampCurrentSource(stamper, nd, ns, pol * (Ids - Gds * Vds - Gm * Vgd));
+      stamper.stampConductance(nd, ns, Gds);
+      stamper.stampTransconductance(nd, ns, ng, nd, Gm);
+      stamper.stampCurrentSource(nd, ns, pol * (Ids - Gds * Vds - Gm * Vgd));
     }
   }
 

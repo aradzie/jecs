@@ -1,5 +1,5 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
-import { stampCurrentSource, Stamper } from "../../circuit/mna.js";
+import type { RealStamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -41,12 +41,12 @@ export class Idc extends Device.Dc {
     state[S.I0] = this.properties.getNumber("I");
   }
 
-  override loadDc(state: DeviceState, { sourceFactor }: DcParams, stamper: Stamper): void {
+  override loadDc(state: DeviceState, { sourceFactor }: DcParams, stamper: RealStamper): void {
     const { np, nn } = this;
     const I0 = state[S.I0];
     const I = sourceFactor * I0;
     state[S.I] = I;
-    stampCurrentSource(stamper, np, nn, I);
+    stamper.stampCurrentSource(np, nn, I);
   }
 
   override endDc(state: DeviceState, params: DcParams): void {

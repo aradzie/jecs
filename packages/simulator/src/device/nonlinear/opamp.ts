@@ -1,5 +1,5 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
-import type { Stamper } from "../../circuit/mna.js";
+import type { RealStamper } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { gMin, piOverTwo, twoOverPi } from "../const.js";
@@ -63,7 +63,7 @@ export class OpAmp extends Device.Dc {
     state[S.Vmax] = Vmax;
   }
 
-  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
+  override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {
     const { np, nn, no, branch } = this;
     const gain = state[S.gain];
     const Vmax = state[S.Vmax];

@@ -1,5 +1,5 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
-import { stampConductance, stampCurrentSource, Stamper } from "../../circuit/mna.js";
+import type { RealStamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 import { celsiusToKelvin } from "../../util/unit.js";
@@ -81,14 +81,14 @@ export class Diode extends Device.Dc {
     state[S.G] = G;
   }
 
-  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
+  override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {
     const { na, nc } = this;
     this.eval(state, true);
     const V = state[S.V];
     const I = state[S.I];
     const G = state[S.G];
-    stampConductance(stamper, na, nc, G);
-    stampCurrentSource(stamper, na, nc, I - G * V);
+    stamper.stampConductance(na, nc, G);
+    stamper.stampCurrentSource(na, nc, I - G * V);
   }
 
   override endDc(state: DeviceState, params: DcParams): void {

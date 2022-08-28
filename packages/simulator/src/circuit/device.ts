@@ -1,4 +1,4 @@
-import type { AcStamper, Stamper } from "./mna.js";
+import type { ComplexStamper, RealStamper } from "./mna.js";
 import type { Network, Node } from "./network.js";
 import { Properties, PropertiesSchema } from "./properties.js";
 import type { Diff, DiffOwner } from "./transient.js";
@@ -90,7 +90,7 @@ export abstract class Device implements DiffOwner {
       this.initDc(state, params);
     }
 
-    override loadTr(state: DeviceState, params: TrParams, stamper: Stamper) {
+    override loadTr(state: DeviceState, params: TrParams, stamper: RealStamper) {
       this.loadDc(state, params, stamper);
     }
 
@@ -134,19 +134,19 @@ export abstract class Device implements DiffOwner {
 
   initDc(state: DeviceState, params: DcParams): void {}
 
-  loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {}
+  loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {}
 
   endDc(state: DeviceState, params: DcParams): void {}
 
   initTr(state: DeviceState, params: TrParams): void {}
 
-  loadTr(state: DeviceState, params: TrParams, stamper: Stamper): void {}
+  loadTr(state: DeviceState, params: TrParams, stamper: RealStamper): void {}
 
   endTr(state: DeviceState, params: TrParams): void {}
 
   initAc(state: DeviceState): void {}
 
-  loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {}
+  loadAc(state: DeviceState, frequency: number, stamper: ComplexStamper): void {}
 
   endAc(state: DeviceState): void {}
 }

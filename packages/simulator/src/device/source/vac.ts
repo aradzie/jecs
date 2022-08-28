@@ -1,5 +1,5 @@
 import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
-import { AcStamper, Stamper, stampVoltageSource, stampVoltageSourceAc } from "../../circuit/mna.js";
+import type { ComplexStamper, RealStamper } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -55,9 +55,9 @@ export class Vac extends Device {
     state[S.theta] = theta;
   }
 
-  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
+  override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {
     const { np, nn, branch } = this;
-    stampVoltageSource(stamper, np, nn, branch, 0);
+    stamper.stampVoltageSource(np, nn, branch, 0);
   }
 
   override endDc(state: DeviceState, params: DcParams): void {
@@ -65,14 +65,18 @@ export class Vac extends Device {
     state[S.I] = 0;
   }
 
-  override loadTr(state: DeviceState, { time, sourceFactor }: TrParams, stamper: Stamper): void {
+  override loadTr(
+    state: DeviceState,
+    { time, sourceFactor }: TrParams,
+    stamper: RealStamper,
+  ): void {
     const { np, nn, branch } = this;
     const amplitude = state[S.amplitude];
     const omega = state[S.omega];
     const theta = state[S.theta];
     const V = sourceFactor * amplitude * Math.sin(omega * time + theta);
     state[S.V] = V;
-    stampVoltageSource(stamper, np, nn, branch, V);
+    stamper.stampVoltageSource(np, nn, branch, V);
   }
 
   override endTr(state: DeviceState, params: TrParams): void {
@@ -81,12 +85,12 @@ export class Vac extends Device {
     state[S.I] = I;
   }
 
-  override loadAc(state: DeviceState, frequency: number, stamper: AcStamper): void {
+  override loadAc(state: DeviceState, frequency: number, stamper: ComplexStamper): void {
     const { np, nn, branch } = this;
     const amplitude = state[S.amplitude];
     const theta = state[S.theta];
     const Vr = amplitude * Math.cos(theta);
     const Vi = amplitude * Math.sin(theta);
-    stampVoltageSourceAc(stamper, np, nn, branch, Vr, Vi);
+    stamper.stampVoltageSource(np, nn, branch, Vr, Vi);
   }
 }

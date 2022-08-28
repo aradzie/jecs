@@ -1,5 +1,5 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
-import { Stamper, stampVoltageSource } from "../../circuit/mna.js";
+import type { RealStamper } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
 import { Properties } from "../../circuit/properties.js";
 
@@ -50,10 +50,10 @@ export class CCCS extends Device.Dc {
     state[S.gain] = this.properties.getNumber("gain");
   }
 
-  override loadDc(state: DeviceState, params: DcParams, stamper: Stamper): void {
+  override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {
     const { np, nn, ncp, ncn, branch } = this;
     const gain = state[S.gain];
-    stampVoltageSource(stamper, ncp, ncn, branch, 0);
+    stamper.stampVoltageSource(ncp, ncn, branch, 0);
     stamper.stampA(np, branch, gain);
     stamper.stampA(nn, branch, -gain);
   }
