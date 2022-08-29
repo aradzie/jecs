@@ -26,13 +26,13 @@
     "build-dev": "env NODE_ENV=development lerna run build"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.30.4",
-    "@typescript-eslint/parser": "^5.30.4",
-    "ava": "^4.3.0",
-    "eslint": "^8.19.0",
-    "lerna": "^5.1.6",
+    "@typescript-eslint/eslint-plugin": "^5.35.1",
+    "@typescript-eslint/parser": "^5.35.1",
+    "ava": "^4.3.3",
+    "eslint": "^8.23.0",
+    "lerna": "^5.4.3",
     "prettier": "^2.7.1",
-    "ts-node": "^10.8.2",
-    "typescript": "^4.7.4"
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.2"
   }
 }
