@@ -25,8 +25,8 @@
     "compile": "tsc"
   },
   "dependencies": {
-    "@jecs/math": "^1.0.0",
-    "tslib": "^2.4.0"
+    "@jecs/math": "*",
+    "tslib": "^2.8.1"
   },
   "devDependencies": {}
 }

@@ -60,7 +60,10 @@ export class ExplicitMethod extends Method {
 }
 
 export class ImplicitMethod extends Method {
-  constructor(readonly corrector: Implicit, readonly predictor: Explicit) {
+  constructor(
+    readonly corrector: Implicit,
+    readonly predictor: Explicit,
+  ) {
     super(`${corrector.name}/${predictor.name}`);
   }
 

@@ -1,13 +1,14 @@
-import test from "ava";
+import { test } from "node:test";
+import { deepEqual } from "rich-assert";
 import { toSle, vecToArray } from "./debug.js";
 import { factorLu, solveLu } from "./solve-lu.js";
 
-test("solve", (t) => {
+test("solve", () => {
   {
     const sle = toSle([[2]], [6]);
     factorLu(sle);
     solveLu(sle);
-    t.deepEqual([...sle.x], [3]);
+    deepEqual([...sle.x], [3]);
   }
   {
     const sle = toSle(
@@ -20,6 +21,6 @@ test("solve", (t) => {
     );
     factorLu(sle);
     solveLu(sle);
-    t.deepEqual(vecToArray(sle.x), [2, 3, -1]);
+    deepEqual(vecToArray(sle.x), [2, 3, -1]);
   }
 });

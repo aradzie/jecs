@@ -6,7 +6,7 @@
 >
 
 <title>Gnuplot</title>
-<desc>Produced by GNUPLOT 5.4 patchlevel 3 </desc>
+<desc>Produced by GNUPLOT 6.0 patchlevel 1 </desc>
 
 <g id="gnuplot_canvas">
 
@@ -245,21 +245,6 @@
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M106.09,18.01 L106.09,342.40 L514.87,342.40 L514.87,18.01 L106.09,18.01 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g transform="translate(19.18,180.21) rotate(270)" stroke="none" fill="rgb(148,0,211)" font-family="Arial" font-size="12.00"  text-anchor="middle">
-		<text><tspan font-family="Arial" >voltage, V</tspan></text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g transform="translate(569.72,180.21) rotate(270)" stroke="none" fill="rgb(0,158,115)" font-family="Arial" font-size="12.00"  text-anchor="middle">
-		<text><tspan font-family="Arial" >phase, degrees</tspan></text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g transform="translate(310.48,391.30)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="middle">
-		<text><tspan font-family="Arial" >frequency</tspan></text>
-	</g>
-</g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 	<g id="gnuplot_plot_1" ><title>C=10n</title>
@@ -664,7 +649,7 @@
 		L511.19,18.01 L511.60,18.01 L512.01,18.01 L512.41,18.01 L512.82,18.01 L513.23,18.01 L513.64,18.01 L514.05,18.01
 		L514.46,18.01 L514.87,18.01  '/></g>
 	</g>
-	<g id="gnuplot_plot_4" ><title>gnuplot_plot_4</title>
+	<g id="gnuplot_plot_4"  fill="none"><title>gnuplot_plot_4</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 	</g>
@@ -675,7 +660,7 @@
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(240, 228,  66)'  d='M455.53,90.01 L498.09,90.01 M106.09,18.02 L106.50,18.02 L106.91,18.02 L107.32,18.02 L107.73,18.02 L108.14,18.02
+	<path stroke='rgb(230, 159,   0)'  d='M455.53,90.01 L498.09,90.01 M106.09,18.02 L106.50,18.02 L106.91,18.02 L107.32,18.02 L107.73,18.02 L108.14,18.02
 		L108.55,18.02 L108.95,18.02 L109.36,18.02 L109.77,18.02 L110.18,18.02 L110.59,18.03 L111.00,18.03 L111.41,18.03
 		L111.82,18.03 L112.23,18.03 L112.64,18.03 L113.05,18.03 L113.46,18.03 L113.86,18.03 L114.27,18.03 L114.68,18.03
 		L115.09,18.03 L115.50,18.03 L115.91,18.03 L116.32,18.03 L116.73,18.03 L117.14,18.03 L117.55,18.03 L117.96,18.03
@@ -809,7 +794,7 @@
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(  0, 114, 178)'  d='M455.53,108.01 L498.09,108.01 M106.09,18.07 L106.50,18.07 L106.91,18.07 L107.32,18.07 L107.73,18.07 L108.14,18.07
+	<path stroke='rgb(240, 228,  66)'  d='M455.53,108.01 L498.09,108.01 M106.09,18.07 L106.50,18.07 L106.91,18.07 L107.32,18.07 L107.73,18.07 L108.14,18.07
 		L108.55,18.07 L108.95,18.07 L109.36,18.07 L109.77,18.08 L110.18,18.08 L110.59,18.08 L111.00,18.08 L111.41,18.08
 		L111.82,18.08 L112.23,18.08 L112.64,18.08 L113.05,18.08 L113.46,18.08 L113.86,18.09 L114.27,18.09 L114.68,18.09
 		L115.09,18.09 L115.50,18.09 L115.91,18.09 L116.32,18.09 L116.73,18.09 L117.14,18.09 L117.55,18.10 L117.96,18.10
@@ -943,7 +928,7 @@
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(229,  30,  16)'  d='M455.53,126.01 L498.09,126.01 M106.09,18.27 L106.50,18.27 L106.91,18.28 L107.32,18.28 L107.73,18.28 L108.14,18.29
+	<path stroke='rgb(  0, 114, 178)'  d='M455.53,126.01 L498.09,126.01 M106.09,18.27 L106.50,18.27 L106.91,18.28 L107.32,18.28 L107.73,18.28 L108.14,18.29
 		L108.55,18.29 L108.95,18.30 L109.36,18.30 L109.77,18.30 L110.18,18.31 L110.59,18.31 L111.00,18.32 L111.41,18.32
 		L111.82,18.32 L112.23,18.33 L112.64,18.33 L113.05,18.34 L113.46,18.34 L113.86,18.35 L114.27,18.35 L114.68,18.36
 		L115.09,18.36 L115.50,18.37 L115.91,18.37 L116.32,18.38 L116.73,18.38 L117.14,18.39 L117.55,18.39 L117.96,18.40
@@ -1070,18 +1055,33 @@
 		L511.19,342.21 L511.60,342.22 L512.01,342.22 L512.41,342.22 L512.82,342.22 L513.23,342.23 L513.64,342.23 L514.05,342.23
 		L514.46,342.23 L514.87,342.24  '/></g>
 	</g>
-	<g id="gnuplot_plot_8" ><title>gnuplot_plot_8</title>
+	<g id="gnuplot_plot_8"  fill="none"><title>gnuplot_plot_8</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 	</g>
-<g fill="none" color="white" stroke="rgb(  0,   0,   0)" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
+<g fill="none" color="white" stroke="rgb(229,  30,  16)" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="black" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M106.09,18.01 L106.09,342.40 L514.87,342.40 L514.87,18.01 L106.09,18.01 Z  '/></g>
+	<path stroke='black'  d='M106.09,18.01 L106.09,342.40 L514.87,342.40 L514.87,18.01 L106.09,18.01 Z  '/>	<g transform="translate(19.18,180.21) rotate(270.00)" stroke="none" fill="rgb(148,0,211)" font-family="Arial" font-size="12.00"  text-anchor="middle">
+		<text><tspan font-family="Arial" >voltage, V</tspan></text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<g transform="translate(569.72,180.21) rotate(270.00)" stroke="none" fill="rgb(0,158,115)" font-family="Arial" font-size="12.00"  text-anchor="middle">
+		<text><tspan font-family="Arial" >phase, degrees</tspan></text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<g transform="translate(310.48,391.30)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="middle">
+		<text><tspan font-family="Arial" >frequency</tspan></text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 </g>

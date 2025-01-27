@@ -22,19 +22,13 @@
   "scripts": {
     "clean": "rm -fr lib",
     "compile": "tsc",
-    "test": "ava"
+    "test": "env NODE_ENV=test node --enable-source-maps --test 'lib/**/*.test.js'"
   },
   "dependencies": {
-    "tslib": "^2.4.0",
+    "tslib": "^2.8.1",
     "@jecs/math": "*"
   },
   "devDependencies": {
-    "peggy": "^2.0.1"
-  },
-  "ava": {
-    "files": [
-      "lib/**/*.test.*",
-      "lib/**/__test__/*"
-    ]
+    "peggy": "^4.2.0"
   }
 }

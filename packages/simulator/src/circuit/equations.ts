@@ -50,7 +50,10 @@ export class ConstantExp extends Exp {
 export type UnaryOp = "-" | "+";
 
 export class UnaryExp extends Exp {
-  constructor(readonly op: UnaryOp, readonly arg: Exp) {
+  constructor(
+    readonly op: UnaryOp,
+    readonly arg: Exp,
+  ) {
     super();
   }
 
@@ -81,7 +84,11 @@ export class UnaryExp extends Exp {
 export type BinaryOp = "-" | "+" | "*" | "/" | "^";
 
 export class BinaryExp extends Exp {
-  constructor(readonly op: BinaryOp, readonly arg1: Exp, readonly arg2: Exp) {
+  constructor(
+    readonly op: BinaryOp,
+    readonly arg1: Exp,
+    readonly arg2: Exp,
+  ) {
     super();
   }
 
@@ -115,7 +122,10 @@ export class BinaryExp extends Exp {
 }
 
 export class FunctionExp extends Exp {
-  constructor(readonly def: FunctionDef, readonly args: readonly Exp[]) {
+  constructor(
+    readonly def: FunctionDef,
+    readonly args: readonly Exp[],
+  ) {
     super();
   }
 
@@ -162,7 +172,11 @@ export class Equations implements Iterable<string> {
 }
 
 export class Binding {
-  constructor(readonly device: Device, readonly name: string, readonly value: Exp) {}
+  constructor(
+    readonly device: Device,
+    readonly name: string,
+    readonly value: Exp,
+  ) {}
 
   setProperty(eq: Equations): void {
     try {

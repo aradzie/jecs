@@ -2,12 +2,7 @@
   "extends": "../tsconfig-template.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "lib",
-    "incremental": true,
-    "tsBuildInfoFile": "lib/.tsbuildcache"
+    "outDir": "lib"
   },
-  "include": ["src/**/*"],
-  "ts-node": {
-    "transpileOnly": true
-  }
+  "include": ["src/**/*"]
 }

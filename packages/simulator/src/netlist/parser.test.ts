@@ -1,31 +1,32 @@
-import test from "ava";
+import { test } from "node:test";
+import { doesNotThrow, equal, like, throws } from "rich-assert";
 import { parse } from "./parser.js";
 
-test("parse empty netlist", (t) => {
-  t.like(parse("\n"), { items: [] });
-  t.like(parse(" # comment \n"), { items: [] });
+test("parse empty netlist", () => {
+  like(parse("\n"), { items: [] });
+  like(parse(" # comment \n"), { items: [] });
 });
 
-test("parse netlist", (t) => {
+test("parse netlist", () => {
   const input = "\n\n# a\n#b\n\nR:R1 \t\n a \t\n b # inline\n\n# c\n# d\n\n";
   const document = parse(input);
-  t.is(document.items.length, 1);
+  equal(document.items.length, 1);
 });
 
-test("check whitespace", (t) => {
-  t.notThrows(() => {
+test("check whitespace", () => {
+  doesNotThrow(() => {
     parse("R:R1 a b R=100\n");
   });
-  t.notThrows(() => {
+  doesNotThrow(() => {
     parse("R:R1 \n a \n b \n R=100\n");
   });
-  t.throws(() => {
+  throws(() => {
     parse(" R:R1 a b R=100\n");
   });
-  t.notThrows(() => {
+  doesNotThrow(() => {
     parse(".dc\n");
   });
-  t.throws(() => {
+  throws(() => {
     parse(" .dc\n");
   });
 });

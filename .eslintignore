@@ -1,8 +1,0 @@
-node_modules/
-build/
-out/
-lib/
-tmp/
-.idea/
-.vscode/
-parser.js

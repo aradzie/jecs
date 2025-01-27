@@ -1,8 +1,9 @@
-import test from "ava";
+import { test } from "node:test";
+import { equal, isFalse, isTrue, throws } from "rich-assert";
 import { Properties } from "./properties.js";
 
-test("validate properties", (t) => {
-  t.throws(
+test("validate properties", () => {
+  throws(
     () => {
       new Properties({
         a: Properties.number({ title: "a" }),
@@ -13,8 +14,8 @@ test("validate properties", (t) => {
   );
 });
 
-test("validate number properties", (t) => {
-  t.throws(
+test("validate number properties", () => {
+  throws(
     () => {
       new Properties({
         prop: Properties.number({ title: "value" }),
@@ -26,7 +27,7 @@ test("validate number properties", (t) => {
         `Expected a number, got "omg".`,
     },
   );
-  t.throws(
+  throws(
     () => {
       new Properties({
         prop: Properties.number({ title: "value" }),
@@ -38,7 +39,7 @@ test("validate number properties", (t) => {
         `Not a finite value.`,
     },
   );
-  t.throws(
+  throws(
     () => {
       new Properties({
         prop: Properties.number({ title: "value", range: ["integer"] }),
@@ -50,7 +51,7 @@ test("validate number properties", (t) => {
         `Not an integer value.`,
     },
   );
-  t.throws(
+  throws(
     () => {
       new Properties({
         prop: Properties.number({ title: "value", range: ["real", ">", 0] }),
@@ -62,7 +63,7 @@ test("validate number properties", (t) => {
         `Expected a value larger than 0, got 0.`,
     },
   );
-  t.throws(
+  throws(
     () => {
       new Properties({
         prop: Properties.number({ title: "value", range: ["real", "<", 0] }),
@@ -74,7 +75,7 @@ test("validate number properties", (t) => {
         `Expected a value less than 0, got 0.`,
     },
   );
-  t.throws(
+  throws(
     () => {
       new Properties({
         prop: Properties.number({ title: "value", range: ["real", "<>", 0] }),
@@ -88,8 +89,8 @@ test("validate number properties", (t) => {
   );
 });
 
-test("validate string properties", (t) => {
-  t.throws(
+test("validate string properties", () => {
+  throws(
     () => {
       new Properties({
         prop: Properties.string({ range: ["one", "two"], title: "value" }),
@@ -101,7 +102,7 @@ test("validate string properties", (t) => {
         `Expected a string, got 1.`,
     },
   );
-  t.throws(
+  throws(
     () => {
       new Properties({
         prop: Properties.string({ range: ["one", "two"], title: "value" }),
@@ -115,34 +116,34 @@ test("validate string properties", (t) => {
   );
 });
 
-test("get properties", (t) => {
+test("get properties", () => {
   const p = new Properties({
     a: Properties.number({ defaultValue: 1, title: "a" }),
     b: Properties.number({ title: "b" }),
     c: Properties.string({ title: "c" }),
   });
 
-  t.false(p.hasAll());
-  t.is(p.getNumber("a"), 1);
-  t.is(p.getNumber("a", 123), 123);
-  t.is(p.getNumber("b", 123), 123);
-  t.is(p.getString("c", "abc"), "abc");
+  isFalse(p.hasAll());
+  equal(p.getNumber("a"), 1);
+  equal(p.getNumber("a", 123), 123);
+  equal(p.getNumber("b", 123), 123);
+  equal(p.getString("c", "abc"), "abc");
 
   p.set("b", 222);
 
-  t.false(p.hasAll());
-  t.is(p.getNumber("b"), 222);
-  t.is(p.getNumber("b", 123), 222);
+  isFalse(p.hasAll());
+  equal(p.getNumber("b"), 222);
+  equal(p.getNumber("b", 123), 222);
 
   p.set("c", "xyz");
 
-  t.true(p.hasAll());
-  t.is(p.getString("c"), "xyz");
-  t.is(p.getString("c", "abc"), "xyz");
+  isTrue(p.hasAll());
+  equal(p.getString("c"), "xyz");
+  equal(p.getString("c", "abc"), "xyz");
 
   p.set("a", 111);
 
-  t.true(p.hasAll());
-  t.is(p.getNumber("a"), 111);
-  t.is(p.getNumber("a", 123), 111);
+  isTrue(p.hasAll());
+  equal(p.getNumber("a"), 111);
+  equal(p.getNumber("a", 123), 111);
 });

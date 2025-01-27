@@ -8,7 +8,6 @@
     "declarationMap": true,
     "esModuleInterop": true,
     "importHelpers": true,
-    "importsNotUsedAsValues": "error",
     "inlineSources": true,
     "lib": ["esnext"],
     "module": "esnext",

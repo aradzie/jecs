@@ -1,7 +1,8 @@
-import test from "ava";
+import { test } from "node:test";
+import { deepEqual } from "rich-assert";
 import { Sweep } from "./sweep.js";
 
-test("sweep", (t) => {
+test("sweep", () => {
   // Arrange.
 
   const sweep = new Sweep("x");
@@ -15,7 +16,7 @@ test("sweep", (t) => {
 
   // Assert.
 
-  t.deepEqual([...sweep], [1, 2, 3, 4, 5]);
+  deepEqual([...sweep], [1, 2, 3, 4, 5]);
 
   // Act.
 
@@ -26,5 +27,5 @@ test("sweep", (t) => {
 
   // Assert.
 
-  t.deepEqual([...sweep], [5, 4, 3, 2, 1]);
+  deepEqual([...sweep], [5, 4, 3, 2, 1]);
 });

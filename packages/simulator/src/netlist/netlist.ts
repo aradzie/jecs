@@ -64,7 +64,10 @@ export class Netlist {
     return builder.build();
   }
 
-  constructor(readonly circuit: Circuit, readonly analyses: readonly Analysis[]) {}
+  constructor(
+    readonly circuit: Circuit,
+    readonly analyses: readonly Analysis[],
+  ) {}
 }
 
 interface Instance {

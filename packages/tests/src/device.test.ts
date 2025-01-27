@@ -1,17 +1,17 @@
 import { dumpCircuit } from "@jecs/simulator/lib/circuit/debug.js";
 import { Netlist } from "@jecs/simulator/lib/netlist/netlist.js";
-import test from "ava";
-import { globbySync } from "globby";
-import { readFileSync } from "node:fs";
+import { globSync, readFileSync } from "node:fs";
+import { test } from "node:test";
 import { fileURLToPath, URL } from "node:url";
 import { join, resolve } from "path";
+import { deepEqual } from "rich-assert";
 
 makeTests();
 
 function makeTests() {
   const __dirname = fileURLToPath(new URL(".", import.meta.url));
   const cwd = resolve(__dirname, "..", "spec");
-  const files = globbySync("**/*.md", { cwd });
+  const files = globSync("**/*.md", { cwd });
   for (const file of files) {
     const content = readFileSync(join(cwd, file), "utf-8");
     const testCases = parse(file, content);
@@ -22,12 +22,12 @@ function makeTests() {
 function makeTest(filename: string, testCases: readonly TestCase[]): void {
   let index = 1;
   for (const { netlist: content, result } of testCases) {
-    test(`${filename}#${index}`, (t) => {
+    test(`${filename}#${index}`, () => {
       const { circuit, analyses } = Netlist.parse(content);
       for (const analysis of analyses) {
         analysis.run(circuit);
       }
-      t.deepEqual(dumpCircuit(circuit), result);
+      deepEqual(dumpCircuit(circuit), result);
     });
     index += 1;
   }

@@ -6,7 +6,7 @@
 >
 
 <title>Gnuplot</title>
-<desc>Produced by GNUPLOT 5.4 patchlevel 3 </desc>
+<desc>Produced by GNUPLOT 6.0 patchlevel 1 </desc>
 
 <g id="gnuplot_canvas">
 
@@ -227,21 +227,6 @@
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M80.92,18.01 L80.92,342.40 L481.31,342.40 L481.31,18.01 L80.92,18.01 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g transform="translate(19.18,180.21) rotate(270)" stroke="none" fill="rgb(148,0,211)" font-family="Arial" font-size="12.00"  text-anchor="middle">
-		<text><tspan font-family="Arial" >V(C), V</tspan></text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g transform="translate(569.72,180.21) rotate(270)" stroke="none" fill="rgb(0,158,115)" font-family="Arial" font-size="12.00"  text-anchor="middle">
-		<text><tspan font-family="Arial" >I(C), A</tspan></text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g transform="translate(281.11,391.30)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="middle">
-		<text><tspan font-family="Arial" >time</tspan></text>
-	</g>
-</g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 	<g id="gnuplot_plot_1" ><title>C1=1μ</title>
@@ -1396,7 +1381,7 @@
 		L479.98,231.07 L480.11,231.06 L480.24,231.05 L480.38,231.04 L480.51,231.03 L480.64,231.02 L480.78,231.00 L480.91,230.98
 		L481.04,230.97 L481.18,230.95 L481.31,230.93  '/></g>
 	</g>
-	<g id="gnuplot_plot_4" ><title>gnuplot_plot_4</title>
+	<g id="gnuplot_plot_4"  fill="none"><title>gnuplot_plot_4</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 	</g>
@@ -1407,7 +1392,7 @@
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(240, 228,  66)'  d='M421.97,90.01 L464.53,90.01 M80.92,147.77 L81.05,146.95 L81.19,146.14 L81.32,145.33 L81.45,144.52 L81.59,143.71
+	<path stroke='rgb(230, 159,   0)'  d='M421.97,90.01 L464.53,90.01 M80.92,147.77 L81.05,146.95 L81.19,146.14 L81.32,145.33 L81.45,144.52 L81.59,143.71
 		L81.72,142.90 L81.85,142.10 L81.99,141.30 L82.12,140.50 L82.25,139.70 L82.39,138.90 L82.52,138.11 L82.66,137.32
 		L82.79,136.53 L82.92,135.74 L83.06,134.95 L83.19,134.17 L83.32,133.38 L83.46,132.60 L83.59,131.82 L83.72,131.05
 		L83.86,130.28 L83.99,129.50 L84.12,128.73 L84.26,127.97 L84.39,127.20 L84.52,126.44 L84.66,125.68 L84.79,124.92
@@ -1791,7 +1776,7 @@
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(  0, 114, 178)'  d='M421.97,108.01 L464.53,108.01 M80.92,147.77 L81.05,146.95 L81.19,146.14 L81.32,145.32 L81.45,144.51 L81.59,143.70
+	<path stroke='rgb(240, 228,  66)'  d='M421.97,108.01 L464.53,108.01 M80.92,147.77 L81.05,146.95 L81.19,146.14 L81.32,145.32 L81.45,144.51 L81.59,143.70
 		L81.72,142.89 L81.85,142.08 L81.99,141.27 L82.12,140.47 L82.25,139.66 L82.39,138.85 L82.52,138.05 L82.66,137.25
 		L82.79,136.45 L82.92,135.65 L83.06,134.85 L83.19,134.05 L83.32,133.25 L83.46,132.46 L83.59,131.67 L83.72,130.87
 		L83.86,130.08 L83.99,129.29 L84.12,128.51 L84.26,127.72 L84.39,126.94 L84.52,126.15 L84.66,125.37 L84.79,124.59
@@ -2175,7 +2160,7 @@
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(229,  30,  16)'  d='M421.97,126.01 L464.53,126.01 M80.92,147.77 L81.05,146.95 L81.19,146.14 L81.32,145.32 L81.45,144.51 L81.59,143.70
+	<path stroke='rgb(  0, 114, 178)'  d='M421.97,126.01 L464.53,126.01 M80.92,147.77 L81.05,146.95 L81.19,146.14 L81.32,145.32 L81.45,144.51 L81.59,143.70
 		L81.72,142.89 L81.85,142.07 L81.99,141.26 L82.12,140.45 L82.25,139.65 L82.39,138.84 L82.52,138.03 L82.66,137.22
 		L82.79,136.42 L82.92,135.62 L83.06,134.81 L83.19,134.01 L83.32,133.21 L83.46,132.41 L83.59,131.61 L83.72,130.81
 		L83.86,130.02 L83.99,129.22 L84.12,128.43 L84.26,127.64 L84.39,126.85 L84.52,126.06 L84.66,125.27 L84.79,124.48
@@ -2552,18 +2537,33 @@
 		L479.98,144.09 L480.11,143.28 L480.24,142.47 L480.38,141.66 L480.51,140.85 L480.64,140.04 L480.78,139.23 L480.91,138.42
 		L481.04,137.61 L481.18,136.80 L481.31,135.99  '/></g>
 	</g>
-	<g id="gnuplot_plot_8" ><title>gnuplot_plot_8</title>
+	<g id="gnuplot_plot_8"  fill="none"><title>gnuplot_plot_8</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 	</g>
-<g fill="none" color="white" stroke="rgb(  0,   0,   0)" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
+<g fill="none" color="white" stroke="rgb(229,  30,  16)" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="black" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M80.92,18.01 L80.92,342.40 L481.31,342.40 L481.31,18.01 L80.92,18.01 Z  '/></g>
+	<path stroke='black'  d='M80.92,18.01 L80.92,342.40 L481.31,342.40 L481.31,18.01 L80.92,18.01 Z  '/>	<g transform="translate(19.18,180.21) rotate(270.00)" stroke="none" fill="rgb(148,0,211)" font-family="Arial" font-size="12.00"  text-anchor="middle">
+		<text><tspan font-family="Arial" >V(C), V</tspan></text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<g transform="translate(569.72,180.21) rotate(270.00)" stroke="none" fill="rgb(0,158,115)" font-family="Arial" font-size="12.00"  text-anchor="middle">
+		<text><tspan font-family="Arial" >I(C), A</tspan></text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<g transform="translate(281.11,391.30)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="middle">
+		<text><tspan font-family="Arial" >time</tspan></text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 </g>
