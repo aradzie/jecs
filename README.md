@@ -78,10 +78,6 @@ prints the following result:
 ];
 ```
 
-## Interactive Shell
-
-An [interactive shell](https://aradzie.github.io/jecs/) is available to play with netlists.
-
 ## Virtual Curve Tracer
 
 The following non-linear device I/V curves were obtained from the simulator.

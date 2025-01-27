@@ -1,4 +1,0 @@
-V:V1 nc gnd V=5
-V:V2 nb gnd V=0.65
-BJT:DUT gnd nb nc @NPN
-.dc
