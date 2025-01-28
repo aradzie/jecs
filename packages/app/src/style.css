@@ -1,21 +1,11 @@
 :root {
+  --text-color: #333333;
+  --page-color: #ffffff;
+  --separator-color: #cccccc;
+
+  color: var(--text-color);
+  background-color: var(--page-color);
   font-family: Arial, sans-serif;
-  line-height: 1.5;
   font-weight: 400;
-  color: #242424;
-  background-color: #ffffff;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-}
-
-#app {
-  margin: 0;
-  padding: 2rem;
-}
-
-.logo {
-  width: 100px;
+  line-height: 1.5;
 }

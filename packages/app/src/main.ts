@@ -1,9 +1,6 @@
+import "./reset.css";
 import "./style.css";
-import logo from "./logo.svg";
+import { h, render } from "preact";
+import { App } from "./components/App.tsx";
 
-document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
-  <div>
-    <img src="${logo}" class="logo" />
-    <h1>JECS</h1>
-  </div>
-`;
+render(h(App, null), document.querySelector("#app")!);

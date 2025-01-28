@@ -1,0 +1,31 @@
+.root {
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: auto;
+}
+
+.category {
+  display: block;
+  margin: 1rem;
+}
+
+.title {
+  margin-block-end: 1rem;
+  border-block-end: 1px solid var(--separator-color);
+}
+
+.list {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1rem;
+  align-content: start;
+  justify-content: start;
+  margin-block-end: 1rem;
+}
+
+.symbol {
+  inline-size: 3rem;
+  block-size: 3rem;
+  background-color: var(--separator-color);
+  cursor: pointer;
+}

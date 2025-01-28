@@ -1,0 +1,36 @@
+.root {
+  display: flex;
+  align-items: center;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: var(--separator-color);
+}
+
+.icon {
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  fill: var(--text-color);
+}
+
+.separator {
+  inline-size: 1px;
+  block-size: 1rem;
+  margin: 0 1rem;
+  background-color: var(--text-color);
+}

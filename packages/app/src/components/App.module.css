@@ -1,0 +1,30 @@
+.root {
+  position: absolute;
+  inset: 0;
+}
+
+.toolbar {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  inset-block-start: 0;
+  block-size: 2rem;
+  border-block-end: 1px solid var(--separator-color);
+}
+
+.library {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 2rem;
+  inset-block-end: 0;
+  inline-size: 14rem;
+  border-inline-end: 1px solid var(--separator-color);
+}
+
+.canvas {
+  position: absolute;
+  inset-inline-start: 14rem;
+  inset-inline-end: 0;
+  inset-block-start: 2rem;
+  inset-block-end: 0;
+}
