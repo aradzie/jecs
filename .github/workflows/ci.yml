@@ -17,3 +17,4 @@ jobs:
           npm ci
           npm run compile
           npm run test
+          npm run build
