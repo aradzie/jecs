@@ -5,6 +5,7 @@ module.exports = {
     clean: [],
     compile: ["^compile"],
     test: ["^test"],
+    build: ["^build"],
   },
 
   npmClient: "npm",

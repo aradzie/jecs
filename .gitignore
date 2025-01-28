@@ -1,10 +1,12 @@
-node_modules/
 build/
-out/
+dist/
 lib/
+node_modules/
+out/
 tmp/
 .idea/
 .vscode/
 *.tsbuildinfo
 *.log
+.DS_Store
 *~

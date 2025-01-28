@@ -6,7 +6,6 @@
   "description": "A simulator of electronic circuits.",
   "author": "Aliaksandr Radzivanovich",
   "license": "GPL",
-  "keywords": [],
   "homepage": "https://github.com/aradzie/jecs#readme",
   "repository": {
     "type": "git",
@@ -22,12 +21,11 @@
     "clean": "lage clean --no-cache",
     "compile": "lage compile --no-cache",
     "test": "lage test --no-cache",
-    "format": "prettier . --write",
-    "build": "env NODE_ENV=production lage run build",
-    "build-dev": "env NODE_ENV=development lage run build"
+    "build": "lage build --no-cache",
+    "format": "prettier . --write"
   },
   "devDependencies": {
-    "@types/node": "^22.10.10",
+    "@types/node": "^22.13.0",
     "lage": "^2.12.10",
     "prettier": "^3.4.2",
     "rich-assert": "^0.0.3",

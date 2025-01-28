@@ -1,10 +1,9 @@
-node_modules/
 build/
-out/
+dist/
 lib/
+out/
 tmp/
 .idea/
 .vscode/
 package-lock.json
-*.snap
-parser.js
+packages/simulator/src/netlist/parser.js
