@@ -1,0 +1,32 @@
+.root {
+  padding: 1rem;
+}
+
+.category {
+  display: block;
+  margin-block-end: 1rem;
+}
+
+.title {
+  margin-block-end: 1rem;
+  border-block-end: 1px solid var(--separator-color);
+}
+
+.list {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1rem;
+  align-content: start;
+  justify-content: center;
+  margin-block-end: 1rem;
+}
+
+.symbol {
+  inline-size: 3rem;
+  block-size: 3rem;
+  cursor: pointer;
+}
+
+.symbol:hover {
+  background-color: var(--selection-color);
+}

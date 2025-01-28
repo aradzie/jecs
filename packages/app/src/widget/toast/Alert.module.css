@@ -1,0 +1,19 @@
+.alert {
+  composes: fadeIn from "../animations.module.css";
+  display: flex;
+  position: unset;
+  inset: unset;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  max-inline-size: 50rem;
+  padding: 1rem 2rem;
+  border: 1px solid var(--separator-color);
+  color: var(--text-color);
+  background-color: var(--page-color);
+  box-shadow: var(--box-shadow);
+}
+
+.message {
+  flex: 1;
+}

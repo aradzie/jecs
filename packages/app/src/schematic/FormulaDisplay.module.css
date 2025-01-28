@@ -1,0 +1,7 @@
+.root {
+  /* Empty. */
+}
+
+.selected {
+  outline: 1px solid #0000ff;
+}

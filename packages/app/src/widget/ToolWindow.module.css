@@ -1,0 +1,43 @@
+.root {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  box-shadow: var(--box-shadow);
+  backdrop-filter: blur(10px);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.headerText {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: move;
+  user-select: none;
+}
+
+.headerButton {
+  cursor: pointer;
+}
+
+.content {
+  flex: 1;
+  border-block-start: 1px solid var(--separator-color);
+  overflow: auto;
+  user-select: none;
+}
+
+.resize {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-end: 0;
+  inline-size: 24px;
+  block-size: 24px;
+  cursor: nwse-resize;
+}

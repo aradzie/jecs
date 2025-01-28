@@ -1,0 +1,20 @@
+.root {
+  list-style: none;
+  max-block-size: 30rem;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+}
+
+.item {
+  margin: 0 -1rem;
+  padding: 0 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.item:hover {
+  background-color: var(--selection-color);
+}

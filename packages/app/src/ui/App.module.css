@@ -1,0 +1,23 @@
+.root {
+  position: fixed;
+  inset: 0;
+  color: var(--text-color);
+  background-color: var(--page-color);
+}
+
+.toolbar {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  inset-block-start: 0;
+  block-size: 3rem;
+  border-block-end: 1px solid var(--separator-color);
+}
+
+.schematic {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  inset-block-start: 3rem;
+  inset-block-end: 0;
+}

@@ -1,0 +1,12 @@
+.root {
+  contain: strict;
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+  user-select: none;
+}
+
+.root:focus {
+  outline: 1px solid var(--separator-color);
+  outline-offset: -1px;
+}

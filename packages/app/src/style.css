@@ -3,10 +3,18 @@
   --page-color: #ffffff;
   --separator-color: #cccccc;
   --selection-color: #eeeeee;
+  --box-shadow: 0 0 1rem var(--separator-color);
 
   color: var(--text-color);
   background-color: var(--page-color);
   font-family: Arial, sans-serif;
   font-weight: 400;
   line-height: 1.5;
+}
+
+kbd {
+  min-inline-size: 2rem;
+  padding: 0 1rem;
+  border-radius: 0.5rem;
+  outline: 1px solid var(--separator-color);
 }

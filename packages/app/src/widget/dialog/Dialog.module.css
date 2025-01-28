@@ -1,0 +1,14 @@
+.root {
+  composes: fadeIn from "../animations.module.css";
+  display: block;
+  position: fixed;
+  inset: 0;
+  inline-size: fit-content;
+  block-size: fit-content;
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--separator-color);
+  color: var(--text-color);
+  background-color: var(--page-color);
+  box-shadow: var(--box-shadow);
+}

@@ -1,0 +1,14 @@
+.root {
+  inline-size: 50rem;
+  block-size: 40rem;
+  padding: 2rem;
+  overflow: auto;
+}
+
+.root > :first-child {
+  margin-block-start: 0;
+}
+
+.root > :last-child {
+  margin-block-end: 0;
+}

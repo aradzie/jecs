@@ -1,0 +1,43 @@
+.root {
+  display: flex;
+  align-items: center;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 3rem;
+  block-size: 3rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.button:enabled {
+  cursor: pointer;
+}
+
+.button:enabled:focus-visible {
+  background-color: var(--separator-color);
+}
+
+.button:enabled:hover {
+  background-color: var(--separator-color);
+}
+
+.separator {
+  inline-size: 1px;
+  block-size: 2rem;
+  margin: 0 1rem;
+  background-color: var(--text-color);
+}

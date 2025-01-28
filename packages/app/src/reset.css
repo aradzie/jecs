@@ -4,20 +4,6 @@
   box-sizing: border-box;
 }
 
-html {
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-}
-
-textarea {
-  resize: block;
-}
-
 img,
 picture,
 video,
@@ -32,4 +18,8 @@ button,
 textarea,
 select {
   font: inherit;
+}
+
+textarea {
+  resize: block;
 }
