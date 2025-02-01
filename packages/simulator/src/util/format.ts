@@ -1,6 +1,6 @@
 import { getUnitSymbol, Unit } from "./unit.js";
 
-export const humanizeNumber = (value: number, unit: string | Unit = Unit.UNITLESS): string => {
+export const humanizeNumber = (value: number, unit: string | Unit = ""): string => {
   if (!Number.isFinite(value)) {
     if (value !== value) {
       return "NaN";
