@@ -14,7 +14,17 @@ export function SchematicOverlay() {
       }}
     >
       {schematic.formulas.map((formula) => (
-        <FormulaDisplay key={formula.id} formula={formula} selected={selection.has(formula)} />
+        <FormulaDisplay
+          key={formula.id}
+          formula={formula}
+          text={formula.text}
+          align={formula.align}
+          x={formula.x}
+          y={formula.y}
+          width={formula.width}
+          height={formula.height}
+          selected={selection.has(formula)}
+        />
       ))}
     </div>
   );
