@@ -1,6 +1,5 @@
 import { Element } from "./element.ts";
-import { filterFormulas, filterInstances, filterNotes, filterWires } from "./filter.ts";
-import { Formula } from "./formula.ts";
+import { filterInstances, filterNotes, filterWires } from "./filter.ts";
 import { Instance } from "./instance.ts";
 import { Names } from "./names.ts";
 import { connect, dummyNetwork, Network } from "./network.ts";
@@ -33,7 +32,6 @@ export class Schematic implements Iterable<Element> {
   #elements: Element[];
   #wiring: Wiring;
   #instances: readonly Instance[] | null;
-  #formulas: readonly Formula[] | null;
   #notes: readonly Note[] | null;
   #wires: readonly Wire[] | null;
   #network: Network | null;
@@ -43,7 +41,6 @@ export class Schematic implements Iterable<Element> {
     this.#elements = [...elements];
     this.#wiring = wiring;
     this.#instances = null;
-    this.#formulas = null;
     this.#notes = null;
     this.#wires = null;
     this.#network = null;
@@ -60,10 +57,6 @@ export class Schematic implements Iterable<Element> {
 
   get instances(): readonly Instance[] {
     return (this.#instances ??= filterInstances(this.#elements));
-  }
-
-  get formulas(): readonly Formula[] {
-    return (this.#formulas ??= filterFormulas(this.#elements));
   }
 
   get notes(): readonly Note[] {
@@ -111,7 +104,6 @@ export class Schematic implements Iterable<Element> {
     this.#elements = [];
     this.#wiring = dummyWiring;
     this.#instances = null;
-    this.#formulas = null;
     this.#notes = null;
     this.#wires = null;
     this.#network = null;

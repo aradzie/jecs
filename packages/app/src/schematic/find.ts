@@ -1,13 +1,11 @@
 import { Element } from "./element.ts";
-import { Formula } from "./formula.ts";
 import { Instance } from "./instance.ts";
 import { Note } from "./note.ts";
 import { Wire } from "./wire.ts";
 
 export const filter = {
   instance: 0x0001,
-  formula: 0x0002,
-  note: 0x0004,
+  note: 0x0002,
   wire: 0x1000,
   notWire: 0x0fff,
   all: 0xffff,
@@ -31,8 +29,6 @@ function classify(element: Element): number {
   switch (true) {
     case element instanceof Instance:
       return filter.instance;
-    case element instanceof Formula:
-      return filter.formula;
     case element instanceof Note:
       return filter.note;
     case element instanceof Wire:

@@ -8,7 +8,6 @@ import {
 } from "@mdi/js";
 import { Icon } from "../widget/Icon.tsx";
 import { useController } from "./controller.ts";
-import { Formula } from "./formula.ts";
 import { Instance } from "./instance.ts";
 import { Note } from "./note.ts";
 import * as styles from "./PropertiesPane.module.css";
@@ -22,9 +21,6 @@ export function PropertiesPane() {
     const [element] = elements;
     if (element instanceof Instance) {
       return <InstancePropertiesPane instance={element} />;
-    }
-    if (element instanceof Formula) {
-      return <FormulaPropertiesPane formula={element} />;
     }
     if (element instanceof Note) {
       return <NotePropertiesPane note={element} />;
@@ -59,23 +55,6 @@ function InstancePropertiesPane({ instance }: { instance: Instance }) {
           ))}
         </ul>
       )}
-    </div>
-  );
-}
-
-function FormulaPropertiesPane({ formula }: { formula: Formula }) {
-  return (
-    <div class={styles.root}>
-      <div class={styles.title}>Formula</div>
-      <div>{formula.text}</div>
-      <p>
-        <Icon shape={mdiAlignHorizontalLeft} size={"24px"} />
-        <Icon shape={mdiAlignHorizontalCenter} size={"24px"} />
-        <Icon shape={mdiAlignHorizontalRight} size={"24px"} />
-        <Icon shape={mdiAlignVerticalTop} size={"24px"} />
-        <Icon shape={mdiAlignVerticalCenter} size={"24px"} />
-        <Icon shape={mdiAlignVerticalBottom} size={"24px"} />
-      </p>
     </div>
   );
 }

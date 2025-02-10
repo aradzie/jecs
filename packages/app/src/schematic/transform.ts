@@ -2,7 +2,6 @@ import { Area } from "../graphics/geometry.ts";
 import { Align, HorizontalAlign, VerticalAlign } from "../symbol/align.ts";
 import { TransformOp } from "../symbol/transform.ts";
 import { Element } from "./element.ts";
-import { Formula } from "./formula.ts";
 import { Instance } from "./instance.ts";
 import { Note } from "./note.ts";
 import { Wire } from "./wire.ts";
@@ -115,9 +114,6 @@ function transformElement(element: Element, op: TransformOp, cy: number, cx: num
   switch (true) {
     case element instanceof Instance:
       element.transformBy(op);
-      break;
-    case element instanceof Formula:
-      // TODO Transform alignment.
       break;
     case element instanceof Note:
       // TODO Transform alignment.

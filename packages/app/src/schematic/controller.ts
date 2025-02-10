@@ -22,7 +22,6 @@ import {
   pointerPosition,
 } from "./events.ts";
 import { filter, findElement } from "./find.ts";
-import { Formula } from "./formula.ts";
 import { History } from "./history.ts";
 import { Instance } from "./instance.ts";
 import { connect, MouseAction, wireShape } from "./mouse.ts";
@@ -215,12 +214,6 @@ export class Controller {
       ["Shift+N", pasteInstance(nonlinear.nmos)],
       ["Shift+P", pasteInstance(nonlinear.pmos)],
       ["a", pasteInstance(nonlinear.opamp)],
-      [
-        "f",
-        () => {
-          this.pasteFormula("\\text{formula...}");
-        },
-      ],
       [
         "t",
         () => {
@@ -778,9 +771,6 @@ export class Controller {
 
   #measureElements(elements: Iterable<Element>) {
     for (const element of elements) {
-      if (element instanceof Formula) {
-        this.#measureRef.current!.updateSize(element);
-      }
       if (element instanceof Note) {
         this.#measureRef.current!.updateSize(element);
       }
@@ -846,11 +836,6 @@ export class Controller {
     } else {
       this.#pasteElements_start([new Instance(symbol)]);
     }
-  }
-
-  pasteFormula(text: string) {
-    this.#cancelMouseAction();
-    this.#pasteElements_start([new Formula(text)]);
   }
 
   pasteNote(text: string) {
@@ -1015,12 +1000,6 @@ export class Controller {
     }
     for (const instance of schematic.instances) {
       this.#painter.paintLabels(zoom, instance, selection.has(instance));
-    }
-    for (const formula of schematic.formulas) {
-      if (formula === hovered) {
-        this.#painter.paintArea(zoom, formula.area);
-        this.#painter.paintOrigin(zoom, formula);
-      }
     }
     for (const note of schematic.notes) {
       if (note === hovered) {

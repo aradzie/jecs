@@ -2,8 +2,6 @@ import { render } from "preact";
 import { useImperativeHandle, useRef } from "preact/hooks";
 import { useController } from "./controller.ts";
 import { Element } from "./element.ts";
-import { Formula } from "./formula.ts";
-import { FormulaDisplay } from "./FormulaDisplay.tsx";
 import { Note } from "./note.ts";
 import { NoteDisplay } from "./NoteDisplay.tsx";
 import * as styles from "./SchematicOverlay.module.css";
@@ -19,24 +17,6 @@ export function SchematicOverlay() {
     controller.measureRef,
     () => ({
       updateSize: (element) => {
-        if (element instanceof Formula) {
-          const c = document.createElement("div");
-          div.current!.appendChild(c);
-          render(
-            <FormulaDisplay
-              formula={element}
-              text={element.text}
-              align={element.align}
-              x={0}
-              y={0}
-              width={0}
-              height={0}
-              selected={false}
-            />,
-            c,
-          );
-          div.current!.removeChild(c);
-        }
         if (element instanceof Note) {
           const c = document.createElement("div");
           div.current!.appendChild(c);
@@ -70,19 +50,6 @@ export function SchematicOverlay() {
         scale: `${zoom.scale}`,
       }}
     >
-      {schematic.formulas.map((formula) => (
-        <FormulaDisplay
-          key={formula.id}
-          formula={formula}
-          text={formula.text}
-          align={formula.align}
-          x={formula.x}
-          y={formula.y}
-          width={formula.width}
-          height={formula.height}
-          selected={selection.has(formula)}
-        />
-      ))}
       {schematic.notes.map((note) => (
         <NoteDisplay
           key={note.id}

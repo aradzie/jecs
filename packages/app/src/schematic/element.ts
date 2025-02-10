@@ -2,7 +2,8 @@ import { Area } from "../graphics/geometry.ts";
 import { Unique } from "./unique.ts";
 
 /**
- * Schematics consist of elements. Elements are instances, wires, formulas, notes, etc.
+ * Schematics consist of elements. Elements are instances, wires,
+ * notes, etc.
  */
 export abstract class Element extends Unique {
   abstract get x(): number;
