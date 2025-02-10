@@ -10,6 +10,7 @@ import { Icon } from "../widget/Icon.tsx";
 import { useController } from "./controller.ts";
 import { Formula } from "./formula.ts";
 import { Instance } from "./instance.ts";
+import { Note } from "./note.ts";
 import * as styles from "./PropertiesPane.module.css";
 import { Wire } from "./wire.ts";
 
@@ -24,6 +25,9 @@ export function PropertiesPane() {
     }
     if (element instanceof Formula) {
       return <FormulaPropertiesPane formula={element} />;
+    }
+    if (element instanceof Note) {
+      return <NotePropertiesPane note={element} />;
     }
     if (element instanceof Wire) {
       return <WirePropertiesPane wire={element} />;
@@ -64,6 +68,23 @@ function FormulaPropertiesPane({ formula }: { formula: Formula }) {
     <div class={styles.root}>
       <div class={styles.title}>Formula</div>
       <div>{formula.text}</div>
+      <p>
+        <Icon shape={mdiAlignHorizontalLeft} size={"24px"} />
+        <Icon shape={mdiAlignHorizontalCenter} size={"24px"} />
+        <Icon shape={mdiAlignHorizontalRight} size={"24px"} />
+        <Icon shape={mdiAlignVerticalTop} size={"24px"} />
+        <Icon shape={mdiAlignVerticalCenter} size={"24px"} />
+        <Icon shape={mdiAlignVerticalBottom} size={"24px"} />
+      </p>
+    </div>
+  );
+}
+
+function NotePropertiesPane({ note }: { note: Note }) {
+  return (
+    <div class={styles.root}>
+      <div class={styles.title}>Note</div>
+      <div>{note.text}</div>
       <p>
         <Icon shape={mdiAlignHorizontalLeft} size={"24px"} />
         <Icon shape={mdiAlignHorizontalCenter} size={"24px"} />

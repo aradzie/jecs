@@ -4,6 +4,7 @@ import { TransformOp } from "../symbol/transform.ts";
 import { Element } from "./element.ts";
 import { Formula } from "./formula.ts";
 import { Instance } from "./instance.ts";
+import { Note } from "./note.ts";
 import { Wire } from "./wire.ts";
 import { Zoom } from "./zoom.ts";
 
@@ -116,6 +117,9 @@ function transformElement(element: Element, op: TransformOp, cy: number, cx: num
       element.transformBy(op);
       break;
     case element instanceof Formula:
+      // TODO Transform alignment.
+      break;
+    case element instanceof Note:
       // TODO Transform alignment.
       break;
   }

@@ -1,5 +1,6 @@
 import { useController } from "./controller.ts";
 import { FormulaDisplay } from "./FormulaDisplay.tsx";
+import { NoteDisplay } from "./NoteDisplay.tsx";
 import * as styles from "./SchematicOverlay.module.css";
 
 export function SchematicOverlay() {
@@ -24,6 +25,19 @@ export function SchematicOverlay() {
           width={formula.width}
           height={formula.height}
           selected={selection.has(formula)}
+        />
+      ))}
+      {schematic.notes.map((note) => (
+        <NoteDisplay
+          key={note.id}
+          note={note}
+          text={note.text}
+          align={note.align}
+          x={note.x}
+          y={note.y}
+          width={note.width}
+          height={note.height}
+          selected={selection.has(note)}
         />
       ))}
     </div>

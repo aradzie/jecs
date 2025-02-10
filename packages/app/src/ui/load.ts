@@ -8,6 +8,16 @@ export function loadSchematic() {
       ["i", 150, 50, 0, "r", "R1", {}],
       ["i", 50, 120, 0, "g", "G1", {}],
       ["f", 250, 50, "cm", "I = \\frac{V}{R}"],
+      [
+        "n",
+        300,
+        0,
+        "lt",
+        "# Ohm's law\n" +
+          "*Ohm's law* states that the electric current " +
+          "through a conductor between two points " +
+          "is directly proportional to the voltage across the two points.",
+      ],
       ["w", 50, 0, 150, 0],
       ["w", 50, 100, 150, 100],
       ["w", 50, 0, 50, 20],

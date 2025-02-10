@@ -27,6 +27,7 @@ import { History } from "./history.ts";
 import { Instance } from "./instance.ts";
 import { connect, MouseAction, wireShape } from "./mouse.ts";
 import { ElementListMover } from "./move.ts";
+import { Note } from "./note.ts";
 import { Painter } from "./painter.ts";
 import { Schematic } from "./schematic.ts";
 import { Selection } from "./selection.ts";
@@ -215,7 +216,13 @@ export class Controller {
       [
         "f",
         () => {
-          this.pasteFormula(String.raw`c = \pm\sqrt{a^2 + b^2}`);
+          this.pasteFormula("\\text{formula...}");
+        },
+      ],
+      [
+        "t",
+        () => {
+          this.pasteNote("note...");
         },
       ],
     );
@@ -828,6 +835,11 @@ export class Controller {
     this.#pasteElements_start([new Formula(text)]);
   }
 
+  pasteNote(text: string) {
+    this.#cancelMouseAction();
+    this.#pasteElements_start([new Note(text)]);
+  }
+
   get canUndo() {
     return this.#history.canUndo;
   }
@@ -990,6 +1002,12 @@ export class Controller {
       if (formula === hovered) {
         this.#painter.paintArea(zoom, formula.area);
         this.#painter.paintOrigin(zoom, formula);
+      }
+    }
+    for (const note of schematic.notes) {
+      if (note === hovered) {
+        this.#painter.paintArea(zoom, note.area);
+        this.#painter.paintOrigin(zoom, note);
       }
     }
     for (const wire of schematic.wires) {

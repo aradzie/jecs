@@ -2,7 +2,7 @@ import { Area } from "../graphics/geometry.ts";
 import { Align, HorizontalAlign, VerticalAlign } from "../symbol/align.ts";
 import { Element } from "./element.ts";
 
-export class Formula extends Element {
+export class Note extends Element {
   #text: string;
   #align: Align;
   #x: number;
@@ -11,7 +11,7 @@ export class Formula extends Element {
   #height: number;
   #area: Area | null = null;
 
-  constructor(text: string, align: Align = "cm", x: number = 0, y: number = 0) {
+  constructor(text: string, align: Align = "lt", x: number = 0, y: number = 0) {
     super();
     this.#text = text;
     this.#align = align;
@@ -72,7 +72,7 @@ export class Formula extends Element {
     return (this.#area ??= this.#getArea());
   }
 
-  override moveTo(x: number, y: number): Formula {
+  override moveTo(x: number, y: number): Note {
     this.#x = x;
     this.#y = y;
     this.#area = null;

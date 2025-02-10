@@ -8,6 +8,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           katex: ["katex"],
+          marked: ["marked", "dompurify"],
         },
       },
     },

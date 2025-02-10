@@ -3,6 +3,7 @@ import { Align } from "../symbol/align.ts";
 import { Element } from "./element.ts";
 import { Formula } from "./formula.ts";
 import { Instance } from "./instance.ts";
+import { Note } from "./note.ts";
 import { Props } from "./props.ts";
 import { Wire } from "./wire.ts";
 
@@ -10,6 +11,7 @@ export type Serial = (
   | [type: "i", x: number, y: number, t: number, id: string, name: string, props: Props]
   | [type: "w", x0: number, y0: number, x1: number, y1: number]
   | [type: "f", x: number, y: number, align: Align, text: string]
+  | [type: "n", x: number, y: number, align: Align, text: string]
 )[];
 
 export function exportElements(elements: Iterable<Element>): Serial {
@@ -26,6 +28,10 @@ export function exportElements(elements: Iterable<Element>): Serial {
     if (element instanceof Formula) {
       const { x, y, align, text } = element;
       serial.push(["f", x, y, align, text]);
+    }
+    if (element instanceof Note) {
+      const { x, y, align, text } = element;
+      serial.push(["n", x, y, align, text]);
     }
   }
   return serial;
@@ -48,6 +54,11 @@ export function importElements(serial: Serial): Element[] {
       case "f": {
         const [_, x, y, align, text] = item;
         elements.push(new Formula(text, align, x, y));
+        break;
+      }
+      case "n": {
+        const [_, x, y, align, text] = item;
+        elements.push(new Note(text, align, x, y));
         break;
       }
     }

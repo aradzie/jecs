@@ -1,6 +1,7 @@
 import { Element } from "./element.ts";
 import { Formula } from "./formula.ts";
 import { Instance } from "./instance.ts";
+import { Note } from "./note.ts";
 import { Wire } from "./wire.ts";
 
 export function filterInstances(elements: Iterable<Element>): Instance[] {
@@ -27,6 +28,16 @@ export function filterFormulas(elements: Iterable<Element>): Formula[] {
   const list = [] as Formula[];
   for (const element of elements) {
     if (element instanceof Formula) {
+      list.push(element);
+    }
+  }
+  return list;
+}
+
+export function filterNotes(elements: Iterable<Element>): Note[] {
+  const list = [] as Note[];
+  for (const element of elements) {
+    if (element instanceof Note) {
       list.push(element);
     }
   }
