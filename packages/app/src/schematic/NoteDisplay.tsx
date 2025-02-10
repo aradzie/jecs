@@ -1,13 +1,10 @@
 import { clsx } from "clsx";
-import DOMPurify from "dompurify";
-import { Marked } from "marked";
 import { useLayoutEffect, useRef } from "preact/hooks";
 import { round } from "../graphics/geometry.ts";
+import { formatNote } from "../note/format-note.ts";
 import { Align, HorizontalAlign, VerticalAlign } from "../symbol/align.ts";
 import { Note } from "./note.ts";
 import * as styles from "./NoteDisplay.module.css";
-
-const marked = new Marked();
 
 export function NoteDisplay({
   note,
@@ -30,9 +27,7 @@ export function NoteDisplay({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
-    const unsafe = marked.parse(text, { async: false });
-    const safe = DOMPurify.sanitize(unsafe);
-    ref.current!.setHTMLUnsafe(safe);
+    ref.current!.setHTMLUnsafe(formatNote(text));
     note.width = ref.current!.offsetWidth;
     note.height = ref.current!.offsetHeight;
   }, [note, text, align]);

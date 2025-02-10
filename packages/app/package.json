@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "rm -fr dist",
     "compile": "tsc",
+    "test": "tsx --test 'src/**/*.test.{ts,tsx}'",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
@@ -15,7 +16,6 @@
     "@mdi/js": "^7.4.47",
     "@preact/signals": "^2.0.1",
     "clsx": "^2.1.1",
-    "dompurify": "^3.2.4",
     "katex": "^0.16.21",
     "marked": "^15.0.7",
     "preact": "^10.25.4",

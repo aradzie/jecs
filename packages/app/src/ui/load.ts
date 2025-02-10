@@ -20,11 +20,12 @@ export function loadSchematic() {
         0,
         "lt",
         "# Ohm's law\n\n" +
+          "*Ohm's law* states that the electric current $I$ " +
+          "through a conductor between two points " +
+          "is directly proportional to the voltage $V$ " +
+          "across the two points.\n\n" +
           "$$I = \\frac{V}{R}$$\n\n" +
-          "*Ohm's law* states that the electric current\n" +
-          "through a conductor between two points\n" +
-          "is directly proportional to the voltage\n" +
-          "across the two points.",
+          "The law was named after the German physicist *Georg Ohm*.",
       ],
     ]),
   );
