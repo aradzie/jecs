@@ -30,6 +30,7 @@ import { ElementListMover } from "./move.ts";
 import { Note } from "./note.ts";
 import { Painter } from "./painter.ts";
 import { Schematic } from "./schematic.ts";
+import { Measure } from "./SchematicOverlay.tsx";
 import { Selection } from "./selection.ts";
 import { exportElements, importElements } from "./serial.ts";
 import { alignElements, getArea, transformElements } from "./transform.ts";
@@ -48,6 +49,7 @@ export class Controller {
   });
   readonly #clipboard = new Clipboard();
   readonly #focusRef: RefObject<Focusable> = { current: null };
+  readonly #measureRef: RefObject<Measure> = { current: null };
   readonly #hotkeys: HotkeyHandler;
   #painter!: Painter;
 
@@ -250,6 +252,10 @@ export class Controller {
 
   get focusRef(): RefObject<Focusable> {
     return this.#focusRef;
+  }
+
+  get measureRef(): RefObject<Measure> {
+    return this.#measureRef;
   }
 
   attach(canvas: HTMLCanvasElement) {
@@ -588,6 +594,7 @@ export class Controller {
   #pasteElements_start(elements: Iterable<Element>) {
     if (this.#mouseAction.value.type === "idle") {
       const { cursor } = this.#mouseAction.value;
+      this.#measureElements(elements);
       alignElements(elements, "cm");
       const undo = exportElements(this.#schematic.value);
       const mover = new ElementListMover(elements);
@@ -767,6 +774,17 @@ export class Controller {
       return true;
     }
     return false;
+  }
+
+  #measureElements(elements: Iterable<Element>) {
+    for (const element of elements) {
+      if (element instanceof Formula) {
+        this.#measureRef.current!.updateSize(element);
+      }
+      if (element instanceof Note) {
+        this.#measureRef.current!.updateSize(element);
+      }
+    }
   }
 
   #canWireFrom(cursor: Point) {
