@@ -1,15 +1,8 @@
-import {
-  mdiAlignHorizontalCenter,
-  mdiAlignHorizontalLeft,
-  mdiAlignHorizontalRight,
-  mdiAlignVerticalBottom,
-  mdiAlignVerticalCenter,
-  mdiAlignVerticalTop,
-} from "@mdi/js";
-import { Icon } from "../widget/Icon.tsx";
 import { useController } from "./controller.ts";
 import { Instance } from "./instance.ts";
+import { InstancePropertiesPane } from "./InstancePropertiesPane.tsx";
 import { Note } from "./note.ts";
+import { NotePropertiesPane } from "./NotePropertiesPane.tsx";
 import * as styles from "./PropertiesPane.module.css";
 import { Wire } from "./wire.ts";
 
@@ -20,58 +13,18 @@ export function PropertiesPane() {
   if (elements.length === 1) {
     const [element] = elements;
     if (element instanceof Instance) {
-      return <InstancePropertiesPane instance={element} />;
+      return <InstancePropertiesPane key={element.id} instance={element} />;
     }
     if (element instanceof Note) {
-      return <NotePropertiesPane note={element} />;
+      return <NotePropertiesPane key={element.id} note={element} />;
     }
     if (element instanceof Wire) {
-      return <WirePropertiesPane wire={element} />;
+      return <WirePropertiesPane key={element.id} wire={element} />;
     }
   }
   return (
     <div class={styles.root}>
       <div class={styles.empty}>-</div>
-    </div>
-  );
-}
-
-function InstancePropertiesPane({ instance }: { instance: Instance }) {
-  const { device } = instance.symbol;
-  return (
-    <div class={styles.root}>
-      <div class={styles.title}>{instance.symbol.name}</div>
-      <div>name: {instance.name}</div>
-      {device != null && (
-        <ul>
-          {Object.entries(device.propertiesSchema).map(([name, value]) => (
-            <li>
-              <div class={styles.prop}>
-                <span class={styles.propName}>{name}</span>{" "}
-                <span class={styles.propValue}>{value.defaultValue || "-"}</span>
-              </div>
-              <div class={styles.propTitle}>{value.title}</div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
-function NotePropertiesPane({ note }: { note: Note }) {
-  return (
-    <div class={styles.root}>
-      <div class={styles.title}>Note</div>
-      <div>{note.text}</div>
-      <p>
-        <Icon shape={mdiAlignHorizontalLeft} size={"24px"} />
-        <Icon shape={mdiAlignHorizontalCenter} size={"24px"} />
-        <Icon shape={mdiAlignHorizontalRight} size={"24px"} />
-        <Icon shape={mdiAlignVerticalTop} size={"24px"} />
-        <Icon shape={mdiAlignVerticalCenter} size={"24px"} />
-        <Icon shape={mdiAlignVerticalBottom} size={"24px"} />
-      </p>
     </div>
   );
 }

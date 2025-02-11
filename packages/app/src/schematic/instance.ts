@@ -5,7 +5,7 @@ import { getSymbolArea, Symbol } from "../symbol/symbol.ts";
 import { nextTransform, Transform, TransformOp } from "../symbol/transform.ts";
 import { Element } from "./element.ts";
 import { Names } from "./names.ts";
-import { Props } from "./props.ts";
+import { defaultProps, Props } from "./props.ts";
 
 export class Instance extends Element {
   readonly #symbol: Symbol;
@@ -22,7 +22,7 @@ export class Instance extends Element {
   constructor(
     symbol: Symbol,
     name: string = Names.anonymous(symbol.prefix),
-    props: Props = {},
+    props: Props = defaultProps(symbol.device),
     x: number = 0,
     y: number = 0,
     transform: Transform = 0,

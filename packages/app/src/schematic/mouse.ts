@@ -1,6 +1,6 @@
 import { Point } from "../graphics/geometry.ts";
+import { Modifiers } from "../widget/hotkeys.ts";
 import { Element } from "./element.ts";
-import { MOD_ALT, MOD_NONE, MOD_SHIFT } from "./events.ts";
 import { ElementListMover } from "./move.ts";
 import { Serial } from "./serial.ts";
 import { Wire } from "./wire.ts";
@@ -95,13 +95,13 @@ export type MouseAction =
 export type WireShape = "l" | "r" | "d";
 
 export function wireShape(mod: number): WireShape {
-  if (mod === MOD_NONE) {
+  if (mod === Modifiers.None) {
     return "l";
   }
-  if (mod === MOD_SHIFT) {
+  if (mod === Modifiers.Shift) {
     return "r";
   }
-  if (mod === MOD_ALT) {
+  if (mod === Modifiers.Alt) {
     return "d";
   }
   return "l";

@@ -1,13 +1,13 @@
 import { useEffect, useMemo } from "preact/hooks";
 import { library } from "../library/library.ts";
 import { Controller, ControllerContext } from "../schematic/controller.ts";
-import { hotkeys } from "../schematic/events.ts";
 import { InstancesPane } from "../schematic/InstancesPane.tsx";
 import { LibraryPane } from "../schematic/LibraryPane.tsx";
 import { NodesPane } from "../schematic/NodesPane.tsx";
 import { PropertiesPane } from "../schematic/PropertiesPane.tsx";
 import { SchematicPane } from "../schematic/SchematicPane.tsx";
 import { DialogHost } from "../widget/dialog/index.ts";
+import { hotkeys } from "../widget/hotkeys.ts";
 import { Toaster } from "../widget/toast/index.ts";
 import { ToolWindow } from "../widget/ToolWindow.tsx";
 import * as styles from "./App.module.css";
@@ -77,7 +77,6 @@ export function App() {
           style={{
             insetInlineStart: "2rem",
             insetBlockStart: "4rem",
-            inlineSize: "20rem",
           }}
         >
           <PropertiesPane />

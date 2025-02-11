@@ -9,18 +9,12 @@ import { nonlinear } from "../library/nonlinear.ts";
 import { sources } from "../library/sources.ts";
 import { Symbol } from "../symbol/symbol.ts";
 import { TransformOp } from "../symbol/transform.ts";
+import { blurActiveInput } from "../widget/form.ts";
+import { HotkeyHandler, hotkeys, Modifiers } from "../widget/hotkeys.ts";
 import { Focusable } from "../widget/props.ts";
 import { Clipboard } from "./clipboard.ts";
+import { EditAction } from "./edit.ts";
 import { Element } from "./element.ts";
-import {
-  getModifiers,
-  HotkeyHandler,
-  hotkeys,
-  MOD_ALT,
-  MOD_NONE,
-  MOD_SHIFT,
-  pointerPosition,
-} from "./events.ts";
 import { filter, findElement } from "./find.ts";
 import { History } from "./history.ts";
 import { Instance } from "./instance.ts";
@@ -29,7 +23,6 @@ import { ElementListMover } from "./move.ts";
 import { Note } from "./note.ts";
 import { Painter } from "./painter.ts";
 import { Schematic } from "./schematic.ts";
-import { Measure } from "./SchematicOverlay.tsx";
 import { Selection } from "./selection.ts";
 import { exportElements, importElements } from "./serial.ts";
 import { alignElements, getArea, transformElements } from "./transform.ts";
@@ -48,7 +41,6 @@ export class Controller {
   });
   readonly #clipboard = new Clipboard();
   readonly #focusRef: RefObject<Focusable> = { current: null };
-  readonly #measureRef: RefObject<Measure> = { current: null };
   readonly #hotkeys: HotkeyHandler;
   #painter!: Painter;
 
@@ -247,10 +239,6 @@ export class Controller {
     return this.#focusRef;
   }
 
-  get measureRef(): RefObject<Measure> {
-    return this.#measureRef;
-  }
-
   attach(canvas: HTMLCanvasElement) {
     this.#painter = new Painter(canvas);
     this.#zoom.value = this.#getDefaultZoom(false);
@@ -277,7 +265,7 @@ export class Controller {
 
   #handleAdjustKey(ev: KeyboardEvent) {
     const { key } = ev;
-    const mod = getModifiers(ev);
+    const mod = Modifiers.of(ev);
     if (key === "Shift" && this.#drawWire_adjust(key, mod)) {
       ev.preventDefault();
       return;
@@ -293,10 +281,11 @@ export class Controller {
   }
 
   handleMouseDown = (ev: MouseEvent) => {
+    blurActiveInput();
     const button = ev.button;
-    const mod = getModifiers(ev);
-    const cursor = pointerPosition(ev);
-    if (button === 0 && mod === MOD_NONE) {
+    const mod = Modifiers.of(ev);
+    const cursor = this.#cursorOf(ev);
+    if (button === 0 && mod === Modifiers.None) {
       if (this.#drawWire_start(cursor, mod)) {
         return;
       }
@@ -307,7 +296,7 @@ export class Controller {
         return;
       }
     }
-    if (button === 0 && mod === MOD_SHIFT) {
+    if (button === 0 && mod === Modifiers.Shift) {
       if (this.#drawWire_start(cursor, mod)) {
         return;
       }
@@ -318,12 +307,12 @@ export class Controller {
         return;
       }
     }
-    if (button === 0 && mod === MOD_ALT) {
+    if (button === 0 && mod === Modifiers.Alt) {
       if (this.#drawWire_start(cursor, mod)) {
         return;
       }
     }
-    if (button === 1 && mod === MOD_NONE) {
+    if (button === 1 && mod === Modifiers.None) {
       if (this.#scrollCanvas_start(cursor)) {
         return;
       }
@@ -331,8 +320,8 @@ export class Controller {
   };
 
   handleMouseMove = (ev: MouseEvent) => {
-    const mod = getModifiers(ev);
-    const cursor = pointerPosition(ev);
+    const mod = Modifiers.of(ev);
+    const cursor = this.#cursorOf(ev);
     if (this.#placeWire_move(cursor)) {
       return;
     }
@@ -359,7 +348,7 @@ export class Controller {
   };
 
   handleMouseUp = (ev: MouseEvent) => {
-    const cursor = pointerPosition(ev);
+    const cursor = this.#cursorOf(ev);
     if (this.#drawWire_end(cursor)) {
       return;
     }
@@ -378,8 +367,8 @@ export class Controller {
 
   handleWheel = (ev: WheelEvent) => {
     ev.preventDefault();
-    const mod = getModifiers(ev);
-    if (this.#mouseAction.value.type === "idle" && mod === MOD_NONE) {
+    const mod = Modifiers.of(ev);
+    if (this.#mouseAction.value.type === "idle" && mod === Modifiers.None) {
       this.#zoom.value = this.#zoom.value.zoomBy(-Math.sign(ev.deltaY));
       return;
     }
@@ -388,6 +377,10 @@ export class Controller {
   handleContextMenu = (ev: MouseEvent) => {
     ev.preventDefault();
   };
+
+  #cursorOf(ev: MouseEvent): Point {
+    return { x: ev.offsetX, y: ev.offsetY };
+  }
 
   #cursorMoved(cursor: Point) {
     const x1 = this.#zoom.value.toGridX(cursor.x);
@@ -464,7 +457,7 @@ export class Controller {
       };
       for (const element of this.#schematic.value) {
         if (
-          mod === MOD_SHIFT
+          mod === Modifiers.Shift
             ? areaOverlaps(area, element.area) //
             : areaContains(area, element.area)
         ) {
@@ -522,7 +515,7 @@ export class Controller {
       if (element != null) {
         if (!this.#selection.value.has(element)) {
           this.#selection.value =
-            mod === MOD_SHIFT
+            mod === Modifiers.Shift
               ? this.#selection.value.add([element])
               : this.#selection.value.select([element]);
         }
@@ -587,7 +580,6 @@ export class Controller {
   #pasteElements_start(elements: Iterable<Element>) {
     if (this.#mouseAction.value.type === "idle") {
       const { cursor } = this.#mouseAction.value;
-      this.#measureElements(elements);
       alignElements(elements, "cm");
       const undo = exportElements(this.#schematic.value);
       const mover = new ElementListMover(elements);
@@ -769,14 +761,6 @@ export class Controller {
     return false;
   }
 
-  #measureElements(elements: Iterable<Element>) {
-    for (const element of elements) {
-      if (element instanceof Note) {
-        this.#measureRef.current!.updateSize(element);
-      }
-    }
-  }
-
   #canWireFrom(cursor: Point) {
     const { network } = this.#schematic.value;
     const x = this.#zoom.value.toGridX(cursor.x);
@@ -803,6 +787,10 @@ export class Controller {
 
   #updateHistory(action: string) {
     this.#history.push(this.#schematic.value, action);
+  }
+
+  edit(action: EditAction) {
+    this.#schematic.value = this.#schematic.value.edit(action);
   }
 
   transformSelection(op: TransformOp) {

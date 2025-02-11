@@ -1,7 +1,11 @@
 .root {
-  max-inline-size: 15rem;
+  max-inline-size: 20rem;
   font-family: serif;
   font-size: 80%;
+}
+
+.selected {
+  outline: 1px solid #0000ff;
 }
 
 .root > :first-child {
@@ -12,6 +16,27 @@
   margin-block-end: 0;
 }
 
-.selected {
-  outline: 1px solid #0000ff;
+.root h1,
+.root h2,
+.root h3,
+.root h4,
+.root h5,
+.root h6,
+.root p {
+  overflow-wrap: break-word;
+}
+
+.root h1,
+.root h2,
+.root h3,
+.root h4,
+.root h5,
+.root h6 {
+  text-align: start;
+  text-wrap: balance;
+}
+
+.root p {
+  text-align: justify;
+  text-wrap: pretty;
 }

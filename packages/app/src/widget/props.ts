@@ -6,6 +6,10 @@ export type Focusable = {
   get focused(): boolean;
 };
 
+export type Selectable = {
+  select(): void;
+};
+
 export type FocusProps<T extends EventTarget = any> = {
   readonly tabIndex?: number;
   readonly disabled?: boolean;

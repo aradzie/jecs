@@ -1,0 +1,29 @@
+.root {
+  min-inline-size: 30rem;
+  max-block-size: 30rem;
+  padding: 1rem;
+  overflow: auto;
+}
+
+.title {
+  margin-block-end: 1rem;
+  border-block-end: 1px solid var(--separator-color);
+}
+
+.text {
+  display: block;
+  inline-size: 100%;
+  block-size: 20rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: 1px solid var(--separator-color);
+  font-family: monospace;
+  text-wrap: wrap;
+  resize: none;
+}
+
+.text:focus {
+  border: none;
+  outline: 1px solid var(--separator-color);
+}

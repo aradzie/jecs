@@ -1,9 +1,11 @@
+import { EditAction } from "./edit.ts";
 import { Element } from "./element.ts";
 import { filterInstances, filterNotes, filterWires } from "./filter.ts";
 import { Instance } from "./instance.ts";
 import { Names } from "./names.ts";
 import { connect, dummyNetwork, Network } from "./network.ts";
 import { Note } from "./note.ts";
+import { setProp } from "./props.ts";
 import { Selection } from "./selection.ts";
 import { rewire, Wire } from "./wire.ts";
 
@@ -13,19 +15,13 @@ type Wiring = {
 };
 
 const dummyWiring: Wiring = {
-  rewire(elements: Element[]): void {},
-  connect(elements: Iterable<Element>): Network {
-    return dummyNetwork();
-  },
+  rewire: (elements) => {},
+  connect: (elements) => dummyNetwork(),
 };
 
 const liveWiring: Wiring = {
-  rewire(elements: Element[]): void {
-    rewire(elements);
-  },
-  connect(elements: Iterable<Element>): Network {
-    return connect(elements);
-  },
+  rewire,
+  connect,
 };
 
 export class Schematic implements Iterable<Element> {
@@ -98,6 +94,26 @@ export class Schematic implements Iterable<Element> {
     const schematic = new Schematic(this.#elements, this.#wiring);
     schematic.names.rename(order);
     return schematic;
+  }
+
+  edit(action: EditAction): Schematic {
+    switch (action.type) {
+      case "set-text": {
+        const { note, text } = action;
+        if (note.text !== text) {
+          note.text = text;
+        }
+        break;
+      }
+      case "set-prop": {
+        const { instance, name, value } = action;
+        if (instance.props[name] !== value) {
+          instance.props = setProp(instance.props, name, value);
+        }
+        break;
+      }
+    }
+    return new Schematic(this, this.#wiring);
   }
 
   #dispose() {

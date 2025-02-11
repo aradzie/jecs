@@ -13,7 +13,7 @@ export class Note extends Element {
 
   constructor(text: string, align: Align = "lt", x: number = 0, y: number = 0) {
     super();
-    this.#text = text;
+    this.#text = text.trim();
     this.#align = align;
     this.#x = x;
     this.#y = y;
@@ -27,7 +27,7 @@ export class Note extends Element {
   }
 
   set text(value: string) {
-    this.#text = value;
+    this.#text = value.trim();
     this.#width = 0;
     this.#height = 0;
     this.#area = null;
