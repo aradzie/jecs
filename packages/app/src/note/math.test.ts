@@ -39,13 +39,6 @@ describe("parse inline", () => {
     equal(parseInline("\\)abc\\(", result), false);
   });
 
-  it("should ignore malformed math", () => {
-    equal(parseInline("${a$", result), false);
-    equal(parseInline("$a}$", result), false);
-    equal(parseInline("\\({a\\)", result), false);
-    equal(parseInline("\\(a}\\)", result), false);
-  });
-
   it("should parse legal math", () => {
     equal(parseInline("$a$", result), true);
     deepEqual(result, { raw: "$a$", text: "a" });
@@ -80,13 +73,6 @@ describe("parse block", () => {
     equal(parseBlock("\\[\nabc", result), false);
     equal(parseBlock("abc\n\\]", result), false);
     equal(parseBlock("\n\\]abc\\[\n", result), false);
-  });
-
-  it("should ignore malformed math", () => {
-    equal(parseBlock("$$\n{a\n$$", result), false);
-    equal(parseBlock("$$\na}\n$$", result), false);
-    equal(parseBlock("\\(\n{a\n\\)", result), false);
-    equal(parseBlock("\\(\na}\n\\)", result), false);
   });
 
   it("should parse legal math", () => {

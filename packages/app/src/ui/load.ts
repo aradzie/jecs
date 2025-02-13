@@ -16,7 +16,7 @@ export function loadSchematic() {
       ["w", 150, 80, 150, 100],
       [
         "n",
-        300,
+        250,
         0,
         "lt",
         "# Ohm's law\n\n" +
@@ -27,6 +27,13 @@ export function loadSchematic() {
           "$$I = \\frac{V}{R}$$\n\n" +
           "The law was named after the German physicist *Georg Ohm*.",
       ],
+      ["n", 700, 0, "lm", "\\[ \\int_{a}^{b} x^2 \\, dx \\]"],
+      ["n", 700, 50, "lm", "\\[ \\iint_V \\mu(u,v) \\, du \\, dv \\]"],
+      ["n", 700, 100, "lm", "\\[ \\oint_V f(s) \\, ds \\]"],
+      ["n", 700, 150, "lm", "\\[ \\sum_{n=1}^{\\infty} 2^{-n} = 1 \\]"],
+      ["n", 700, 200, "lm", "\\[ \\prod_{i=a}^{b} f(i) \\]"],
+      ["n", 700, 250, "lm", "\\[ \\lim_{x\\to\\infty} f(x) \\]"],
+      ["n", 700, 300, "lm", "\\[ \\begin{pmatrix} 1 & 2 & 3 \\\\ a & b & c \\end{pmatrix} \\]"],
     ]),
   );
 }

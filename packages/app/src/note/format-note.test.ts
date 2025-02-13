@@ -95,32 +95,4 @@ test("format block math", () => {
       `</span>\n` +
       `<p>two</p>\n`,
   );
-  equal(
-    formatNote("\\begin{equation}\nA\n\\end{equation}"),
-    `<span class="katex">` +
-      `<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">` +
-      `<semantics>` +
-      `<mtable rowspacing="0.16em" columnspacing="1em">` +
-      `<mtr><mtd class ="mtr-glue"></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mi>A</mi></mstyle></mtd>` +
-      `<mtd class ="mtr-glue"></mtd><mtd class ="mml-eqn-num"></mtd></mtr>` +
-      `</mtable>` +
-      `<annotation encoding="application/x-tex">\\begin{equation}\nA\n\\end{equation}</annotation>` +
-      `</semantics>` +
-      `</math>` +
-      `</span>\n`,
-  );
-  equal(
-    formatNote("\\begin{align}\nA\n\\end{align}"),
-    `<span class="katex">` +
-      `<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">` +
-      `<semantics>` +
-      `<mtable rowspacing="0.25em" columnalign="right" columnspacing="">` +
-      `<mtr><mtd class ="mtr-glue"></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mi>A</mi></mstyle></mtd>` +
-      `<mtd class ="mtr-glue"></mtd><mtd class ="mml-eqn-num"></mtd></mtr>` +
-      `</mtable>` +
-      `<annotation encoding="application/x-tex">\\begin{align}\nA\n\\end{align}</annotation>` +
-      `</semantics>` +
-      `</math>` +
-      `</span>\n`,
-  );
 });

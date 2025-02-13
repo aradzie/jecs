@@ -27,18 +27,6 @@ const block2: Marker = {
   close: /\\\]/y,
 };
 
-// \begin{equation} ... \end{equation}
-const equation: Marker = {
-  open: /\\begin\{equation}/y,
-  close: /\\end\{equation}/y,
-};
-
-// \begin{align} ... \end{align}
-const align: Marker = {
-  open: /\\begin\{align}/y,
-  close: /\\end\{align}/y,
-};
-
 const ignore = /\s+|\\\{|\\\}|\\\\/y;
 
 export type Result = {
@@ -84,9 +72,7 @@ export function findBlock(src: string): number | void {
 export function parseBlock(src: string, result: Result): boolean {
   return (
     parse(src, block1, result) || //
-    parse(src, block2, result) ||
-    parse(src, equation, result) ||
-    parse(src, align, result)
+    parse(src, block2, result)
   );
 }
 
@@ -104,32 +90,14 @@ function findDelimiters(src: string, open: string, close: string): number {
 function parse(src: string, marker: Marker, result: Result): boolean {
   if (testRegExp(src, marker.open, 0)) {
     let index = marker.open.lastIndex;
-    let balance = 0;
     while (index < src.length) {
       if (testRegExp(src, ignore, index)) {
         index = ignore.lastIndex;
       } else {
-        switch (src.charCodeAt(index)) {
-          case /* { */ 0x007b:
-            balance += 1;
-            break;
-          case /* } */ 0x007d:
-            balance -= 1;
-            if (balance < 0) {
-              return false;
-            }
-            break;
-          default:
-            if (balance === 0 && testRegExp(src, marker.close, index)) {
-              result.raw = src.substring(0, marker.close.lastIndex);
-              if (marker === equation || marker === align) {
-                result.text = result.raw;
-              } else {
-                result.text = src.substring(marker.open.lastIndex, index).trim();
-              }
-              return true;
-            }
-            break;
+        if (testRegExp(src, marker.close, index)) {
+          result.raw = src.substring(0, marker.close.lastIndex);
+          result.text = src.substring(marker.open.lastIndex, index).trim();
+          return true;
         }
         index += 1;
       }
