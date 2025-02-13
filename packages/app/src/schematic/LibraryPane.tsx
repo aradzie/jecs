@@ -44,7 +44,6 @@ function SymbolIcon({ symbol }: { symbol: Symbol }) {
       title={symbol.name}
       onClick={() => {
         controller.pasteInstance(symbol);
-        controller.focus();
       }}
     >
       <Canvas canvas={canvas} />

@@ -119,6 +119,7 @@ export function ToolbarPane() {
         disabled={!controller.selection.full}
         onClick={() => {
           controller.transformSelection("rl");
+          controller.focus();
         }}
       />
       <Toolbar.Button
@@ -127,6 +128,7 @@ export function ToolbarPane() {
         disabled={!controller.selection.full}
         onClick={() => {
           controller.transformSelection("rr");
+          controller.focus();
         }}
       />
       <Toolbar.Button
@@ -135,6 +137,7 @@ export function ToolbarPane() {
         disabled={!controller.selection.full}
         onClick={() => {
           controller.transformSelection("mx");
+          controller.focus();
         }}
       />
       <Toolbar.Button
@@ -143,6 +146,7 @@ export function ToolbarPane() {
         disabled={!controller.selection.full}
         onClick={() => {
           controller.transformSelection("my");
+          controller.focus();
         }}
       />
       <Toolbar.Separator />

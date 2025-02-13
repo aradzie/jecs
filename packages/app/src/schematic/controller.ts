@@ -834,6 +834,7 @@ export class Controller {
   }
 
   pasteInstance(symbol: Symbol) {
+    this.focus();
     this.#cancelMouseAction();
     if (symbol === conductors.wire) {
       this.#placeWire_start();
@@ -843,6 +844,7 @@ export class Controller {
   }
 
   pasteNote(text: string) {
+    this.focus();
     this.#cancelMouseAction();
     this.#pasteElements_start([new Note(text)]);
   }
