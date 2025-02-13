@@ -41,6 +41,7 @@ export function SchematicPane() {
     controller,
     width,
     height,
+    controller.settings,
     controller.schematic,
     controller.zoom,
     controller.selection,

@@ -25,6 +25,7 @@ import { Painter } from "./painter.ts";
 import { Schematic } from "./schematic.ts";
 import { Selection } from "./selection.ts";
 import { exportElements, importElements } from "./serial.ts";
+import { Settings } from "./settings.ts";
 import { alignElements, getArea, transformElements } from "./transform.ts";
 import { connect, wireShape } from "./wire.ts";
 import { Zoom } from "./zoom.ts";
@@ -32,6 +33,7 @@ import { Zoom } from "./zoom.ts";
 export class Controller {
   readonly #focusRef: RefObject<Focusable> = { current: null };
   readonly #library: Library;
+  readonly #settings: Signal<Settings>;
   readonly #schematic: Signal<Schematic>;
   readonly #history: Signal<History>;
   readonly #zoom: Signal<Zoom>;
@@ -42,6 +44,7 @@ export class Controller {
 
   constructor(library: Library, schematic: Schematic) {
     this.#library = library;
+    this.#settings = signal({ showGrid: true, showCrosshair: true });
     this.#schematic = signal(schematic);
     this.#history = signal(History.create(schematic));
     this.#zoom = signal(new Zoom());
@@ -222,8 +225,12 @@ export class Controller {
     return this.#focusRef;
   }
 
-  get library() {
+  get library(): Library {
     return this.#library;
+  }
+
+  get settings(): Settings {
+    return this.#settings.value;
   }
 
   get schematic(): Schematic {
@@ -942,6 +949,10 @@ export class Controller {
     }
   }
 
+  updateSettings(settings: Partial<Readonly<Settings>>) {
+    this.#settings.value = { ...this.#settings.value, ...settings };
+  }
+
   focus() {
     this.#focusRef.current?.focus();
   }
@@ -955,14 +966,17 @@ export class Controller {
   }
 
   paint() {
+    const settings = this.#settings.peek();
     const zoom = this.#zoom.peek();
     const mouseAction = this.#mouseAction.peek();
     this.#painter.reset();
-    this.#painter.paintGrid(zoom);
+    if (settings.showGrid) {
+      this.#painter.paintGrid(zoom);
+    }
     switch (mouseAction.type) {
       case "idle":
         this.#paintSchematic(false, mouseAction.hovered);
-        if (this.focused) {
+        if (this.focused && settings.showCrosshair) {
           this.#painter.paintCrosshair(zoom, mouseAction.cursor, false);
         }
         break;

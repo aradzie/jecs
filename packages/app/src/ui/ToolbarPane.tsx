@@ -3,12 +3,16 @@ import {
   mdiContentCopy,
   mdiContentCut,
   mdiContentPaste,
+  mdiCrosshairs,
+  mdiCrosshairsOff,
   mdiDeleteOutline,
   mdiFlipHorizontal,
   mdiFlipVertical,
   mdiFolderDownloadOutline,
   mdiFolderPlusOutline,
   mdiFolderUploadOutline,
+  mdiGrid,
+  mdiGridOff,
   mdiHelp,
   mdiMagnify,
   mdiMagnifyExpand,
@@ -31,6 +35,7 @@ import { HelpPage } from "./HelpPage.tsx";
 
 export function ToolbarPane() {
   const controller = useController();
+  const { settings } = controller;
   return (
     <Toolbar>
       <Toolbar.Button
@@ -198,6 +203,23 @@ export function ToolbarPane() {
         title={"View all"}
         onClick={() => {
           controller.zoomTo("all");
+          controller.focus();
+        }}
+      />
+      <Toolbar.Separator />
+      <Toolbar.Button
+        shape={settings.showGrid ? mdiGridOff : mdiGrid}
+        title={settings.showGrid ? "Hide grid" : "Show grid"}
+        onClick={() => {
+          controller.updateSettings({ showGrid: !settings.showGrid });
+          controller.focus();
+        }}
+      />
+      <Toolbar.Button
+        shape={settings.showCrosshair ? mdiCrosshairsOff : mdiCrosshairs}
+        title={settings.showCrosshair ? "Hide crosshair" : "Show crosshair"}
+        onClick={() => {
+          controller.updateSettings({ showCrosshair: !settings.showCrosshair });
           controller.focus();
         }}
       />
