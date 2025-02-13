@@ -5,18 +5,6 @@ export type Size = { width: number; height: number };
 export type Rect = Point & Size;
 export type Area = { x0: number; y0: number; x1: number; y1: number };
 
-export const getScreenSize = (): Size => {
-  return { width: window.innerWidth, height: window.innerHeight };
-};
-
-export const getElementSize = (el: Element): Size => {
-  return { width: el.clientWidth, height: el.clientHeight };
-};
-
-export const px = (length: string | number): string => {
-  return typeof length === "number" ? `${length}px` : length;
-};
-
 /**
  * Tests whether area `a` partially overlaps with `b`.
  */

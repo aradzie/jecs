@@ -6,7 +6,7 @@ import { Names } from "./names.ts";
 import { connect, dummyNetwork, Network } from "./network.ts";
 import { Note } from "./note.ts";
 import { setProp } from "./props.ts";
-import { Selection } from "./selection.ts";
+import { ReadonlySelection } from "./selection.ts";
 import { rewire, Wire } from "./wire.ts";
 
 type Wiring = {
@@ -75,7 +75,7 @@ export class Schematic implements Iterable<Element> {
     return new Schematic([...this.#elements, ...elements], this.#wiring);
   }
 
-  delete(selection: Selection): Schematic {
+  delete(selection: ReadonlySelection): Schematic {
     return new Schematic(
       this.#elements.filter((elem) => !selection.has(elem)),
       this.#wiring,

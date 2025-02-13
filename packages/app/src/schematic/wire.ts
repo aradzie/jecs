@@ -1,4 +1,5 @@
 import { Area } from "../graphics/geometry.ts";
+import { Modifiers } from "../widget/hotkeys.ts";
 import { Element } from "./element.ts";
 import { Instance } from "./instance.ts";
 
@@ -115,6 +116,47 @@ export class Wire extends Element {
     const x1 = Math.max(this.#x0, this.#x1);
     const y1 = Math.max(this.#y0, this.#y1);
     return x0 <= x && x <= x1 && y0 <= y && y <= y1 && distance <= margin;
+  }
+}
+
+export type WireShape = "l" | "r" | "d";
+
+export function wireShape(mod: number): WireShape {
+  if (mod === Modifiers.None) {
+    return "l";
+  }
+  if (mod === Modifiers.Shift) {
+    return "r";
+  }
+  if (mod === Modifiers.Alt) {
+    return "d";
+  }
+  return "l";
+}
+
+export function connect(x0: number, y0: number, x1: number, y1: number, s: WireShape): Wire[] {
+  if (x0 === x1 && y0 === y1) {
+    // No connection.
+    return [];
+  }
+  if (s === "d") {
+    // A diagonal wire.
+    return [new Wire(x0, y0, x1, y1)];
+  }
+  if (y0 === y1) {
+    // A horizontal wire.
+    return [new Wire(x0, y0, x1, y1)];
+  }
+  if (x0 === x1) {
+    // A vertical wire.
+    return [new Wire(x0, y0, x1, y1)];
+  }
+  if (s === "l") {
+    // An L-shaped wire.
+    return [new Wire(x0, y0, x1, y0), new Wire(x1, y0, x1, y1)];
+  } else {
+    // An L-shaped wire.
+    return [new Wire(x0, y0, x0, y1), new Wire(x0, y1, x1, y1)];
   }
 }
 

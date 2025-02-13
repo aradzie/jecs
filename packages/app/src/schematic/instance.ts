@@ -1,6 +1,6 @@
 import { Area } from "../graphics/geometry.ts";
-import { transformPin } from "../symbol/pin.ts";
-import { transformLabels, transformShape } from "../symbol/shape.ts";
+import { Pin, transformPin } from "../symbol/pin.ts";
+import { Labels, Shape, transformLabels, transformShape } from "../symbol/shape.ts";
 import { getSymbolArea, Symbol } from "../symbol/symbol.ts";
 import { nextTransform, Transform, TransformOp } from "../symbol/transform.ts";
 import { Element } from "./element.ts";
@@ -36,11 +36,11 @@ export class Instance extends Element {
     this.#transform = transform;
   }
 
-  get symbol() {
+  get symbol(): Symbol {
     return this.#symbol;
   }
 
-  get name() {
+  get name(): string {
     return this.#name;
   }
 
@@ -48,7 +48,7 @@ export class Instance extends Element {
     this.#name = value;
   }
 
-  get props() {
+  get props(): Props {
     return this.#props;
   }
 
@@ -56,15 +56,15 @@ export class Instance extends Element {
     this.#props = value;
   }
 
-  override get x() {
+  override get x(): number {
     return this.#x;
   }
 
-  override get y() {
+  override get y(): number {
     return this.#y;
   }
 
-  override get area() {
+  override get area(): Area {
     return (this.#area ??= getSymbolArea(this, this.#x, this.#y));
   }
 
@@ -75,7 +75,7 @@ export class Instance extends Element {
     return this;
   }
 
-  get transform() {
+  get transform(): Transform {
     return this.#transform;
   }
 
@@ -88,15 +88,15 @@ export class Instance extends Element {
     return this;
   }
 
-  get shapes() {
+  get shapes(): readonly Shape[] {
     return (this.#shapes ??= this.#symbol.shapes.map((s) => transformShape(s, this.#transform)));
   }
 
-  get pins() {
+  get pins(): readonly Pin[] {
     return (this.#pins ??= this.#symbol.pins.map((p) => transformPin(p, this.#transform)));
   }
 
-  get labels() {
+  get labels(): Labels {
     return (this.#labels ??= transformLabels(this.#symbol.labels, this.#transform));
   }
 }

@@ -15,10 +15,10 @@ import { Focusable } from "../widget/props.ts";
 import { Clipboard } from "./clipboard.ts";
 import { EditAction } from "./edit.ts";
 import { Element } from "./element.ts";
-import { filter, findElement } from "./find.ts";
+import { filter, findElement } from "./filter.ts";
 import { History } from "./history.ts";
 import { Instance } from "./instance.ts";
-import { connect, MouseAction, wireShape } from "./mouse.ts";
+import { MouseAction } from "./mouse.ts";
 import { ElementListMover } from "./move.ts";
 import { Note } from "./note.ts";
 import { Painter } from "./painter.ts";
@@ -26,6 +26,7 @@ import { Schematic } from "./schematic.ts";
 import { Selection } from "./selection.ts";
 import { exportElements, importElements } from "./serial.ts";
 import { alignElements, getArea, transformElements } from "./transform.ts";
+import { connect, wireShape } from "./wire.ts";
 import { Zoom } from "./zoom.ts";
 
 export class Controller {
