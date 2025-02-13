@@ -1,7 +1,7 @@
 import { Element } from "./element.ts";
 import { exportElements, importElements, Serial } from "./serial.ts";
 
-export class Clipboard {
+export const clipboard = new (class Clipboard {
   #serial: Serial = [];
 
   get full(): boolean {
@@ -19,4 +19,4 @@ export class Clipboard {
   clear(): void {
     this.#serial = [];
   }
-}
+})();

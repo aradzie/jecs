@@ -1,4 +1,4 @@
-import { signal } from "@preact/signals";
+import { Signal, signal } from "@preact/signals";
 import { createContext, RefObject } from "preact";
 import { useContext } from "preact/hooks";
 import { areaContains, areaOverlaps, Point } from "../graphics/geometry.ts";
@@ -12,7 +12,7 @@ import { TransformOp } from "../symbol/transform.ts";
 import { blurActiveInput } from "../widget/form.ts";
 import { HotkeyHandler, hotkeys, Modifiers } from "../widget/hotkeys.ts";
 import { Focusable } from "../widget/props.ts";
-import { Clipboard } from "./clipboard.ts";
+import { clipboard } from "./clipboard.ts";
 import { EditAction } from "./edit.ts";
 import { Element } from "./element.ts";
 import { filter, findElement } from "./filter.ts";
@@ -30,25 +30,27 @@ import { connect, wireShape } from "./wire.ts";
 import { Zoom } from "./zoom.ts";
 
 export class Controller {
-  readonly #library: Library;
-  readonly #history: History;
-  readonly #schematic = signal(new Schematic([]));
-  readonly #zoom = signal(new Zoom());
-  readonly #selection = signal(new Selection());
-  readonly #mouseAction = signal<MouseAction>({
-    type: "idle",
-    cursor: { x: 100, y: 100 },
-    hovered: null,
-  });
-  readonly #clipboard = new Clipboard();
   readonly #focusRef: RefObject<Focusable> = { current: null };
+  readonly #library: Library;
+  readonly #schematic: Signal<Schematic>;
+  readonly #history: Signal<History>;
+  readonly #zoom: Signal<Zoom>;
+  readonly #selection: Signal<Selection>;
+  readonly #mouseAction: Signal<MouseAction>;
   readonly #hotkeys: HotkeyHandler;
   #painter!: Painter;
 
   constructor(library: Library, schematic: Schematic) {
     this.#library = library;
-    this.#history = new History(schematic);
-    this.#schematic.value = schematic;
+    this.#schematic = signal(schematic);
+    this.#history = signal(History.create(schematic));
+    this.#zoom = signal(new Zoom());
+    this.#selection = signal(new Selection());
+    this.#mouseAction = signal<MouseAction>({
+      type: "idle",
+      cursor: { x: 100, y: 100 },
+      hovered: null,
+    });
     const zoomBy = (dz: number) => {
       return () => {
         this.#zoom.value = this.#zoom.value.zoomBy(dz);
@@ -216,12 +218,20 @@ export class Controller {
     );
   }
 
+  get focusRef(): RefObject<Focusable> {
+    return this.#focusRef;
+  }
+
   get library() {
     return this.#library;
   }
 
   get schematic(): Schematic {
     return this.#schematic.value;
+  }
+
+  get history(): History {
+    return this.#history.value;
   }
 
   get zoom(): Zoom {
@@ -234,10 +244,6 @@ export class Controller {
 
   get mouseAction(): MouseAction {
     return this.#mouseAction.value;
-  }
-
-  get focusRef(): RefObject<Focusable> {
-    return this.#focusRef;
   }
 
   attach(canvas: HTMLCanvasElement) {
@@ -543,8 +549,10 @@ export class Controller {
       const y0 = Zoom.snap(this.#zoom.value.toGridY(origin.y));
       const x1 = Zoom.snap(this.#zoom.value.toGridX(cursor.x));
       const y1 = Zoom.snap(this.#zoom.value.toGridY(cursor.y));
-      mover.moveBy(x1 - x0, y1 - y0);
-      this.#schematic.value = this.#schematic.value.unwire();
+      if (x0 !== x1 || y0 !== y1) {
+        mover.moveBy(x1 - x0, y1 - y0);
+        this.#schematic.value = this.#schematic.value.unwire();
+      }
       this.#mouseAction.value = {
         type: "move",
         cursor,
@@ -559,9 +567,16 @@ export class Controller {
 
   #selectElement_end(cursor: Point) {
     if (this.#mouseAction.value.type === "move") {
-      this.#schematic.value = this.#schematic.value.rewire();
+      const { origin } = this.#mouseAction.value;
+      const x0 = Zoom.snap(this.#zoom.value.toGridX(origin.x));
+      const y0 = Zoom.snap(this.#zoom.value.toGridY(origin.y));
+      const x1 = Zoom.snap(this.#zoom.value.toGridX(cursor.x));
+      const y1 = Zoom.snap(this.#zoom.value.toGridY(cursor.y));
+      if (x0 !== x1 || y0 !== y1) {
+        this.#schematic.value = this.#schematic.value.rewire();
+        this.#updateHistory("move selection");
+      }
       this.#toIdle(cursor);
-      this.#updateHistory("move selection");
       return true;
     }
     return false;
@@ -621,8 +636,8 @@ export class Controller {
   #pasteElements_end(cursor: Point) {
     if (this.#mouseAction.value.type === "paste") {
       this.#schematic.value = this.#schematic.value.rewire();
-      this.#toIdle(cursor);
       this.#updateHistory("paste");
+      this.#toIdle(cursor);
       return true;
     }
     return false;
@@ -697,8 +712,8 @@ export class Controller {
   #drawWire_end(cursor: Point) {
     if (this.#mouseAction.value.type === "connect") {
       this.#schematic.value = this.#schematic.value.append(this.#mouseAction.value.wires);
-      this.#toIdle(cursor);
       this.#updateHistory("draw wires");
+      this.#toIdle(cursor);
       return true;
     }
     return false;
@@ -787,7 +802,7 @@ export class Controller {
   }
 
   #updateHistory(action: string) {
-    this.#history.push(this.#schematic.value, action);
+    this.#history.value = this.#history.value.push(this.#schematic.value, action);
   }
 
   edit(action: EditAction) {
@@ -832,26 +847,22 @@ export class Controller {
     this.#pasteElements_start([new Note(text)]);
   }
 
-  get canUndo() {
-    return this.#history.canUndo;
-  }
-
   undo() {
-    if (this.#history.canUndo) {
+    if (this.#history.value.canUndo) {
       this.#cancelMouseAction();
-      this.#schematic.value = this.#history.undo();
+      const [schematic, history] = this.#history.value.undo();
+      this.#schematic.value = schematic;
+      this.#history.value = history;
       this.#selection.value = new Selection();
     }
   }
 
-  get canRedo() {
-    return this.#history.canRedo;
-  }
-
   redo() {
-    if (this.#history.canRedo) {
+    if (this.#history.value.canRedo) {
       this.#cancelMouseAction();
-      this.#schematic.value = this.#history.redo();
+      const [schematic, history] = this.#history.value.redo();
+      this.#schematic.value = schematic;
+      this.#history.value = history;
       this.#selection.value = new Selection();
     }
   }
@@ -879,7 +890,7 @@ export class Controller {
   selectionCut() {
     this.#cancelMouseAction();
     if (this.#selection.value.size > 0) {
-      this.#clipboard.put(this.#selection.value.filter(this.#schematic.value));
+      clipboard.put(this.#selection.value.filter(this.#schematic.value));
       this.#schematic.value = this.#schematic.value.delete(this.#selection.value);
       this.#selection.value = new Selection();
       this.#updateHistory("cut");
@@ -889,14 +900,14 @@ export class Controller {
   selectionCopy() {
     this.#cancelMouseAction();
     if (this.#selection.value.size > 0) {
-      this.#clipboard.put(this.#selection.value.filter(this.#schematic.value));
+      clipboard.put(this.#selection.value.filter(this.#schematic.value));
     }
   }
 
   selectionPaste() {
-    if (this.#clipboard.full) {
+    if (clipboard.full) {
       this.#cancelMouseAction();
-      this.#pasteElements_start(this.#clipboard.take());
+      this.#pasteElements_start(clipboard.take());
     }
   }
 

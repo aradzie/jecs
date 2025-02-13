@@ -1,21 +1,54 @@
 import { Schematic } from "./schematic.ts";
 import { exportElements, importElements, Serial } from "./serial.ts";
+import { makeUnusable } from "./unusable.ts";
 
-export class History implements Iterable<[index: number, action: string]> {
+export class History {
+  static create(initial: Schematic): History {
+    const history = new History();
+    history.#state = new State(initial);
+    return history;
+  }
+
+  #state: State = unusable;
+
+  private constructor() {}
+
+  push(schematic: Schematic, action: string): History {
+    this.#state.push(schematic, action);
+    return this.#transfer();
+  }
+
+  get canUndo(): boolean {
+    return this.#state.canUndo;
+  }
+
+  undo(): [Schematic, History] {
+    return [this.#state.undo(), this.#transfer()];
+  }
+
+  get canRedo(): boolean {
+    return this.#state.canRedo;
+  }
+
+  redo(): [Schematic, History] {
+    return [this.#state.redo(), this.#transfer()];
+  }
+
+  #transfer() {
+    const that = new History();
+    that.#state = this.#state;
+    this.#state = unusable;
+    return that;
+  }
+}
+
+class State {
   readonly #stack: [serial: Serial, action: string][];
   #index: number;
 
   constructor(initial: Schematic) {
     this.#stack = [[exportElements(initial), "initial"]];
     this.#index = 0;
-  }
-
-  *[Symbol.iterator](): IterableIterator<[index: number, action: string]> {
-    let index = 0;
-    for (const [serial, action] of this.#stack) {
-      yield [index, action];
-      index += 1;
-    }
   }
 
   get length(): number {
@@ -52,3 +85,5 @@ export class History implements Iterable<[index: number, action: string]> {
     return new Schematic(importElements(serial));
   }
 }
+
+const unusable = makeUnusable<State>();

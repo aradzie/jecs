@@ -149,7 +149,7 @@ export function ToolbarPane() {
       <Toolbar.Button
         shape={mdiUndo}
         title={"Undo"}
-        disabled={!controller.canUndo}
+        disabled={!controller.history.canUndo}
         onClick={() => {
           controller.undo();
           controller.focus();
@@ -158,7 +158,7 @@ export function ToolbarPane() {
       <Toolbar.Button
         shape={mdiRedo}
         title={"Redo"}
-        disabled={!controller.canRedo}
+        disabled={!controller.history.canRedo}
         onClick={() => {
           controller.redo();
           controller.focus();
