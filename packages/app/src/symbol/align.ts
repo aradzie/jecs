@@ -4,9 +4,17 @@ export type Align = `${HorizontalAlign}${VerticalAlign}`;
 export type HorizontalAlign = "l" | "c" | "r";
 export type VerticalAlign = "t" | "m" | "b";
 
+export const hAlignOf = (align: Align): HorizontalAlign => {
+  return align.charAt(0) as HorizontalAlign;
+};
+
+export const vAlignOf = (align: Align): VerticalAlign => {
+  return align.charAt(1) as VerticalAlign;
+};
+
 export const transformAlign = (align: Align, transform: Transform): Align => {
-  let h = align.charAt(0) as HorizontalAlign;
-  let v = align.charAt(1) as VerticalAlign;
+  let h = hAlignOf(align);
+  let v = vAlignOf(align);
   if ((transform & tRotate) !== 0) {
     switch (align) {
       case "lt":

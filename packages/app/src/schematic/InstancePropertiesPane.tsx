@@ -22,7 +22,7 @@ export function InstancePropertiesPane({ instance }: { instance: Instance }) {
                     type={"text"}
                     value={String(value.defaultValue || "0")}
                     onChange={(value) => {
-                      controller.edit({ type: "set-prop", instance, name, value });
+                      controller.edit({ type: "set-instance-prop", instance, name, value });
                     }}
                   />
                 </td>

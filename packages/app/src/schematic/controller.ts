@@ -551,22 +551,22 @@ export class Controller {
 
   #selectElement_move(cursor: Point) {
     if (this.#mouseAction.value.type === "move") {
-      const { origin, undo, mover } = this.#mouseAction.value;
-      const x0 = Zoom.snap(this.#zoom.value.toGridX(origin.x));
-      const y0 = Zoom.snap(this.#zoom.value.toGridY(origin.y));
-      const x1 = Zoom.snap(this.#zoom.value.toGridX(cursor.x));
-      const y1 = Zoom.snap(this.#zoom.value.toGridY(cursor.y));
-      if (x0 !== x1 || y0 !== y1) {
+      if (this.#cursorMoved(cursor)) {
+        const { origin, undo, mover } = this.#mouseAction.value;
+        const x0 = Zoom.snap(this.#zoom.value.toGridX(origin.x));
+        const y0 = Zoom.snap(this.#zoom.value.toGridY(origin.y));
+        const x1 = Zoom.snap(this.#zoom.value.toGridX(cursor.x));
+        const y1 = Zoom.snap(this.#zoom.value.toGridY(cursor.y));
         mover.moveBy(x1 - x0, y1 - y0);
         this.#schematic.value = this.#schematic.value.unwire();
+        this.#mouseAction.value = {
+          type: "move",
+          cursor,
+          origin,
+          undo,
+          mover,
+        };
       }
-      this.#mouseAction.value = {
-        type: "move",
-        cursor,
-        origin,
-        undo,
-        mover,
-      };
       return true;
     }
     return false;
@@ -574,13 +574,14 @@ export class Controller {
 
   #selectElement_end(cursor: Point) {
     if (this.#mouseAction.value.type === "move") {
-      const { origin } = this.#mouseAction.value;
+      const { origin, mover } = this.#mouseAction.value;
       const x0 = Zoom.snap(this.#zoom.value.toGridX(origin.x));
       const y0 = Zoom.snap(this.#zoom.value.toGridY(origin.y));
       const x1 = Zoom.snap(this.#zoom.value.toGridX(cursor.x));
       const y1 = Zoom.snap(this.#zoom.value.toGridY(cursor.y));
+      mover.moveBy(x1 - x0, y1 - y0);
+      this.#schematic.value = this.#schematic.value.rewire();
       if (x0 !== x1 || y0 !== y1) {
-        this.#schematic.value = this.#schematic.value.rewire();
         this.#updateHistory("move selection");
       }
       this.#toIdle(cursor);
@@ -624,17 +625,19 @@ export class Controller {
 
   #pasteElements_move(cursor: Point) {
     if (this.#mouseAction.value.type === "paste") {
-      const { undo, mover } = this.#mouseAction.value;
-      const x = Zoom.snap(this.#zoom.value.toGridX(cursor.x));
-      const y = Zoom.snap(this.#zoom.value.toGridY(cursor.y));
-      mover.moveBy(x, y);
-      this.#schematic.value = this.#schematic.value.unwire();
-      this.#mouseAction.value = {
-        type: "paste",
-        cursor,
-        undo,
-        mover,
-      };
+      if (this.#cursorMoved(cursor)) {
+        const { undo, mover } = this.#mouseAction.value;
+        const x = Zoom.snap(this.#zoom.value.toGridX(cursor.x));
+        const y = Zoom.snap(this.#zoom.value.toGridY(cursor.y));
+        mover.moveBy(x, y);
+        this.#schematic.value = this.#schematic.value.unwire();
+        this.#mouseAction.value = {
+          type: "paste",
+          cursor,
+          undo,
+          mover,
+        };
+      }
       return true;
     }
     return false;
@@ -642,6 +645,10 @@ export class Controller {
 
   #pasteElements_end(cursor: Point) {
     if (this.#mouseAction.value.type === "paste") {
+      const { mover } = this.#mouseAction.value;
+      const x = Zoom.snap(this.#zoom.value.toGridX(cursor.x));
+      const y = Zoom.snap(this.#zoom.value.toGridY(cursor.y));
+      mover.moveBy(x, y);
       this.#schematic.value = this.#schematic.value.rewire();
       this.#updateHistory("paste");
       this.#toIdle(cursor);
@@ -975,52 +982,57 @@ export class Controller {
     }
     switch (mouseAction.type) {
       case "idle":
-        this.#paintSchematic(false, mouseAction.hovered);
+        this.#paintSchematic(false, mouseAction.hovered, false);
         if (this.focused && settings.showCrosshair) {
           this.#painter.paintCrosshair(zoom, mouseAction.cursor, false);
         }
         break;
       case "scroll":
-        this.#paintSchematic(false, null);
+        this.#paintSchematic(false, null, false);
         break;
       case "select":
-        this.#paintSchematic(false, null);
+        this.#paintSchematic(false, null, false);
         this.#painter.paintSelection(zoom, mouseAction.origin, mouseAction.cursor);
         break;
       case "place-wire":
-        this.#paintSchematic(true, null);
+        this.#paintSchematic(true, null, false);
         this.#painter.paintCrosshair(zoom, mouseAction.cursor, true);
         break;
       case "connect":
         this.#painter.paintCrosshair(zoom, mouseAction.cursor, true);
-        this.#paintSchematic(true, null);
+        this.#paintSchematic(true, null, false);
         for (const wire of mouseAction.wires) {
           this.#painter.paintWire(zoom, wire, true);
         }
         break;
       case "move":
-        this.#paintSchematic(true, null);
+        this.#paintSchematic(true, null, true);
         break;
       case "paste":
-        this.#paintSchematic(true, null);
+        this.#paintSchematic(true, null, true);
         break;
     }
   }
 
-  #paintSchematic(pins: boolean, hovered: Element | null) {
+  #paintSchematic(pins: boolean, hovered: Element | null, areas: boolean) {
     const schematic = this.#schematic.peek();
     const zoom = this.#zoom.peek();
     const selection = this.#selection.peek();
     for (const instance of schematic.instances) {
       this.#painter.paintInstance(zoom, instance, selection.has(instance));
-    }
-    for (const instance of schematic.instances) {
       this.#painter.paintLabels(zoom, instance, selection.has(instance));
+      if (instance === hovered || areas) {
+        this.#painter.paintArea(zoom, instance.area, false);
+        this.#painter.paintOrigin(zoom, instance, false);
+      }
     }
     for (const note of schematic.notes) {
-      if (note === hovered) {
-        this.#painter.paintArea(zoom, note.area);
-        this.#painter.paintOrigin(zoom, note);
+      if (selection.has(note)) {
+        this.#painter.paintArea(zoom, note.area, true);
+        this.#painter.paintOrigin(zoom, note, true);
+      } else if (note === hovered || areas) {
+        this.#painter.paintArea(zoom, note.area, false);
+        this.#painter.paintOrigin(zoom, note, false);
       }
     }
     for (const wire of schematic.wires) {

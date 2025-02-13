@@ -1,0 +1,8 @@
+.root {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  inline-size: 100%;
+  block-size: 100%;
+  padding: 0 1rem;
+}

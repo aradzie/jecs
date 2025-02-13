@@ -1,0 +1,30 @@
+.root {
+  display: inline-block;
+  vertical-align: middle;
+  min-block-size: 2rem;
+  margin: 0;
+  padding: 0 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  color: var(--text-color);
+  background-color: var(--separator-color);
+  outline: none;
+  line-height: 2rem;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.root:enabled {
+  cursor: pointer;
+}
+
+.root:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.root:focus-visible {
+  outline: 1px solid var(--separator-color);
+}

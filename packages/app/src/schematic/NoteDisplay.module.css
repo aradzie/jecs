@@ -1,11 +1,7 @@
 .root {
   max-inline-size: 20rem;
-  font-family: serif;
-  font-size: 80%;
-}
-
-.selected {
-  outline: 1px solid #0000ff;
+  font-family: "Spectral", serif;
+  font-size: 14px;
 }
 
 .root > :first-child {
@@ -16,27 +12,27 @@
   margin-block-end: 0;
 }
 
-.root h1,
-.root h2,
-.root h3,
-.root h4,
-.root h5,
-.root h6,
-.root p {
+.root :where(h1, h2, h3, h4, h5, h6, p) {
+  margin: 1rem 0;
   overflow-wrap: break-word;
 }
 
-.root h1,
-.root h2,
-.root h3,
-.root h4,
-.root h5,
-.root h6 {
-  text-align: start;
+.root :where(h1, h2, h3, h4, h5, h6) {
   text-wrap: balance;
 }
 
-.root p {
-  text-align: justify;
+.root :where(p) {
   text-wrap: pretty;
+}
+
+.root[data-h-align="l"] :where(h1, h2, h3, h4, h5, h6, p) {
+  text-align: start;
+}
+
+.root[data-h-align="c"] :where(h1, h2, h3, h4, h5, h6, p) {
+  text-align: center;
+}
+
+.root[data-h-align="r"] :where(h1, h2, h3, h4, h5, h6, p) {
+  text-align: end;
 }

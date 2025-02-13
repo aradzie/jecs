@@ -1,20 +1,23 @@
 import { Area } from "../graphics/geometry.ts";
-import { Align, HorizontalAlign, VerticalAlign } from "../symbol/align.ts";
+import { Align, hAlignOf, vAlignOf } from "../symbol/align.ts";
+import { Dir } from "../symbol/direction.ts";
 import { Element } from "./element.ts";
 
 export class Note extends Element {
   #text: string;
   #align: Align;
+  #dir: Dir;
   #x: number;
   #y: number;
   #width: number;
   #height: number;
   #area: Area | null = null;
 
-  constructor(text: string, align: Align = "lt", x: number = 0, y: number = 0) {
+  constructor(text: string, align: Align = "lt", dir: Dir = "h", x: number = 0, y: number = 0) {
     super();
     this.#text = text.trim();
     this.#align = align;
+    this.#dir = dir;
     this.#x = x;
     this.#y = y;
     this.#width = 0;
@@ -39,6 +42,15 @@ export class Note extends Element {
 
   set align(value: Align) {
     this.#align = value;
+    this.#area = null;
+  }
+
+  get dir(): Dir {
+    return this.#dir;
+  }
+
+  set dir(value: Dir) {
+    this.#dir = value;
     this.#area = null;
   }
 
@@ -80,38 +92,70 @@ export class Note extends Element {
   }
 
   #getArea(): Area {
-    let h = this.#align.charAt(0) as HorizontalAlign;
-    let v = this.#align.charAt(1) as VerticalAlign;
     let x0 = 0;
     let y0 = 0;
     let x1 = 0;
     let y1 = 0;
-    switch (h) {
-      case "l":
-        x0 = this.#x;
-        x1 = this.#x + this.#width;
+    switch (this.#dir) {
+      case "h":
+        switch (hAlignOf(this.#align)) {
+          case "l":
+            x0 = this.#x;
+            x1 = this.#x + this.#width;
+            break;
+          case "c":
+            x0 = this.#x - this.#width / 2;
+            x1 = this.#x + this.#width / 2;
+            break;
+          case "r":
+            x0 = this.#x - this.#width;
+            x1 = this.#x;
+            break;
+        }
+        switch (vAlignOf(this.#align)) {
+          case "t":
+            y0 = this.#y;
+            y1 = this.#y + this.#height;
+            break;
+          case "m":
+            y0 = this.#y - this.#height / 2;
+            y1 = this.#y + this.#height / 2;
+            break;
+          case "b":
+            y0 = this.#y - this.#height;
+            y1 = this.#y;
+            break;
+        }
         break;
-      case "c":
-        x0 = this.#x - this.#width / 2;
-        x1 = this.#x + this.#width / 2;
-        break;
-      case "r":
-        x0 = this.#x - this.#width;
-        x1 = this.#x;
-        break;
-    }
-    switch (v) {
-      case "t":
-        y0 = this.#y;
-        y1 = this.#y + this.#height;
-        break;
-      case "m":
-        y0 = this.#y - this.#height / 2;
-        y1 = this.#y + this.#height / 2;
-        break;
-      case "b":
-        y0 = this.#y - this.#height;
-        y1 = this.#y;
+      case "v":
+        switch (hAlignOf(this.#align)) {
+          case "l":
+            y0 = this.#y - this.#width;
+            y1 = this.#y;
+            break;
+          case "c":
+            y0 = this.#y - this.#width / 2;
+            y1 = this.#y + this.#width / 2;
+            break;
+          case "r":
+            y0 = this.#y;
+            y1 = this.#y + this.#width;
+            break;
+        }
+        switch (vAlignOf(this.#align)) {
+          case "t":
+            x0 = this.#x;
+            x1 = this.#x + this.#height;
+            break;
+          case "m":
+            x0 = this.#x - this.#height / 2;
+            x1 = this.#x + this.#height / 2;
+            break;
+          case "b":
+            x0 = this.#x - this.#height;
+            x1 = this.#x;
+            break;
+        }
         break;
     }
     return { x0, y0, x1, y1 };

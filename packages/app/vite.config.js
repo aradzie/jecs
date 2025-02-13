@@ -7,7 +7,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          katex: ["katex"],
+          katex: ["katex", "katex/dist/katex.css"],
           marked: ["marked"],
         },
       },

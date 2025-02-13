@@ -1,5 +1,6 @@
 import { library } from "../library/library.ts";
 import { Align } from "../symbol/align.ts";
+import { Dir } from "../symbol/direction.ts";
 import { Element } from "./element.ts";
 import { Instance } from "./instance.ts";
 import { Note } from "./note.ts";
@@ -9,7 +10,7 @@ import { Wire } from "./wire.ts";
 export type Serial = (
   | [type: "i", x: number, y: number, t: number, id: string, name: string, props: Props]
   | [type: "w", x0: number, y0: number, x1: number, y1: number]
-  | [type: "n", x: number, y: number, align: Align, text: string]
+  | [type: "n", x: number, y: number, align: Align, dir: Dir, text: string]
 )[];
 
 export function exportElements(elements: Iterable<Element>): Serial {
@@ -24,8 +25,8 @@ export function exportElements(elements: Iterable<Element>): Serial {
       serial.push(["w", x0, y0, x1, y1]);
     }
     if (element instanceof Note) {
-      const { x, y, align, text } = element;
-      serial.push(["n", x, y, align, text]);
+      const { x, y, align, dir, text } = element;
+      serial.push(["n", x, y, align, dir, text]);
     }
   }
   return serial;
@@ -46,8 +47,8 @@ export function importElements(serial: Serial): Element[] {
         break;
       }
       case "n": {
-        const [_, x, y, align, text] = item;
-        elements.push(new Note(text, align, x, y));
+        const [_, x, y, align, dir, text] = item;
+        elements.push(new Note(text, align, dir, x, y));
         break;
       }
     }

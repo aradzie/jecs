@@ -1,22 +1,25 @@
-import { memo } from "preact/compat";
 import * as styles from "./Icon.module.css";
 import { MouseProps } from "./props.ts";
 
-export type IconProps = {
+type IconProps = {
+  readonly class?: string;
   readonly shape: string;
-  readonly viewBox?: string;
   readonly size?: string;
+  readonly viewBox?: string;
 } & MouseProps;
 
-export const Icon = memo(function Icon({
+function Icon({
+  class: cls = styles.root,
   shape,
   viewBox = "0 0 24 24",
   size = "2rem",
   ...props
 }: IconProps) {
   return (
-    <svg class={styles.root} viewBox={viewBox} width={size} height={size} {...props}>
+    <svg class={cls} viewBox={viewBox} width={size} height={size} {...props}>
       <path d={shape} />
     </svg>
   );
-});
+}
+
+export { type IconProps, Icon };

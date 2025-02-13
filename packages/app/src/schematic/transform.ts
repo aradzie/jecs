@@ -1,5 +1,5 @@
 import { Area } from "../graphics/geometry.ts";
-import { Align, HorizontalAlign, VerticalAlign } from "../symbol/align.ts";
+import { Align, hAlignOf, vAlignOf } from "../symbol/align.ts";
 import { TransformOp } from "../symbol/transform.ts";
 import { Element } from "./element.ts";
 import { Instance } from "./instance.ts";
@@ -24,8 +24,8 @@ export function getArea(elements: Iterable<Element>): Area {
 }
 
 export function alignElements(elements: Iterable<Element>, align: Align) {
-  const h = align.charAt(0) as HorizontalAlign;
-  const v = align.charAt(1) as VerticalAlign;
+  const h = hAlignOf(align);
+  const v = vAlignOf(align);
   const area = getArea(elements);
   let dx = 0;
   let dy = 0;

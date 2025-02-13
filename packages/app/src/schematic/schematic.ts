@@ -98,14 +98,28 @@ export class Schematic implements Iterable<Element> {
 
   edit(action: EditAction): Schematic {
     switch (action.type) {
-      case "set-text": {
+      case "set-note-text": {
         const { note, text } = action;
         if (note.text !== text) {
           note.text = text;
         }
         break;
       }
-      case "set-prop": {
+      case "set-note-align": {
+        const { note, align } = action;
+        if (note.align !== align) {
+          note.align = align;
+        }
+        break;
+      }
+      case "set-note-dir": {
+        const { note, dir } = action;
+        if (note.dir !== dir) {
+          note.dir = dir;
+        }
+        break;
+      }
+      case "set-instance-prop": {
         const { instance, name, value } = action;
         if (instance.props[name] !== value) {
           instance.props = setProp(instance.props, name, value);

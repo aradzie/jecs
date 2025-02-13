@@ -1,0 +1,25 @@
+.root {
+  vertical-align: middle;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+.root:enabled {
+  cursor: pointer;
+}
+
+.root:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.root:focus-visible {
+  outline: 1px solid var(--separator-color);
+}
+
+.root[aria-checked="true"] {
+  background-color: var(--separator-color);
+}

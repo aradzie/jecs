@@ -10,6 +10,15 @@
   border-block-end: 1px solid var(--separator-color);
 }
 
+.toolbar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  block-size: 2rem;
+  margin-block-end: 1rem;
+  border-block-end: 1px solid var(--separator-color);
+}
+
 .text {
   display: block;
   inline-size: 100%;

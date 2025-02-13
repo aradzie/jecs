@@ -1,5 +1,5 @@
 import { Area, Point, round } from "../graphics/geometry.ts";
-import { Align, HorizontalAlign, VerticalAlign } from "../symbol/align.ts";
+import { Align, hAlignOf, vAlignOf } from "../symbol/align.ts";
 import { getSymbolArea, Symbol } from "../symbol/symbol.ts";
 import { Instance } from "./instance.ts";
 import { Wire } from "./wire.ts";
@@ -327,14 +327,20 @@ export class Painter {
     });
   }
 
-  paintOrigin(zoom: Zoom, { x, y }: Point) {
+  paintOrigin(zoom: Zoom, { x, y }: Point, selected: boolean) {
     const zs = zoom.scale;
     const zx = zoom.x;
     const zy = zoom.y;
     this.#withCtx((ctx) => {
-      ctx.strokeStyle = color.outline;
-      ctx.lineWidth = 1;
-      ctx.lineCap = "butt";
+      if (selected) {
+        ctx.strokeStyle = color.symbol.selected;
+        ctx.lineWidth = 1;
+        ctx.lineCap = "butt";
+      } else {
+        ctx.strokeStyle = color.outline;
+        ctx.lineWidth = 1;
+        ctx.lineCap = "butt";
+      }
       ctx.beginPath();
       ctx.moveTo(/* x */ round(zx + (x - 10) * zs) + d, /* y */ round(zy + y * zs) + d);
       ctx.lineTo(/* x */ round(zx + (x + 10) * zs) + d, /* y */ round(zy + y * zs) + d);
@@ -344,14 +350,20 @@ export class Painter {
     });
   }
 
-  paintArea(zoom: Zoom, { x0, y0, x1, y1 }: Area) {
+  paintArea(zoom: Zoom, { x0, y0, x1, y1 }: Area, selected: boolean) {
     const zs = zoom.scale;
     const zx = zoom.x;
     const zy = zoom.y;
     this.#withCtx((ctx) => {
-      ctx.strokeStyle = color.outline;
-      ctx.lineWidth = 1;
-      ctx.lineCap = "square";
+      if (selected) {
+        ctx.strokeStyle = color.symbol.selected;
+        ctx.lineWidth = 1;
+        ctx.lineCap = "square";
+      } else {
+        ctx.strokeStyle = color.outline;
+        ctx.lineWidth = 1;
+        ctx.lineCap = "square";
+      }
       ctx.strokeRect(
         /* x */ round(zx + x0 * zs) + d,
         /* y */ round(zy + y0 * zs) + d,
@@ -369,7 +381,7 @@ export class Painter {
 
   #textStyle(ctx: CanvasRenderingContext2D, zoom: Zoom, align: Align) {
     ctx.font = `${20 * zoom.scale}px serif`;
-    switch (align.charAt(0) as HorizontalAlign) {
+    switch (hAlignOf(align)) {
       case "l":
         ctx.textAlign = "left";
         break;
@@ -380,7 +392,7 @@ export class Painter {
         ctx.textAlign = "right";
         break;
     }
-    switch (align.charAt(1) as VerticalAlign) {
+    switch (vAlignOf(align)) {
       case "t":
         ctx.textBaseline = "top";
         break;
