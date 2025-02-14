@@ -1006,10 +1006,12 @@ export class Controller {
         }
         break;
       case "move":
-        this.#paintSchematic(true, null, true);
-        break;
       case "paste":
         this.#paintSchematic(true, null, true);
+        const area = getArea(mouseAction.mover.elements, false);
+        const x = zoom.toScreenX(Zoom.snap((area.x0 + area.x1) / 2));
+        const y = zoom.toScreenY(Zoom.snap((area.y0 + area.y1) / 2));
+        this.#painter.paintCrosshair(zoom, { x, y }, true);
         break;
     }
   }

@@ -1,16 +1,16 @@
 import { Element } from "./element.ts";
 
-type ElementOrigin = {
-  readonly element: Element;
-  readonly x: number;
-  readonly y: number;
-};
-
 export class ElementListMover {
-  readonly #list: ElementOrigin[];
+  readonly #elements: Element[];
+  readonly #list: Item[];
 
-  constructor(element: Iterable<Element>) {
-    this.#list = [...element].map((element) => ({ element, x: element.x, y: element.y }));
+  constructor(elements: Iterable<Element>) {
+    this.#elements = [...elements];
+    this.#list = [...elements].map((element) => ({ element, x: element.x, y: element.y }));
+  }
+
+  get elements(): Iterable<Element> {
+    return this.#elements;
   }
 
   moveBy(dx: number, dy: number): void {
@@ -25,3 +25,9 @@ export class ElementListMover {
     }
   }
 }
+
+type Item = {
+  readonly element: Element;
+  readonly x: number;
+  readonly y: number;
+};
