@@ -1020,7 +1020,9 @@ export class Controller {
     const selection = this.#selection.peek();
     for (const instance of schematic.instances) {
       this.#painter.paintInstance(zoom, instance, selection.has(instance));
-      this.#painter.paintLabels(zoom, instance, selection.has(instance));
+      if (instance.symbol !== conductors.ground) {
+        this.#painter.paintLabels(zoom, instance, selection.has(instance));
+      }
       if (instance === hovered || areas) {
         this.#painter.paintArea(zoom, instance.area, false);
         this.#painter.paintOrigin(zoom, instance, false);
