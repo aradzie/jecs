@@ -89,7 +89,7 @@ export function NotePropertiesPane({ note }: { note: Note }) {
         class={styles.text}
         type={"textarea"}
         value={note.text}
-        placeholder={"note text..."}
+        placeholder={"note..."}
         onChange={(text) => {
           controller.edit({ type: "set-note-text", note, text });
         }}

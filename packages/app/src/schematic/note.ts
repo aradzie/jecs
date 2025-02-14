@@ -1,6 +1,7 @@
 import { Area } from "../graphics/geometry.ts";
-import { Align, hAlignOf, vAlignOf } from "../symbol/align.ts";
-import { Dir } from "../symbol/direction.ts";
+import { Align, hAlignOf, transformAlignBy, vAlignOf } from "../symbol/align.ts";
+import { Dir, transformDirBy } from "../symbol/direction.ts";
+import { TransformOp } from "../symbol/transform.ts";
 import { Element } from "./element.ts";
 
 export class Note extends Element {
@@ -80,15 +81,38 @@ export class Note extends Element {
     this.#area = null;
   }
 
-  override get area(): Area {
-    return (this.#area ??= this.#getArea());
-  }
-
-  override moveTo(x: number, y: number): Note {
+  override moveTo(x: number, y: number): void {
     this.#x = x;
     this.#y = y;
     this.#area = null;
-    return this;
+  }
+
+  override transformBy(op: TransformOp, cx: number, cy: number): void {
+    const x = this.#x;
+    const y = this.#y;
+    switch (op) {
+      case "rl":
+        this.#x = cx + (y - cy);
+        this.#y = cy - (x - cx);
+        break;
+      case "rr":
+        this.#x = cx - (y - cy);
+        this.#y = cy + (x - cx);
+        break;
+      case "mx":
+        this.#x = 2 * cx - x;
+        break;
+      case "my":
+        this.#y = 2 * cy - y;
+        break;
+    }
+    this.#align = transformAlignBy(this.#align, op);
+    this.#dir = transformDirBy(this.#dir, op);
+    this.#area = null;
+  }
+
+  override get area(): Area {
+    return (this.#area ??= this.#getArea());
   }
 
   #getArea(): Area {

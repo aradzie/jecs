@@ -64,28 +64,44 @@ export class Instance extends Element {
     return this.#y;
   }
 
-  override get area(): Area {
-    return (this.#area ??= getSymbolArea(this, this.#x, this.#y));
-  }
-
-  override moveTo(x: number, y: number): Instance {
-    this.#x = x;
-    this.#y = y;
-    this.#area = null;
-    return this;
-  }
-
   get transform(): Transform {
     return this.#transform;
   }
 
-  transformBy(op: TransformOp): Instance {
+  override moveTo(x: number, y: number): void {
+    this.#x = x;
+    this.#y = y;
+    this.#area = null;
+  }
+
+  override transformBy(op: TransformOp, cx: number, cy: number): void {
+    const x = this.#x;
+    const y = this.#y;
+    switch (op) {
+      case "rl":
+        this.#x = cx + (y - cy);
+        this.#y = cy - (x - cx);
+        break;
+      case "rr":
+        this.#x = cx - (y - cy);
+        this.#y = cy + (x - cx);
+        break;
+      case "mx":
+        this.#x = 2 * cx - x;
+        break;
+      case "my":
+        this.#y = 2 * cy - y;
+        break;
+    }
     this.#transform = nextTransform(this.#transform, op);
     this.#shapes = null;
     this.#pins = null;
     this.#labels = null;
     this.#area = null;
-    return this;
+  }
+
+  override get area(): Area {
+    return (this.#area ??= getSymbolArea(this, this.#x, this.#y));
   }
 
   get shapes(): readonly Shape[] {

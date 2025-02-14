@@ -215,7 +215,7 @@ export class Controller {
       [
         "t",
         () => {
-          this.pasteNote("note...");
+          this.pasteNote("");
         },
       ],
     );
@@ -810,7 +810,7 @@ export class Controller {
     return Zoom.center(
       this.#painter.width,
       this.#painter.height,
-      getArea(this.#schematic.peek()),
+      getArea(this.#schematic.peek(), true),
       cover,
     );
   }

@@ -1,4 +1,5 @@
 import { Area } from "../graphics/geometry.ts";
+import { TransformOp } from "../symbol/transform.ts";
 import { Modifiers } from "../widget/hotkeys.ts";
 import { Element } from "./element.ts";
 import { Instance } from "./instance.ts";
@@ -63,6 +64,48 @@ export class Wire extends Element {
     return this.#y0;
   }
 
+  override moveTo(x: number, y: number): void {
+    const x0 = this.#x0;
+    const y0 = this.#y0;
+    const x1 = this.#x1;
+    const y1 = this.#y1;
+    this.#x0 = x;
+    this.#y0 = y;
+    this.#x1 = x + (x1 - x0);
+    this.#y1 = y + (y1 - y0);
+    this.#area = null;
+  }
+
+  override transformBy(op: TransformOp, cx: number, cy: number): void {
+    const x0 = this.#x0;
+    const y0 = this.#y0;
+    const x1 = this.#x1;
+    const y1 = this.#y1;
+    switch (op) {
+      case "rl":
+        this.#x0 = cx + (y0 - cy);
+        this.#y0 = cy - (x0 - cx);
+        this.#x1 = cx + (y1 - cy);
+        this.#y1 = cy - (x1 - cx);
+        break;
+      case "rr":
+        this.#x0 = cx - (y0 - cy);
+        this.#y0 = cy + (x0 - cx);
+        this.#x1 = cx - (y1 - cy);
+        this.#y1 = cy + (x1 - cx);
+        break;
+      case "mx":
+        this.#x0 = 2 * cx - x0;
+        this.#x1 = 2 * cx - x1;
+        break;
+      case "my":
+        this.#y0 = 2 * cy - y0;
+        this.#y1 = 2 * cy - y1;
+        break;
+    }
+    this.#area = null;
+  }
+
   override get area(): Area {
     return (this.#area ??= {
       x0: Math.min(this.#x0, this.#x1),
@@ -70,17 +113,6 @@ export class Wire extends Element {
       x1: Math.max(this.#x0, this.#x1),
       y1: Math.max(this.#y0, this.#y1),
     });
-  }
-
-  override moveTo(x: number, y: number): Element {
-    const w = this.#x1 - this.#x0;
-    const h = this.#y1 - this.#y0;
-    this.#x0 = x;
-    this.#y0 = y;
-    this.#x1 = x + w;
-    this.#y1 = y + h;
-    this.#area = null;
-    return this;
   }
 
   override includes(x: number, y: number): boolean {

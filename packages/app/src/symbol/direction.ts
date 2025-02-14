@@ -2,7 +2,7 @@ import { TransformOp } from "./transform.ts";
 
 export type Dir = "h" | "v";
 
-export const transformDir = (dir: Dir, op: TransformOp): Dir => {
+export const transformDirBy = (dir: Dir, op: TransformOp): Dir => {
   switch (op) {
     case "rl":
       switch (dir) {

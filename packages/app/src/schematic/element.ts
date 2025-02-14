@@ -1,4 +1,5 @@
 import { Area } from "../graphics/geometry.ts";
+import { TransformOp } from "../symbol/transform.ts";
 import { Unique } from "./unique.ts";
 
 /**
@@ -10,11 +11,11 @@ export abstract class Element extends Unique {
 
   abstract get y(): number;
 
-  abstract get area(): Area;
+  abstract moveTo(x: number, y: number): void;
 
-  moveTo(x: number, y: number): Element {
-    return this;
-  }
+  abstract transformBy(op: TransformOp, cx: number, cy: number): void;
+
+  abstract get area(): Area;
 
   /** Tests whether this element can be selected by clicking on the given point. */
   includes(x: number, y: number): boolean {
