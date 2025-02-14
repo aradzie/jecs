@@ -5,7 +5,6 @@ import { Instance } from "./instance.ts";
 import { Names } from "./names.ts";
 import { connect, dummyNetwork, Network } from "./network.ts";
 import { Note } from "./note.ts";
-import { setProp } from "./props.ts";
 import { ReadonlySelection } from "./selection.ts";
 import { rewire, Wire } from "./wire.ts";
 
@@ -121,9 +120,7 @@ export class Schematic implements Iterable<Element> {
       }
       case "set-instance-prop": {
         const { instance, name, value } = action;
-        if (instance.props[name] !== value) {
-          instance.props = setProp(instance.props, name, value);
-        }
+        instance.props = instance.props.setValue(name, value);
         break;
       }
     }

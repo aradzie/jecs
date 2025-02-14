@@ -4,11 +4,11 @@ import { Dir } from "../symbol/direction.ts";
 import { Element } from "./element.ts";
 import { Instance } from "./instance.ts";
 import { Note } from "./note.ts";
-import { Props } from "./props.ts";
+import { Props, SerialProps } from "./props.ts";
 import { Wire } from "./wire.ts";
 
 export type Serial = (
-  | [type: "i", x: number, y: number, t: number, id: string, name: string, props: Props]
+  | [type: "i", x: number, y: number, t: number, id: string, name: string, props: SerialProps]
   | [type: "w", x0: number, y0: number, x1: number, y1: number]
   | [type: "n", x: number, y: number, align: Align, dir: Dir, text: string]
 )[];
@@ -18,7 +18,7 @@ export function exportElements(elements: Iterable<Element>): Serial {
   for (const element of elements) {
     if (element instanceof Instance) {
       const { x, y, transform, symbol, name, props } = element;
-      serial.push(["i", x, y, transform, symbol.id, name, props]);
+      serial.push(["i", x, y, transform, symbol.id, name, props.export()]);
     }
     if (element instanceof Wire) {
       const { x0, y0, x1, y1 } = element;
@@ -38,7 +38,8 @@ export function importElements(serial: Serial): Element[] {
     switch (item[0]) {
       case "i": {
         const [_, x, y, t, id, name, props] = item;
-        elements.push(new Instance(library.get(id), name, props, x, y, t));
+        const symbol = library.get(id);
+        elements.push(new Instance(symbol, name, Props.create(symbol).import(props), x, y, t));
         break;
       }
       case "w": {
