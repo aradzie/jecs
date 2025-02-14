@@ -1,21 +1,21 @@
 import type { DeviceClass } from "./device.js";
-import { Properties, PropertyValue } from "./properties.js";
+import { Props, PropValue } from "./props.js";
 
 export class Model {
   readonly modelId: string;
   readonly deviceClass: DeviceClass;
-  readonly properties: Properties;
+  readonly props: Props;
 
   constructor(
     modelId: string,
     deviceClass: DeviceClass,
-    parameters: Record<string, PropertyValue> = {},
+    parameters: Record<string, PropValue> = {},
   ) {
     this.modelId = modelId;
     this.deviceClass = deviceClass;
-    this.properties = new Properties(deviceClass.propertiesSchema);
+    this.props = new Props(deviceClass.propsSchema);
     for (const [name, value] of Object.entries(parameters)) {
-      this.properties.set(name, value);
+      this.props.set(name, value);
     }
   }
 }

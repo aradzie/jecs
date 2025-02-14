@@ -1,7 +1,7 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
 import type { RealStamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
-import { Properties } from "../../circuit/properties.js";
+import { Props } from "../../circuit/props.js";
 
 const enum S {
   I0,
@@ -16,8 +16,8 @@ const enum S {
 export class Idc extends Device.Dc {
   static override readonly id = "I";
   static override readonly numTerminals = 2;
-  static override readonly propertiesSchema = {
-    I: Properties.number({ title: "current" }),
+  static override readonly propsSchema = {
+    I: Props.number({ title: "current" }),
   };
   static override readonly stateSchema = {
     length: S._Size_,
@@ -38,7 +38,7 @@ export class Idc extends Device.Dc {
   }
 
   override init(state: DeviceState): void {
-    state[S.I0] = this.properties.getNumber("I");
+    state[S.I0] = this.props.getNumber("I");
   }
 
   override loadDc(state: DeviceState, { sourceFactor }: DcParams, stamper: RealStamper): void {

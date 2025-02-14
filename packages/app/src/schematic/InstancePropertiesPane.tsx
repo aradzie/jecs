@@ -13,7 +13,7 @@ export function InstancePropertiesPane({ instance }: { instance: Instance }) {
       {device != null && (
         <table class={styles.table}>
           <tbody>
-            {Object.entries(device.propertiesSchema).map(([name, value]) => (
+            {Object.entries(device.propsSchema).map(([name, value]) => (
               <tr>
                 <td class={styles.propName}>{name}</td>
                 <td class={styles.propValue}>

@@ -42,29 +42,29 @@ export interface InstanceItemNode extends Node {
   readonly instanceId: Identifier;
   readonly nodes: readonly Identifier[];
   readonly modelId: Identifier | null;
-  readonly properties: readonly PropertyNode[];
+  readonly props: readonly PropNode[];
 }
 
 export interface ModelItemNode extends Node, HasId {
   readonly type: "model";
   readonly deviceId: Identifier;
   readonly modelId: Identifier;
-  readonly properties: readonly PropertyNode[];
+  readonly props: readonly PropNode[];
 }
 
-export interface PropertyNode extends Node, HasId {
+export interface PropNode extends Node, HasId {
   readonly id: Identifier;
-  readonly value: PropertyValue;
+  readonly value: PropValue;
 }
 
-export type PropertyValue = StringPropertyValue | ExpPropertyValue;
+export type PropValue = StringPropValue | ExpPropValue;
 
-export interface StringPropertyValue {
+export interface StringPropValue {
   readonly type: "string";
   readonly value: string;
 }
 
-export interface ExpPropertyValue {
+export interface ExpPropValue {
   readonly type: "exp";
   readonly value: ExpressionNode;
 }
@@ -77,26 +77,26 @@ export interface EquationItemNode extends Node, HasId {
 
 export interface DcItemNode extends Node {
   readonly type: "dc";
-  readonly properties: readonly PropertyNode[];
+  readonly props: readonly PropNode[];
   readonly sweeps: readonly SweepNode[];
 }
 
 export interface TrItemNode extends Node {
   readonly type: "tr";
-  readonly properties: readonly PropertyNode[];
+  readonly props: readonly PropNode[];
   readonly sweeps: readonly SweepNode[];
 }
 
 export interface AcItemNode extends Node {
   readonly type: "ac";
-  readonly properties: readonly PropertyNode[];
+  readonly props: readonly PropNode[];
   readonly sweeps: readonly SweepNode[];
 }
 
 export interface SweepNode extends Node, HasId {
   readonly type: "sweep";
   readonly id: Identifier;
-  readonly properties: readonly PropertyNode[];
+  readonly props: readonly PropNode[];
 }
 
 export type ExpressionNode =

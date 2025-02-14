@@ -19,7 +19,7 @@ import { FunctionDef } from "../circuit/functions.js";
 import { getDeviceClass } from "../circuit/library.js";
 import { Model } from "../circuit/model.js";
 import type { Node } from "../circuit/network.js";
-import type { Properties } from "../circuit/properties.js";
+import type { Props } from "../circuit/props.js";
 import { standardModels } from "../device/models.js";
 import type {
   AcItemNode,
@@ -29,7 +29,7 @@ import type {
   InstanceItemNode,
   ModelItemNode,
   NetlistNode,
-  PropertyNode,
+  PropNode,
   SweepNode,
   TrItemNode,
 } from "./ast.js";
@@ -104,7 +104,7 @@ class NetlistBuilder {
       this.createInstance(instance);
     }
     for (const instance of this.instances.values()) {
-      this.setInstanceProperties(instance);
+      this.setInstanceProps(instance);
     }
     for (const instance of this.instances.values()) {
       this.circuit.connect(instance.device, instance.nodes);
@@ -144,7 +144,7 @@ class NetlistBuilder {
       });
     }
     const model = new Model(item.modelId.name, deviceClass);
-    this.setConstantProperties(model.properties, item.properties);
+    this.setConstantProps(model.props, item.props);
     this.models.set(model.modelId, model);
   }
 
@@ -204,7 +204,7 @@ class NetlistBuilder {
     instance.device = new instance.deviceClass(instance.item.instanceId.name);
   }
 
-  setInstanceProperties(instance: Instance): void {
+  setInstanceProps(instance: Instance): void {
     // Set properties from model.
 
     if (instance.item.modelId != null) {
@@ -221,12 +221,12 @@ class NetlistBuilder {
           { location: instance.item.location },
         );
       }
-      instance.device.properties.from(model.properties);
+      instance.device.props.from(model.props);
     }
 
     // Set properties from instance properties.
 
-    this.setDeviceProperties(instance.device, instance.item.properties);
+    this.setDeviceProps(instance.device, instance.item.props);
   }
 
   collectAnalyses(): void {
@@ -247,21 +247,21 @@ class NetlistBuilder {
 
   addDcAnalysis(node: DcItemNode): void {
     const analysis = new DcAnalysis();
-    this.setConstantProperties(analysis.properties, node.properties);
+    this.setConstantProps(analysis.props, node.props);
     this.addAnalysisSweeps(analysis, node.sweeps);
     this.analyses.push(analysis);
   }
 
   addTrAnalysis(node: TrItemNode): void {
     const analysis = new TrAnalysis();
-    this.setConstantProperties(analysis.properties, node.properties);
+    this.setConstantProps(analysis.props, node.props);
     this.addAnalysisSweeps(analysis, node.sweeps);
     this.analyses.push(analysis);
   }
 
   addAcAnalysis(node: AcItemNode): void {
     const analysis = new AcAnalysis();
-    this.setConstantProperties(analysis.properties, node.properties);
+    this.setConstantProps(analysis.props, node.props);
     this.addAnalysisSweeps(analysis, node.sweeps);
     this.analyses.push(analysis);
   }
@@ -269,23 +269,23 @@ class NetlistBuilder {
   private addAnalysisSweeps(analysis: Analysis, nodes: readonly SweepNode[]) {
     for (const node of nodes) {
       const sweep = new Sweep(node.id.name);
-      this.setConstantProperties(sweep.properties, node.properties);
+      this.setConstantProps(sweep.props, node.props);
       analysis.sweeps.push(sweep);
     }
   }
 
-  private setDeviceProperties(device: Device, nodes: readonly PropertyNode[]): void {
+  private setDeviceProps(device: Device, nodes: readonly PropNode[]): void {
     for (const node of nodes) {
       try {
         switch (node.value.type) {
           case "string": {
-            device.properties.set(node.id.name, node.value.value);
+            device.props.set(node.id.name, node.value.value);
             break;
           }
           case "exp": {
             const exp = toExp(node.value.value);
             if (exp.isConstant()) {
-              device.properties.set(node.id.name, exp.eval(this.circuit.equations));
+              device.props.set(node.id.name, exp.eval(this.circuit.equations));
             } else {
               this.circuit.bindings.add(new Binding(device, node.id.name, exp));
             }
@@ -301,17 +301,17 @@ class NetlistBuilder {
     }
   }
 
-  private setConstantProperties(properties: Properties, nodes: readonly PropertyNode[]): void {
+  private setConstantProps(props: Props, nodes: readonly PropNode[]): void {
     for (const node of nodes) {
       try {
         switch (node.value.type) {
           case "string": {
-            properties.set(node.id.name, node.value.value);
+            props.set(node.id.name, node.value.value);
             break;
           }
           case "exp": {
             const exp = toExp(node.value.value);
-            properties.set(node.id.name, exp.eval(constants));
+            props.set(node.id.name, exp.eval(constants));
             break;
           }
         }

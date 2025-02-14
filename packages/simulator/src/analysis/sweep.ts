@@ -1,46 +1,46 @@
-import { Properties, PropertiesSchema } from "../circuit/properties.js";
+import { Props, PropsSchema } from "../circuit/props.js";
 import { humanizeNumber } from "../util/format.js";
 
 export class Sweep implements Iterable<number> {
-  static readonly propertiesSchema: PropertiesSchema = {
-    type: Properties.string({
+  static readonly propsSchema: PropsSchema = {
+    type: Props.string({
       range: ["lin", "log"],
       title: "parameter sweep type",
     }),
-    start: Properties.number({
+    start: Props.number({
       range: ["real"],
       title: "parameter start value",
     }),
-    stop: Properties.number({
+    stop: Props.number({
       range: ["real"],
       title: "parameter stop value",
     }),
-    points: Properties.number({
+    points: Props.number({
       range: ["integer", ">", 1],
       title: "number of points",
     }),
   };
 
-  static from(id: string, properties: Properties): Sweep {
+  static from(id: string, props: Props): Sweep {
     const sweep = new Sweep(id);
-    sweep.properties.from(properties);
+    sweep.props.from(props);
     return sweep;
   }
 
-  readonly properties = new Properties(Sweep.propertiesSchema);
+  readonly props = new Props(Sweep.propsSchema);
 
   constructor(readonly id: string) {}
 
   *[Symbol.iterator](): Iterator<number> {
-    const { properties } = this;
-    yield* Sweep.iter(properties);
+    const { props } = this;
+    yield* Sweep.iter(props);
   }
 
-  static iter(properties: Properties): Iterable<number> {
-    const type = properties.getString("type");
-    const start = properties.getNumber("start");
-    const stop = properties.getNumber("stop");
-    const points = properties.getNumber("points");
+  static iter(props: Props): Iterable<number> {
+    const type = props.getString("type");
+    const start = props.getNumber("start");
+    const stop = props.getNumber("stop");
+    const points = props.getNumber("points");
     switch (type) {
       case "lin":
         return Sweep.linIter(start, stop, points);

@@ -1,7 +1,7 @@
 import { Circuit } from "../circuit/circuit.js";
 import { ConstantExp } from "../circuit/equations.js";
 import { allDeviceProbes, allNodeProbes, Probe, timeProbe } from "../circuit/probe.js";
-import { Properties, PropertiesSchema } from "../circuit/properties.js";
+import { Props, PropsSchema } from "../circuit/props.js";
 import { DiffMethod, MAX_ORDER, MIN_ORDER, Tran } from "../circuit/transient.js";
 import { Analysis } from "./analysis.js";
 import type { DatasetBuilder } from "./dataset.js";
@@ -9,41 +9,41 @@ import { NonlinearSolver } from "./solver-nonlinear.js";
 import { groupName, Sweep } from "./sweep.js";
 
 export class TrAnalysis extends Analysis {
-  static readonly propertiesSchema: PropertiesSchema = {
-    startTime: Properties.number({
+  static readonly propsSchema: PropsSchema = {
+    startTime: Props.number({
       defaultValue: 0,
       range: ["real", ">=", 0],
       title: "simulation start time",
     }),
-    stopTime: Properties.number({
+    stopTime: Props.number({
       range: ["real", ">", 0],
       title: "simulation stop time",
     }),
-    timeStep: Properties.number({
+    timeStep: Props.number({
       range: ["real", ">", 0],
       title: "simulation time step",
     }),
-    method: Properties.string({
+    method: Props.string({
       defaultValue: DiffMethod.Gear,
       range: [DiffMethod.Euler, DiffMethod.Trapezoidal, DiffMethod.Gear],
       title: "integration method",
     }),
-    order: Properties.number({
+    order: Props.number({
       defaultValue: MAX_ORDER,
       range: ["integer", ">=", MIN_ORDER, "<=", MAX_ORDER],
       title: "integration order",
     }),
-    dc: Properties.string({
+    dc: Props.string({
       defaultValue: "yes",
       range: ["yes", "no"],
       title: "start with DC analysis",
     }),
-    ...Circuit.propertiesSchema,
-    ...NonlinearSolver.propertiesSchema,
+    ...Circuit.propsSchema,
+    ...NonlinearSolver.propsSchema,
   };
 
   constructor() {
-    super(TrAnalysis.propertiesSchema);
+    super(TrAnalysis.propsSchema);
   }
 
   protected override getProbes(circuit: Circuit): Probe[] {
@@ -51,15 +51,15 @@ export class TrAnalysis extends Analysis {
   }
 
   protected override runImpl(circuit: Circuit, dataset: DatasetBuilder): void {
-    const { properties } = this;
-    const startTime = properties.getNumber("startTime");
-    const stopTime = properties.getNumber("stopTime");
-    const timeStep = properties.getNumber("timeStep");
-    const method = properties.getString("method") as DiffMethod;
-    const order = properties.getNumber("order");
-    const dc = properties.getString("dc");
-    const temp = properties.getNumber("temp");
-    const solver = new NonlinearSolver(circuit, properties);
+    const { props } = this;
+    const startTime = props.getNumber("startTime");
+    const stopTime = props.getNumber("stopTime");
+    const timeStep = props.getNumber("timeStep");
+    const method = props.getString("method") as DiffMethod;
+    const order = props.getNumber("order");
+    const dc = props.getString("dc");
+    const temp = props.getNumber("temp");
+    const solver = new NonlinearSolver(circuit, props);
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {},

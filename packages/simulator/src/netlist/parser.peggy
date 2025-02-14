@@ -28,7 +28,7 @@ InstanceItem
   = deviceId:Identifier ":" instanceId:Identifier
     _ nodes:NodeIdList
     _ modelId:ModelId?
-    _ properties:PropertyList
+    _ props:PropList
     _ LineEnd
     {
       return {
@@ -38,7 +38,7 @@ InstanceItem
         modelId,
         instanceId,
         nodes,
-        properties,
+        props,
       };
     }
 
@@ -52,15 +52,15 @@ NodeIdList
 NodeId
   = @Identifier !( _ "=" )
 
-PropertyList
-  = properties:( _ @Property )*
-    { return properties; }
+PropList
+  = props:( _ @Prop )*
+    { return props; }
 
-Property
-  = id:Identifier _ "=" _ value:PropertyValue
+Prop
+  = id:Identifier _ "=" _ value:PropValue
     { return { location: location(), id, value }; }
 
-PropertyValue
+PropValue
   = value:String
     { return { location: location(), type: "string", value }; }
   / value:Expression
@@ -70,9 +70,9 @@ ModelItem
   = ".model"
     _ deviceId:Identifier
     _ modelId:ModelId
-    _ properties:PropertyList
+    _ props:PropList
     _ LineEnd
-    { return { location: location(), type: "model", deviceId, modelId, properties }; }
+    { return { location: location(), type: "model", deviceId, modelId, props }; }
 
 EquationItem
   = ".eq" _ id:VariableId _ "=" _ value:Expression _ LineEnd
@@ -84,21 +84,21 @@ ActionItem
   / AcAnalysisItem
 
 DcAnalysisItem
-  = ".dc" _ properties:PropertyList sweeps:( _ @Sweep )* _ LineEnd
-    { return { location: location(), type: "dc", properties, sweeps }; }
+  = ".dc" _ props:PropList sweeps:( _ @Sweep )* _ LineEnd
+    { return { location: location(), type: "dc", props, sweeps }; }
 
 TrAnalysisItem
-  = ".tr" _ properties:PropertyList sweeps:( _ @Sweep )* _ LineEnd
-    { return { location: location(), type: "tr", properties, sweeps }; }
+  = ".tr" _ props:PropList sweeps:( _ @Sweep )* _ LineEnd
+    { return { location: location(), type: "tr", props, sweeps }; }
 
 AcAnalysisItem
-  = ".ac" _ properties:PropertyList sweeps:( _ @Sweep )* _ LineEnd
-    { return { location: location(), type: "ac", properties, sweeps }; }
+  = ".ac" _ props:PropList sweeps:( _ @Sweep )* _ LineEnd
+    { return { location: location(), type: "ac", props, sweeps }; }
 
 Sweep
   = ".sweep"
-    _ id:VariableId _ properties:PropertyList
-    { return { location: location(), type: "sweep", id, properties } }
+    _ id:VariableId _ props:PropList
+    { return { location: location(), type: "sweep", id, props } }
 
 Expression
   = AdditiveExp

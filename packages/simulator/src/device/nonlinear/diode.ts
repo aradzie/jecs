@@ -1,7 +1,7 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
 import type { RealStamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
-import { Properties } from "../../circuit/properties.js";
+import { Props } from "../../circuit/props.js";
 import { celsiusToKelvin } from "../../util/unit.js";
 import { gMin } from "../const.js";
 import { pnConductance, pnCurrent, pnTemp, pnVoltage } from "./semi.js";
@@ -23,18 +23,18 @@ const enum S {
 export class Diode extends Device.Dc {
   static override readonly id = "Diode";
   static override readonly numTerminals = 2;
-  static override readonly propertiesSchema = {
-    Is: Properties.number({
+  static override readonly propsSchema = {
+    Is: Props.number({
       defaultValue: 1e-14,
       range: ["real", ">", 0],
       title: "saturation current",
     }),
-    N: Properties.number({
+    N: Props.number({
       defaultValue: 1,
       range: ["real", ">", 0],
       title: "emission coefficient",
     }),
-    temp: Properties.temp,
+    temp: Props.temp,
   };
   static override readonly stateSchema = {
     length: S._Size_,
@@ -56,9 +56,9 @@ export class Diode extends Device.Dc {
   }
 
   override initDc(state: DeviceState, params: DcParams): void {
-    const Is = this.properties.getNumber("Is");
-    const N = this.properties.getNumber("N");
-    const temp = celsiusToKelvin(this.properties.getNumber("temp", params.temp));
+    const Is = this.props.getNumber("Is");
+    const N = this.props.getNumber("N");
+    const temp = celsiusToKelvin(this.props.getNumber("temp", params.temp));
     const [Vt, Ist, Vcrit] = pnTemp(temp, Is, N);
     state[S.Is] = Ist;
     state[S.Vt] = Vt;

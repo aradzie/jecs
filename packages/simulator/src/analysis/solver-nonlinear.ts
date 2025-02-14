@@ -3,7 +3,7 @@ import { Sle, SleMethod } from "@jecs/math/lib/sle.js";
 import type { Vector } from "@jecs/math/lib/types.js";
 import type { Circuit } from "../circuit/circuit.js";
 import { RealStamper } from "../circuit/mna.js";
-import { Properties, PropertiesSchema } from "../circuit/properties.js";
+import { Props, PropsSchema } from "../circuit/props.js";
 import { logger } from "../util/logging.js";
 import { ConvergenceError } from "./error.js";
 
@@ -17,23 +17,23 @@ const sourceFactorList = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
 const gMinList = [1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 0];
 
 export class NonlinearSolver {
-  static readonly propertiesSchema: PropertiesSchema = {
-    abstol: Properties.number({
+  static readonly propsSchema: PropsSchema = {
+    abstol: Props.number({
       defaultValue: 1e-12, // 1pA
       range: ["real", ">", 0],
       title: "absolute current error tolerance in amperes",
     }),
-    vntol: Properties.number({
+    vntol: Props.number({
       defaultValue: 1e-6, // 1uV
       range: ["real", ">", 0],
       title: "absolute voltage error tolerance in volts",
     }),
-    reltol: Properties.number({
+    reltol: Props.number({
       defaultValue: 1e-3,
       range: ["real", ">", 0],
       title: "relative error tolerance",
     }),
-    maxIter: Properties.number({
+    maxIter: Props.number({
       defaultValue: 150,
       range: ["integer", ">", 1],
       title: "maximum number of iterations",
@@ -57,9 +57,9 @@ export class NonlinearSolver {
   private load: (stamper: RealStamper) => void = () => {};
   private end: () => void = () => {};
 
-  constructor(circuit: Circuit, properties: Properties) {
+  constructor(circuit: Circuit, props: Props) {
     this.circuit = circuit;
-    this.options = getConvergenceOptions(properties);
+    this.options = getConvergenceOptions(props);
     this.sle = new Sle(circuit.nodes.length);
     this.backupX = vecMake(this.sle.size);
     this.currX = vecMake(this.sle.size);
@@ -309,11 +309,11 @@ interface ConvergenceOptions {
   readonly maxIter: number;
 }
 
-function getConvergenceOptions(properties: Properties): ConvergenceOptions {
+function getConvergenceOptions(props: Props): ConvergenceOptions {
   return {
-    abstol: properties.getNumber("abstol"),
-    vntol: properties.getNumber("vntol"),
-    reltol: properties.getNumber("reltol"),
-    maxIter: properties.getNumber("maxIter"),
+    abstol: props.getNumber("abstol"),
+    vntol: props.getNumber("vntol"),
+    reltol: props.getNumber("reltol"),
+    maxIter: props.getNumber("maxIter"),
   };
 }

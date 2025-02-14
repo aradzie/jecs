@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import type { Circuit } from "../circuit/circuit.js";
 import type { Probe } from "../circuit/probe.js";
-import { Properties, PropertiesSchema } from "../circuit/properties.js";
+import { Props, PropsSchema } from "../circuit/props.js";
 import { logger } from "../util/logging.js";
 import { Dataset, DatasetBuilder, makeDatasetBuilder } from "./dataset.js";
 import type { Sweep } from "./sweep.js";
@@ -11,12 +11,12 @@ export const analysisEnded = Symbol();
 export const analysisError = Symbol();
 
 export abstract class Analysis extends EventEmitter {
-  readonly properties: Properties;
+  readonly props: Props;
   readonly sweeps: Sweep[];
 
-  constructor(propertiesSchema: PropertiesSchema) {
+  constructor(propsSchema: PropsSchema) {
     super();
-    this.properties = new Properties(propertiesSchema);
+    this.props = new Props(propsSchema);
     this.sweeps = [];
   }
 
