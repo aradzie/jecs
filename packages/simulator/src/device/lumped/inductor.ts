@@ -1,7 +1,7 @@
 import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
 import type { ComplexStamper, RealStamper } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
-import { Properties } from "../../circuit/properties.js";
+import { Props } from "../../circuit/props.js";
 import { Diff } from "../../circuit/transient.js";
 
 const enum S {
@@ -18,12 +18,12 @@ const enum S {
 export class Inductor extends Device {
   static override readonly id = "L";
   static override readonly numTerminals = 2;
-  static override readonly propertiesSchema = {
-    L: Properties.number({
+  static override readonly propsSchema = {
+    L: Props.number({
       title: "inductance",
       range: ["real", ">", 0],
     }),
-    I0: Properties.number({
+    I0: Props.number({
       title: "initial current",
       defaultValue: 0,
     }),
@@ -57,8 +57,8 @@ export class Inductor extends Device {
   }
 
   override init(state: DeviceState): void {
-    state[S.L] = this.properties.getNumber("L");
-    state[S.I0] = this.properties.getNumber("I0");
+    state[S.L] = this.props.getNumber("L");
+    state[S.I0] = this.props.getNumber("I0");
   }
 
   override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {

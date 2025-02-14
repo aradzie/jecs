@@ -1,8 +1,8 @@
 import { CircuitError } from "./error.js";
 
-export type PropertiesSchema = Record<string, PropertySchema>;
+export type PropsSchema = Record<string, PropSchema>;
 
-export type PropertySchema = NumberPropertySchema | StringPropertySchema;
+export type PropSchema = NumberPropSchema | StringPropSchema;
 
 export type NumberRangeOp = ">" | ">=" | "<" | "<=" | "<>";
 
@@ -13,7 +13,7 @@ type NumberRange3 = readonly [...NumberRange2, NumberRangeOp, number];
 
 export type NumberRange = NumberRange0 | NumberRange1 | NumberRange2 | NumberRange3;
 
-export type NumberPropertySchema = {
+export type NumberPropSchema = {
   readonly type: "number";
   /** The default value of this property. */
   readonly defaultValue?: number;
@@ -23,7 +23,7 @@ export type NumberPropertySchema = {
   readonly title: string;
 };
 
-export type StringPropertySchema = {
+export type StringPropSchema = {
   readonly type: "string";
   /** The default value of this property. */
   readonly defaultValue?: string;
@@ -33,35 +33,35 @@ export type StringPropertySchema = {
   readonly title: string;
 };
 
-export type PropertyValue = number | string;
+export type PropValue = number | string;
 
 /**
  * A helper class to build and validate device properties.
  */
-export class Properties {
+export class Props {
   /** Creates a new number property schema from the given options. */
-  static number(item: Omit<NumberPropertySchema, "type">): NumberPropertySchema {
+  static number(item: Omit<NumberPropSchema, "type">): NumberPropSchema {
     return { type: "number", ...item };
   }
 
   /** Creates a new string property schema from the given options. */
-  static string(item: Omit<StringPropertySchema, "type">): StringPropertySchema {
+  static string(item: Omit<StringPropSchema, "type">): StringPropSchema {
     return { type: "string", ...item };
   }
 
   /** The device temperature property. */
-  static temp = Properties.number({
+  static temp = Props.number({
     defaultValue: 26.85, // Room temperature.
     range: ["real", ">", -273.15], // Absolute zero.
     title: "device temperature in degrees Celsius",
   });
 
-  private readonly schema = new Map<string, PropertySchema>();
-  private readonly values = new Map<string, PropertyValue>();
+  private readonly schema = new Map<string, PropSchema>();
+  private readonly values = new Map<string, PropValue>();
 
-  constructor(schema: PropertiesSchema) {
-    for (const [name, property] of Object.entries(schema)) {
-      this.schema.set(name, property);
+  constructor(schema: PropsSchema) {
+    for (const [name, prop] of Object.entries(schema)) {
+      this.schema.set(name, prop);
     }
   }
 
@@ -69,19 +69,19 @@ export class Properties {
     return [...this.schema.keys()];
   }
 
-  prop(name: string): PropertySchema {
-    const property = this.schema.get(name);
-    if (property == null) {
+  prop(name: string): PropSchema {
+    const prop = this.schema.get(name);
+    if (prop == null) {
       const names = this.names();
       throw new CircuitError(
         `Unknown property [${name}]. ` + //
           `Expected one of ${names.map((v) => `[${v}]`).join(", ")}.`,
       );
     }
-    return property;
+    return prop;
   }
 
-  from(that: Properties): void {
+  from(that: Props): void {
     for (const [name, value] of that.values.entries()) {
       this.set(name, value);
     }
@@ -101,15 +101,15 @@ export class Properties {
     return this.values.has(name);
   }
 
-  set(name: string, value: PropertyValue): this {
-    const property = this.prop(name);
-    switch (property.type) {
+  set(name: string, value: PropValue): this {
+    const prop = this.prop(name);
+    switch (prop.type) {
       case "number": {
-        checkNumber(property, name, value);
+        checkNumber(prop, name, value);
         break;
       }
       case "string": {
-        checkString(property, name, value);
+        checkString(prop, name, value);
         break;
       }
     }
@@ -118,11 +118,11 @@ export class Properties {
   }
 
   getNumber(name: string, defaultValue: number | null = null): number {
-    const property = this.prop(name);
-    if (property.type !== "number") {
+    const prop = this.prop(name);
+    if (prop.type !== "number") {
       throw new CircuitError(`Property [${name}] is not a number.`);
     }
-    const value = this.values.get(name) ?? defaultValue ?? property.defaultValue;
+    const value = this.values.get(name) ?? defaultValue ?? prop.defaultValue;
     if (value == null) {
       throw new CircuitError(`Property [${name}] has no value.`);
     }
@@ -130,11 +130,11 @@ export class Properties {
   }
 
   getString(name: string, defaultValue: string | null = null): string {
-    const property = this.prop(name);
-    if (property.type !== "string") {
+    const prop = this.prop(name);
+    if (prop.type !== "string") {
       throw new CircuitError(`Property [${name}] is not a string.`);
     }
-    const value = this.values.get(name) ?? defaultValue ?? property.defaultValue;
+    const value = this.values.get(name) ?? defaultValue ?? prop.defaultValue;
     if (value == null) {
       throw new CircuitError(`Property [${name}] has no value.`);
     }
@@ -142,14 +142,14 @@ export class Properties {
   }
 }
 
-function checkNumber(property: NumberPropertySchema, name: string, value: unknown): void {
+function checkNumber(prop: NumberPropSchema, name: string, value: unknown): void {
   if (typeof value !== "number") {
     throw new CircuitError(
       `Invalid value for property [${name}]. ` + //
         `Expected a number, got ${quote(value)}.`,
     );
   }
-  const { range = ["real"] } = property;
+  const { range = ["real"] } = prop;
   const [type, ...limits] = range;
   switch (type) {
     case "real":
@@ -222,14 +222,14 @@ function checkNumber(property: NumberPropertySchema, name: string, value: unknow
   }
 }
 
-function checkString(property: StringPropertySchema, name: string, value: unknown): void {
+function checkString(prop: StringPropSchema, name: string, value: unknown): void {
   if (typeof value !== "string") {
     throw new CircuitError(
       `Invalid value for property [${name}]. ` + //
         `Expected a string, got ${quote(value)}.`,
     );
   }
-  const { range = [] } = property;
+  const { range = [] } = prop;
   if (range.length > 0 && !range.includes(value)) {
     throw new CircuitError(
       `Invalid value for property [${name}]. ` + //

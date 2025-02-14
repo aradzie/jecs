@@ -50,16 +50,16 @@ circuit.connect(R1, [N1, N2]);
 circuit.connect(D1, [N2, GND]);
 
 // Set device properties.
-V1.properties.set("V", 10);
-R1.properties.set("R", 1000);
-D1.properties.set("temp", 26.85);
+V1.props.set("V", 10);
+R1.props.set("R", 1000);
+D1.props.set("temp", 26.85);
 
 // Perform DC analysis, compute node voltages and branch currents.
 const analysis = new DcAnalysis();
-analysis.properties.set("maxIter", 10);
-analysis.properties.set("abstol", 1e-12);
-analysis.properties.set("vntol", 1e-6);
-analysis.properties.set("reltol", 1e-3);
+analysis.props.set("maxIter", 10);
+analysis.props.set("abstol", 1e-12);
+analysis.props.set("vntol", 1e-6);
+analysis.props.set("reltol", 1e-3);
 analysis.run(circuit);
 
 // Print the operating points.

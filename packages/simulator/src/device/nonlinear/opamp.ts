@@ -1,7 +1,7 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
 import type { RealStamper } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
-import { Properties } from "../../circuit/properties.js";
+import { Props } from "../../circuit/props.js";
 import { gMin, piOverTwo, twoOverPi } from "../const.js";
 
 const enum S {
@@ -19,13 +19,13 @@ const enum S {
 export class OpAmp extends Device.Dc {
   static override readonly id = "OpAmp";
   static override readonly numTerminals = 3;
-  static override readonly propertiesSchema = {
-    gain: Properties.number({
+  static override readonly propsSchema = {
+    gain: Props.number({
       defaultValue: 1e6,
       range: ["real", ">", 0],
       title: "gain",
     }),
-    Vmax: Properties.number({
+    Vmax: Props.number({
       defaultValue: 15,
       range: ["real", ">", 0],
       title: "maximum absolute value of output voltage",
@@ -57,8 +57,8 @@ export class OpAmp extends Device.Dc {
   }
 
   override init(state: DeviceState): void {
-    const gain = this.properties.getNumber("gain");
-    const Vmax = this.properties.getNumber("Vmax");
+    const gain = this.props.getNumber("gain");
+    const Vmax = this.props.getNumber("Vmax");
     state[S.gain] = gain;
     state[S.Vmax] = Vmax;
   }

@@ -276,7 +276,7 @@ function peg$parse(input, options) {
   var peg$e44 = peg$literalExpectation("\r", false);
 
   var peg$f0 = function(items) { return { items }; };
-  var peg$f1 = function(deviceId, instanceId, nodes, modelId, properties) {
+  var peg$f1 = function(deviceId, instanceId, nodes, modelId, props) {
       return {
         location: location(),
         type: "instance",
@@ -284,20 +284,20 @@ function peg$parse(input, options) {
         modelId,
         instanceId,
         nodes,
-        properties,
+        props,
       };
     };
   var peg$f2 = function(ids) { return ids; };
-  var peg$f3 = function(properties) { return properties; };
+  var peg$f3 = function(props) { return props; };
   var peg$f4 = function(id, value) { return { location: location(), id, value }; };
   var peg$f5 = function(value) { return { location: location(), type: "string", value }; };
   var peg$f6 = function(value) { return { location: location(), type: "exp", value }; };
-  var peg$f7 = function(deviceId, modelId, properties) { return { location: location(), type: "model", deviceId, modelId, properties }; };
+  var peg$f7 = function(deviceId, modelId, props) { return { location: location(), type: "model", deviceId, modelId, props }; };
   var peg$f8 = function(id, value) { return { location: location(), type: "equation", id, value, }; };
-  var peg$f9 = function(properties, sweeps) { return { location: location(), type: "dc", properties, sweeps }; };
-  var peg$f10 = function(properties, sweeps) { return { location: location(), type: "tr", properties, sweeps }; };
-  var peg$f11 = function(properties, sweeps) { return { location: location(), type: "ac", properties, sweeps }; };
-  var peg$f12 = function(id, properties) { return { location: location(), type: "sweep", id, properties } };
+  var peg$f9 = function(props, sweeps) { return { location: location(), type: "dc", props, sweeps }; };
+  var peg$f10 = function(props, sweeps) { return { location: location(), type: "tr", props, sweeps }; };
+  var peg$f11 = function(props, sweeps) { return { location: location(), type: "ac", props, sweeps }; };
+  var peg$f12 = function(id, props) { return { location: location(), type: "sweep", id, props } };
   var peg$f13 = function(head, tail) { return binaryExp(head, tail); };
   var peg$f14 = function(head, tail) { return binaryExp(head, tail); };
   var peg$f15 = function(head, tail) { return binaryExp(head, tail); };
@@ -626,7 +626,7 @@ function peg$parse(input, options) {
               s7 = null;
             }
             s8 = peg$parse_();
-            s9 = peg$parsePropertyList();
+            s9 = peg$parsePropList();
             s10 = peg$parse_();
             s11 = peg$parseLineEnd();
             if (s11 !== peg$FAILED) {
@@ -767,14 +767,14 @@ function peg$parse(input, options) {
     return s0;
   }
 
-  function peg$parsePropertyList() {
+  function peg$parsePropList() {
     var s0, s1, s2, s3, s4;
 
     s0 = peg$currPos;
     s1 = [];
     s2 = peg$currPos;
     s3 = peg$parse_();
-    s4 = peg$parseProperty();
+    s4 = peg$parseProp();
     if (s4 !== peg$FAILED) {
       s2 = s4;
     } else {
@@ -785,7 +785,7 @@ function peg$parse(input, options) {
       s1.push(s2);
       s2 = peg$currPos;
       s3 = peg$parse_();
-      s4 = peg$parseProperty();
+      s4 = peg$parseProp();
       if (s4 !== peg$FAILED) {
         s2 = s4;
       } else {
@@ -800,7 +800,7 @@ function peg$parse(input, options) {
     return s0;
   }
 
-  function peg$parseProperty() {
+  function peg$parseProp() {
     var s0, s1, s2, s3, s4, s5;
 
     s0 = peg$currPos;
@@ -816,7 +816,7 @@ function peg$parse(input, options) {
       }
       if (s3 !== peg$FAILED) {
         s4 = peg$parse_();
-        s5 = peg$parsePropertyValue();
+        s5 = peg$parsePropValue();
         if (s5 !== peg$FAILED) {
           peg$savedPos = s0;
           s0 = peg$f4(s1, s5);
@@ -836,7 +836,7 @@ function peg$parse(input, options) {
     return s0;
   }
 
-  function peg$parsePropertyValue() {
+  function peg$parsePropValue() {
     var s0, s1;
 
     s0 = peg$currPos;
@@ -878,7 +878,7 @@ function peg$parse(input, options) {
         s5 = peg$parseModelId();
         if (s5 !== peg$FAILED) {
           s6 = peg$parse_();
-          s7 = peg$parsePropertyList();
+          s7 = peg$parsePropList();
           s8 = peg$parse_();
           s9 = peg$parseLineEnd();
           if (s9 !== peg$FAILED) {
@@ -987,7 +987,7 @@ function peg$parse(input, options) {
     }
     if (s1 !== peg$FAILED) {
       s2 = peg$parse_();
-      s3 = peg$parsePropertyList();
+      s3 = peg$parsePropList();
       s4 = [];
       s5 = peg$currPos;
       s6 = peg$parse_();
@@ -1040,7 +1040,7 @@ function peg$parse(input, options) {
     }
     if (s1 !== peg$FAILED) {
       s2 = peg$parse_();
-      s3 = peg$parsePropertyList();
+      s3 = peg$parsePropList();
       s4 = [];
       s5 = peg$currPos;
       s6 = peg$parse_();
@@ -1093,7 +1093,7 @@ function peg$parse(input, options) {
     }
     if (s1 !== peg$FAILED) {
       s2 = peg$parse_();
-      s3 = peg$parsePropertyList();
+      s3 = peg$parsePropList();
       s4 = [];
       s5 = peg$currPos;
       s6 = peg$parse_();
@@ -1149,7 +1149,7 @@ function peg$parse(input, options) {
       s3 = peg$parseVariableId();
       if (s3 !== peg$FAILED) {
         s4 = peg$parse_();
-        s5 = peg$parsePropertyList();
+        s5 = peg$parsePropList();
         peg$savedPos = s0;
         s0 = peg$f12(s3, s5);
       } else {

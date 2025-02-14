@@ -1,7 +1,7 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
 import type { RealStamper } from "../../circuit/mna.js";
 import type { Branch, Network, Node } from "../../circuit/network.js";
-import { Properties } from "../../circuit/properties.js";
+import { Props } from "../../circuit/props.js";
 
 const enum S {
   gain,
@@ -16,8 +16,8 @@ const enum S {
 export class VCVS extends Device.Dc {
   static override readonly id = "VCVS";
   static override readonly numTerminals = 4;
-  static override readonly propertiesSchema = {
-    gain: Properties.number({ title: "gain" }),
+  static override readonly propsSchema = {
+    gain: Props.number({ title: "gain" }),
   };
   static override readonly stateSchema = {
     length: S._Size_,
@@ -47,7 +47,7 @@ export class VCVS extends Device.Dc {
   }
 
   override init(state: DeviceState): void {
-    state[S.gain] = this.properties.getNumber("gain");
+    state[S.gain] = this.props.getNumber("gain");
   }
 
   override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {

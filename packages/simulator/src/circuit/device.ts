@@ -1,6 +1,6 @@
 import type { ComplexStamper, RealStamper } from "./mna.js";
 import type { Network, Node } from "./network.js";
-import { Properties, PropertiesSchema } from "./properties.js";
+import { Props, PropsSchema } from "./props.js";
 import type { Diff, DiffOwner } from "./transient.js";
 
 export interface DeviceClass {
@@ -9,7 +9,7 @@ export interface DeviceClass {
   /** The number of terminals in the device. */
   readonly numTerminals: number;
   /** Schema of the device parameters. */
-  readonly propertiesSchema: PropertiesSchema;
+  readonly propsSchema: PropsSchema;
   /** Schema of the device state vector. */
   readonly stateSchema: StateSchema;
   /** Whether this device is linear. */
@@ -58,7 +58,7 @@ export abstract class Device implements DiffOwner {
   static readonly dummy = new (class Dummy extends Device {
     static override readonly id = "DUMMY";
     static override readonly numTerminals = 0;
-    static override readonly propertiesSchema = {};
+    static override readonly propsSchema = {};
     static override readonly stateSchema = {
       length: 0,
       ops: [],
@@ -76,7 +76,7 @@ export abstract class Device implements DiffOwner {
   static readonly numTerminals: number;
 
   /** Schema of the device parameters. */
-  static readonly propertiesSchema: PropertiesSchema;
+  static readonly propsSchema: PropsSchema;
 
   /** Schema of the device state vector. */
   static readonly stateSchema: StateSchema;
@@ -103,7 +103,7 @@ export abstract class Device implements DiffOwner {
   readonly id: string;
 
   /** Device properties. */
-  readonly properties: Properties;
+  readonly props: Props;
 
   /** Vector with device state variables. */
   readonly state: DeviceState;
@@ -113,8 +113,8 @@ export abstract class Device implements DiffOwner {
 
   constructor(id: string) {
     this.id = id;
-    const { propertiesSchema, stateSchema } = this.deviceClass;
-    this.properties = new Properties(propertiesSchema);
+    const { propsSchema, stateSchema } = this.deviceClass;
+    this.props = new Props(propsSchema);
     this.state = new Float64Array(stateSchema.length);
   }
 

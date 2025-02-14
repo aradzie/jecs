@@ -13,7 +13,7 @@ const enum S {
 export class Voltmeter extends Device.Dc {
   static override readonly id = "Voltmeter";
   static override readonly numTerminals = 2;
-  static override readonly propertiesSchema = {};
+  static override readonly propsSchema = {};
   static override readonly stateSchema = {
     length: S._Size_,
     ops: [{ index: S.V, name: "V", unit: "V" }],

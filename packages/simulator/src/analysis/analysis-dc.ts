@@ -1,20 +1,20 @@
 import { Circuit } from "../circuit/circuit.js";
 import { ConstantExp } from "../circuit/equations.js";
 import { allDeviceProbes, allNodeProbes, Probe } from "../circuit/probe.js";
-import type { PropertiesSchema } from "../circuit/properties.js";
+import type { PropsSchema } from "../circuit/props.js";
 import { Analysis } from "./analysis.js";
 import type { DatasetBuilder } from "./dataset.js";
 import { NonlinearSolver } from "./solver-nonlinear.js";
 import { groupName, Sweep } from "./sweep.js";
 
 export class DcAnalysis extends Analysis {
-  static readonly propertiesSchema: PropertiesSchema = {
-    ...Circuit.propertiesSchema,
-    ...NonlinearSolver.propertiesSchema,
+  static readonly propsSchema: PropsSchema = {
+    ...Circuit.propsSchema,
+    ...NonlinearSolver.propsSchema,
   };
 
   constructor() {
-    super(DcAnalysis.propertiesSchema);
+    super(DcAnalysis.propsSchema);
   }
 
   protected override getProbes(circuit: Circuit): Probe[] {
@@ -22,9 +22,9 @@ export class DcAnalysis extends Analysis {
   }
 
   protected override runImpl(circuit: Circuit, dataset: DatasetBuilder): void {
-    const { properties } = this;
-    const temp = properties.getNumber("temp");
-    const solver = new NonlinearSolver(circuit, properties);
+    const { props } = this;
+    const temp = props.getNumber("temp");
+    const solver = new NonlinearSolver(circuit, props);
 
     Sweep.walk(this.sweeps, {
       enter: (sweep, level, steps) => {

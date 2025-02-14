@@ -3,11 +3,11 @@ import { Bindings, ConstantExp, Equations } from "./equations.js";
 import { CircuitError } from "./error.js";
 import type { ComplexStamper, RealStamper } from "./mna.js";
 import { Branch, groundNode, Network, Node } from "./network.js";
-import { Properties, PropertiesSchema } from "./properties.js";
+import { Props, PropsSchema } from "./props.js";
 
 export class Circuit implements Network {
-  static readonly propertiesSchema: PropertiesSchema = {
-    temp: Properties.number({
+  static readonly propsSchema: PropsSchema = {
+    temp: Props.number({
       defaultValue: 26.85, // Room temperature.
       range: ["real", ">", -273.15], // Absolute zero.
       title: "default device temperature in degrees Celsius",
@@ -57,7 +57,7 @@ export class Circuit implements Network {
     this.#equations.set("temp", new ConstantExp(this.temp));
     this.#equations.set("time", new ConstantExp(this.time));
     this.#equations.set("frequency", new ConstantExp(this.frequency));
-    this.#bindings.setProperties();
+    this.#bindings.setProps();
     for (const node of this.#nodes) {
       switch (node.type) {
         case "node":

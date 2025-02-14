@@ -1,7 +1,7 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
 import type { ComplexStamper, RealStamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
-import { Properties } from "../../circuit/properties.js";
+import { Props } from "../../circuit/props.js";
 
 const enum S {
   G,
@@ -16,8 +16,8 @@ const enum S {
 export class Resistor extends Device.Dc {
   static override readonly id = "R";
   static override readonly numTerminals = 2;
-  static override readonly propertiesSchema = {
-    R: Properties.number({
+  static override readonly propsSchema = {
+    R: Props.number({
       title: "resistance",
       range: ["real", "<>", 0],
     }),
@@ -41,7 +41,7 @@ export class Resistor extends Device.Dc {
   }
 
   override init(state: DeviceState): void {
-    const R = this.properties.getNumber("R");
+    const R = this.props.getNumber("R");
     state[S.G] = 1 / R;
   }
 

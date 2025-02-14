@@ -1,7 +1,7 @@
 import { DcParams, Device, DeviceState, TrParams } from "../../circuit/device.js";
 import type { ComplexStamper, RealStamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
-import { Properties } from "../../circuit/properties.js";
+import { Props } from "../../circuit/props.js";
 
 const enum S {
   amplitude,
@@ -18,10 +18,10 @@ const enum S {
 export class Iac extends Device {
   static override readonly id = "Iac";
   static override readonly numTerminals = 2;
-  static override readonly propertiesSchema = {
-    I: Properties.number({ title: "amplitude" }),
-    f: Properties.number({ title: "frequency" }),
-    phase: Properties.number({ title: "phase", defaultValue: 0 }),
+  static override readonly propsSchema = {
+    I: Props.number({ title: "amplitude" }),
+    f: Props.number({ title: "frequency" }),
+    phase: Props.number({ title: "phase", defaultValue: 0 }),
   };
   static override readonly stateSchema = {
     length: S._Size_,
@@ -42,9 +42,9 @@ export class Iac extends Device {
   }
 
   override init(state: DeviceState): void {
-    const amplitude = this.properties.getNumber("I");
-    const frequency = this.properties.getNumber("f");
-    const phase = this.properties.getNumber("phase");
+    const amplitude = this.props.getNumber("I");
+    const frequency = this.props.getNumber("f");
+    const phase = this.props.getNumber("phase");
     const omega = 2 * Math.PI * frequency;
     const theta = (phase / 180) * Math.PI;
     state[S.amplitude] = amplitude;

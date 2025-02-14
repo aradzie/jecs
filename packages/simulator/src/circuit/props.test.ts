@@ -1,24 +1,24 @@
 import { test } from "node:test";
 import { equal, isFalse, isTrue, throws } from "rich-assert";
-import { Properties } from "./properties.js";
+import { Props } from "./props.js";
 
-test("validate properties", () => {
+test("validate props", () => {
   throws(
     () => {
-      new Properties({
-        a: Properties.number({ title: "a" }),
-        b: Properties.number({ title: "b" }),
+      new Props({
+        a: Props.number({ title: "a" }),
+        b: Props.number({ title: "b" }),
       }).set("x", 0);
     },
     { message: `Unknown property [x]. Expected one of [a], [b].` },
   );
 });
 
-test("validate number properties", () => {
+test("validate number props", () => {
   throws(
     () => {
-      new Properties({
-        prop: Properties.number({ title: "value" }),
+      new Props({
+        prop: Props.number({ title: "value" }),
       }).set("prop", "omg");
     },
     {
@@ -29,8 +29,8 @@ test("validate number properties", () => {
   );
   throws(
     () => {
-      new Properties({
-        prop: Properties.number({ title: "value" }),
+      new Props({
+        prop: Props.number({ title: "value" }),
       }).set("prop", NaN);
     },
     {
@@ -41,8 +41,8 @@ test("validate number properties", () => {
   );
   throws(
     () => {
-      new Properties({
-        prop: Properties.number({ title: "value", range: ["integer"] }),
+      new Props({
+        prop: Props.number({ title: "value", range: ["integer"] }),
       }).set("prop", 0.1);
     },
     {
@@ -53,8 +53,8 @@ test("validate number properties", () => {
   );
   throws(
     () => {
-      new Properties({
-        prop: Properties.number({ title: "value", range: ["real", ">", 0] }),
+      new Props({
+        prop: Props.number({ title: "value", range: ["real", ">", 0] }),
       }).set("prop", 0);
     },
     {
@@ -65,8 +65,8 @@ test("validate number properties", () => {
   );
   throws(
     () => {
-      new Properties({
-        prop: Properties.number({ title: "value", range: ["real", "<", 0] }),
+      new Props({
+        prop: Props.number({ title: "value", range: ["real", "<", 0] }),
       }).set("prop", 0);
     },
     {
@@ -77,8 +77,8 @@ test("validate number properties", () => {
   );
   throws(
     () => {
-      new Properties({
-        prop: Properties.number({ title: "value", range: ["real", "<>", 0] }),
+      new Props({
+        prop: Props.number({ title: "value", range: ["real", "<>", 0] }),
       }).set("prop", 0);
     },
     {
@@ -89,11 +89,11 @@ test("validate number properties", () => {
   );
 });
 
-test("validate string properties", () => {
+test("validate string props", () => {
   throws(
     () => {
-      new Properties({
-        prop: Properties.string({ range: ["one", "two"], title: "value" }),
+      new Props({
+        prop: Props.string({ range: ["one", "two"], title: "value" }),
       }).set("prop", 1);
     },
     {
@@ -104,8 +104,8 @@ test("validate string properties", () => {
   );
   throws(
     () => {
-      new Properties({
-        prop: Properties.string({ range: ["one", "two"], title: "value" }),
+      new Props({
+        prop: Props.string({ range: ["one", "two"], title: "value" }),
       }).set("prop", "zero");
     },
     {
@@ -116,11 +116,11 @@ test("validate string properties", () => {
   );
 });
 
-test("get properties", () => {
-  const p = new Properties({
-    a: Properties.number({ defaultValue: 1, title: "a" }),
-    b: Properties.number({ title: "b" }),
-    c: Properties.string({ title: "c" }),
+test("get props", () => {
+  const p = new Props({
+    a: Props.number({ defaultValue: 1, title: "a" }),
+    b: Props.number({ title: "b" }),
+    c: Props.string({ title: "c" }),
   });
 
   isFalse(p.hasAll());

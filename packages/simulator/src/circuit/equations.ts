@@ -178,9 +178,9 @@ export class Binding {
     readonly value: Exp,
   ) {}
 
-  setProperty(eq: Equations): void {
+  setProp(eq: Equations): void {
     try {
-      this.device.properties.set(this.name, this.value.eval(eq));
+      this.device.props.set(this.name, this.value.eval(eq));
     } catch (err: any) {
       throw new CircuitError(`Cannot configure device [${this.device.id}]: ${err.message}`, {
         // cause: err
@@ -198,9 +198,9 @@ export class Bindings implements Iterable<Binding> {
     this.#list = [];
   }
 
-  setProperties(): void {
+  setProps(): void {
     for (const binding of this.#list) {
-      binding.setProperty(this.#equations);
+      binding.setProp(this.#equations);
     }
   }
 

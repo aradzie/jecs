@@ -1,7 +1,7 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
 import type { RealStamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
-import { Properties } from "../../circuit/properties.js";
+import { Props } from "../../circuit/props.js";
 import { celsiusToKelvin } from "../../util/unit.js";
 import { gMin } from "../const.js";
 import {
@@ -57,47 +57,47 @@ const enum S {
 export class Bjt extends Device.Dc {
   static override readonly id = "BJT";
   static override readonly numTerminals = 3;
-  static override readonly propertiesSchema = {
-    polarity: Properties.string({
+  static override readonly propsSchema = {
+    polarity: Props.string({
       range: [npn, pnp],
       title: "transistor polarity",
     }),
-    Bf: Properties.number({
+    Bf: Props.number({
       defaultValue: 100.0,
       range: ["real", ">", 0],
       title: "forward beta",
     }),
-    Br: Properties.number({
+    Br: Props.number({
       defaultValue: 1.0,
       range: ["real", ">", 0],
       title: "reverse beta",
     }),
-    Is: Properties.number({
+    Is: Props.number({
       defaultValue: 1e-14,
       range: ["real", ">", 0],
       title: "saturation current",
     }),
-    Nf: Properties.number({
+    Nf: Props.number({
       defaultValue: 1,
       range: ["real", ">", 0],
       title: "forward emission coefficient",
     }),
-    Nr: Properties.number({
+    Nr: Props.number({
       defaultValue: 1,
       range: ["real", ">", 0],
       title: "reverse emission coefficient",
     }),
-    Vaf: Properties.number({
+    Vaf: Props.number({
       defaultValue: 10.0,
       range: ["real", ">=", 0],
       title: "forward Early voltage",
     }),
-    Var: Properties.number({
+    Var: Props.number({
       defaultValue: 0.0,
       range: ["real", ">=", 0],
       title: "reverse Early voltage",
     }),
-    temp: Properties.temp,
+    temp: Props.temp,
   };
   static override readonly stateSchema = {
     length: S._Size_,
@@ -126,13 +126,13 @@ export class Bjt extends Device.Dc {
   }
 
   override initDc(state: DeviceState, params: DcParams): void {
-    const polarity = this.properties.getString("polarity") as BjtPolarity;
-    const Bf = this.properties.getNumber("Bf");
-    const Br = this.properties.getNumber("Br");
-    const Is = this.properties.getNumber("Is");
-    const Nf = this.properties.getNumber("Nf");
-    const Nr = this.properties.getNumber("Nr");
-    const temp = celsiusToKelvin(this.properties.getNumber("temp", params.temp));
+    const polarity = this.props.getString("polarity") as BjtPolarity;
+    const Bf = this.props.getNumber("Bf");
+    const Br = this.props.getNumber("Br");
+    const Is = this.props.getNumber("Is");
+    const Nf = this.props.getNumber("Nf");
+    const Nr = this.props.getNumber("Nr");
+    const temp = celsiusToKelvin(this.props.getNumber("temp", params.temp));
     const pol = bjtSign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);

@@ -9,10 +9,10 @@ test("sweep", () => {
 
   // Act.
 
-  sweep.properties.set("type", "lin");
-  sweep.properties.set("start", 1);
-  sweep.properties.set("stop", 5);
-  sweep.properties.set("points", 5);
+  sweep.props.set("type", "lin");
+  sweep.props.set("start", 1);
+  sweep.props.set("stop", 5);
+  sweep.props.set("points", 5);
 
   // Assert.
 
@@ -20,10 +20,10 @@ test("sweep", () => {
 
   // Act.
 
-  sweep.properties.set("type", "lin");
-  sweep.properties.set("start", 5);
-  sweep.properties.set("stop", 1);
-  sweep.properties.set("points", 5);
+  sweep.props.set("type", "lin");
+  sweep.props.set("start", 5);
+  sweep.props.set("stop", 1);
+  sweep.props.set("points", 5);
 
   // Assert.
 

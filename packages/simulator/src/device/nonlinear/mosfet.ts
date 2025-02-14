@@ -1,7 +1,7 @@
 import { DcParams, Device, DeviceState } from "../../circuit/device.js";
 import type { RealStamper } from "../../circuit/mna.js";
 import type { Network, Node } from "../../circuit/network.js";
-import { Properties } from "../../circuit/properties.js";
+import { Props } from "../../circuit/props.js";
 import { celsiusToKelvin } from "../../util/unit.js";
 import { gMin } from "../const.js";
 import {
@@ -64,36 +64,36 @@ const enum S {
 export class Mosfet extends Device.Dc {
   static override readonly id = "MOSFET";
   static override readonly numTerminals = 4;
-  static override readonly propertiesSchema = {
-    polarity: Properties.string({
+  static override readonly propsSchema = {
+    polarity: Props.string({
       range: [nfet, pfet],
       title: "transistor polarity",
     }),
-    Vth: Properties.number({
+    Vth: Props.number({
       range: ["real"],
       title: "threshold voltage",
     }),
-    beta: Properties.number({
+    beta: Props.number({
       defaultValue: 2e-2,
       range: ["real", ">", 0],
       title: "transconductance parameter",
     }),
-    lambda: Properties.number({
+    lambda: Props.number({
       defaultValue: 0.0,
       range: ["real", ">=", 0],
       title: "channel-length modulation parameter",
     }),
-    Is: Properties.number({
+    Is: Props.number({
       defaultValue: 1e-14,
       range: ["real", ">", 0],
       title: "saturation current",
     }),
-    N: Properties.number({
+    N: Props.number({
       defaultValue: 1,
       range: ["real", ">", 0],
       title: "emission coefficient",
     }),
-    temp: Properties.temp,
+    temp: Props.temp,
   };
   static override readonly stateSchema = {
     length: S._Size_,
@@ -124,13 +124,13 @@ export class Mosfet extends Device.Dc {
   }
 
   override initDc(state: DeviceState, params: DcParams): void {
-    const polarity = this.properties.getString("polarity") as FetPolarity;
-    const Vth = this.properties.getNumber("Vth");
-    const beta = this.properties.getNumber("beta");
-    const lambda = this.properties.getNumber("lambda");
-    const Is = this.properties.getNumber("Is");
-    const N = this.properties.getNumber("N");
-    const temp = celsiusToKelvin(this.properties.getNumber("temp", params.temp));
+    const polarity = this.props.getString("polarity") as FetPolarity;
+    const Vth = this.props.getNumber("Vth");
+    const beta = this.props.getNumber("beta");
+    const lambda = this.props.getNumber("lambda");
+    const Is = this.props.getNumber("Is");
+    const N = this.props.getNumber("N");
+    const temp = celsiusToKelvin(this.props.getNumber("temp", params.temp));
     const pol = fetSign(polarity);
     const [Vt, Ist, Vcrit] = pnTemp(temp, Is, N);
     state[S.pol] = pol;

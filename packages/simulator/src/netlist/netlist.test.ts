@@ -76,7 +76,7 @@ R:R3 n1 gnd @R3
 
   equal(d1.deviceClass.id, "V");
   equal(d1.id, "V1");
-  equal(d1.properties.getNumber("V"), 5);
+  equal(d1.props.getNumber("V"), 5);
 
   equal(d2.deviceClass.id, "R");
   equal(d2.id, "R1");
@@ -94,17 +94,17 @@ R:R3 n1 gnd @R3
   const [dc, tr, ac] = analyses;
 
   isInstanceOf(dc, DcAnalysis);
-  equal(dc.properties.getNumber("maxIter"), 20);
+  equal(dc.props.getNumber("maxIter"), 20);
 
   isInstanceOf(tr, TrAnalysis);
-  equal(tr.properties.getNumber("maxIter"), 10);
-  equal(tr.properties.getNumber("startTime"), 5e-4);
-  equal(tr.properties.getNumber("stopTime"), 1e-3);
-  equal(tr.properties.getNumber("timeStep"), 1e-6);
+  equal(tr.props.getNumber("maxIter"), 10);
+  equal(tr.props.getNumber("startTime"), 5e-4);
+  equal(tr.props.getNumber("stopTime"), 1e-3);
+  equal(tr.props.getNumber("timeStep"), 1e-6);
 
   isInstanceOf(ac, AcAnalysis);
-  equal(ac.properties.getString("type"), "lin");
-  equal(ac.properties.getNumber("start"), 1);
-  equal(ac.properties.getNumber("stop"), 1e6);
-  equal(ac.properties.getNumber("points"), 1e6);
+  equal(ac.props.getString("type"), "lin");
+  equal(ac.props.getNumber("start"), 1);
+  equal(ac.props.getNumber("stop"), 1e6);
+  equal(ac.props.getNumber("points"), 1e6);
 });

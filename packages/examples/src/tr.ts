@@ -18,11 +18,11 @@ const C1 = new Capacitor("C1");
 const R1 = new Resistor("R1");
 
 // Set device properties.
-V1.properties.set("V", 1);
-V1.properties.set("f", 1e3);
+V1.props.set("V", 1);
+V1.props.set("f", 1e3);
 
-C1.properties.set("C", 1e-6);
-R1.properties.set("R", 1e1);
+C1.props.set("C", 1e-6);
+R1.props.set("R", 1e1);
 
 // Connect devices in the circuit.
 circuit.connect(V1, [N1, GND]);
@@ -31,12 +31,12 @@ circuit.connect(R1, [N2, GND]);
 
 // Perform DC analysis, compute node voltages and branch currents.
 const analysis = new TrAnalysis();
-analysis.properties.set("stopTime", 1e-3);
-analysis.properties.set("timeStep", 1e-4);
-analysis.properties.set("maxIter", 10);
-analysis.properties.set("abstol", 1e-12);
-analysis.properties.set("vntol", 1e-6);
-analysis.properties.set("reltol", 1e-3);
+analysis.props.set("stopTime", 1e-3);
+analysis.props.set("timeStep", 1e-4);
+analysis.props.set("maxIter", 10);
+analysis.props.set("abstol", 1e-12);
+analysis.props.set("vntol", 1e-6);
+analysis.props.set("reltol", 1e-3);
 analysis.run(circuit);
 
 // Print the operating points.
