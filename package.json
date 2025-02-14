@@ -25,9 +25,9 @@
     "format": "prettier . --write"
   },
   "devDependencies": {
-    "@types/node": "^22.13.0",
-    "lage": "^2.12.10",
-    "prettier": "^3.4.2",
+    "@types/node": "^22.13.4",
+    "lage": "^2.12.19",
+    "prettier": "^3.5.1",
     "rich-assert": "^0.0.3",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"

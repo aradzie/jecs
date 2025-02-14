@@ -27,6 +27,6 @@
     "stylelint-config-recommended": "^15.0.0",
     "stylelint-order": "^6.0.4",
     "stylelint-plugin-logical-css": "^1.2.1",
-    "vite": "^6.0.11"
+    "vite": "^6.1.0"
   }
 }
