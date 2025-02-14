@@ -415,38 +415,6 @@ export class Controller {
     };
   }
 
-  #placeWire_start() {
-    if (this.#mouseAction.value.type === "idle") {
-      this.#selection.value = this.#selection.value.clear();
-      const { cursor } = this.#mouseAction.value;
-      this.#mouseAction.value = {
-        type: "place-wire",
-        cursor,
-      };
-      return true;
-    }
-    return false;
-  }
-
-  #placeWire_move(cursor: Point) {
-    if (this.#mouseAction.value.type === "place-wire") {
-      this.#mouseAction.value = {
-        type: "place-wire",
-        cursor,
-      };
-      return true;
-    }
-    return false;
-  }
-
-  #placeWire_cancel() {
-    if (this.#mouseAction.value.type === "place-wire") {
-      this.#toIdle();
-      return true;
-    }
-    return false;
-  }
-
   #selectArea_start(cursor: Point) {
     if (this.#mouseAction.value.type === "idle") {
       this.#selection.value = this.#selection.value.clear();
@@ -668,12 +636,44 @@ export class Controller {
     return false;
   }
 
+  #placeWire_start() {
+    if (this.#mouseAction.value.type === "idle") {
+      this.#selection.value = this.#selection.value.clear();
+      const { cursor } = this.#mouseAction.value;
+      this.#mouseAction.value = {
+        type: "wire-start",
+        cursor,
+      };
+      return true;
+    }
+    return false;
+  }
+
+  #placeWire_move(cursor: Point) {
+    if (this.#mouseAction.value.type === "wire-start") {
+      this.#mouseAction.value = {
+        type: "wire-start",
+        cursor,
+      };
+      return true;
+    }
+    return false;
+  }
+
+  #placeWire_cancel() {
+    if (this.#mouseAction.value.type === "wire-start") {
+      this.#toIdle();
+      return true;
+    }
+    return false;
+  }
+
   #drawWire_start(cursor: Point, mod: number) {
     if (this.#mouseAction.value.type === "idle") {
       if (this.#canWireFrom(cursor)) {
         this.#selection.value = this.#selection.value.clear();
         this.#mouseAction.value = {
-          type: "connect",
+          type: "wire",
           cursor: { ...cursor },
           origin: { ...cursor },
           wires: [],
@@ -682,9 +682,9 @@ export class Controller {
         return true;
       }
     }
-    if (this.#mouseAction.value.type === "place-wire") {
+    if (this.#mouseAction.value.type === "wire-start") {
       this.#mouseAction.value = {
-        type: "connect",
+        type: "wire",
         cursor: { ...cursor },
         origin: { ...cursor },
         wires: [],
@@ -696,7 +696,7 @@ export class Controller {
   }
 
   #drawWire_move(cursor: Point, mod: number) {
-    if (this.#mouseAction.value.type === "connect") {
+    if (this.#mouseAction.value.type === "wire") {
       const { origin } = this.#mouseAction.value;
       const x0 = Zoom.snap(this.#zoom.value.toGridX(origin.x));
       const y0 = Zoom.snap(this.#zoom.value.toGridY(origin.y));
@@ -705,7 +705,7 @@ export class Controller {
       const shape = wireShape(mod);
       const wires = connect(x0, y0, x1, y1, shape);
       this.#mouseAction.value = {
-        type: "connect",
+        type: "wire",
         cursor,
         origin,
         wires,
@@ -717,14 +717,14 @@ export class Controller {
   }
 
   #drawWire_adjust(key: string, mod: number) {
-    if (this.#mouseAction.value.type === "connect") {
+    if (this.#mouseAction.value.type === "wire") {
       return this.#drawWire_move(this.#mouseAction.value.cursor, mod);
     }
     return false;
   }
 
   #drawWire_end(cursor: Point) {
-    if (this.#mouseAction.value.type === "connect") {
+    if (this.#mouseAction.value.type === "wire") {
       this.#schematic.value = this.#schematic.value.append(this.#mouseAction.value.wires);
       this.#updateHistory("draw wires");
       this.#toIdle(cursor);
@@ -734,7 +734,7 @@ export class Controller {
   }
 
   #drawWire_cancel() {
-    if (this.#mouseAction.value.type === "connect") {
+    if (this.#mouseAction.value.type === "wire") {
       this.#toIdle();
       return true;
     }
@@ -994,11 +994,11 @@ export class Controller {
         this.#paintSchematic(false, null, false);
         this.#painter.paintSelection(zoom, mouseAction.origin, mouseAction.cursor);
         break;
-      case "place-wire":
+      case "wire-start":
         this.#paintSchematic(true, null, false);
         this.#painter.paintCrosshair(zoom, mouseAction.cursor, true);
         break;
-      case "connect":
+      case "wire":
         this.#painter.paintCrosshair(zoom, mouseAction.cursor, true);
         this.#paintSchematic(true, null, false);
         for (const wire of mouseAction.wires) {

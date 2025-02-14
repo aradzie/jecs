@@ -77,8 +77,8 @@ function getStyle(controller: Controller): JSX.CSSProperties {
   switch (controller.mouseAction.type) {
     case "scroll":
       return { cursor: "all-scroll" };
-    case "place-wire":
-    case "connect":
+    case "wire-start":
+    case "wire":
       return { cursor: "crosshair" };
     case "move":
     case "paste":

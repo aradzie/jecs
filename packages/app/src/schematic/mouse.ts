@@ -33,15 +33,16 @@ export type MouseSelectAction = {
   origin: Point;
 };
 
-export type MousePlaceWireAction = {
-  type: "place-wire";
+/** Start drawing a wire from an arbitrary point. */
+export type MouseWireStartAction = {
+  type: "wire-start";
   /** Current cursor position. */
   cursor: Point;
 };
 
 /** Draw wires. */
-export type MouseConnectAction = {
-  type: "connect";
+export type MouseWireAction = {
+  type: "wire";
   /** Current cursor position. */
   cursor: Point;
   /** Cursor position at the start of action. */
@@ -86,7 +87,7 @@ export type MouseAction =
   | MouseIdleAction
   | MouseScrollAction
   | MouseSelectAction
-  | MousePlaceWireAction
-  | MouseConnectAction
+  | MouseWireStartAction
+  | MouseWireAction
   | MouseMoveAction
   | MousePasteAction;
