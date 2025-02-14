@@ -1,7 +1,8 @@
+import { JSX } from "preact";
 import { useImperativeHandle, useLayoutEffect, useRef } from "preact/hooks";
 import { Canvas, resizeCanvas } from "../graphics/Canvas.tsx";
 import { useElementSize } from "../widget/use-element-size.tsx";
-import { useController } from "./controller.ts";
+import { Controller, useController } from "./controller.ts";
 import { SchematicOverlay } from "./SchematicOverlay.tsx";
 import * as styles from "./SchematicPane.module.css";
 
@@ -57,6 +58,7 @@ export function SchematicPane() {
       onBlur={controller.handleBlur}
       onKeyDown={controller.handleKeyDown}
       onKeyUp={controller.handleKeyUp}
+      style={getStyle(controller)}
     >
       <Canvas
         canvas={canvas}
@@ -69,4 +71,18 @@ export function SchematicPane() {
       <SchematicOverlay />
     </div>
   );
+}
+
+function getStyle(controller: Controller): JSX.CSSProperties {
+  switch (controller.mouseAction.type) {
+    case "scroll":
+      return { cursor: "all-scroll" };
+    case "place-wire":
+    case "connect":
+      return { cursor: "crosshair" };
+    case "move":
+    case "paste":
+      return { cursor: "move" };
+  }
+  return { cursor: "default" };
 }
