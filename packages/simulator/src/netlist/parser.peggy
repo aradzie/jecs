@@ -1,4 +1,4 @@
-// npx peggy --format es parser.peggy
+// npx peggy --format=es --dts parser.peggy
 
 {{
 function binaryExp(head, tail) {
