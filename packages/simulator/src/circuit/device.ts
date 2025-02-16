@@ -84,7 +84,7 @@ export abstract class Device implements DiffOwner {
   /** Whether this device is linear. Most devices are linear. */
   static readonly linear: boolean = true;
 
-  /** A device whose TR behaviour is the same as DC behaviour. */
+  /** A device whose TR behavior is the same as DC behavior. */
   static readonly Dc = class DcDevice extends Device {
     override initTr(state: DeviceState, params: TrParams) {
       this.initDc(state, params);
@@ -108,7 +108,7 @@ export abstract class Device implements DiffOwner {
   /** Vector with device state variables. */
   readonly state: DeviceState;
 
-  /** Transient device behaviours. */
+  /** Transient device behaviors. */
   readonly diffs: Diff[] = [];
 
   constructor(id: string) {

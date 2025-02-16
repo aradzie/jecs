@@ -1,4 +1,4 @@
-import { DeviceClass } from "@jecs/simulator/lib/circuit/device";
+import { DeviceClass } from "@jecs/simulator";
 
 export type Props = Record<string, string>;
 

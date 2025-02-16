@@ -1,4 +1,4 @@
-import { Sle, SleMethod } from "@jecs/math/lib/sle.js";
+import { Sle, SleMethod } from "@jecs/math";
 import type { Circuit } from "../circuit/circuit.js";
 import { ComplexStamper } from "../circuit/mna.js";
 import { logger } from "../util/logging.js";

@@ -1,4 +1,4 @@
-import { Sle, SleMethod } from "@jecs/math/lib/sle.js";
+import { Sle, SleMethod } from "@jecs/math";
 import type { Coeff } from "./state.js";
 
 /**

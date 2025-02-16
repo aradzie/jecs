@@ -1,4 +1,4 @@
-import { DeviceClass } from "@jecs/simulator/lib/circuit/device.js";
+import { DeviceClass } from "@jecs/simulator";
 import { Area } from "../graphics/geometry.ts";
 import { Pin } from "./pin.ts";
 import { Labels, Shape } from "./shape.ts";

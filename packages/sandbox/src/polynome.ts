@@ -1,4 +1,4 @@
-import { Sle, SleMethod } from "@jecs/math/lib/sle.js";
+import { Sle, SleMethod } from "@jecs/math";
 
 export const interpolate = (x: Float64Array, y: Float64Array, size: number): Float64Array => {
   const sle = new Sle(size);

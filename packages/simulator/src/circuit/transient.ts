@@ -1,4 +1,4 @@
-import { Sle, SleMethod } from "@jecs/math/lib/sle.js";
+import { Sle, SleMethod } from "@jecs/math";
 import { rotateRight } from "../util/array.js";
 
 export enum DiffMethod {

@@ -1,5 +1,4 @@
-import { dumpCircuit } from "@jecs/simulator/lib/circuit/debug.js";
-import { Netlist } from "@jecs/simulator/lib/netlist/netlist.js";
+import { dumpCircuit, Netlist } from "@jecs/simulator";
 import { globSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 import { fileURLToPath, URL } from "node:url";

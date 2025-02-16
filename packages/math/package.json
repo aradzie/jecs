@@ -19,6 +19,7 @@
     "url": "https://github.com/aradzie/jecs/issues"
   },
   "type": "module",
+  "main": "lib/index.js",
   "scripts": {
     "clean": "rm -fr lib",
     "compile": "tsc",

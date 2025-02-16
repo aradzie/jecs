@@ -1,5 +1,4 @@
-import { NumericOverflowError } from "@jecs/math/lib/error.js";
-import type { Matrix, Vector } from "@jecs/math/lib/types.js";
+import { Matrix, NumericOverflowError, Vector } from "@jecs/math";
 import { Branch, groundNode, Node } from "./network.js";
 
 /**

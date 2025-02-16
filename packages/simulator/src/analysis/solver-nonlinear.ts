@@ -1,6 +1,5 @@
-import { vecClear, vecCopy, vecMake } from "@jecs/math/lib/matrix.js";
-import { Sle, SleMethod } from "@jecs/math/lib/sle.js";
-import type { Vector } from "@jecs/math/lib/types.js";
+import type { Vector } from "@jecs/math";
+import { Sle, SleMethod, vecClear, vecCopy, vecMake } from "@jecs/math";
 import type { Circuit } from "../circuit/circuit.js";
 import { RealStamper } from "../circuit/mna.js";
 import { Props, PropsSchema } from "../circuit/props.js";

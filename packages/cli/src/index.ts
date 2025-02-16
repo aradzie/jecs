@@ -1,8 +1,4 @@
-import type { Analysis } from "@jecs/simulator/lib/analysis/analysis.js";
-import { formatData, formatSchema } from "@jecs/simulator/lib/analysis/dataset.js";
-import type { Circuit } from "@jecs/simulator/lib/circuit/circuit.js";
-import { Netlist } from "@jecs/simulator/lib/netlist/netlist.js";
-import { logger } from "@jecs/simulator/lib/util/logging.js";
+import { Analysis, Circuit, formatData, formatSchema, logger, Netlist } from "@jecs/simulator";
 import { program } from "commander";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, parse, resolve } from "node:path";

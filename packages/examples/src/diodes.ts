@@ -1,8 +1,4 @@
-import { DcAnalysis } from "@jecs/simulator/lib/analysis/analysis-dc.js";
-import { Circuit } from "@jecs/simulator/lib/circuit/circuit.js";
-import { dumpCircuit } from "@jecs/simulator/lib/circuit/debug.js";
-import { Diode, Vdc } from "@jecs/simulator/lib/device/index.js";
-import { logger } from "@jecs/simulator/lib/util/logging.js";
+import { Circuit, DcAnalysis, Diode, dumpCircuit, logger, Vdc } from "@jecs/simulator";
 
 // Create an empty circuit.
 const circuit = new Circuit();

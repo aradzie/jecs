@@ -1,8 +1,8 @@
 import type { DeviceClass } from "../circuit/device.js";
 import { Ground } from "./ground.js";
-import { Capacitor } from "./lumped/capacitor.js";
-import { Inductor } from "./lumped/inductor.js";
-import { Resistor } from "./lumped/resistor.js";
+import { Capacitor } from "./linear/capacitor.js";
+import { Inductor } from "./linear/inductor.js";
+import { Resistor } from "./linear/resistor.js";
 import { Bjt } from "./nonlinear/bjt.js";
 import { Diode } from "./nonlinear/diode.js";
 import { Jfet } from "./nonlinear/jfet.js";
