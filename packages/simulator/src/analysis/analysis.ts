@@ -1,7 +1,7 @@
-import { EventEmitter } from "events";
 import type { Circuit } from "../circuit/circuit.js";
 import type { Probe } from "../circuit/probe.js";
 import { Props, PropsSchema } from "../circuit/props.js";
+import { EventEmitter } from "../util/events.js";
 import { logger } from "../util/logging.js";
 import { Dataset, DatasetBuilder, makeDatasetBuilder } from "./dataset.js";
 import type { Sweep } from "./sweep.js";
@@ -31,11 +31,11 @@ export abstract class Analysis extends EventEmitter {
       err = arg;
     }
     if (err != null) {
-      this.emit(analysisError, this, err);
+      this.emit(analysisError, err);
       throw err;
     } else {
       const result = dataset.build();
-      this.emit(analysisEnded, this, result);
+      this.emit(analysisEnded, result);
       return result;
     }
   }
