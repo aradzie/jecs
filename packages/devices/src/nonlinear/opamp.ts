@@ -7,7 +7,7 @@ import {
   type Node,
   Props,
   type RealStamper,
-} from "../../circuit/index.js";
+} from "@jecs/simulator";
 import { gMin, piOverTwo, twoOverPi } from "../const.js";
 
 const enum S {

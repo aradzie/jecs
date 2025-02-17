@@ -1,5 +1,5 @@
 import { Sle, SleMethod } from "@jecs/math";
-import { rotateRight } from "../util/array.js";
+import { rotateRight } from "./rotate-array.js";
 
 export enum DiffMethod {
   Euler = "euler",

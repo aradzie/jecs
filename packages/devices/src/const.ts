@@ -1,4 +1,4 @@
-import { celsiusToKelvin } from "../util/unit.js";
+import { celsiusToKelvin } from "@jecs/simulator";
 
 /** Nominal temperature. */
 export const Tnom = celsiusToKelvin(26.85);

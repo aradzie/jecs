@@ -1,4 +1,4 @@
-import { Capacitor, Inductor, Resistor } from "@jecs/simulator";
+import { Capacitor, Inductor, Resistor } from "@jecs/devices";
 import { type Symbol } from "../symbol/symbol.ts";
 
 const resistor: Symbol = {

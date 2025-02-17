@@ -1,4 +1,4 @@
-import { Idc, Vdc } from "@jecs/simulator";
+import { Idc, Vdc } from "@jecs/devices";
 import { type Symbol } from "../symbol/symbol.ts";
 
 const vdc: Symbol = {

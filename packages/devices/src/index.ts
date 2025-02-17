@@ -1,4 +1,4 @@
-import { type DeviceClass } from "../circuit/index.js";
+import { type DeviceClass } from "@jecs/simulator";
 import { Ground } from "./ground.js";
 import { Capacitor } from "./linear/capacitor.js";
 import { Inductor } from "./linear/inductor.js";

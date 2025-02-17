@@ -1,3 +1,4 @@
+import { devices, standardModels } from "@jecs/devices";
 import {
   AcAnalysis,
   type Analysis,
@@ -8,7 +9,6 @@ import {
   DcAnalysis,
   Device,
   type DeviceClass,
-  devices,
   Equations,
   type Exp,
   FunctionDef,
@@ -18,7 +18,6 @@ import {
   type Node,
   type Props,
   registerDeviceClass,
-  standardModels,
   Sweep,
   TrAnalysis,
   UnaryExp,

@@ -7,20 +7,20 @@ import {
   type Node,
   Props,
   type RealStamper,
-} from "../../circuit/index.js";
+} from "@jecs/simulator";
 
 const enum S {
   gain,
-  V,
   I,
+  V,
   _Size_,
 }
 
 /**
- * Voltage-controlled voltage source.
+ * Current-controlled current source.
  */
-export class VCVS extends Device.Dc {
-  static override readonly id = "VCVS";
+export class CCCS extends Device.Dc {
+  static override readonly id = "CCCS";
   static override readonly numTerminals = 4;
   static override readonly propsSchema = {
     gain: Props.number({ title: "gain" }),
@@ -28,8 +28,8 @@ export class VCVS extends Device.Dc {
   static override readonly stateSchema = {
     length: S._Size_,
     ops: [
-      { index: S.V, name: "V", unit: "V" },
       { index: S.I, name: "I", unit: "A" },
+      { index: S.V, name: "V", unit: "V" },
     ],
   };
 
@@ -49,7 +49,7 @@ export class VCVS extends Device.Dc {
     this.nn = nn;
     this.ncp = ncp;
     this.ncn = ncn;
-    this.branch = network.makeBranch(this.np, this.nn);
+    this.branch = network.makeBranch(this.ncp, this.ncn);
   }
 
   override init(state: DeviceState): void {
@@ -59,14 +59,17 @@ export class VCVS extends Device.Dc {
   override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {
     const { np, nn, ncp, ncn, branch } = this;
     const gain = state[S.gain];
-    stamper.stampVoltageSource(np, nn, branch, 0);
-    stamper.stampA(branch, ncp, -gain);
-    stamper.stampA(branch, ncn, gain);
+    stamper.stampVoltageSource(ncp, ncn, branch, 0);
+    stamper.stampA(np, branch, gain);
+    stamper.stampA(nn, branch, -gain);
   }
 
   override endDc(state: DeviceState, params: DcParams): void {
     const { np, nn, branch } = this;
-    state[S.V] = np.voltage - nn.voltage;
-    state[S.I] = branch.current;
+    const gain = state[S.gain];
+    const I = branch.current * gain;
+    const V = np.voltage - nn.voltage;
+    state[S.I] = I;
+    state[S.V] = V;
   }
 }

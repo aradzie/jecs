@@ -16,24 +16,24 @@ export type Sin = {
   readonly phase: number;
 };
 
-export type Form = number | Dc | Sin | Signal;
+export type Shape = number | Dc | Sin | Signal;
 
 export type Signal = (time: number) => number;
 
-export const makeSignal = (form: Form): Signal => {
-  if (typeof form === "function") {
-    return form;
+export const makeSignal = (shape: Shape): Signal => {
+  if (typeof shape === "function") {
+    return shape;
   }
-  if (typeof form === "number") {
-    return (time) => form;
+  if (typeof shape === "number") {
+    return (time) => shape;
   }
-  switch (form.type) {
+  switch (shape.type) {
     case "dc": {
-      const { value } = form;
+      const { value } = shape;
       return (time) => value;
     }
     case "sin": {
-      const { offset, amplitude, frequency, phase } = form;
+      const { offset, amplitude, frequency, phase } = shape;
       const omega = 2 * Math.PI * frequency;
       const theta = (phase / 180) * Math.PI;
       return (time) => offset + amplitude * Math.sin(omega * time + theta);

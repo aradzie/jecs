@@ -1,12 +1,5 @@
-import {
-  Capacitor,
-  Circuit,
-  dumpCircuit,
-  logger,
-  Resistor,
-  TrAnalysis,
-  Vac,
-} from "@jecs/simulator";
+import { Capacitor, Resistor, Vac } from "@jecs/devices";
+import { Circuit, dumpCircuit, logger, TrAnalysis } from "@jecs/simulator";
 
 // Create an empty circuit.
 const circuit = new Circuit();

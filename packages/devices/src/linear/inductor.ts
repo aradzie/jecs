@@ -1,4 +1,5 @@
 import {
+  type Branch,
   type ComplexStamper,
   type DcParams,
   Device,
@@ -9,29 +10,29 @@ import {
   Props,
   type RealStamper,
   type TrParams,
-} from "../../circuit/index.js";
+} from "@jecs/simulator";
 
 const enum S {
-  C,
-  V0,
+  L,
+  I0,
   V,
   I,
   _Size_,
 }
 
 /**
- * Capacitor.
+ * Inductor.
  */
-export class Capacitor extends Device {
-  static override readonly id = "C";
+export class Inductor extends Device {
+  static override readonly id = "L";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = {
-    C: Props.number({
-      title: "capacitance",
+    L: Props.number({
+      title: "inductance",
       range: ["real", ">", 0],
     }),
-    V0: Props.number({
-      title: "initial voltage",
+    I0: Props.number({
+      title: "initial current",
       defaultValue: 0,
     }),
   };
@@ -49,6 +50,8 @@ export class Capacitor extends Device {
   private na!: Node;
   /** Second terminal. */
   private nb!: Node;
+  /** Extra MNA branch. */
+  private branch!: Branch;
 
   constructor(id: string) {
     super(id);
@@ -58,34 +61,40 @@ export class Capacitor extends Device {
   override connect(network: Network, [na, nb]: readonly Node[]): void {
     this.na = na;
     this.nb = nb;
+    this.branch = network.makeBranch(this.na, this.nb);
   }
 
   override init(state: DeviceState): void {
-    state[S.C] = this.props.getNumber("C");
-    state[S.V0] = this.props.getNumber("V0");
+    state[S.L] = this.props.getNumber("L");
+    state[S.I0] = this.props.getNumber("I0");
+  }
+
+  override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {
+    const { na, nb, branch } = this;
+    stamper.stampVoltageSource(na, nb, branch, 0);
   }
 
   override endDc(state: DeviceState, params: DcParams): void {
-    const { na, nb } = this;
-    state[S.V] = na.voltage - nb.voltage;
-    state[S.I] = 0;
+    const { branch } = this;
+    state[S.V] = 0;
+    state[S.I] = branch.current;
   }
 
   override loadTr(state: DeviceState, { time }: TrParams, stamper: RealStamper): void {
-    const { diff, na, nb } = this;
-    const C = state[S.C];
-    const V = time > 0 ? na.voltage - nb.voltage : state[S.V0];
-    diff.diff(V, C);
-    state[S.V] = diff.V;
-    state[S.I] = diff.I;
-    stamper.stampConductance(na, nb, diff.Geq);
-    stamper.stampCurrentSource(na, nb, diff.Ieq);
+    const { diff, na, nb, branch } = this;
+    const L = state[S.L];
+    const I = time > 0 ? branch.current : state[S.I0];
+    diff.diff(I, L);
+    state[S.V] = diff.I;
+    state[S.I] = diff.V;
+    stamper.stampA(branch, branch, -diff.Geq);
+    stamper.stampVoltageSource(na, nb, branch, diff.Ieq);
   }
 
   override loadAc(state: DeviceState, frequency: number, stamper: ComplexStamper): void {
     const { na, nb } = this;
-    const C = state[S.C];
-    const Y = 2 * Math.PI * frequency * C;
+    const L = state[S.L];
+    const Y = -1 / (2 * Math.PI * frequency * L);
     stamper.stampConductance(na, nb, 0, Y);
   }
 }

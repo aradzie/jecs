@@ -1,7 +1,7 @@
 import { type Circuit, type Probe, Props, type PropsSchema } from "../circuit/index.js";
-import { EventEmitter } from "../util/events.js";
 import { logger } from "../util/logging.js";
 import { type Dataset, type DatasetBuilder, makeDatasetBuilder } from "./dataset.js";
+import { EventEmitter } from "./events.js";
 import { type Sweep } from "./sweep.js";
 
 export const analysisStarted = Symbol();

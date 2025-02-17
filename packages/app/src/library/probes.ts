@@ -1,4 +1,4 @@
-import { Ammeter, Voltmeter } from "@jecs/simulator";
+import { Ammeter, Voltmeter } from "@jecs/devices";
 import { type Symbol } from "../symbol/symbol.ts";
 import { arrow } from "../symbol/util.ts";
 

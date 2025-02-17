@@ -1,4 +1,5 @@
-import { Circuit, DcAnalysis, Diode, dumpCircuit, logger, Resistor, Vdc } from "@jecs/simulator";
+import { Diode, Resistor, Vdc } from "@jecs/devices";
+import { Circuit, DcAnalysis, dumpCircuit, logger } from "@jecs/simulator";
 
 // Create an empty circuit.
 const circuit = new Circuit();

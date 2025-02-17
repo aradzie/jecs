@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@fontsource/spectral": "^5.1.1",
+    "@jecs/devices": "*",
     "@jecs/simulator": "*",
     "@mdi/js": "^7.4.47",
     "@preact/signals": "^2.0.1",

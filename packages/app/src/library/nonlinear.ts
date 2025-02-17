@@ -1,4 +1,4 @@
-import { Bjt, Diode, Jfet, Mosfet, OpAmp } from "@jecs/simulator";
+import { Bjt, Diode, Jfet, Mosfet, OpAmp } from "@jecs/devices";
 import { type Symbol } from "../symbol/symbol.ts";
 import { arrow } from "../symbol/util.ts";
 

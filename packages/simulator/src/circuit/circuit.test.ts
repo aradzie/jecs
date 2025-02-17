@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import { deepEqual, throws } from "rich-assert";
-import { Resistor } from "../device/index.js";
 import { Circuit } from "./circuit.js";
+import { Device } from "./device.js";
 
 test("make node", () => {
   const circuit = new Circuit();
@@ -23,10 +23,20 @@ test("make node", () => {
 });
 
 test("add device", () => {
+  class X extends Device {
+    static override readonly id = "X";
+    static override readonly numTerminals = 2;
+    static override readonly propsSchema = {};
+    static override readonly stateSchema = {
+      length: 0,
+      ops: [],
+    };
+  }
+
   const circuit = new Circuit();
   const n1 = circuit.makeNode("N1");
   const n2 = circuit.makeNode("N2");
-  const r = new Resistor("R1");
+  const r = new X("X1");
 
   deepEqual(circuit.devices, []);
 
@@ -38,7 +48,7 @@ test("add device", () => {
     () => {
       circuit.connect(r, [n1, n2]);
     },
-    { message: "Duplicate device instance [R1]" },
+    { message: "Duplicate device instance [X1]" },
   );
 
   deepEqual(circuit.devices, [r]);

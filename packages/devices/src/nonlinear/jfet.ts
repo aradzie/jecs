@@ -1,4 +1,5 @@
 import {
+  celsiusToKelvin,
   type DcParams,
   Device,
   type DeviceState,
@@ -6,8 +7,7 @@ import {
   type Node,
   Props,
   type RealStamper,
-} from "../../circuit/index.js";
-import { celsiusToKelvin } from "../../util/unit.js";
+} from "@jecs/simulator";
 import { gMin } from "../const.js";
 import {
   type FetPolarity,

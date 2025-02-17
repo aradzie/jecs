@@ -1,5 +1,5 @@
 {
-  "name": "@jecs/simulator",
+  "name": "@jecs/devices",
   "version": "1.0.0",
   "description": "A simulator of electronic circuits.",
   "author": "Aliaksandr Radzivanovich",
@@ -26,7 +26,7 @@
     "test": "env NODE_ENV=test node --enable-source-maps --test 'lib/**/*.test.js'"
   },
   "dependencies": {
-    "@jecs/math": "*",
+    "@jecs/simulator": "*",
     "tslib": "^2.8.1"
   },
   "devDependencies": {}

@@ -1,7 +1,7 @@
-import { Device } from "../circuit/index.js";
+import { Device } from "@jecs/simulator";
 
-export class Ground extends Device {
-  static override readonly id = "ground";
+export class Port extends Device {
+  static override readonly id = "p";
   static override readonly numTerminals = 1;
   static override readonly propsSchema = {};
   static override readonly stateSchema = {

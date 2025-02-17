@@ -1,4 +1,5 @@
 import {
+  type Branch,
   type ComplexStamper,
   type DcParams,
   Device,
@@ -8,33 +9,33 @@ import {
   Props,
   type RealStamper,
   type TrParams,
-} from "../../circuit/index.js";
+} from "@jecs/simulator";
 
 const enum S {
   amplitude,
   omega,
   theta,
-  I,
   V,
+  I,
   _Size_,
 }
 
 /**
- * AC current source.
+ * AC voltage source.
  */
-export class Iac extends Device {
-  static override readonly id = "Iac";
+export class Vac extends Device {
+  static override readonly id = "Vac";
   static override readonly numTerminals = 2;
   static override readonly propsSchema = {
-    I: Props.number({ title: "amplitude" }),
+    V: Props.number({ title: "amplitude" }),
     f: Props.number({ title: "frequency" }),
     phase: Props.number({ title: "phase", defaultValue: 0 }),
   };
   static override readonly stateSchema = {
     length: S._Size_,
     ops: [
-      { index: S.I, name: "I", unit: "A" },
       { index: S.V, name: "V", unit: "V" },
+      { index: S.I, name: "I", unit: "A" },
     ],
   };
 
@@ -42,14 +43,17 @@ export class Iac extends Device {
   private np!: Node;
   /** Negative terminal. */
   private nn!: Node;
+  /** Extra MNA branch. */
+  private branch!: Branch;
 
   override connect(network: Network, [np, nn]: readonly Node[]): void {
     this.np = np;
     this.nn = nn;
+    this.branch = network.makeBranch(this.np, this.nn);
   }
 
   override init(state: DeviceState): void {
-    const amplitude = this.props.getNumber("I");
+    const amplitude = this.props.getNumber("V");
     const frequency = this.props.getNumber("f");
     const phase = this.props.getNumber("phase");
     const omega = 2 * Math.PI * frequency;
@@ -59,9 +63,14 @@ export class Iac extends Device {
     state[S.theta] = theta;
   }
 
+  override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {
+    const { np, nn, branch } = this;
+    stamper.stampVoltageSource(np, nn, branch, 0);
+  }
+
   override endDc(state: DeviceState, params: DcParams): void {
-    state[S.I] = 0;
     state[S.V] = 0;
+    state[S.I] = 0;
   }
 
   override loadTr(
@@ -69,26 +78,27 @@ export class Iac extends Device {
     { time, sourceFactor }: TrParams,
     stamper: RealStamper,
   ): void {
-    const { np, nn } = this;
+    const { np, nn, branch } = this;
     const amplitude = state[S.amplitude];
     const omega = state[S.omega];
     const theta = state[S.theta];
-    const I = sourceFactor * amplitude * Math.sin(omega * time + theta);
-    state[S.I] = I;
-    stamper.stampCurrentSource(np, nn, I);
+    const V = sourceFactor * amplitude * Math.sin(omega * time + theta);
+    state[S.V] = V;
+    stamper.stampVoltageSource(np, nn, branch, V);
   }
 
   override endTr(state: DeviceState, params: TrParams): void {
-    const { np, nn } = this;
-    state[S.V] = np.voltage - nn.voltage;
+    const { branch } = this;
+    const I = branch.current;
+    state[S.I] = I;
   }
 
   override loadAc(state: DeviceState, frequency: number, stamper: ComplexStamper): void {
-    const { np, nn } = this;
+    const { np, nn, branch } = this;
     const amplitude = state[S.amplitude];
     const theta = state[S.theta];
-    const Ir = amplitude * Math.cos(theta);
-    const Ii = amplitude * Math.sin(theta);
-    stamper.stampCurrentSource(np, nn, Ir, Ii);
+    const Vr = amplitude * Math.cos(theta);
+    const Vi = amplitude * Math.sin(theta);
+    stamper.stampVoltageSource(np, nn, branch, Vr, Vi);
   }
 }

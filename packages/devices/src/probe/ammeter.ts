@@ -6,7 +6,7 @@ import {
   type Network,
   type Node,
   type RealStamper,
-} from "../../circuit/index.js";
+} from "@jecs/simulator";
 
 const enum S {
   /** Current through probe. */

@@ -1,10 +1,4 @@
-import {
-  type DcParams,
-  Device,
-  type DeviceState,
-  type Network,
-  type Node,
-} from "../../circuit/index.js";
+import { type DcParams, Device, type DeviceState, type Network, type Node } from "@jecs/simulator";
 
 const enum S {
   /** Voltage through probe. */
