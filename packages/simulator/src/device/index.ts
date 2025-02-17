@@ -20,6 +20,8 @@ import { VCCS } from "./source/vccs.js";
 import { VCVS } from "./source/vcvs.js";
 import { Vdc } from "./source/vdc.js";
 
+export { standardModels } from "./models.js";
+
 export {
   Ammeter,
   Bjt,

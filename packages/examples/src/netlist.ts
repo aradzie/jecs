@@ -1,4 +1,5 @@
-import { formatData, formatSchema, logger, Netlist } from "@jecs/simulator";
+import { Netlist } from "@jecs/netlist";
+import { formatData, formatSchema, logger } from "@jecs/simulator";
 
 const { circuit, analyses } = Netlist.parse(`
 V:Vce nc gnd V=$Vce

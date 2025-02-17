@@ -1,11 +1,14 @@
-import { AcAnalysis, type Analysis, DcAnalysis, Sweep, TrAnalysis } from "../analysis/index.js";
 import {
+  AcAnalysis,
+  type Analysis,
   BinaryExp,
   Binding,
   Circuit,
   ConstantExp,
+  DcAnalysis,
   Device,
   type DeviceClass,
+  devices,
   Equations,
   type Exp,
   FunctionDef,
@@ -15,11 +18,12 @@ import {
   type Node,
   type Props,
   registerDeviceClass,
+  standardModels,
+  Sweep,
+  TrAnalysis,
   UnaryExp,
   VariableExp,
-} from "../circuit/index.js";
-import { devices } from "../device/index.js";
-import { standardModels } from "../device/models.js";
+} from "@jecs/simulator";
 import type {
   AcItemNode,
   DcItemNode,

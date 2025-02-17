@@ -1,13 +1,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, parse, resolve } from "node:path";
-import {
-  type Analysis,
-  type Circuit,
-  formatData,
-  formatSchema,
-  logger,
-  Netlist,
-} from "@jecs/simulator";
+import { Netlist } from "@jecs/netlist";
+import { type Analysis, type Circuit, formatData, formatSchema, logger } from "@jecs/simulator";
 import { program } from "commander";
 
 const runAnalysis = (
