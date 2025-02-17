@@ -7,11 +7,10 @@ import {
   MAX_ORDER,
   MIN_ORDER,
   type Probe,
-  Props,
-  type PropsSchema,
   timeProbe,
   Tran,
 } from "../circuit/index.js";
+import { Props, type PropsSchema } from "../props/index.js";
 import { Analysis } from "./analysis.js";
 import { type DatasetBuilder } from "./dataset.js";
 import { NonlinearSolver } from "./solver-nonlinear.js";

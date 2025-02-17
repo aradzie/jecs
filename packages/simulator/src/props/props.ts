@@ -1,5 +1,3 @@
-import { CircuitError } from "./error.js";
-
 export type PropsSchema = Record<string, PropSchema>;
 
 export type PropSchema = NumberPropSchema | StringPropSchema;
@@ -73,7 +71,7 @@ export class Props {
     const prop = this.schema.get(name);
     if (prop == null) {
       const names = this.names();
-      throw new CircuitError(
+      throw new TypeError(
         `Unknown property [${name}]. ` + //
           `Expected one of ${names.map((v) => `[${v}]`).join(", ")}.`,
       );
@@ -120,11 +118,11 @@ export class Props {
   getNumber(name: string, defaultValue: number | null = null): number {
     const prop = this.prop(name);
     if (prop.type !== "number") {
-      throw new CircuitError(`Property [${name}] is not a number.`);
+      throw new TypeError(`Property [${name}] is not a number.`);
     }
     const value = this.values.get(name) ?? defaultValue ?? prop.defaultValue;
     if (value == null) {
-      throw new CircuitError(`Property [${name}] has no value.`);
+      throw new TypeError(`Property [${name}] has no value.`);
     }
     return value as number;
   }
@@ -132,11 +130,11 @@ export class Props {
   getString(name: string, defaultValue: string | null = null): string {
     const prop = this.prop(name);
     if (prop.type !== "string") {
-      throw new CircuitError(`Property [${name}] is not a string.`);
+      throw new TypeError(`Property [${name}] is not a string.`);
     }
     const value = this.values.get(name) ?? defaultValue ?? prop.defaultValue;
     if (value == null) {
-      throw new CircuitError(`Property [${name}] has no value.`);
+      throw new TypeError(`Property [${name}] has no value.`);
     }
     return value as string;
   }
@@ -144,7 +142,7 @@ export class Props {
 
 function checkNumber(prop: NumberPropSchema, name: string, value: unknown): void {
   if (typeof value !== "number") {
-    throw new CircuitError(
+    throw new TypeError(
       `Invalid value for property [${name}]. ` + //
         `Expected a number, got ${quote(value)}.`,
     );
@@ -154,7 +152,7 @@ function checkNumber(prop: NumberPropSchema, name: string, value: unknown): void
   switch (type) {
     case "real":
       if (!Number.isFinite(value)) {
-        throw new CircuitError(
+        throw new TypeError(
           `Invalid value for property [${name}]. ` + //
             `Not a finite value.`,
         );
@@ -162,7 +160,7 @@ function checkNumber(prop: NumberPropSchema, name: string, value: unknown): void
       break;
     case "integer":
       if (!Number.isInteger(value)) {
-        throw new CircuitError(
+        throw new TypeError(
           `Invalid value for property [${name}]. ` + //
             `Not an integer value.`,
         );
@@ -176,7 +174,7 @@ function checkNumber(prop: NumberPropSchema, name: string, value: unknown): void
     switch (op) {
       case ">":
         if (value <= limit) {
-          throw new CircuitError(
+          throw new TypeError(
             `Invalid value for property [${name}]. ` + //
               `Expected a value larger than ${limit}, ` +
               `got ${quote(value)}.`,
@@ -185,7 +183,7 @@ function checkNumber(prop: NumberPropSchema, name: string, value: unknown): void
         break;
       case ">=":
         if (value < limit) {
-          throw new CircuitError(
+          throw new TypeError(
             `Invalid value for property [${name}]. ` + //
               `Expected a value larger than or equal to ${limit}, ` +
               `got ${quote(value)}.`,
@@ -194,7 +192,7 @@ function checkNumber(prop: NumberPropSchema, name: string, value: unknown): void
         break;
       case "<":
         if (value >= limit) {
-          throw new CircuitError(
+          throw new TypeError(
             `Invalid value for property [${name}]. ` + //
               `Expected a value less than ${limit}, ` +
               `got ${quote(value)}.`,
@@ -203,7 +201,7 @@ function checkNumber(prop: NumberPropSchema, name: string, value: unknown): void
         break;
       case "<=":
         if (value > limit) {
-          throw new CircuitError(
+          throw new TypeError(
             `Invalid value for property [${name}]. ` + //
               `Expected a value less than or equal to ${limit}, ` +
               `got ${quote(value)}.`,
@@ -212,7 +210,7 @@ function checkNumber(prop: NumberPropSchema, name: string, value: unknown): void
         break;
       case "<>":
         if (value === limit) {
-          throw new CircuitError(
+          throw new TypeError(
             `Invalid value for property [${name}]. ` + //
               `Expected a value not equal to ${limit}.`,
           );
@@ -224,14 +222,14 @@ function checkNumber(prop: NumberPropSchema, name: string, value: unknown): void
 
 function checkString(prop: StringPropSchema, name: string, value: unknown): void {
   if (typeof value !== "string") {
-    throw new CircuitError(
+    throw new TypeError(
       `Invalid value for property [${name}]. ` + //
         `Expected a string, got ${quote(value)}.`,
     );
   }
   const { range = [] } = prop;
   if (range.length > 0 && !range.includes(value)) {
-    throw new CircuitError(
+    throw new TypeError(
       `Invalid value for property [${name}]. ` + //
         `Expected one of ${range.map((v) => quote(v)).join(", ")}, ` +
         `got ${quote(value)}.`,

@@ -1,4 +1,5 @@
-import { type Circuit, type Probe, Props, type PropsSchema } from "../circuit/index.js";
+import { type Circuit, type Probe } from "../circuit/index.js";
+import { Props, type PropsSchema } from "../props/index.js";
 import { logger } from "../util/logging.js";
 import { type Dataset, type DatasetBuilder, makeDatasetBuilder } from "./dataset.js";
 import { EventEmitter } from "./events.js";

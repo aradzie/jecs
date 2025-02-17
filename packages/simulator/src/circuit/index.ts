@@ -9,5 +9,4 @@ export * from "./mna.js";
 export * from "./model.js";
 export * from "./network.js";
 export * from "./probe.js";
-export * from "./props.js";
 export * from "./transient.js";

@@ -1,9 +1,9 @@
+import { Props, type PropsSchema } from "../props/index.js";
 import { type Device } from "./device.js";
 import { Bindings, ConstantExp, Equations } from "./equations.js";
 import { CircuitError } from "./error.js";
 import { type ComplexStamper, type RealStamper } from "./mna.js";
 import { Branch, groundNode, type Network, Node } from "./network.js";
-import { Props, type PropsSchema } from "./props.js";
 
 export class Circuit implements Network {
   static readonly propsSchema: PropsSchema = {

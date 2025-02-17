@@ -4,8 +4,8 @@ import {
   Circuit,
   ConstantExp,
   type Probe,
-  type PropsSchema,
 } from "../circuit/index.js";
+import { type PropsSchema } from "../props/index.js";
 import { Analysis } from "./analysis.js";
 import { type DatasetBuilder } from "./dataset.js";
 import { NonlinearSolver } from "./solver-nonlinear.js";

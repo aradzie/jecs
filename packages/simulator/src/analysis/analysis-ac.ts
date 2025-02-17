@@ -4,9 +4,8 @@ import {
   ConstantExp,
   frequencyProbe,
   type Probe,
-  Props,
-  type PropsSchema,
 } from "../circuit/index.js";
+import { Props, type PropsSchema } from "../props/index.js";
 import { Analysis } from "./analysis.js";
 import { type DatasetBuilder } from "./dataset.js";
 import { AcSolver } from "./solver-ac.js";
