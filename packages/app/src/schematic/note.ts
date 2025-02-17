@@ -1,7 +1,7 @@
-import { Area } from "../graphics/geometry.ts";
-import { Align, hAlignOf, transformAlignBy, vAlignOf } from "../symbol/align.ts";
-import { Dir, transformDirBy } from "../symbol/direction.ts";
-import { TransformOp } from "../symbol/transform.ts";
+import { type Area } from "../graphics/geometry.ts";
+import { type Align, hAlignOf, transformAlignBy, vAlignOf } from "../symbol/align.ts";
+import { type Dir, transformDirBy } from "../symbol/direction.ts";
+import { type TransformOp } from "../symbol/transform.ts";
 import { Element } from "./element.ts";
 
 export class Note extends Element {

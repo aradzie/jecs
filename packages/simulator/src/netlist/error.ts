@@ -1,4 +1,4 @@
-import type { Location } from "./ast.js";
+import { type Location } from "./ast.js";
 
 export class NetlistError extends Error {
   override name = "NetlistError";

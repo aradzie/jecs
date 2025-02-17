@@ -1,5 +1,5 @@
-import { Props as State, PropValue } from "@jecs/simulator";
-import { Symbol } from "../symbol/symbol.ts";
+import { Props as State, type PropValue } from "@jecs/simulator";
+import { type Symbol } from "../symbol/symbol.ts";
 import { makeUnusable } from "./unusable.ts";
 
 export class Props {

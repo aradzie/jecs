@@ -1,6 +1,6 @@
-import { DcParams, Device, DeviceState } from "../../circuit/device.js";
-import type { RealStamper } from "../../circuit/mna.js";
-import type { Branch, Network, Node } from "../../circuit/network.js";
+import { type DcParams, Device, type DeviceState } from "../../circuit/device.js";
+import { type RealStamper } from "../../circuit/mna.js";
+import { type Branch, type Network, type Node } from "../../circuit/network.js";
 import { Props } from "../../circuit/props.js";
 import { gMin, piOverTwo, twoOverPi } from "../const.js";
 

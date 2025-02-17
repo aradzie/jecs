@@ -1,6 +1,6 @@
 import { humanizeNumber } from "../util/format.js";
 import { units } from "../util/unit.js";
-import type { Circuit } from "./circuit.js";
+import { type Circuit } from "./circuit.js";
 
 export function dumpCircuit(circuit: Circuit): string[] {
   const lines: string[] = [];

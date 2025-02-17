@@ -1,4 +1,4 @@
-import { RefObject } from "preact";
+import { type RefObject } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
 export function useElementSize(ref: RefObject<HTMLElement>) {

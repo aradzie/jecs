@@ -1,6 +1,6 @@
 import { signal } from "@preact/signals";
-import { Task, Tasks } from "../tasks.ts";
-import { ToastOptions } from "./types.ts";
+import { type Task, Tasks } from "../tasks.ts";
+import { type ToastOptions } from "./types.ts";
 
 const tasks = new Tasks();
 

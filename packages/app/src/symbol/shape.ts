@@ -1,5 +1,5 @@
-import { Align, transformAlign } from "./align.ts";
-import { tMirrorX, tMirrorY, Transform, tRotate } from "./transform.ts";
+import { type Align, transformAlign } from "./align.ts";
+import { tMirrorX, tMirrorY, type Transform, tRotate } from "./transform.ts";
 
 /*
  * The coordinate system origin is in the top left corner,

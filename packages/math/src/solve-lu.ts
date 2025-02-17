@@ -1,8 +1,8 @@
 import { SingularMatrixError } from "./error.js";
 import { vecCopy } from "./matrix.js";
 import { findPartialPivot, swap } from "./pivot.js";
-import type { Sle } from "./sle.js";
-import type { Matrix, PermVector } from "./types.js";
+import { type Sle } from "./sle.js";
+import { type Matrix, type PermVector } from "./types.js";
 
 /**
  * Solves `A * x = b` using the LU decomposition method.

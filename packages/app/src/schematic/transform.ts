@@ -1,12 +1,12 @@
-import { Area } from "../graphics/geometry.ts";
-import { Align, hAlignOf, vAlignOf } from "../symbol/align.ts";
-import { TransformOp } from "../symbol/transform.ts";
-import { Element } from "./element.ts";
+import { type Area } from "../graphics/geometry.ts";
+import { type Align, hAlignOf, vAlignOf } from "../symbol/align.ts";
+import { type TransformOp } from "../symbol/transform.ts";
+import { type Element } from "./element.ts";
 import { Wire } from "./wire.ts";
 import { Zoom } from "./zoom.ts";
 
 export function getArea(elements: Iterable<Element>, ext: boolean): Area {
-  const min = { x: +Infinity, y: +Infinity };
+  const min = { x: Infinity, y: Infinity };
   const max = { x: -Infinity, y: -Infinity };
   for (const element of elements) {
     if (ext || element instanceof Wire) {

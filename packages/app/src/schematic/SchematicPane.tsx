@@ -1,8 +1,8 @@
-import { JSX } from "preact";
+import { type JSX } from "preact";
 import { useImperativeHandle, useLayoutEffect, useRef } from "preact/hooks";
 import { Canvas, resizeCanvas } from "../graphics/Canvas.tsx";
 import { useElementSize } from "../widget/use-element-size.tsx";
-import { Controller, useController } from "./controller.ts";
+import { type Controller, useController } from "./controller.ts";
 import { SchematicOverlay } from "./SchematicOverlay.tsx";
 import * as styles from "./SchematicPane.module.css";
 

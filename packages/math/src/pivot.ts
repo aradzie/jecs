@@ -1,4 +1,4 @@
-import type { MatrixLike } from "./types.js";
+import { type MatrixLike } from "./types.js";
 
 export function findPartialPivot(A: MatrixLike, size: number, k: number): number {
   return findPivotRow(A, size, k, k);

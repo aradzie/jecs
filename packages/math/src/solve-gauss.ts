@@ -1,6 +1,6 @@
 import { SingularMatrixError } from "./error.js";
 import { vecCopy } from "./matrix.js";
-import type { Sle } from "./sle.js";
+import { type Sle } from "./sle.js";
 
 /**
  * Solves `A * x = b` using the Gaussian elimination method.

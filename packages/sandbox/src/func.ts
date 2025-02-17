@@ -1,4 +1,4 @@
-export interface Func {
+export type Func = {
   (x: number, y: number): number;
   x1: number;
   y1: number;

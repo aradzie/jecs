@@ -1,7 +1,7 @@
-import { JSX, RefObject } from "preact";
+import { type JSX, type RefObject } from "preact";
 import { useImperativeHandle, useRef, useState } from "preact/hooks";
 import { Modifiers } from "./hotkeys.ts";
-import { Focusable, FocusProps, Selectable } from "./props.ts";
+import { type Focusable, type FocusProps, type Selectable } from "./props.ts";
 
 export type TextFieldType = "text" | "textarea";
 

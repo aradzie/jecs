@@ -1,4 +1,4 @@
-import type { Func } from "./func.js";
+import { type Func } from "./func.js";
 
 /**
  * Explicit method.

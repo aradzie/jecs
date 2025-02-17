@@ -1,6 +1,6 @@
-import { JSX, RefObject } from "preact";
-import { MouseProps, WheelProps } from "../widget/props.ts";
-import { Size } from "./geometry.ts";
+import { type JSX, type RefObject } from "preact";
+import { type MouseProps, type WheelProps } from "../widget/props.ts";
+import { type Size } from "./geometry.ts";
 
 export type CanvasProps = {
   canvas: RefObject<HTMLCanvasElement>;

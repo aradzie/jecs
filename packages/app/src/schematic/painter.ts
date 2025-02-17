@@ -1,8 +1,8 @@
-import { Area, Point, round } from "../graphics/geometry.ts";
-import { Align, hAlignOf, vAlignOf } from "../symbol/align.ts";
-import { getSymbolArea, Symbol } from "../symbol/symbol.ts";
-import { Instance } from "./instance.ts";
-import { Wire } from "./wire.ts";
+import { type Area, type Point, round } from "../graphics/geometry.ts";
+import { type Align, hAlignOf, vAlignOf } from "../symbol/align.ts";
+import { getSymbolArea, type Symbol } from "../symbol/symbol.ts";
+import { type Instance } from "./instance.ts";
+import { type Wire } from "./wire.ts";
 import { Zoom } from "./zoom.ts";
 
 const color = {

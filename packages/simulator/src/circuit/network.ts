@@ -1,4 +1,4 @@
-export interface Network {
+export type Network = {
   /**
    * The only ground node in the whole circuit.
    */

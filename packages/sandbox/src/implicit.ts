@@ -1,5 +1,5 @@
 import { adamsMoultonCoeffList, gearCoeffList } from "./coeff.js";
-import { Implicit, makeImplicit } from "./state.js";
+import { type Implicit, makeImplicit } from "./state.js";
 
 /**
  * Single step, 1st order Backward Euler method.

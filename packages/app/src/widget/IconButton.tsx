@@ -1,7 +1,7 @@
-import { VNode } from "preact";
-import { IconProps } from "./Icon.tsx";
+import { type VNode } from "preact";
+import { type IconProps } from "./Icon.tsx";
 import * as styles from "./IconButton.module.css";
-import { FocusProps, KeyboardProps, MouseProps } from "./props.ts";
+import { type FocusProps, type KeyboardProps, type MouseProps } from "./props.ts";
 
 type IconButtonProps = {
   readonly autoFocus?: boolean;
@@ -38,4 +38,4 @@ function IconButton({
   );
 }
 
-export { type IconButtonProps, IconButton };
+export { IconButton, type IconButtonProps };

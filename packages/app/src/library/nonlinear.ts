@@ -1,5 +1,5 @@
 import { Bjt, Diode, Jfet, Mosfet, OpAmp } from "@jecs/simulator";
-import { Symbol } from "../symbol/symbol.ts";
+import { type Symbol } from "../symbol/symbol.ts";
 import { arrow } from "../symbol/util.ts";
 
 const diode: Symbol = {

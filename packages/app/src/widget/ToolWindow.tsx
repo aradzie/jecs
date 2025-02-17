@@ -1,5 +1,5 @@
 import { mdiUnfoldLessHorizontal, mdiUnfoldMoreHorizontal } from "@mdi/js";
-import { JSX } from "preact";
+import { type JSX } from "preact";
 import { useState } from "preact/hooks";
 import { Icon } from "./Icon.tsx";
 import * as styles from "./ToolWindow.module.css";

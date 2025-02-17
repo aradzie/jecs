@@ -1,7 +1,7 @@
-import { dumpCircuit, Netlist } from "@jecs/simulator";
 import { globSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 import { fileURLToPath, URL } from "node:url";
+import { dumpCircuit, Netlist } from "@jecs/simulator";
 import { join, resolve } from "path";
 import { deepEqual } from "rich-assert";
 

@@ -1,8 +1,8 @@
-import { Point } from "../graphics/geometry.ts";
+import { type Point } from "../graphics/geometry.ts";
 import { conductors } from "../library/conductors.ts";
 import { nonlinear } from "../library/nonlinear.ts";
 import { sources } from "../library/sources.ts";
-import { Element } from "./element.ts";
+import { type Element } from "./element.ts";
 import { Instance } from "./instance.ts";
 import { Node } from "./node.ts";
 import { Pin } from "./pin.ts";

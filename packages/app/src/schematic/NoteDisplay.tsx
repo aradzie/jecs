@@ -1,10 +1,10 @@
-import { JSX } from "preact";
+import { type JSX } from "preact";
 import { memo } from "preact/compat";
 import { useLayoutEffect, useRef } from "preact/hooks";
 import { formatNote } from "../note/format-note.ts";
-import { Align, hAlignOf, vAlignOf } from "../symbol/align.ts";
-import { Dir } from "../symbol/direction.ts";
-import { Note } from "./note.ts";
+import { type Align, hAlignOf, vAlignOf } from "../symbol/align.ts";
+import { type Dir } from "../symbol/direction.ts";
+import { type Note } from "./note.ts";
 import * as styles from "./NoteDisplay.module.css";
 
 export const NoteDisplay = memo(NoteDisplay0);

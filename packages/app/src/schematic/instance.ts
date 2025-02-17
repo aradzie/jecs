@@ -1,8 +1,8 @@
-import { Area } from "../graphics/geometry.ts";
-import { Pin, transformPin } from "../symbol/pin.ts";
-import { Labels, Shape, transformLabels, transformShape } from "../symbol/shape.ts";
-import { getSymbolArea, Symbol } from "../symbol/symbol.ts";
-import { nextTransform, Transform, TransformOp } from "../symbol/transform.ts";
+import { type Area } from "../graphics/geometry.ts";
+import { type Pin, transformPin } from "../symbol/pin.ts";
+import { type Labels, type Shape, transformLabels, transformShape } from "../symbol/shape.ts";
+import { getSymbolArea, type Symbol } from "../symbol/symbol.ts";
+import { nextTransform, type Transform, type TransformOp } from "../symbol/transform.ts";
 import { Element } from "./element.ts";
 import { Names } from "./names.ts";
 import { Props } from "./props.ts";

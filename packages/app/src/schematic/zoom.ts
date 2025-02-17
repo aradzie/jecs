@@ -1,5 +1,5 @@
 import { signal } from "@preact/signals";
-import { Area, round } from "../graphics/geometry.ts";
+import { type Area, round } from "../graphics/geometry.ts";
 
 const defaultGridSize = 10;
 const minGridSize = 4;

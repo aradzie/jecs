@@ -1,4 +1,4 @@
-import { examples, Func } from "./func.js";
+import { examples, type Func } from "./func.js";
 import { methods } from "./methods.js";
 
 const run = (func: Func): void => {

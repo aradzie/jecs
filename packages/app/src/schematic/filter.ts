@@ -1,4 +1,4 @@
-import { Element } from "./element.ts";
+import { type Element } from "./element.ts";
 import { Instance } from "./instance.ts";
 import { Note } from "./note.ts";
 import { Wire } from "./wire.ts";

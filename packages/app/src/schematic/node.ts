@@ -1,5 +1,5 @@
-import { Element } from "./element.ts";
-import { Pin } from "./pin.ts";
+import { type Element } from "./element.ts";
+import { type Pin } from "./pin.ts";
 
 export class Node {
   readonly #name: string;

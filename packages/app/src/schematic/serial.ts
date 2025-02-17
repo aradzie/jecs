@@ -1,10 +1,10 @@
 import { library } from "../library/library.ts";
-import { Align } from "../symbol/align.ts";
-import { Dir } from "../symbol/direction.ts";
-import { Element } from "./element.ts";
+import { type Align } from "../symbol/align.ts";
+import { type Dir } from "../symbol/direction.ts";
+import { type Element } from "./element.ts";
 import { Instance } from "./instance.ts";
 import { Note } from "./note.ts";
-import { Props, SerialProps } from "./props.ts";
+import { Props, type SerialProps } from "./props.ts";
 import { Wire } from "./wire.ts";
 
 export type Serial = (

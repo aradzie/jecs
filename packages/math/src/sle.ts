@@ -1,9 +1,9 @@
 import { matClear, matMake, permClear, permMake, vecClear, vecMake } from "./matrix.js";
 import { findPartialPivot, swap } from "./pivot.js";
-import { solveGaussJordan } from "./solve-gauss-jordan.js";
 import { solveGauss } from "./solve-gauss.js";
+import { solveGaussJordan } from "./solve-gauss-jordan.js";
 import { factorLu, solveLu } from "./solve-lu.js";
-import type { Matrix, PermVector, Vector } from "./types.js";
+import { type Matrix, type PermVector, type Vector } from "./types.js";
 
 export enum SleMethod {
   Gauss = "gauss",

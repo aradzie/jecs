@@ -1,5 +1,5 @@
-import type { Func } from "./func.js";
-import { Explicit, Implicit, State } from "./state.js";
+import { type Func } from "./func.js";
+import { type Explicit, type Implicit, State } from "./state.js";
 
 const e = 1e-6;
 

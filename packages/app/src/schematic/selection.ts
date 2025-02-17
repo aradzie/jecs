@@ -1,5 +1,5 @@
-import { Element } from "./element.ts";
-import { Id } from "./unique.ts";
+import { type Element } from "./element.ts";
+import { type Id } from "./unique.ts";
 
 export type ReadonlySelection = {
   has(element: Element): boolean;

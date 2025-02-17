@@ -1,4 +1,4 @@
-import { Props, PropsSchema } from "../circuit/props.js";
+import { Props, type PropsSchema } from "../circuit/props.js";
 import { humanizeNumber } from "../util/format.js";
 
 export class Sweep implements Iterable<number> {

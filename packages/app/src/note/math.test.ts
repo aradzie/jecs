@@ -1,6 +1,6 @@
 import { deepEqual, equal } from "node:assert/strict";
 import { describe, it } from "node:test";
-import { findInline, parseBlock, parseInline, Result } from "./math.ts";
+import { findInline, parseBlock, parseInline, type Result } from "./math.ts";
 
 describe("find inline", () => {
   it("should ignore partial math", () => {

@@ -1,6 +1,6 @@
 import { TextField } from "../widget/TextField.tsx";
 import { useController } from "./controller.ts";
-import { Instance } from "./instance.ts";
+import { type Instance } from "./instance.ts";
 import * as styles from "./InstancePropertiesPane.module.css";
 
 export function InstancePropertiesPane({ instance }: { instance: Instance }) {

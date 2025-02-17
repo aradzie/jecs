@@ -1,10 +1,9 @@
 import { Circuit } from "../circuit/circuit.js";
 import { ConstantExp } from "../circuit/equations.js";
-import type { Probe } from "../circuit/probe.js";
-import { allNodeProbes, frequencyProbe } from "../circuit/probe.js";
-import { Props, PropsSchema } from "../circuit/props.js";
+import { allNodeProbes, frequencyProbe, type Probe } from "../circuit/probe.js";
+import { Props, type PropsSchema } from "../circuit/props.js";
 import { Analysis } from "./analysis.js";
-import type { DatasetBuilder } from "./dataset.js";
+import { type DatasetBuilder } from "./dataset.js";
 import { AcSolver } from "./solver-ac.js";
 import { groupName, Sweep } from "./sweep.js";
 

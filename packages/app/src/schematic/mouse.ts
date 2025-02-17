@@ -1,8 +1,8 @@
-import { Point } from "../graphics/geometry.ts";
-import { Element } from "./element.ts";
-import { ElementListMover } from "./move.ts";
-import { Serial } from "./serial.ts";
-import { Wire, WireShape } from "./wire.ts";
+import { type Point } from "../graphics/geometry.ts";
+import { type Element } from "./element.ts";
+import { type ElementListMover } from "./move.ts";
+import { type Serial } from "./serial.ts";
+import { type Wire, type WireShape } from "./wire.ts";
 
 /** No mouse action. Moving mouse around does nothing. */
 export type MouseIdleAction = {

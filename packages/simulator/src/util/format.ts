@@ -1,4 +1,4 @@
-import { getUnitSymbol, Unit } from "./unit.js";
+import { getUnitSymbol, type Unit } from "./unit.js";
 
 export const humanizeNumber = (value: number, unit: string | Unit = ""): string => {
   if (!Number.isFinite(value)) {

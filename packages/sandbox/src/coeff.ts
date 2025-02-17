@@ -1,5 +1,5 @@
 import { Sle, SleMethod } from "@jecs/math";
-import type { Coeff } from "./state.js";
+import { type Coeff } from "./state.js";
 
 /**
  * Computes Adams-Bashforth coefficients of the given order.

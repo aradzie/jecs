@@ -1,4 +1,10 @@
-import type { Matrix, MatrixLike, PermVector, Vector, VectorLike } from "./types.js";
+import {
+  type Matrix,
+  type MatrixLike,
+  type PermVector,
+  type Vector,
+  type VectorLike,
+} from "./types.js";
 
 export function matMake(size: number): Matrix {
   const m = new Array<Vector>(size);

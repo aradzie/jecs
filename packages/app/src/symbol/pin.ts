@@ -1,4 +1,4 @@
-import { tMirrorX, tMirrorY, Transform, tRotate } from "./transform.ts";
+import { tMirrorX, tMirrorY, type Transform, tRotate } from "./transform.ts";
 
 export type Pin = readonly [name: string, x: number, y: number];
 

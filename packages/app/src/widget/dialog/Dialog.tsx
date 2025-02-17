@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "preact/hooks";
 import { DialogContext } from "./context.tsx";
 import * as styles from "./Dialog.module.css";
-import { deleteMessage, Message } from "./state.ts";
+import { deleteMessage, type Message } from "./state.ts";
 
 export function Dialog({ message }: { message: Message }) {
   const ref = useRef<HTMLDialogElement>(null);

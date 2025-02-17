@@ -1,6 +1,6 @@
-import { KatexOptions, renderToString } from "katex";
-import { MarkedExtension, TokenizerAndRendererExtension } from "marked";
-import { findBlock, findInline, parseBlock, parseInline, Result } from "./math.ts";
+import { type KatexOptions, renderToString } from "katex";
+import { type MarkedExtension, type TokenizerAndRendererExtension } from "marked";
+import { findBlock, findInline, parseBlock, parseInline, type Result } from "./math.ts";
 
 export function markedKatex(options: KatexOptions): MarkedExtension {
   return {

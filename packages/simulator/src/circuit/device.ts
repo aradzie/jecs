@@ -1,9 +1,9 @@
-import type { ComplexStamper, RealStamper } from "./mna.js";
-import type { Network, Node } from "./network.js";
-import { Props, PropsSchema } from "./props.js";
-import type { Diff, DiffOwner } from "./transient.js";
+import { type ComplexStamper, type RealStamper } from "./mna.js";
+import { type Network, type Node } from "./network.js";
+import { Props, type PropsSchema } from "./props.js";
+import { type Diff, type DiffOwner } from "./transient.js";
 
-export interface DeviceClass {
+export type DeviceClass = {
   /** Unique device class identifier. */
   readonly id: string;
   /** The number of terminals in the device. */
@@ -19,28 +19,28 @@ export interface DeviceClass {
    * @param id Unique device instance identifier.
    */
   new (id: string): Device;
-}
+};
 
 /**
  * Device states are kept in typed arrays.
  */
 export type DeviceState = Float64Array;
 
-export interface OutputParam {
+export type OutputParam = {
   /** Element index. */
   readonly index: number;
   /** Output parameter name. */
   readonly name: string;
   /** Output parameter unit. */
   readonly unit: string;
-}
+};
 
-export interface StateSchema {
+export type StateSchema = {
   /** Length of the state vector. */
   readonly length: number;
   /** Output parameters from the state vector. */
   readonly ops: readonly OutputParam[];
-}
+};
 
 export type DcParams = {
   /** The default temperature of devices. */

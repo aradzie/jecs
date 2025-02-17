@@ -1,5 +1,5 @@
 import { signal } from "@preact/signals";
-import { DialogOptions } from "./types.ts";
+import { type DialogOptions } from "./types.ts";
 
 let nextKey = 0;
 

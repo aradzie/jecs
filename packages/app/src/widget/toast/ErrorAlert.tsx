@@ -1,6 +1,6 @@
 import { Alert } from "./Alert.tsx";
 import { toast } from "./Toaster.tsx";
-import { ToastOptions } from "./types.ts";
+import { type ToastOptions } from "./types.ts";
 
 function ErrorAlert({ error }: { error: unknown }) {
   return (

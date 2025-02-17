@@ -1,7 +1,7 @@
-import { VNode } from "preact";
+import { type VNode } from "preact";
 import * as styles from "./Button.module.css";
-import { IconProps } from "./Icon.tsx";
-import { FocusProps, KeyboardProps, MouseProps } from "./props.ts";
+import { type IconProps } from "./Icon.tsx";
+import { type FocusProps, type KeyboardProps, type MouseProps } from "./props.ts";
 
 type ButtonProps = {
   readonly autoFocus?: boolean;
@@ -41,4 +41,4 @@ function Button({
   );
 }
 
-export { type ButtonProps, Button };
+export { Button, type ButtonProps };

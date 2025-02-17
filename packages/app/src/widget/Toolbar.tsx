@@ -18,4 +18,4 @@ function Separator() {
 
 Toolbar.Separator = Separator;
 
-export { type ToolbarProps, Toolbar };
+export { Toolbar, type ToolbarProps };

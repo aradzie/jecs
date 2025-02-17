@@ -1,10 +1,10 @@
 import { Circuit } from "../circuit/circuit.js";
 import { ConstantExp } from "../circuit/equations.js";
-import { allDeviceProbes, allNodeProbes, Probe, timeProbe } from "../circuit/probe.js";
-import { Props, PropsSchema } from "../circuit/props.js";
+import { allDeviceProbes, allNodeProbes, type Probe, timeProbe } from "../circuit/probe.js";
+import { Props, type PropsSchema } from "../circuit/props.js";
 import { DiffMethod, MAX_ORDER, MIN_ORDER, Tran } from "../circuit/transient.js";
 import { Analysis } from "./analysis.js";
-import type { DatasetBuilder } from "./dataset.js";
+import { type DatasetBuilder } from "./dataset.js";
 import { NonlinearSolver } from "./solver-nonlinear.js";
 import { groupName, Sweep } from "./sweep.js";
 

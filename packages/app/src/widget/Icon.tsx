@@ -1,5 +1,5 @@
 import * as styles from "./Icon.module.css";
-import { MouseProps } from "./props.ts";
+import { type MouseProps } from "./props.ts";
 
 type IconProps = {
   readonly class?: string;
@@ -22,4 +22,4 @@ function Icon({
   );
 }
 
-export { type IconProps, Icon };
+export { Icon, type IconProps };

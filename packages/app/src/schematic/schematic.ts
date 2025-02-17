@@ -1,12 +1,12 @@
-import { EditAction } from "./edit.ts";
-import { Element } from "./element.ts";
+import { type EditAction } from "./edit.ts";
+import { type Element } from "./element.ts";
 import { filterInstances, filterNotes, filterWires } from "./filter.ts";
-import { Instance } from "./instance.ts";
+import { type Instance } from "./instance.ts";
 import { Names } from "./names.ts";
-import { connect, dummyNetwork, Network } from "./network.ts";
-import { Note } from "./note.ts";
-import { ReadonlySelection } from "./selection.ts";
-import { rewire, Wire } from "./wire.ts";
+import { connect, dummyNetwork, type Network } from "./network.ts";
+import { type Note } from "./note.ts";
+import { type ReadonlySelection } from "./selection.ts";
+import { rewire, type Wire } from "./wire.ts";
 
 type Wiring = {
   rewire(elements: Element[]): void;

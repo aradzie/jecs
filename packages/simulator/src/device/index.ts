@@ -1,4 +1,4 @@
-import type { DeviceClass } from "../circuit/device.js";
+import { type DeviceClass } from "../circuit/device.js";
 import { Ground } from "./ground.js";
 import { Capacitor } from "./linear/capacitor.js";
 import { Inductor } from "./linear/inductor.js";
@@ -22,11 +22,10 @@ import { Vdc } from "./source/vdc.js";
 
 export {
   Ammeter,
-  Port,
   Bjt,
+  Capacitor,
   CCCS,
   CCVS,
-  Capacitor,
   Diode,
   Ground,
   Iac,
@@ -35,10 +34,11 @@ export {
   Jfet,
   Mosfet,
   OpAmp,
+  Port,
   Resistor,
+  Vac,
   VCCS,
   VCVS,
-  Vac,
   Vdc,
   Voltmeter,
 };
@@ -46,9 +46,9 @@ export {
 export const devices: readonly DeviceClass[] = [
   Ammeter,
   Bjt,
+  Capacitor,
   CCCS,
   CCVS,
-  Capacitor,
   Diode,
   Iac,
   Idc,
@@ -57,9 +57,9 @@ export const devices: readonly DeviceClass[] = [
   Mosfet,
   OpAmp,
   Resistor,
+  Vac,
   VCCS,
   VCVS,
-  Vac,
   Vdc,
   Voltmeter,
 ];

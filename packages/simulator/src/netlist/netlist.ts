@@ -1,16 +1,16 @@
+import { type Analysis } from "../analysis/analysis.js";
 import { AcAnalysis } from "../analysis/analysis-ac.js";
 import { DcAnalysis } from "../analysis/analysis-dc.js";
 import { TrAnalysis } from "../analysis/analysis-tr.js";
-import type { Analysis } from "../analysis/analysis.js";
 import { Sweep } from "../analysis/sweep.js";
 import { Circuit } from "../circuit/circuit.js";
-import { Device, DeviceClass } from "../circuit/device.js";
+import { Device, type DeviceClass } from "../circuit/device.js";
 import {
   BinaryExp,
   Binding,
   ConstantExp,
   Equations,
-  Exp,
+  type Exp,
   FunctionExp,
   UnaryExp,
   VariableExp,
@@ -18,8 +18,8 @@ import {
 import { FunctionDef } from "../circuit/functions.js";
 import { getDeviceClass } from "../circuit/library.js";
 import { Model } from "../circuit/model.js";
-import type { Node } from "../circuit/network.js";
-import type { Props } from "../circuit/props.js";
+import { type Node } from "../circuit/network.js";
+import { type Props } from "../circuit/props.js";
 import { standardModels } from "../device/models.js";
 import type {
   AcItemNode,
@@ -70,12 +70,12 @@ export class Netlist {
   ) {}
 }
 
-interface Instance {
+type Instance = {
   readonly item: InstanceItemNode;
   readonly deviceClass: DeviceClass;
   readonly nodes: Node[];
   device: Device;
-}
+};
 
 class NetlistBuilder {
   readonly document: NetlistNode;

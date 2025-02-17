@@ -1,5 +1,5 @@
-import { Element } from "./element.ts";
-import { exportElements, importElements, Serial } from "./serial.ts";
+import { type Element } from "./element.ts";
+import { exportElements, importElements, type Serial } from "./serial.ts";
 
 export const clipboard = new (class Clipboard {
   #serial: Serial = [];

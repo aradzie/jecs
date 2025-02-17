@@ -1,5 +1,5 @@
-import { Matrix, NumericOverflowError, Vector } from "@jecs/math";
-import { Branch, groundNode, Node } from "./network.js";
+import { type Matrix, NumericOverflowError, type Vector } from "@jecs/math";
+import { type Branch, groundNode, type Node } from "./network.js";
 
 /**
  * Stamps a matrix of real values.

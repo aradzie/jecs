@@ -1,7 +1,7 @@
-import { Align } from "../symbol/align.ts";
-import { Dir } from "../symbol/direction.ts";
-import { Instance } from "./instance.ts";
-import { Note } from "./note.ts";
+import { type Align } from "../symbol/align.ts";
+import { type Dir } from "../symbol/direction.ts";
+import { type Instance } from "./instance.ts";
+import { type Note } from "./note.ts";
 
 export type EditAction =
   | SetNoteText

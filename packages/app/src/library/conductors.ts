@@ -1,4 +1,4 @@
-import type { Symbol } from "../symbol/symbol.ts";
+import { type Symbol } from "../symbol/symbol.ts";
 
 const wire: Symbol = {
   id: "wire",

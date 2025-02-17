@@ -1,4 +1,4 @@
-import { tMirrorX, tMirrorY, Transform, TransformOp, tRotate } from "./transform.ts";
+import { tMirrorX, tMirrorY, type Transform, type TransformOp, tRotate } from "./transform.ts";
 
 export type Align = `${HorizontalAlign}${VerticalAlign}`;
 export type HorizontalAlign = "l" | "c" | "r";

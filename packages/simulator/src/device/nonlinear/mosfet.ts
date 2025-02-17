@@ -1,11 +1,11 @@
-import { DcParams, Device, DeviceState } from "../../circuit/device.js";
-import type { RealStamper } from "../../circuit/mna.js";
-import type { Network, Node } from "../../circuit/network.js";
+import { type DcParams, Device, type DeviceState } from "../../circuit/device.js";
+import { type RealStamper } from "../../circuit/mna.js";
+import { type Network, type Node } from "../../circuit/network.js";
 import { Props } from "../../circuit/props.js";
 import { celsiusToKelvin } from "../../util/unit.js";
 import { gMin } from "../const.js";
 import {
-  FetPolarity,
+  type FetPolarity,
   fetSign,
   mosfetVoltage,
   nfet,

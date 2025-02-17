@@ -35,8 +35,8 @@ export type Result = {
 };
 
 export function findInline(src: string): number | void {
-  let open1 = findDelimiters(src, "$", "$");
-  let open2 = findDelimiters(src, "\\(", "\\)");
+  const open1 = findDelimiters(src, "$", "$");
+  const open2 = findDelimiters(src, "\\(", "\\)");
   if (open1 !== -1 && open2 !== -1) {
     return Math.min(open1, open2);
   }
@@ -56,8 +56,8 @@ export function parseInline(src: string, result: Result): boolean {
 }
 
 export function findBlock(src: string): number | void {
-  let open1 = findDelimiters(src, "$$", "$$");
-  let open2 = findDelimiters(src, "\\[", "\\]");
+  const open1 = findDelimiters(src, "$$", "$$");
+  const open2 = findDelimiters(src, "\\[", "\\]");
   if (open1 !== -1 && open2 !== -1) {
     return Math.min(open1, open2);
   }

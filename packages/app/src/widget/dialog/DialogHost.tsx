@@ -1,7 +1,7 @@
 import { Dialog } from "./Dialog.tsx";
 import * as styles from "./DialogHost.module.css";
 import { addMessage, Message, messages } from "./state.ts";
-import { DialogOptions } from "./types.ts";
+import { type DialogOptions } from "./types.ts";
 
 export function DialogHost() {
   return (

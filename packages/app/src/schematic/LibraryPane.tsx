@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "preact/hooks";
 import { Canvas, resizeCanvas } from "../graphics/Canvas.tsx";
-import { Symbol } from "../symbol/symbol.ts";
+import { type Symbol } from "../symbol/symbol.ts";
 import { useController } from "./controller.ts";
 import * as styles from "./LibraryPane.module.css";
 import { Painter } from "./painter.ts";

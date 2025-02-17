@@ -22,14 +22,22 @@
     "compile": "lage compile --no-cache",
     "test": "lage test --no-cache",
     "build": "lage build --no-cache",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "lint": "eslint '{**/*,*}.{ts,tsx}'",
+    "lint-fix": "eslint '{**/*,*}.{ts,tsx}' --fix"
   },
   "devDependencies": {
+    "@eslint/js": "^9.20.0",
     "@types/node": "^22.13.4",
+    "confusing-browser-globals": "^1.0.11",
+    "eslint": "^9.20.1",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^15.15.0",
     "lage": "^2.12.19",
     "prettier": "^3.5.1",
     "rich-assert": "^0.0.3",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.0"
   }
 }

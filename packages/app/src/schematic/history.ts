@@ -1,5 +1,5 @@
 import { Schematic } from "./schematic.ts";
-import { exportElements, importElements, Serial } from "./serial.ts";
+import { exportElements, importElements, type Serial } from "./serial.ts";
 import { makeUnusable } from "./unusable.ts";
 
 export class History {

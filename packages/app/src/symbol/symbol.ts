@@ -1,7 +1,7 @@
-import { DeviceClass } from "@jecs/simulator";
-import { Area } from "../graphics/geometry.ts";
-import { Pin } from "./pin.ts";
-import { Labels, Shape } from "./shape.ts";
+import { type DeviceClass } from "@jecs/simulator";
+import { type Area } from "../graphics/geometry.ts";
+import { type Pin } from "./pin.ts";
+import { type Labels, type Shape } from "./shape.ts";
 
 export type Category = "Conductors" | "Linear" | "Nonlinear" | "Sources" | "Probes";
 

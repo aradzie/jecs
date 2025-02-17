@@ -1,6 +1,6 @@
 import { matCopy, vecCopy } from "./matrix.js";
 import { Sle } from "./sle.js";
-import type { Matrix, MatrixLike, Vector, VectorLike } from "./types.js";
+import { type Matrix, type MatrixLike, type Vector, type VectorLike } from "./types.js";
 
 export function toSle(A: MatrixLike, b: VectorLike): Sle {
   const sle = new Sle(b.length);

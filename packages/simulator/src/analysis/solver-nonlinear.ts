@@ -1,8 +1,7 @@
-import type { Vector } from "@jecs/math";
-import { Sle, SleMethod, vecClear, vecCopy, vecMake } from "@jecs/math";
-import type { Circuit } from "../circuit/circuit.js";
+import { Sle, SleMethod, vecClear, vecCopy, vecMake, type Vector } from "@jecs/math";
+import { type Circuit } from "../circuit/circuit.js";
 import { RealStamper } from "../circuit/mna.js";
-import { Props, PropsSchema } from "../circuit/props.js";
+import { Props, type PropsSchema } from "../circuit/props.js";
 import { logger } from "../util/logging.js";
 import { ConvergenceError } from "./error.js";
 
@@ -297,7 +296,7 @@ export class NonlinearSolver {
   }
 }
 
-interface ConvergenceOptions {
+type ConvergenceOptions = {
   /** Absolute current error tolerance, `A`. */
   readonly abstol: number;
   /** Absolute voltage error tolerance, `V`. */
@@ -306,7 +305,7 @@ interface ConvergenceOptions {
   readonly reltol: number;
   /** Maximum number of non-linear iterations. */
   readonly maxIter: number;
-}
+};
 
 function getConvergenceOptions(props: Props): ConvergenceOptions {
   return {

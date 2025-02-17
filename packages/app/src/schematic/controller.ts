@@ -1,31 +1,31 @@
-import { Signal, signal } from "@preact/signals";
-import { createContext, RefObject } from "preact";
+import { type Signal, signal } from "@preact/signals";
+import { createContext, type RefObject } from "preact";
 import { useContext } from "preact/hooks";
-import { areaContains, areaOverlaps, Point } from "../graphics/geometry.ts";
+import { areaContains, areaOverlaps, type Point } from "../graphics/geometry.ts";
 import { conductors } from "../library/conductors.ts";
-import { Library } from "../library/library.ts";
+import { type Library } from "../library/library.ts";
 import { linear } from "../library/linear.ts";
 import { nonlinear } from "../library/nonlinear.ts";
 import { sources } from "../library/sources.ts";
-import { Symbol } from "../symbol/symbol.ts";
-import { TransformOp } from "../symbol/transform.ts";
+import { type Symbol } from "../symbol/symbol.ts";
+import { type TransformOp } from "../symbol/transform.ts";
 import { blurActiveInput } from "../widget/form.ts";
-import { HotkeyHandler, hotkeys, Modifiers } from "../widget/hotkeys.ts";
-import { Focusable } from "../widget/props.ts";
+import { type HotkeyHandler, hotkeys, Modifiers } from "../widget/hotkeys.ts";
+import { type Focusable } from "../widget/props.ts";
 import { clipboard } from "./clipboard.ts";
-import { EditAction } from "./edit.ts";
-import { Element } from "./element.ts";
+import { type EditAction } from "./edit.ts";
+import { type Element } from "./element.ts";
 import { filter, findElement } from "./filter.ts";
 import { History } from "./history.ts";
 import { Instance } from "./instance.ts";
-import { MouseAction } from "./mouse.ts";
+import { type MouseAction } from "./mouse.ts";
 import { ElementListMover } from "./move.ts";
 import { Note } from "./note.ts";
 import { Painter } from "./painter.ts";
 import { Schematic } from "./schematic.ts";
 import { Selection } from "./selection.ts";
 import { exportElements, importElements } from "./serial.ts";
-import { Settings } from "./settings.ts";
+import { type Settings } from "./settings.ts";
 import { alignElements, getArea, transformElements } from "./transform.ts";
 import { connect, wireShape } from "./wire.ts";
 import { Zoom } from "./zoom.ts";
@@ -981,38 +981,44 @@ export class Controller {
       this.#painter.paintGrid(zoom);
     }
     switch (mouseAction.type) {
-      case "idle":
+      case "idle": {
         this.#paintSchematic(false, mouseAction.hovered, false);
         if (this.focused && settings.showCrosshair) {
           this.#painter.paintCrosshair(zoom, mouseAction.cursor, false);
         }
         break;
-      case "scroll":
+      }
+      case "scroll": {
         this.#paintSchematic(false, null, false);
         break;
-      case "select":
+      }
+      case "select": {
         this.#paintSchematic(false, null, false);
         this.#painter.paintSelection(zoom, mouseAction.origin, mouseAction.cursor);
         break;
-      case "wire-start":
+      }
+      case "wire-start": {
         this.#paintSchematic(true, null, false);
         this.#painter.paintCrosshair(zoom, mouseAction.cursor, true);
         break;
-      case "wire":
+      }
+      case "wire": {
         this.#painter.paintCrosshair(zoom, mouseAction.cursor, true);
         this.#paintSchematic(true, null, false);
         for (const wire of mouseAction.wires) {
           this.#painter.paintWire(zoom, wire, true);
         }
         break;
+      }
       case "move":
-      case "paste":
+      case "paste": {
         this.#paintSchematic(true, null, true);
         const area = getArea(mouseAction.mover.elements, false);
         const x = zoom.toScreenX(Zoom.snap((area.x0 + area.x1) / 2));
         const y = zoom.toScreenY(Zoom.snap((area.y0 + area.y1) / 2));
         this.#painter.paintCrosshair(zoom, { x, y }, true);
         break;
+      }
     }
   }
 

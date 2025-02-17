@@ -1,4 +1,4 @@
-import type { Shape } from "./shape.ts";
+import { type Shape } from "./shape.ts";
 
 export const arrow = (
   x0: number,

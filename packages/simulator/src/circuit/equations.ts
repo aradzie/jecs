@@ -1,7 +1,7 @@
 import { DivisionByZeroError, NumericOverflowError } from "@jecs/math";
-import type { Device } from "./device.js";
+import { type Device } from "./device.js";
 import { CircuitError } from "./error.js";
-import type { FunctionDef } from "./functions.js";
+import { type FunctionDef } from "./functions.js";
 
 export abstract class Exp {
   abstract eval(eq: Equations): number;

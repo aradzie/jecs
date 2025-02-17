@@ -14,7 +14,7 @@ import { IconButton } from "../widget/IconButton.tsx";
 import { TextField } from "../widget/TextField.tsx";
 import { Toolbar } from "../widget/Toolbar.tsx";
 import { useController } from "./controller.ts";
-import { Note } from "./note.ts";
+import { type Note } from "./note.ts";
 import * as styles from "./NotePropertiesPane.module.css";
 
 export function NotePropertiesPane({ note }: { note: Note }) {

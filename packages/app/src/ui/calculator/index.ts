@@ -1,4 +1,4 @@
-import { FunctionComponent } from "preact";
+import { type FunctionComponent } from "preact";
 import { CapacitiveReactance } from "./CapacitiveReactance.tsx";
 import { InductiveReactance } from "./InductiveReactance.tsx";
 import { ResistiveVoltageDivider } from "./ResistiveVoltageDivider.tsx";

@@ -1,4 +1,4 @@
-import type { Symbol } from "../symbol/symbol.ts";
+import { type Symbol } from "../symbol/symbol.ts";
 import { conductors } from "./conductors.ts";
 import { linear } from "./linear.ts";
 import { nonlinear } from "./nonlinear.ts";

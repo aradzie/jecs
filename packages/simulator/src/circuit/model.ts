@@ -1,5 +1,5 @@
-import type { DeviceClass } from "./device.js";
-import { Props, PropValue } from "./props.js";
+import { type DeviceClass } from "./device.js";
+import { Props, type PropValue } from "./props.js";
 
 export class Model {
   readonly modelId: string;

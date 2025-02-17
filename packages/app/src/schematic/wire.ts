@@ -1,5 +1,5 @@
-import { Area } from "../graphics/geometry.ts";
-import { TransformOp } from "../symbol/transform.ts";
+import { type Area } from "../graphics/geometry.ts";
+import { type TransformOp } from "../symbol/transform.ts";
 import { Modifiers } from "../widget/hotkeys.ts";
 import { Element } from "./element.ts";
 import { Instance } from "./instance.ts";

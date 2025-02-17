@@ -1,5 +1,5 @@
 import { adamsBashforthCoeffList } from "./coeff.js";
-import { Explicit, makeExplicit } from "./state.js";
+import { type Explicit, makeExplicit } from "./state.js";
 
 /**
  * Single step, 1st order Forward Euler method.

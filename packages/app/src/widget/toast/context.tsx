@@ -1,6 +1,6 @@
 import { cloneElement, createContext } from "preact";
 import { useContext } from "preact/hooks";
-import { deleteToast, retainToast, Toast } from "./state.ts";
+import { deleteToast, retainToast, type Toast } from "./state.ts";
 
 export type ToastContextValue = {
   readonly close: () => void;

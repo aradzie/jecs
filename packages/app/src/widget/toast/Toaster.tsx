@@ -1,7 +1,7 @@
 import { ToastProvider, ToastWrapper } from "./context.tsx";
 import { addToast, Toast, toasts } from "./state.ts";
 import * as styles from "./Toaster.module.css";
-import { ToastOptions } from "./types.ts";
+import { type ToastOptions } from "./types.ts";
 
 export function Toaster() {
   return (

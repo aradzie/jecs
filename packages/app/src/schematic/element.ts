@@ -1,5 +1,5 @@
-import { Area } from "../graphics/geometry.ts";
-import { TransformOp } from "../symbol/transform.ts";
+import { type Area } from "../graphics/geometry.ts";
+import { type TransformOp } from "../symbol/transform.ts";
 import { Unique } from "./unique.ts";
 
 /**

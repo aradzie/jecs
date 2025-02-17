@@ -1,4 +1,4 @@
-import { TransformOp } from "./transform.ts";
+import { type TransformOp } from "./transform.ts";
 
 export type Dir = "h" | "v";
 

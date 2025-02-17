@@ -1,6 +1,6 @@
-import type { Circuit } from "./circuit.js";
-import type { Device, OutputParam } from "./device.js";
-import type { Branch, Node } from "./network.js";
+import { type Circuit } from "./circuit.js";
+import { type Device, type OutputParam } from "./device.js";
+import { type Branch, type Node } from "./network.js";
 
 /**
  * Probe captures a single dataset value from a circuit or node or device after simulation.

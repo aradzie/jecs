@@ -1,4 +1,4 @@
-import { Instance } from "./instance.ts";
+import { type Instance } from "./instance.ts";
 
 export class Pin {
   readonly #x: number;

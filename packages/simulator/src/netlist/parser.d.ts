@@ -1,5 +1,5 @@
 /** Provides information pointing to a location within a source. */
-export interface Location {
+export type Location = {
   /** Line in the parsed source (1-based). */
   readonly line: number;
   /** Column in the parsed source (1-based). */
@@ -14,7 +14,7 @@ export interface Location {
  *
  * The GrammarLocation class in Peggy is a good example.
  */
-export interface GrammarSourceObject {
+export type GrammarSourceObject = {
   readonly toString: () => string;
 
   /**
@@ -30,7 +30,7 @@ export interface GrammarSourceObject {
 export type GrammarSource = string | GrammarSourceObject;
 
 /** The `start` and `end` position's of an object within the source. */
-export interface LocationRange {
+export type LocationRange = {
   /**
    * A string or object that was supplied to the `parse()` call as the
    * `grammarSource` option.
@@ -45,7 +45,7 @@ export interface LocationRange {
 /**
  * Expected a literal string, like `"foo"i`.
  */
-export interface LiteralExpectation {
+export type LiteralExpectation = {
   readonly type: "literal";
   readonly text: string;
   readonly ignoreCase: boolean;
@@ -59,13 +59,13 @@ export type ClassRange = [
   end: string,
 ]
 
-export interface ClassParts extends Array<string | ClassRange> {
-}
+export type ClassParts = {
+} & Array<string | ClassRange>
 
 /**
  * Expected a class, such as `[^acd-gz]i`
  */
-export interface ClassExpectation {
+export type ClassExpectation = {
   readonly type: "class";
   readonly parts: ClassParts;
   readonly inverted: boolean;
@@ -75,14 +75,14 @@ export interface ClassExpectation {
 /**
  * Expected any character, with `.`
  */
-export interface AnyExpectation {
+export type AnyExpectation = {
   readonly type: "any";
 }
 
 /**
  * Expected the end of input.
  */
-export interface EndExpectation {
+export type EndExpectation = {
   readonly type: "end";
 }
 
@@ -91,7 +91,7 @@ export interface EndExpectation {
  * "human-readable name", or with the `expected(message, location)`
  * function.
  */
-export interface OtherExpectation {
+export type OtherExpectation = {
   readonly type: "other";
   readonly description: string;
 }
@@ -106,7 +106,7 @@ export type Expectation =
 /**
  * Pass an array of these into `SyntaxError.prototype.format()`
  */
-export interface SourceText {
+export type SourceText = {
   /**
    * Identifier of an input that was used as a grammarSource in parse().
    */
@@ -147,7 +147,7 @@ export declare class SyntaxError extends Error {
 /**
  * Trace execution of the parser.
  */
-export interface ParserTracer {
+export type ParserTracer = {
   trace: (event: ParserTracerEvent) => void;
 }
 
@@ -171,7 +171,7 @@ export type ParserTracerEvent
     };
 
 export type StartRuleNames = "Netlist";
-export interface ParseOptions<T extends StartRuleNames = "Netlist"> {
+export type ParseOptions<T extends StartRuleNames = "Netlist"> = {
   /**
    * String or object that will be attached to the each `LocationRange` object
    * created by the parser. For example, this can be path to the parsed file

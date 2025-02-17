@@ -1,27 +1,27 @@
-import type { Probe } from "../circuit/probe.js";
-import { FormatNumber, toExponential } from "../util/format.js";
+import { type Probe } from "../circuit/probe.js";
+import { type FormatNumber, toExponential } from "../util/format.js";
 
 /**
  * Column describes a single dataset value.
  */
-export interface Column {
+export type Column = {
   /** Column name which consists of parameter name with node or device name. */
   readonly name: string;
   /** Column unit. */
   readonly unit: string;
   /** Cell index in an output row. */
   readonly index: number;
-}
+};
 
 /**
  * Row group contains all data rows from a single sweep.
  */
-export interface RowGroup {
+export type RowGroup = {
   /** Group title. */
   readonly title: string | null;
   /** Group rows. */
   readonly rows: readonly Float64Array[];
-}
+};
 
 /**
  * Dataset is a simulation result, it contains values captured from a circuit.

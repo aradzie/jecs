@@ -1,10 +1,10 @@
-import type { Circuit } from "../circuit/circuit.js";
-import type { Probe } from "../circuit/probe.js";
-import { Props, PropsSchema } from "../circuit/props.js";
+import { type Circuit } from "../circuit/circuit.js";
+import { type Probe } from "../circuit/probe.js";
+import { Props, type PropsSchema } from "../circuit/props.js";
 import { EventEmitter } from "../util/events.js";
 import { logger } from "../util/logging.js";
-import { Dataset, DatasetBuilder, makeDatasetBuilder } from "./dataset.js";
-import type { Sweep } from "./sweep.js";
+import { type Dataset, type DatasetBuilder, makeDatasetBuilder } from "./dataset.js";
+import { type Sweep } from "./sweep.js";
 
 export const analysisStarted = Symbol();
 export const analysisEnded = Symbol();
