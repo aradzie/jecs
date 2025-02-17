@@ -1,4 +1,4 @@
-import { Device } from "../circuit/device.js";
+import { Device } from "../circuit/index.js";
 
 export class Ground extends Device {
   static override readonly id = "ground";

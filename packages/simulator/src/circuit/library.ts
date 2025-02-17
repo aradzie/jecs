@@ -1,4 +1,3 @@
-import { devices } from "../device/index.js";
 import { type DeviceClass } from "./device.js";
 import { CircuitError } from "./error.js";
 
@@ -35,5 +34,3 @@ export function registerDeviceClass(...deviceClasses: DeviceClass[]): void {
 export function getDeviceClass(deviceClass: string | DeviceClass): DeviceClass {
   return Registration.get(deviceClass).deviceClass;
 }
-
-registerDeviceClass(...devices);

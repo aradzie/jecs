@@ -1,9 +1,7 @@
 import { test } from "node:test";
 import { deepEqual, equal, isInstanceOf } from "rich-assert";
-import { AcAnalysis } from "../analysis/analysis-ac.js";
-import { DcAnalysis } from "../analysis/analysis-dc.js";
-import { TrAnalysis } from "../analysis/analysis-tr.js";
-import { type Branch, type Node } from "../circuit/network.js";
+import { AcAnalysis, DcAnalysis, TrAnalysis } from "../analysis/index.js";
+import { type Branch, type Node } from "../circuit/index.js";
 import { Netlist } from "./netlist.js";
 
 test("parse netlist", () => {

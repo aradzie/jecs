@@ -1,25 +1,24 @@
-import { type Analysis } from "../analysis/analysis.js";
-import { AcAnalysis } from "../analysis/analysis-ac.js";
-import { DcAnalysis } from "../analysis/analysis-dc.js";
-import { TrAnalysis } from "../analysis/analysis-tr.js";
-import { Sweep } from "../analysis/sweep.js";
-import { Circuit } from "../circuit/circuit.js";
-import { Device, type DeviceClass } from "../circuit/device.js";
+import { AcAnalysis, type Analysis, DcAnalysis, Sweep, TrAnalysis } from "../analysis/index.js";
 import {
   BinaryExp,
   Binding,
+  Circuit,
   ConstantExp,
+  Device,
+  type DeviceClass,
   Equations,
   type Exp,
+  FunctionDef,
   FunctionExp,
+  getDeviceClass,
+  Model,
+  type Node,
+  type Props,
+  registerDeviceClass,
   UnaryExp,
   VariableExp,
-} from "../circuit/equations.js";
-import { FunctionDef } from "../circuit/functions.js";
-import { getDeviceClass } from "../circuit/library.js";
-import { Model } from "../circuit/model.js";
-import { type Node } from "../circuit/network.js";
-import { type Props } from "../circuit/props.js";
+} from "../circuit/index.js";
+import { devices } from "../device/index.js";
 import { standardModels } from "../device/models.js";
 import type {
   AcItemNode,
@@ -35,6 +34,8 @@ import type {
 } from "./ast.js";
 import { NetlistError } from "./error.js";
 import { parse } from "./parser.js";
+
+registerDeviceClass(...devices);
 
 const constants = new Equations();
 

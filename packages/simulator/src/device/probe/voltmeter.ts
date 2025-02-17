@@ -1,5 +1,10 @@
-import { type DcParams, Device, type DeviceState } from "../../circuit/device.js";
-import { type Network, type Node } from "../../circuit/network.js";
+import {
+  type DcParams,
+  Device,
+  type DeviceState,
+  type Network,
+  type Node,
+} from "../../circuit/index.js";
 
 const enum S {
   /** Voltage through probe. */

@@ -1,6 +1,5 @@
 import { Sle, SleMethod } from "@jecs/math";
-import { type Circuit } from "../circuit/circuit.js";
-import { ComplexStamper } from "../circuit/mna.js";
+import { type Circuit, ComplexStamper } from "../circuit/index.js";
 import { logger } from "../util/logging.js";
 
 export class AcSolver {

@@ -1,4 +1,4 @@
-import { Model } from "../circuit/model.js";
+import { Model } from "../circuit/index.js";
 import { Bjt } from "./nonlinear/bjt.js";
 import { Diode } from "./nonlinear/diode.js";
 import { Jfet } from "./nonlinear/jfet.js";

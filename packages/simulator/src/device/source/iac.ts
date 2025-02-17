@@ -1,7 +1,14 @@
-import { type DcParams, Device, type DeviceState, type TrParams } from "../../circuit/device.js";
-import { type ComplexStamper, type RealStamper } from "../../circuit/mna.js";
-import { type Network, type Node } from "../../circuit/network.js";
-import { Props } from "../../circuit/props.js";
+import {
+  type ComplexStamper,
+  type DcParams,
+  Device,
+  type DeviceState,
+  type Network,
+  type Node,
+  Props,
+  type RealStamper,
+  type TrParams,
+} from "../../circuit/index.js";
 
 const enum S {
   amplitude,

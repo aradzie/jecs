@@ -1,4 +1,4 @@
-import { type Probe } from "../circuit/probe.js";
+import { type Probe } from "../circuit/index.js";
 import { type FormatNumber, toExponential } from "../util/format.js";
 
 /**

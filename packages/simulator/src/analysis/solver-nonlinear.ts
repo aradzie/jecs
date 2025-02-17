@@ -1,7 +1,5 @@
 import { Sle, SleMethod, vecClear, vecCopy, vecMake, type Vector } from "@jecs/math";
-import { type Circuit } from "../circuit/circuit.js";
-import { RealStamper } from "../circuit/mna.js";
-import { Props, type PropsSchema } from "../circuit/props.js";
+import { type Circuit, Props, type PropsSchema, RealStamper } from "../circuit/index.js";
 import { logger } from "../util/logging.js";
 import { ConvergenceError } from "./error.js";
 

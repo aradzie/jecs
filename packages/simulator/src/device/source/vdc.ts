@@ -1,7 +1,13 @@
-import { type DcParams, Device, type DeviceState } from "../../circuit/device.js";
-import { type RealStamper } from "../../circuit/mna.js";
-import { type Branch, type Network, type Node } from "../../circuit/network.js";
-import { Props } from "../../circuit/props.js";
+import {
+  type Branch,
+  type DcParams,
+  Device,
+  type DeviceState,
+  type Network,
+  type Node,
+  Props,
+  type RealStamper,
+} from "../../circuit/index.js";
 
 const enum S {
   V0,

@@ -1,7 +1,11 @@
-import { Circuit } from "../circuit/circuit.js";
-import { ConstantExp } from "../circuit/equations.js";
-import { allDeviceProbes, allNodeProbes, type Probe } from "../circuit/probe.js";
-import { type PropsSchema } from "../circuit/props.js";
+import {
+  allDeviceProbes,
+  allNodeProbes,
+  Circuit,
+  ConstantExp,
+  type Probe,
+  type PropsSchema,
+} from "../circuit/index.js";
 import { Analysis } from "./analysis.js";
 import { type DatasetBuilder } from "./dataset.js";
 import { NonlinearSolver } from "./solver-nonlinear.js";
