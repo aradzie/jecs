@@ -34,7 +34,7 @@ export function App() {
     };
   }, [controller]);
   return (
-    <ControllerContext.Provider value={controller}>
+    <ControllerContext value={controller}>
       <main class={styles.root}>
         <div class={styles.toolbar}>
           <ToolbarPane />
@@ -84,6 +84,6 @@ export function App() {
       </main>
       <DialogHost />
       <Toaster />
-    </ControllerContext.Provider>
+    </ControllerContext>
   );
 }

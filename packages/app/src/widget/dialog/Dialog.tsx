@@ -22,7 +22,7 @@ export function Dialog({ message }: { message: Message }) {
         message.options.onClose();
       }}
     >
-      <DialogContext.Provider
+      <DialogContext
         value={{
           close: () => {
             ref.current?.close();
@@ -30,7 +30,7 @@ export function Dialog({ message }: { message: Message }) {
         }}
       >
         {message.message}
-      </DialogContext.Provider>
+      </DialogContext>
     </dialog>
   );
 }

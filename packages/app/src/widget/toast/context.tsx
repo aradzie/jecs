@@ -12,7 +12,7 @@ export const ToastContext = createContext<ToastContextValue>(null!);
 
 export function ToastProvider({ toast, children }: { toast: Toast; children: any }) {
   return (
-    <ToastContext.Provider
+    <ToastContext
       value={{
         close: () => {
           deleteToast(toast);
@@ -30,7 +30,7 @@ export function ToastProvider({ toast, children }: { toast: Toast; children: any
       }}
     >
       {children}
-    </ToastContext.Provider>
+    </ToastContext>
   );
 }
 
