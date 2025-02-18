@@ -88,72 +88,72 @@ export class ComplexStamper {
    * Stamps the MNA matrix with the given complex value.
    * @param n1 Row index.
    * @param n2 Column index.
-   * @param r Real stamp value.
-   * @param i Imaginary stamp value.
+   * @param vr Real stamp value.
+   * @param vi Imaginary stamp value.
    */
-  stampA(n1: Node | Branch, n2: Node | Branch, r: number, i: number): void {
-    if (!Number.isFinite(r)) {
+  stampA(n1: Node | Branch, n2: Node | Branch, vr: number, vi: number): void {
+    if (!Number.isFinite(vr)) {
       throw new NumericOverflowError();
     }
-    if (!Number.isFinite(i)) {
+    if (!Number.isFinite(vi)) {
       throw new NumericOverflowError();
     }
     if (n1 !== groundNode && n2 !== groundNode) {
       const r = n1.index * 2;
       const c = n2.index * 2;
-      this.A[r][c] += r;
-      this.A[r][c + 1] -= i;
-      this.A[r + 1][c] += i;
-      this.A[r + 1][c + 1] += r;
+      this.A[r][c] += vr;
+      this.A[r][c + 1] -= vi;
+      this.A[r + 1][c] += vi;
+      this.A[r + 1][c + 1] += vr;
     }
   }
 
   /**
    * Stamps RHS vector with the given complex value.
    * @param n1 Element index.
-   * @param r Real stamp value.
-   * @param i Imaginary stamp value.
+   * @param vr Real stamp value.
+   * @param vi Imaginary stamp value.
    */
-  stampB(n1: Node | Branch, r: number, i: number): void {
-    if (!Number.isFinite(r)) {
+  stampB(n1: Node | Branch, vr: number, vi: number): void {
+    if (!Number.isFinite(vr)) {
       throw new NumericOverflowError();
     }
-    if (!Number.isFinite(i)) {
+    if (!Number.isFinite(vi)) {
       throw new NumericOverflowError();
     }
     if (n1 !== groundNode) {
       const r = n1.index * 2;
-      this.b[r] += r;
-      this.b[r + 1] += i;
+      this.b[r] += vr;
+      this.b[r + 1] += vi;
     }
   }
 
   // Helpers.
 
-  stampConductance(n1: Node, n2: Node, r: number, i: number): void {
-    this.stampA(n1, n1, r, i);
-    this.stampA(n1, n2, -r, -i);
-    this.stampA(n2, n1, -r, -i);
-    this.stampA(n2, n2, r, i);
+  stampConductance(n1: Node, n2: Node, vr: number, vi: number): void {
+    this.stampA(n1, n1, vr, vi);
+    this.stampA(n1, n2, -vr, -vi);
+    this.stampA(n2, n1, -vr, -vi);
+    this.stampA(n2, n2, vr, vi);
   }
 
-  stampTransconductance(n1: Node, n2: Node, n3: Node, n4: Node, r: number, i: number): void {
-    this.stampA(n1, n3, r, i);
-    this.stampA(n1, n4, -r, -i);
-    this.stampA(n2, n3, -r, -i);
-    this.stampA(n2, n4, r, i);
+  stampTransconductance(n1: Node, n2: Node, n3: Node, n4: Node, vr: number, vi: number): void {
+    this.stampA(n1, n3, vr, vi);
+    this.stampA(n1, n4, -vr, -vi);
+    this.stampA(n2, n3, -vr, -vi);
+    this.stampA(n2, n4, vr, vi);
   }
 
-  stampVoltageSource(n1: Node, n2: Node, n3: Branch, r: number, i: number): void {
+  stampVoltageSource(n1: Node, n2: Node, n3: Branch, vr: number, vi: number): void {
     this.stampA(n1, n3, 1, 0);
     this.stampA(n2, n3, -1, 0);
     this.stampA(n3, n1, 1, 0);
     this.stampA(n3, n2, -1, 0);
-    this.stampB(n3, r, i);
+    this.stampB(n3, vr, vi);
   }
 
-  stampCurrentSource(n1: Node, n2: Node, r: number, i: number): void {
-    this.stampB(n1, -r, -i);
-    this.stampB(n2, r, i);
+  stampCurrentSource(n1: Node, n2: Node, vr: number, vi: number): void {
+    this.stampB(n1, -vr, -vi);
+    this.stampB(n2, vr, vi);
   }
 }

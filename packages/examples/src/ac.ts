@@ -18,7 +18,7 @@ const R1 = new Resistor("R1");
 V1.props.set("V", 1);
 V1.props.set("f", 1e3);
 
-C1.props.set("C", 1e-6);
+C1.props.set("C", 1e-8);
 R1.props.set("R", 1e1);
 
 // Connect devices in the circuit.
