@@ -50,10 +50,6 @@ export class NonlinearSolver {
   #sourceFactor: number;
   #gMin: number;
 
-  #init: () => void = () => {};
-  #load: (stamper: RealStamper) => void = () => {};
-  #end: () => void = () => {};
-
   constructor(circuit: Circuit, props: Props) {
     this.#circuit = circuit;
     this.#options = getConvergenceOptions(props);
@@ -69,35 +65,51 @@ export class NonlinearSolver {
     this.#gMin = 0;
   }
 
-  useDc(): void {
-    this.#init = () => {
-      this.#circuit.initDc();
-    };
-    this.#load = (stamper) => {
-      this.#circuit.loadDc(stamper);
-    };
-    this.#end = () => {
-      this.#circuit.endDc();
-    };
-  }
-
-  useTr(): void {
-    this.#init = () => {
-      this.#circuit.initTr();
-    };
-    this.#load = (stamper) => {
-      this.#circuit.loadTr(stamper);
-    };
-    this.#end = () => {
-      this.#circuit.endTr();
-    };
-  }
-
-  solve(): void {
+  solveDc(): void {
+    this.#init = this.#initDc;
+    this.#load = this.#loadDc;
+    this.#end = this.#endDc;
     logger.simulationStarted();
     this.#solveNonLinear();
     logger.simulationEnded();
   }
+
+  solveTr(): void {
+    this.#init = this.#initTr;
+    this.#load = this.#loadTr;
+    this.#end = this.#endTr;
+    logger.simulationStarted();
+    this.#solveNonLinear();
+    logger.simulationEnded();
+  }
+
+  #init!: () => void;
+  #load!: (stamper: RealStamper) => void;
+  #end!: () => void;
+
+  #initDc = () => {
+    this.#circuit.initDc();
+  };
+
+  #loadDc = (stamper: RealStamper) => {
+    this.#circuit.loadDc(stamper);
+  };
+
+  #endDc = () => {
+    this.#circuit.endDc();
+  };
+
+  #initTr = () => {
+    this.#circuit.initTr();
+  };
+
+  #loadTr = (stamper: RealStamper) => {
+    this.#circuit.loadTr(stamper);
+  };
+
+  #endTr = () => {
+    this.#circuit.endTr();
+  };
 
   #solveNonLinear(): void {
     // Next strategy.

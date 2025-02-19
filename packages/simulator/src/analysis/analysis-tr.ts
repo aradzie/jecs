@@ -83,10 +83,8 @@ export class TrAnalysis extends Analysis {
         circuit.frequency = NaN;
         circuit.reset();
         if (dc === "yes") {
-          solver.useDc();
-          solver.solve();
+          solver.solveDc();
         }
-        solver.useTr();
         const tran = new Tran(circuit.devices);
         tran.setMethod(method, order);
         let step = 0;
@@ -96,7 +94,7 @@ export class TrAnalysis extends Analysis {
           circuit.time = time;
           circuit.frequency = NaN;
           tran.nextStep(time, timeStep);
-          solver.solve();
+          solver.solveTr();
           if (time >= startTime) {
             dataset.capture();
           }

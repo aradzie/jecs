@@ -42,8 +42,7 @@ export class DcAnalysis extends Analysis {
         circuit.time = NaN;
         circuit.frequency = NaN;
         circuit.reset();
-        solver.useDc();
-        solver.solve();
+        solver.solveDc();
         dataset.capture();
       },
       leave: (sweep, level, steps) => {},
