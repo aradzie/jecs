@@ -42,8 +42,8 @@ export class Idc extends Device.Dc {
     this.nn = nn;
   }
 
-  override init(state: DeviceState): void {
-    state[S.I0] = this.props.getNumber("I");
+  override init(props: Props, state: DeviceState): void {
+    state[S.I0] = props.getNumber("I");
   }
 
   override loadDc(state: DeviceState, { sourceFactor }: DcParams, stamper: RealStamper): void {

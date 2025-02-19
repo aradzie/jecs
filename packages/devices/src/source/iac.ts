@@ -48,10 +48,10 @@ export class Iac extends Device {
     this.nn = nn;
   }
 
-  override init(state: DeviceState): void {
-    const amplitude = this.props.getNumber("I");
-    const frequency = this.props.getNumber("f");
-    const phase = this.props.getNumber("phase");
+  override init(props: Props, state: DeviceState): void {
+    const amplitude = props.getNumber("I");
+    const frequency = props.getNumber("f");
+    const phase = props.getNumber("phase");
     const omega = 2 * Math.PI * frequency;
     const theta = (phase / 180) * Math.PI;
     state[S.amplitude] = amplitude;

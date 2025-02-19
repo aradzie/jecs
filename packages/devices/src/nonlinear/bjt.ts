@@ -130,14 +130,14 @@ export class Bjt extends Device.Dc {
     this.nc = nc;
   }
 
-  override initDc(state: DeviceState, params: DcParams): void {
-    const polarity = this.props.getString("polarity") as BjtPolarity;
-    const Bf = this.props.getNumber("Bf");
-    const Br = this.props.getNumber("Br");
-    const Is = this.props.getNumber("Is");
-    const Nf = this.props.getNumber("Nf");
-    const Nr = this.props.getNumber("Nr");
-    const temp = celsiusToKelvin(this.props.getNumber("temp", params.temp));
+  override initDc(props: Props, state: DeviceState, params: DcParams): void {
+    const polarity = props.getString("polarity") as BjtPolarity;
+    const Bf = props.getNumber("Bf");
+    const Br = props.getNumber("Br");
+    const Is = props.getNumber("Is");
+    const Nf = props.getNumber("Nf");
+    const Nr = props.getNumber("Nr");
+    const temp = celsiusToKelvin(props.getNumber("temp", params.temp));
     const pol = bjtSign(polarity);
     const Af = Bf / (Bf + 1);
     const Ar = Br / (Br + 1);

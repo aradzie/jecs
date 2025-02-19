@@ -52,8 +52,8 @@ export class VCVS extends Device.Dc {
     this.branch = network.makeBranch(this.np, this.nn);
   }
 
-  override init(state: DeviceState): void {
-    state[S.gain] = this.props.getNumber("gain");
+  override init(props: Props, state: DeviceState): void {
+    state[S.gain] = props.getNumber("gain");
   }
 
   override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {

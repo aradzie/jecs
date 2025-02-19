@@ -72,7 +72,7 @@ export class Circuit implements Network {
     }
     for (const device of this.#devices) {
       device.state.fill(0);
-      device.init(device.state);
+      device.init(device.props, device.state);
     }
   }
 
@@ -120,7 +120,7 @@ export class Circuit implements Network {
 
   initDc(): void {
     for (const device of this.#devices) {
-      device.initDc(device.state, this);
+      device.initDc(device.props, device.state, this);
     }
   }
 
@@ -138,7 +138,7 @@ export class Circuit implements Network {
 
   initTr(): void {
     for (const device of this.#devices) {
-      device.initTr(device.state, this);
+      device.initTr(device.props, device.state, this);
     }
   }
 
@@ -156,7 +156,7 @@ export class Circuit implements Network {
 
   initAc(): void {
     for (const device of this.#devices) {
-      device.initAc(device.state);
+      device.initAc(device.props, device.state);
     }
   }
 

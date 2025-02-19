@@ -64,9 +64,9 @@ export class Inductor extends Device {
     this.branch = network.makeBranch(this.na, this.nb);
   }
 
-  override init(state: DeviceState): void {
-    state[S.L] = this.props.getNumber("L");
-    state[S.I0] = this.props.getNumber("I0");
+  override init(props: Props, state: DeviceState): void {
+    state[S.L] = props.getNumber("L");
+    state[S.I0] = props.getNumber("I0");
   }
 
   override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {

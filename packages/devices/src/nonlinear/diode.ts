@@ -60,10 +60,10 @@ export class Diode extends Device.Dc {
     this.nc = nc;
   }
 
-  override initDc(state: DeviceState, params: DcParams): void {
-    const Is = this.props.getNumber("Is");
-    const N = this.props.getNumber("N");
-    const temp = celsiusToKelvin(this.props.getNumber("temp", params.temp));
+  override initDc(props: Props, state: DeviceState, params: DcParams): void {
+    const Is = props.getNumber("Is");
+    const N = props.getNumber("N");
+    const temp = celsiusToKelvin(props.getNumber("temp", params.temp));
     const [Vt, Ist, Vcrit] = pnTemp(temp, Is, N);
     state[S.Is] = Ist;
     state[S.Vt] = Vt;

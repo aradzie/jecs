@@ -46,8 +46,8 @@ export class Vdc extends Device.Dc {
     this.branch = network.makeBranch(this.np, this.nn);
   }
 
-  override init(state: DeviceState): void {
-    state[S.V0] = this.props.getNumber("V");
+  override init(props: Props, state: DeviceState): void {
+    state[S.V0] = props.getNumber("V");
   }
 
   override loadDc(state: DeviceState, { sourceFactor }: DcParams, stamper: RealStamper): void {

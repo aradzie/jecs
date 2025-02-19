@@ -121,14 +121,14 @@ export class Jfet extends Device.Dc {
     this.nd = nd;
   }
 
-  override initDc(state: DeviceState, params: DcParams): void {
-    const polarity = this.props.getString("polarity") as FetPolarity;
-    const Vth = this.props.getNumber("Vth");
-    const beta = this.props.getNumber("beta");
-    const lambda = this.props.getNumber("lambda");
-    const Is = this.props.getNumber("Is");
-    const N = this.props.getNumber("N");
-    const temp = celsiusToKelvin(this.props.getNumber("temp", params.temp));
+  override initDc(props: Props, state: DeviceState, params: DcParams): void {
+    const polarity = props.getString("polarity") as FetPolarity;
+    const Vth = props.getNumber("Vth");
+    const beta = props.getNumber("beta");
+    const lambda = props.getNumber("lambda");
+    const Is = props.getNumber("Is");
+    const N = props.getNumber("N");
+    const temp = celsiusToKelvin(props.getNumber("temp", params.temp));
     const pol = fetSign(polarity);
     const [Vt, Ist, Vcrit] = pnTemp(temp, Is, N);
     state[S.pol] = pol;
