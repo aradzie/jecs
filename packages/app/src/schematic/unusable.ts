@@ -1,4 +1,6 @@
-export function makeUnusable<T extends object>(): T {
+export const unusable = makeUnusable<any>();
+
+function makeUnusable<T extends object>(): T {
   const t = () => {
     throw new Error("unusable");
   };

@@ -7,7 +7,7 @@ import { connect, dummyNetwork, type Network } from "./network.ts";
 import { type Note } from "./note.ts";
 import { type Selection } from "./selection.ts";
 import { UniqueMap } from "./unique.ts";
-import { makeUnusable } from "./unusable.ts";
+import { unusable } from "./unusable.ts";
 import { rewire, type Wire } from "./wire.ts";
 
 export class Schematic implements Iterable<Element> {
@@ -182,5 +182,3 @@ class State implements Iterable<Element> {
     this.#network = null;
   }
 }
-
-const unusable = makeUnusable<State>();

@@ -1,6 +1,6 @@
 import { Schematic } from "./schematic.ts";
 import { exportElements, importElements, type Serial } from "./serial.ts";
-import { makeUnusable } from "./unusable.ts";
+import { unusable } from "./unusable.ts";
 
 export class History {
   static create(initial: Schematic): History {
@@ -85,5 +85,3 @@ class State {
     return Schematic.create(importElements(serial));
   }
 }
-
-const unusable = makeUnusable<State>();

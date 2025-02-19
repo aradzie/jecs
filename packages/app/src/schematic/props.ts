@@ -1,6 +1,6 @@
 import { Props as State, type PropValue } from "@jecs/simulator";
 import { type Symbol } from "../symbol/symbol.ts";
-import { makeUnusable } from "./unusable.ts";
+import { unusable } from "./unusable.ts";
 
 export class Props {
   static create({ device }: Symbol): Props {
@@ -35,5 +35,3 @@ export class Props {
 }
 
 export type SerialProps = Record<string, PropValue>;
-
-const unusable = makeUnusable<State>();
