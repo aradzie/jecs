@@ -70,7 +70,7 @@ class State {
       this.#index -= 1;
     }
     const [serial] = this.#stack[this.#index];
-    return new Schematic(importElements(serial));
+    return Schematic.create(importElements(serial));
   }
 
   get canRedo(): boolean {
@@ -82,7 +82,7 @@ class State {
       this.#index += 1;
     }
     const [serial] = this.#stack[this.#index];
-    return new Schematic(importElements(serial));
+    return Schematic.create(importElements(serial));
   }
 }
 

@@ -1,12 +1,7 @@
 import { type Element } from "./element.ts";
 import { type Id } from "./unique.ts";
 
-export type ReadonlySelection = {
-  has(element: Element): boolean;
-  filter(elements: Iterable<Element>): Element[];
-};
-
-export class Selection implements ReadonlySelection, Iterable<Id> {
+export class Selection implements Iterable<Id> {
   readonly #items: Set<Id>;
 
   constructor(elements: Iterable<Element> = []) {

@@ -3,7 +3,7 @@ import { importElements } from "../schematic/serial.ts";
 
 export function loadSchematic() {
   // prettier-ignore
-  return new Schematic(
+  return Schematic.create(
     importElements([
       ["i", 50, 50, 0, "vdc", "V1", {}],
       ["i", 150, 50, 0, "r", "R1", {}],

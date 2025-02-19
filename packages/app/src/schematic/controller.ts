@@ -561,7 +561,7 @@ export class Controller {
   #selectElement_cancel() {
     if (this.#mouseAction.value.type === "move") {
       const { undo } = this.#mouseAction.value;
-      this.#schematic.value = new Schematic(importElements(undo));
+      this.#schematic.value = Schematic.create(importElements(undo));
       this.#selection.value = new Selection();
       this.#toIdle();
       return true;
@@ -628,7 +628,7 @@ export class Controller {
   #pasteElements_cancel() {
     if (this.#mouseAction.value.type === "paste") {
       const { undo } = this.#mouseAction.value;
-      this.#schematic.value = new Schematic(importElements(undo));
+      this.#schematic.value = Schematic.create(importElements(undo));
       this.#selection.value = new Selection();
       this.#toIdle();
       return true;
@@ -827,7 +827,7 @@ export class Controller {
     if (this.#selection.value.full) {
       const elements = this.#selection.value.filter(this.#schematic.value);
       transformElements(elements, op);
-      this.#schematic.value = new Schematic(this.#schematic.value);
+      this.#schematic.value = this.#schematic.value.rewire();
       switch (op) {
         case "rl":
           this.#updateHistory("rotate counter-clockwise");
