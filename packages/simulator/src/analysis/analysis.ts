@@ -2,41 +2,22 @@ import { type Circuit, type Probe } from "../circuit/index.js";
 import { Props, type PropsSchema } from "../props/index.js";
 import { logger } from "../util/logging.js";
 import { type Dataset, type DatasetBuilder, makeDatasetBuilder } from "./dataset.js";
-import { EventEmitter } from "./events.js";
 import { type Sweep } from "./sweep.js";
 
-export const analysisStarted = Symbol();
-export const analysisEnded = Symbol();
-export const analysisError = Symbol();
-
-export abstract class Analysis extends EventEmitter {
+export abstract class Analysis {
   readonly props: Props;
   readonly sweeps: Sweep[];
 
   constructor(propsSchema: PropsSchema) {
-    super();
     this.props = new Props(propsSchema);
     this.sweeps = [];
   }
 
   run(circuit: Circuit): Dataset {
     logger.reset();
-    this.emit(analysisStarted, this);
     const dataset = makeDatasetBuilder(this.getProbes(circuit));
-    let err = null;
-    try {
-      this.runImpl(circuit, dataset);
-    } catch (arg: any) {
-      err = arg;
-    }
-    if (err != null) {
-      this.emit(analysisError, err);
-      throw err;
-    } else {
-      const result = dataset.build();
-      this.emit(analysisEnded, result);
-      return result;
-    }
+    this.runImpl(circuit, dataset);
+    return dataset.build();
   }
 
   protected abstract getProbes(circuit: Circuit): Probe[];

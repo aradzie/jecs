@@ -1,4 +1,4 @@
-export class Logger {
+export const logger = new (class Logger {
   numSimulations = 0;
   numIterations = 0;
 
@@ -25,11 +25,6 @@ export class Logger {
 
   toJSON(): unknown {
     const { numSimulations, numIterations } = this;
-    return {
-      numSimulations,
-      numIterations,
-    };
+    return { numSimulations, numIterations };
   }
-}
-
-export const logger = new Logger();
+})();
