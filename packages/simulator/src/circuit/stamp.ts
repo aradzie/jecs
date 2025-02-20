@@ -5,12 +5,12 @@ import { type Branch, groundNode, type Node } from "./network.js";
  * Stamps a matrix of real values.
  */
 export class RealStamper {
-  private readonly A: Matrix;
-  private readonly b: Vector;
+  readonly #A: Matrix;
+  readonly #b: Vector;
 
   constructor(A: Matrix, b: Vector) {
-    this.A = A;
-    this.b = b;
+    this.#A = A;
+    this.#b = b;
   }
 
   /**
@@ -24,7 +24,7 @@ export class RealStamper {
       throw new NumericOverflowError();
     }
     if (n1 !== groundNode && n2 !== groundNode) {
-      this.A[n1.index][n2.index] += v;
+      this.#A[n1.index][n2.index] += v;
     }
   }
 
@@ -38,7 +38,7 @@ export class RealStamper {
       throw new NumericOverflowError();
     }
     if (n1 !== groundNode) {
-      this.b[n1.index] += v;
+      this.#b[n1.index] += v;
     }
   }
 
@@ -76,12 +76,12 @@ export class RealStamper {
  * Stamps a matrix of complex values.
  */
 export class ComplexStamper {
-  private readonly A: Matrix;
-  private readonly b: Vector;
+  readonly #A: Matrix;
+  readonly #b: Vector;
 
   constructor(A: Matrix, b: Vector) {
-    this.A = A;
-    this.b = b;
+    this.#A = A;
+    this.#b = b;
   }
 
   /**
@@ -101,10 +101,10 @@ export class ComplexStamper {
     if (n1 !== groundNode && n2 !== groundNode) {
       const r = n1.index * 2;
       const c = n2.index * 2;
-      this.A[r][c] += vr;
-      this.A[r][c + 1] -= vi;
-      this.A[r + 1][c] += vi;
-      this.A[r + 1][c + 1] += vr;
+      this.#A[r][c] += vr;
+      this.#A[r][c + 1] -= vi;
+      this.#A[r + 1][c] += vi;
+      this.#A[r + 1][c + 1] += vr;
     }
   }
 
@@ -123,8 +123,8 @@ export class ComplexStamper {
     }
     if (n1 !== groundNode) {
       const r = n1.index * 2;
-      this.b[r] += vr;
-      this.b[r + 1] += vi;
+      this.#b[r] += vr;
+      this.#b[r + 1] += vi;
     }
   }
 

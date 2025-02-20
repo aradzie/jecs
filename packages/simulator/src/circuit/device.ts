@@ -1,6 +1,6 @@
 import { Props, type PropsSchema } from "../props/index.js";
-import { type ComplexStamper, type RealStamper } from "./mna.js";
 import { type Network, type Node } from "./network.js";
+import { type ComplexStamper, type RealStamper } from "./stamp.js";
 import { type Diff, type DiffOwner } from "./transient.js";
 
 export type DeviceClass = {
