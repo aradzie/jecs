@@ -8,15 +8,15 @@ import {
   Props,
   type RealStamper,
 } from "@jecs/simulator";
-import { gMin } from "../const.js";
+import { Eg, gMin, k, q, Tnom, Xti } from "../const.js";
 import {
   type BjtPolarity,
   bjtSign,
+  coalesce,
   npn,
   pnConductance,
   pnCurrent,
   pnp,
-  pnTemp,
   pnVoltage,
 } from "./semi.js";
 
@@ -29,14 +29,12 @@ const enum S {
   Ar,
   /** Saturation current. */
   Is,
-  /** Base-emitter thermal voltage. */
-  Vtf,
-  /** Base-collector thermal voltage. */
-  Vtr,
-  /** Base-emitter critical voltage. */
-  Vcritf,
-  /** Base-collector critical voltage. */
-  Vcritr,
+  /** Forward emission coefficient. */
+  Nf,
+  /** Reverse emission coefficient. */
+  Nr,
+  /** Device temperature. */
+  temp,
   /** Base-emitter voltage. */
   Vbe,
   /** Base-collector voltage. */
@@ -130,65 +128,29 @@ export class Bjt extends Device.Dc {
     this.nc = nc;
   }
 
-  override initDc(props: Props, state: DeviceState, params: DcParams): void {
+  override reset(props: Props, state: DeviceState): void {
     const polarity = props.getString("polarity") as BjtPolarity;
     const Bf = props.getNumber("Bf");
     const Br = props.getNumber("Br");
     const Is = props.getNumber("Is");
     const Nf = props.getNumber("Nf");
     const Nr = props.getNumber("Nr");
-    const temp = celsiusToKelvin(props.getNumber("temp", params.temp));
-    const pol = bjtSign(polarity);
-    const Af = Bf / (Bf + 1);
-    const Ar = Br / (Br + 1);
-    const [Vtf, , Vcritf] = pnTemp(temp, Is, Nf);
-    const [Vtr, , Vcritr] = pnTemp(temp, Is, Nr);
-    const [, Ist] = pnTemp(temp, Is, 1);
-    state[S.pol] = pol;
-    state[S.Af] = Af;
-    state[S.Ar] = Ar;
-    state[S.Is] = Ist;
-    state[S.Vtf] = Vtf;
-    state[S.Vtr] = Vtr;
-    state[S.Vcritf] = Vcritf;
-    state[S.Vcritr] = Vcritr;
+    const temp = props.getNumber("temp", NaN);
+
+    state[S.pol] = bjtSign(polarity);
+    state[S.Af] = Bf / (Bf + 1);
+    state[S.Ar] = Br / (Br + 1);
+    state[S.Is] = Is;
+    state[S.Nf] = Nf;
+    state[S.Nr] = Nr;
+    state[S.temp] = temp;
   }
 
-  private eval(state: DeviceState, damped: boolean): void {
-    const { ne, nb, nc } = this;
-    const pol = state[S.pol];
-    const Af = state[S.Af];
-    const Ar = state[S.Ar];
-    const Is = state[S.Is];
-    const Vtf = state[S.Vtf];
-    const Vtr = state[S.Vtr];
-    const Vcritf = state[S.Vcritf];
-    const Vcritr = state[S.Vcritr];
-    let Vbe = pol * (nb.voltage - ne.voltage);
-    let Vbc = pol * (nb.voltage - nc.voltage);
-    if (damped) {
-      Vbe = pnVoltage(Vbe, pol * state[S.Vbe], Vtf, Vcritf);
-      Vbc = pnVoltage(Vbc, pol * state[S.Vbc], Vtr, Vcritr);
-    }
-    const If = pnCurrent(Vbe, Is, Vtf);
-    const Ir = pnCurrent(Vbc, Is, Vtr);
-    const Ie = Ar * Ir - If;
-    const Ic = Af * If - Ir;
-    const Gf = pnConductance(Vbe, Is, Vtf) + gMin;
-    const Gr = pnConductance(Vbc, Is, Vtr) + gMin;
-    state[S.Vbe] = pol * Vbe;
-    state[S.Vbc] = pol * Vbc;
-    state[S.Vce] = pol * (Vbe - Vbc);
-    state[S.Ie] = pol * Ie;
-    state[S.Ic] = pol * Ic;
-    state[S.Ib] = pol * -(Ie + Ic);
-    state[S.Gf] = Gf;
-    state[S.Gr] = Gr;
-  }
+  override loadDc(state: DeviceState, { temp }: DcParams, stamper: RealStamper): void {
+    this.#eval(state, temp, true);
 
-  override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {
     const { ne, nb, nc } = this;
-    this.eval(state, true);
+
     const pol = state[S.pol];
     const Af = state[S.Af];
     const Ar = state[S.Ar];
@@ -202,6 +164,7 @@ export class Bjt extends Device.Dc {
     const Gcc = -Gr;
     const Gec = Ar * Gr;
     const Gce = Af * Gf;
+
     stamper.stampConductance(ne, nb, -Gee);
     stamper.stampConductance(nc, nb, -Gcc);
     stamper.stampTransconductance(ne, nb, nc, nb, -Gec);
@@ -210,7 +173,50 @@ export class Bjt extends Device.Dc {
     stamper.stampCurrentSource(nc, nb, pol * (Ic - Gce * Vbe - Gcc * Vbc));
   }
 
-  override endDc(state: DeviceState, params: DcParams): void {
-    this.eval(state, false);
+  override endDc(state: DeviceState, { temp }: DcParams): void {
+    this.#eval(state, temp, false);
+  }
+
+  #eval(state: DeviceState, globalTemp: number, damped: boolean): void {
+    const { ne, nb, nc } = this;
+
+    const Is = state[S.Is];
+    const Nf = state[S.Nf];
+    const Nr = state[S.Nr];
+    const temp = celsiusToKelvin(coalesce(state[S.temp], globalTemp));
+
+    const t = temp / Tnom;
+    const Vtf = Nf * temp * (k / q);
+    const Vtr = Nr * temp * (k / q);
+    const Istf = Is * Math.pow(t, Xti / Nf) * Math.exp((t - 1) * (Eg / Vtf));
+    const Istr = Is * Math.pow(t, Xti / Nr) * Math.exp((t - 1) * (Eg / Vtr));
+
+    const pol = state[S.pol];
+    const Af = state[S.Af];
+    const Ar = state[S.Ar];
+
+    let Vbe = pol * (nb.voltage - ne.voltage);
+    let Vbc = pol * (nb.voltage - nc.voltage);
+    if (damped) {
+      const Vcritf = Vtf * Math.log(Vtf / Math.sqrt(2) / Istf);
+      Vbe = pnVoltage(Vbe, pol * state[S.Vbe], Vtf, Vcritf);
+      const Vcritr = Vtr * Math.log(Vtr / Math.sqrt(2) / Istr);
+      Vbc = pnVoltage(Vbc, pol * state[S.Vbc], Vtr, Vcritr);
+    }
+    const If = pnCurrent(Vbe, Istf, Vtf);
+    const Ir = pnCurrent(Vbc, Istr, Vtr);
+    const Ie = Ar * Ir - If;
+    const Ic = Af * If - Ir;
+    const Gf = pnConductance(Vbe, Istf, Vtf) + gMin;
+    const Gr = pnConductance(Vbc, Istr, Vtr) + gMin;
+
+    state[S.Vbe] = pol * Vbe;
+    state[S.Vbc] = pol * Vbc;
+    state[S.Vce] = pol * (Vbe - Vbc);
+    state[S.Ie] = pol * Ie;
+    state[S.Ic] = pol * Ic;
+    state[S.Ib] = pol * -(Ie + Ic);
+    state[S.Gf] = Gf;
+    state[S.Gr] = Gr;
   }
 }

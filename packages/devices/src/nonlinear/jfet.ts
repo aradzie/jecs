@@ -8,15 +8,15 @@ import {
   Props,
   type RealStamper,
 } from "@jecs/simulator";
-import { gMin } from "../const.js";
+import { Eg, gMin, k, q, Tnom, Xti } from "../const.js";
 import {
+  coalesce,
   type FetPolarity,
   fetSign,
   nfet,
   pfet,
   pnConductance,
   pnCurrent,
-  pnTemp,
   pnVoltage,
 } from "./semi.js";
 
@@ -31,10 +31,10 @@ const enum S {
   lambda,
   /** Saturation current. */
   Is,
-  /** Thermal voltage. */
-  Vt,
-  /** Critical voltage. */
-  Vcrit,
+  /** Emission coefficient. */
+  N,
+  /** Device temperature. */
+  temp,
   /** Gate-source diode voltage. */
   Vgs,
   /** Gate-source diode current. */
@@ -121,40 +121,81 @@ export class Jfet extends Device.Dc {
     this.nd = nd;
   }
 
-  override initDc(props: Props, state: DeviceState, params: DcParams): void {
+  override reset(props: Props, state: DeviceState): void {
     const polarity = props.getString("polarity") as FetPolarity;
     const Vth = props.getNumber("Vth");
     const beta = props.getNumber("beta");
     const lambda = props.getNumber("lambda");
     const Is = props.getNumber("Is");
     const N = props.getNumber("N");
-    const temp = celsiusToKelvin(props.getNumber("temp", params.temp));
-    const pol = fetSign(polarity);
-    const [Vt, Ist, Vcrit] = pnTemp(temp, Is, N);
-    state[S.pol] = pol;
+    const temp = props.getNumber("temp", NaN);
+
+    state[S.pol] = fetSign(polarity);
     state[S.Vth] = Vth;
     state[S.beta] = beta;
     state[S.lambda] = lambda;
-    state[S.Is] = Ist;
-    state[S.Vt] = Vt;
-    state[S.Vcrit] = Vcrit;
+    state[S.Is] = Is;
+    state[S.N] = N;
+    state[S.temp] = temp;
   }
 
-  private eval(state: DeviceState, damped: boolean): void {
+  override loadDc(state: DeviceState, { temp }: DcParams, stamper: RealStamper): void {
+    this.#eval(state, temp, true);
+
     const { ns, ng, nd } = this;
+
+    const pol = state[S.pol];
+    const Vgs = pol * state[S.Vgs];
+    const Igs = pol * state[S.Igs];
+    const Ggs = state[S.Ggs];
+    const Vgd = pol * state[S.Vgd];
+    const Igd = pol * state[S.Igd];
+    const Ggd = state[S.Gds];
+    const Vds = pol * state[S.Vds];
+    const Ids = pol * state[S.Ids];
+    const Gds = state[S.Gds];
+    const Gm = state[S.Gm];
+
+    // DIODES
+
+    stamper.stampConductance(ng, ns, Ggs);
+    stamper.stampCurrentSource(ng, ns, pol * (Igs - Ggs * Vgs));
+
+    stamper.stampConductance(ng, nd, Ggd);
+    stamper.stampCurrentSource(ng, nd, pol * (Igd - Ggd * Vgd));
+
+    // FET
+
+    stamper.stampConductance(nd, ns, Gds);
+    stamper.stampTransconductance(nd, ns, ng, ns, Gm);
+    stamper.stampCurrentSource(nd, ns, pol * (Ids - Gds * Vds - Gm * Vgs));
+  }
+
+  override endDc(state: DeviceState, { temp }: DcParams): void {
+    this.#eval(state, temp, false);
+  }
+
+  #eval(state: DeviceState, globalTemp: number, damped: boolean): void {
+    const { ns, ng, nd } = this;
+
     const pol = state[S.pol];
     const Vth = state[S.Vth];
     const beta = state[S.beta];
     const lambda = state[S.lambda];
     const Is = state[S.Is];
-    const Vt = state[S.Vt];
-    const Vcrit = state[S.Vcrit];
+    const N = state[S.N];
+    const temp = celsiusToKelvin(coalesce(state[S.temp], globalTemp));
+
+    const t = temp / Tnom;
+    const Vt = N * temp * (k / q);
 
     // VOLTAGES
 
     let Vgs = pol * (ng.voltage - ns.voltage);
     let Vgd = pol * (ng.voltage - nd.voltage);
     if (damped) {
+      const Ist = Is * Math.pow(t, Xti / N) * Math.exp((t - 1) * (Eg / Vt));
+      const Vcrit = Vt * Math.log(Vt / Math.sqrt(2) / Ist);
       Vgs = pnVoltage(Vgs, pol * state[S.Vgs], Vt, Vcrit);
       Vgd = pnVoltage(Vgd, pol * state[S.Vgd], Vt, Vcrit);
     }
@@ -239,39 +280,5 @@ export class Jfet extends Device.Dc {
     state[S.Ids] = pol * Ids;
     state[S.Gds] = Gds;
     state[S.Gm] = Gm;
-  }
-
-  override loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {
-    const { ns, ng, nd } = this;
-    this.eval(state, true);
-    const pol = state[S.pol];
-    const Vgs = pol * state[S.Vgs];
-    const Igs = pol * state[S.Igs];
-    const Ggs = state[S.Ggs];
-    const Vgd = pol * state[S.Vgd];
-    const Igd = pol * state[S.Igd];
-    const Ggd = state[S.Gds];
-    const Vds = pol * state[S.Vds];
-    const Ids = pol * state[S.Ids];
-    const Gds = state[S.Gds];
-    const Gm = state[S.Gm];
-
-    // DIODES
-
-    stamper.stampConductance(ng, ns, Ggs);
-    stamper.stampCurrentSource(ng, ns, pol * (Igs - Ggs * Vgs));
-
-    stamper.stampConductance(ng, nd, Ggd);
-    stamper.stampCurrentSource(ng, nd, pol * (Igd - Ggd * Vgd));
-
-    // FET
-
-    stamper.stampConductance(nd, ns, Gds);
-    stamper.stampTransconductance(nd, ns, ng, ns, Gm);
-    stamper.stampCurrentSource(nd, ns, pol * (Ids - Gds * Vds - Gm * Vgs));
-  }
-
-  override endDc(state: DeviceState, params: DcParams): void {
-    this.eval(state, false);
   }
 }

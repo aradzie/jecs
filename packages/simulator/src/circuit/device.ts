@@ -86,8 +86,8 @@ export abstract class Device implements DiffOwner {
 
   /** A device whose TR behavior is the same as DC behavior. */
   static readonly Dc = class DcDevice extends Device {
-    override initTr(props: Props, state: DeviceState, params: TrParams) {
-      this.initDc(props, state, params);
+    override initTr(props: Props, state: DeviceState) {
+      this.initDc(props, state);
     }
 
     override loadTr(state: DeviceState, params: TrParams, stamper: RealStamper) {
@@ -132,13 +132,13 @@ export abstract class Device implements DiffOwner {
 
   reset(props: Props, state: DeviceState): void {}
 
-  initDc(props: Props, state: DeviceState, params: DcParams): void {}
+  initDc(props: Props, state: DeviceState): void {}
 
   loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {}
 
   endDc(state: DeviceState, params: DcParams): void {}
 
-  initTr(props: Props, state: DeviceState, params: TrParams): void {}
+  initTr(props: Props, state: DeviceState): void {}
 
   loadTr(state: DeviceState, params: TrParams, stamper: RealStamper): void {}
 

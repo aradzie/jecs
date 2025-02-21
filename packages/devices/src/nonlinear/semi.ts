@@ -1,5 +1,3 @@
-import { Eg, k, q, Tnom, Xti } from "../const.js";
-
 export const npn = "npn" as const;
 export const pnp = "pnp" as const;
 
@@ -29,24 +27,6 @@ export function fetSign(polarity: FetPolarity): number {
 }
 
 /**
- * Returns thermal voltage and saturation current.
- * @param temp Device temperature.
- * @param Is Saturation current.
- * @param N Emission coefficient.
- */
-export function pnTemp(
-  temp: number,
-  Is: number,
-  N: number,
-): [Vt: number, Is: number, Vcrit: number] {
-  const t = temp / Tnom;
-  const Vt = N * temp * (k / q);
-  const Ist = Is * Math.pow(t, Xti / N) * Math.exp((t - 1) * (Eg / Vt));
-  const Vcrit = Vt * Math.log(Vt / Math.sqrt(2) / Ist);
-  return [Vt, Ist, Vcrit];
-}
-
-/**
  * Returns PN junction current.
  * @param V Junction voltage.
  * @param Is Saturation current.
@@ -54,8 +34,7 @@ export function pnTemp(
  */
 export function pnCurrent(V: number, Is: number, Vt: number): number {
   if (V >= 0) {
-    const invVt = 1 / Vt;
-    return Is * (Math.exp(invVt * V) - 1);
+    return Is * (Math.exp((1 / Vt) * V) - 1);
   } else {
     return 0;
   }
@@ -69,8 +48,7 @@ export function pnCurrent(V: number, Is: number, Vt: number): number {
  */
 export function pnConductance(V: number, Is: number, Vt: number): number {
   if (V >= 0) {
-    const invVt = 1 / Vt;
-    return invVt * Is * Math.exp(invVt * V);
+    return (1 / Vt) * Is * Math.exp((1 / Vt) * V);
   } else {
     return 0;
   }
@@ -116,4 +94,14 @@ export function mosfetVoltage(Vnew: number, Vold: number): number {
     }
   }
   return Vnew;
+}
+
+export function coalesce(a: number, b: number): number {
+  if (Number.isFinite(a)) {
+    return a;
+  }
+  if (Number.isFinite(b)) {
+    return b;
+  }
+  return 0;
 }
