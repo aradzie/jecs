@@ -20,7 +20,6 @@ export class AcSolver {
     this.#circuit.loadAc(this.#stamper);
     this.#sle.solve(SleMethod.Gauss);
     this.#saveSolution();
-    this.#circuit.endAc();
     logger.iterationEnded();
     logger.simulationEnded();
   }

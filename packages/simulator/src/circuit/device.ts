@@ -147,6 +147,4 @@ export abstract class Device implements DiffOwner {
   initAc(props: Props, state: DeviceState): void {}
 
   loadAc(state: DeviceState, frequency: number, stamper: ComplexStamper): void {}
-
-  endAc(state: DeviceState): void {}
 }

@@ -165,10 +165,4 @@ export class Circuit implements Network {
       device.loadAc(device.state, this.frequency, stamper);
     }
   }
-
-  endAc(): void {
-    for (const device of this.#devices) {
-      device.endAc(device.state);
-    }
-  }
 }
