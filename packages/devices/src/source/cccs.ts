@@ -64,7 +64,7 @@ export class CCCS extends Device.Dc {
     stamper.stampA(nn, branch, -gain);
   }
 
-  override endDc(state: DeviceState, params: DcParams): void {
+  override saveDc(state: DeviceState, params: DcParams): void {
     const { np, nn, branch } = this;
     const gain = state[S.gain];
     const I = branch.current * gain;

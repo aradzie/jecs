@@ -173,7 +173,7 @@ export class Bjt extends Device.Dc {
     stamper.stampCurrentSource(nc, nb, pol * (Ic - Gce * Vbe - Gcc * Vbc));
   }
 
-  override endDc(state: DeviceState, { temp }: DcParams): void {
+  override saveDc(state: DeviceState, { temp }: DcParams): void {
     this.#eval(state, temp, false);
   }
 

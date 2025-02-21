@@ -68,7 +68,7 @@ export class Vac extends Device {
     stamper.stampVoltageSource(np, nn, branch, 0);
   }
 
-  override endDc(state: DeviceState, params: DcParams): void {
+  override saveDc(state: DeviceState, params: DcParams): void {
     state[S.V] = 0;
     state[S.I] = 0;
   }
@@ -87,7 +87,7 @@ export class Vac extends Device {
     stamper.stampVoltageSource(np, nn, branch, V);
   }
 
-  override endTr(state: DeviceState, params: TrParams): void {
+  override saveTr(state: DeviceState, params: TrParams): void {
     const { branch } = this;
     const I = branch.current;
     state[S.I] = I;

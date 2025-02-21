@@ -171,7 +171,7 @@ export class Jfet extends Device.Dc {
     stamper.stampCurrentSource(nd, ns, pol * (Ids - Gds * Vds - Gm * Vgs));
   }
 
-  override endDc(state: DeviceState, { temp }: DcParams): void {
+  override saveDc(state: DeviceState, { temp }: DcParams): void {
     this.#eval(state, temp, false);
   }
 

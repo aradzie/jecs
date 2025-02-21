@@ -54,7 +54,7 @@ export class Idc extends Device.Dc {
     stamper.stampCurrentSource(np, nn, I);
   }
 
-  override endDc(state: DeviceState, params: DcParams): void {
+  override saveDc(state: DeviceState, params: DcParams): void {
     const { np, nn } = this;
     state[S.V] = np.voltage - nn.voltage;
   }

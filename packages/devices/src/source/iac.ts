@@ -59,7 +59,7 @@ export class Iac extends Device {
     state[S.theta] = theta;
   }
 
-  override endDc(state: DeviceState, params: DcParams): void {
+  override saveDc(state: DeviceState, params: DcParams): void {
     state[S.I] = 0;
     state[S.V] = 0;
   }
@@ -78,7 +78,7 @@ export class Iac extends Device {
     stamper.stampCurrentSource(np, nn, I);
   }
 
-  override endTr(state: DeviceState, params: TrParams): void {
+  override saveTr(state: DeviceState, params: TrParams): void {
     const { np, nn } = this;
     state[S.V] = np.voltage - nn.voltage;
   }

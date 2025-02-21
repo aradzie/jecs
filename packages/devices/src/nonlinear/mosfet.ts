@@ -186,7 +186,7 @@ export class Mosfet extends Device.Dc {
     }
   }
 
-  override endDc(state: DeviceState, { temp }: DcParams): void {
+  override saveDc(state: DeviceState, { temp }: DcParams): void {
     this.#eval(state, temp, false);
   }
 

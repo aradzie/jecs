@@ -94,8 +94,8 @@ export abstract class Device implements DiffOwner {
       this.loadDc(state, params, stamper);
     }
 
-    override endTr(state: DeviceState, params: TrParams) {
-      this.endDc(state, params);
+    override saveTr(state: DeviceState, params: TrParams) {
+      this.saveDc(state, params);
     }
   };
 
@@ -136,13 +136,13 @@ export abstract class Device implements DiffOwner {
 
   loadDc(state: DeviceState, params: DcParams, stamper: RealStamper): void {}
 
-  endDc(state: DeviceState, params: DcParams): void {}
+  saveDc(state: DeviceState, params: DcParams): void {}
 
   initTr(props: Props, state: DeviceState): void {}
 
   loadTr(state: DeviceState, params: TrParams, stamper: RealStamper): void {}
 
-  endTr(state: DeviceState, params: TrParams): void {}
+  saveTr(state: DeviceState, params: TrParams): void {}
 
   initAc(props: Props, state: DeviceState): void {}
 

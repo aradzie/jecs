@@ -65,7 +65,7 @@ export class Capacitor extends Device {
     state[S.V0] = props.getNumber("V0");
   }
 
-  override endDc(state: DeviceState, params: DcParams): void {
+  override saveDc(state: DeviceState, params: DcParams): void {
     const { na, nb } = this;
     state[S.V] = na.voltage - nb.voltage;
     state[S.I] = 0;

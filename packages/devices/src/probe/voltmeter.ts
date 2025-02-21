@@ -28,7 +28,7 @@ export class Voltmeter extends Device.Dc {
     this.nn = nn;
   }
 
-  override endDc(state: DeviceState, params: DcParams): void {
+  override saveDc(state: DeviceState, params: DcParams): void {
     const { np, nn } = this;
     state[S.V] = np.voltage - nn.voltage;
   }

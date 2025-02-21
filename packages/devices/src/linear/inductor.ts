@@ -74,7 +74,7 @@ export class Inductor extends Device {
     stamper.stampVoltageSource(na, nb, branch, 0);
   }
 
-  override endDc(state: DeviceState, params: DcParams): void {
+  override saveDc(state: DeviceState, params: DcParams): void {
     const { branch } = this;
     state[S.V] = 0;
     state[S.I] = branch.current;

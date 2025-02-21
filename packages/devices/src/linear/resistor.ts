@@ -57,7 +57,7 @@ export class Resistor extends Device.Dc {
     stamper.stampConductance(na, nb, G);
   }
 
-  override endDc(state: DeviceState, params: DcParams): void {
+  override saveDc(state: DeviceState, params: DcParams): void {
     const { na, nb } = this;
     const G = state[S.G];
     const V = na.voltage - nb.voltage;

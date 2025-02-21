@@ -58,7 +58,7 @@ export class Vdc extends Device.Dc {
     stamper.stampVoltageSource(np, nn, branch, V);
   }
 
-  override endDc(state: DeviceState, params: DcParams): void {
+  override saveDc(state: DeviceState, params: DcParams): void {
     const { branch } = this;
     state[S.I] = branch.current;
   }

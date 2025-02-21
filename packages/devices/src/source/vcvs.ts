@@ -64,7 +64,7 @@ export class VCVS extends Device.Dc {
     stamper.stampA(branch, ncn, gain);
   }
 
-  override endDc(state: DeviceState, params: DcParams): void {
+  override saveDc(state: DeviceState, params: DcParams): void {
     const { np, nn, branch } = this;
     state[S.V] = np.voltage - nn.voltage;
     state[S.I] = branch.current;

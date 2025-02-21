@@ -130,9 +130,9 @@ export class Circuit implements Network {
     }
   }
 
-  endDc(): void {
+  saveDc(): void {
     for (const device of this.#devices) {
-      device.endDc(device.state, this);
+      device.saveDc(device.state, this);
     }
   }
 
@@ -148,9 +148,9 @@ export class Circuit implements Network {
     }
   }
 
-  endTr(): void {
+  saveTr(): void {
     for (const device of this.#devices) {
-      device.endTr(device.state, this);
+      device.saveTr(device.state, this);
     }
   }
 

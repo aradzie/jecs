@@ -67,7 +67,7 @@ export class NonlinearSolver {
 
   solveDc(): void {
     this.#load = this.#loadDc;
-    this.#end = this.#endDc;
+    this.#save = this.#saveDc;
     logger.simulationStarted();
     this.#solveNonLinear();
     logger.simulationEnded();
@@ -75,29 +75,29 @@ export class NonlinearSolver {
 
   solveTr(): void {
     this.#load = this.#loadTr;
-    this.#end = this.#endTr;
+    this.#save = this.#saveTr;
     logger.simulationStarted();
     this.#solveNonLinear();
     logger.simulationEnded();
   }
 
   #load!: (stamper: RealStamper) => void;
-  #end!: () => void;
+  #save!: () => void;
 
   #loadDc = (stamper: RealStamper) => {
     this.#circuit.loadDc(stamper);
   };
 
-  #endDc = () => {
-    this.#circuit.endDc();
+  #saveDc = () => {
+    this.#circuit.saveDc();
   };
 
   #loadTr = (stamper: RealStamper) => {
     this.#circuit.loadTr(stamper);
   };
 
-  #endTr = () => {
-    this.#circuit.endTr();
+  #saveTr = () => {
+    this.#circuit.saveTr();
   };
 
   #solveNonLinear(): void {
@@ -173,7 +173,7 @@ export class NonlinearSolver {
       vecCopy(this.#currX, this.#prevX);
       vecCopy(this.#currB, this.#prevB);
       if (conv) {
-        this.#end();
+        this.#save();
         return true;
       }
       iter += 1;
