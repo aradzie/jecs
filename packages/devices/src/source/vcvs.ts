@@ -52,7 +52,7 @@ export class VCVS extends Device.Dc {
     this.branch = network.makeBranch(this.np, this.nn);
   }
 
-  override init(props: Props, state: DeviceState): void {
+  override reset(props: Props, state: DeviceState): void {
     state[S.gain] = props.getNumber("gain");
   }
 

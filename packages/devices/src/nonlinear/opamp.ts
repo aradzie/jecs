@@ -62,7 +62,7 @@ export class OpAmp extends Device.Dc {
     this.branch = network.makeBranch(this.no, network.groundNode);
   }
 
-  override init(props: Props, state: DeviceState): void {
+  override reset(props: Props, state: DeviceState): void {
     const gain = props.getNumber("gain");
     const Vmax = props.getNumber("Vmax");
     state[S.gain] = gain;

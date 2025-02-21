@@ -55,7 +55,7 @@ export class CCVS extends Device.Dc {
     this.branch2 = network.makeBranch(this.ncp, this.ncn);
   }
 
-  override init(props: Props, state: DeviceState): void {
+  override reset(props: Props, state: DeviceState): void {
     state[S.gain] = props.getNumber("gain");
   }
 

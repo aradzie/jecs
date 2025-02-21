@@ -72,7 +72,7 @@ export class Circuit implements Network {
     }
     for (const device of this.#devices) {
       device.state.fill(0);
-      device.init(device.props, device.state);
+      device.reset(device.props, device.state);
     }
   }
 

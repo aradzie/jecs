@@ -42,7 +42,7 @@ export class Idc extends Device.Dc {
     this.nn = nn;
   }
 
-  override init(props: Props, state: DeviceState): void {
+  override reset(props: Props, state: DeviceState): void {
     state[S.I0] = props.getNumber("I");
   }
 

@@ -46,7 +46,7 @@ export class Resistor extends Device.Dc {
     this.nb = nb;
   }
 
-  override init(props: Props, state: DeviceState): void {
+  override reset(props: Props, state: DeviceState): void {
     const R = props.getNumber("R");
     state[S.G] = 1 / R;
   }

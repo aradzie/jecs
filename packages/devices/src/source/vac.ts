@@ -52,7 +52,7 @@ export class Vac extends Device {
     this.branch = network.makeBranch(this.np, this.nn);
   }
 
-  override init(props: Props, state: DeviceState): void {
+  override reset(props: Props, state: DeviceState): void {
     const amplitude = props.getNumber("V");
     const frequency = props.getNumber("f");
     const phase = props.getNumber("phase");

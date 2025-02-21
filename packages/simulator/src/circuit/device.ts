@@ -130,7 +130,7 @@ export abstract class Device implements DiffOwner {
    */
   connect(network: Network, nodes: readonly Node[]): void {}
 
-  init(props: Props, state: DeviceState): void {}
+  reset(props: Props, state: DeviceState): void {}
 
   initDc(props: Props, state: DeviceState, params: DcParams): void {}
 

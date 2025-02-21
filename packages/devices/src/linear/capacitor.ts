@@ -60,7 +60,7 @@ export class Capacitor extends Device {
     this.nb = nb;
   }
 
-  override init(props: Props, state: DeviceState): void {
+  override reset(props: Props, state: DeviceState): void {
     state[S.C] = props.getNumber("C");
     state[S.V0] = props.getNumber("V0");
   }
