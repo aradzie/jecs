@@ -66,7 +66,6 @@ export class NonlinearSolver {
   }
 
   solveDc(): void {
-    this.#init = this.#initDc;
     this.#load = this.#loadDc;
     this.#end = this.#endDc;
     logger.simulationStarted();
@@ -75,7 +74,6 @@ export class NonlinearSolver {
   }
 
   solveTr(): void {
-    this.#init = this.#initTr;
     this.#load = this.#loadTr;
     this.#end = this.#endTr;
     logger.simulationStarted();
@@ -83,13 +81,8 @@ export class NonlinearSolver {
     logger.simulationEnded();
   }
 
-  #init!: () => void;
   #load!: (stamper: RealStamper) => void;
   #end!: () => void;
-
-  #initDc = () => {
-    this.#circuit.initDc();
-  };
 
   #loadDc = (stamper: RealStamper) => {
     this.#circuit.loadDc(stamper);
@@ -97,10 +90,6 @@ export class NonlinearSolver {
 
   #endDc = () => {
     this.#circuit.endDc();
-  };
-
-  #initTr = () => {
-    this.#circuit.initTr();
   };
 
   #loadTr = (stamper: RealStamper) => {
@@ -177,7 +166,6 @@ export class NonlinearSolver {
 
   #iterate(maxIter: number): boolean {
     this.#circuit.sourceFactor = this.#sourceFactor;
-    this.#startIteration();
     let iter = 0;
     while (iter < maxIter) {
       this.#doIteration();
@@ -185,16 +173,12 @@ export class NonlinearSolver {
       vecCopy(this.#currX, this.#prevX);
       vecCopy(this.#currB, this.#prevB);
       if (conv) {
-        this.#endIteration();
+        this.#end();
         return true;
       }
       iter += 1;
     }
     return false;
-  }
-
-  #startIteration(): void {
-    this.#init();
   }
 
   #doIteration(): void {
@@ -209,10 +193,6 @@ export class NonlinearSolver {
     vecCopy(this.#sle.x, this.#currX);
     this.#saveSolution();
     logger.iterationEnded();
-  }
-
-  #endIteration(): void {
-    this.#end();
   }
 
   #applyGMin(): void {

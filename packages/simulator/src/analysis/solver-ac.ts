@@ -15,14 +15,13 @@ export class AcSolver {
 
   solve(): void {
     logger.simulationStarted();
-    this.#circuit.initAc();
     logger.iterationStarted();
     this.#sle.clear();
     this.#circuit.loadAc(this.#stamper);
     this.#sle.solve(SleMethod.Gauss);
     this.#saveSolution();
-    logger.iterationEnded();
     this.#circuit.endAc();
+    logger.iterationEnded();
     logger.simulationEnded();
   }
 
