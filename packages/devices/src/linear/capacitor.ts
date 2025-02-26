@@ -85,7 +85,6 @@ export class Capacitor extends Device {
   override loadAc(state: DeviceState, frequency: number, stamper: ComplexStamper): void {
     const { na, nb } = this;
     const C = state[S.C];
-    const Y = 2 * Math.PI * frequency * C;
-    stamper.stampConductance(na, nb, 0, Y);
+    stamper.stampCapacitor(na, nb, C, frequency);
   }
 }

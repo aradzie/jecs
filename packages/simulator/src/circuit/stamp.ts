@@ -156,4 +156,14 @@ export class ComplexStamper {
     this.stampB(n1, -vr, -vi);
     this.stampB(n2, vr, vi);
   }
+
+  stampCapacitor(n1: Node, n2: Node, C: number, frequency: number): void {
+    const Y = 2 * Math.PI * frequency * C;
+    this.stampConductance(n1, n2, 0, Y);
+  }
+
+  stampInductor(n1: Node, n2: Node, L: number, frequency: number): void {
+    const Y = -1 / (2 * Math.PI * frequency * L);
+    this.stampConductance(n1, n2, 0, Y);
+  }
 }

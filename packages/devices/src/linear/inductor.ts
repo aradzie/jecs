@@ -98,7 +98,6 @@ export class Inductor extends Device {
   override loadAc(state: DeviceState, frequency: number, stamper: ComplexStamper): void {
     const { na, nb } = this;
     const L = state[S.L];
-    const Y = -1 / (2 * Math.PI * frequency * L);
-    stamper.stampConductance(na, nb, 0, Y);
+    stamper.stampInductor(na, nb, L, frequency);
   }
 }
