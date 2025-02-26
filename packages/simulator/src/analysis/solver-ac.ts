@@ -1,15 +1,18 @@
 import { Sle, SleMethod } from "@jecs/math";
-import { type Circuit, ComplexStamper } from "../circuit/index.js";
+import { type Branch, type Circuit, ComplexStamper, type Node } from "../circuit/index.js";
 import { logger } from "../util/logging.js";
 
 export class AcSolver {
   readonly #circuit: Circuit;
+  readonly #nodes: readonly (Node | Branch)[];
   readonly #sle: Sle;
   readonly #stamper: ComplexStamper;
 
   constructor(circuit: Circuit) {
+    circuit.init("ac");
     this.#circuit = circuit;
-    this.#sle = new Sle(circuit.nodes.length * 2);
+    this.#nodes = circuit.reindexNodes();
+    this.#sle = new Sle(this.#nodes.length * 2);
     this.#stamper = new ComplexStamper(this.#sle.A, this.#sle.b);
   }
 
@@ -25,7 +28,7 @@ export class AcSolver {
   }
 
   #saveSolution(): void {
-    for (const node of this.#circuit.nodes) {
+    for (const node of this.#nodes) {
       const { index } = node;
       const xr = this.#sle.x[index * 2];
       const xi = this.#sle.x[index * 2 + 1];

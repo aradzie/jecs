@@ -53,6 +53,39 @@ export class Circuit implements Network {
     return this.#bindings;
   }
 
+  makeNode(id: string): Node {
+    if (this.#nodesById.has(id)) {
+      throw new CircuitError(`Duplicate node [${id}]`);
+    }
+    const node = new Node(id);
+    this.#nodesById.set(node.id, node);
+    this.#nodes.push(node);
+    return node;
+  }
+
+  makeBranch(a: Node, b: Node): Branch {
+    const branch = new Branch(a, b);
+    this.#nodes.push(branch);
+    return branch;
+  }
+
+  connect(device: Device, nodes: readonly Node[]): void {
+    const { id } = device;
+    if (this.#devicesById.has(id)) {
+      throw new CircuitError(`Duplicate device instance [${id}]`);
+    }
+    this.#devices.push(device);
+    this.#devicesById.set(device.id, device);
+    device.connect(this, nodes);
+  }
+
+  init(analysis: "dc" | "ac"): void {
+    for (const device of this.#devices) {
+      device.state.fill(0);
+      device.init(device.props, device.state, analysis);
+    }
+  }
+
   reset(): void {
     this.#equations.set("temp", new ConstantExp(this.temp));
     this.#equations.set("time", new ConstantExp(this.time));
@@ -76,54 +109,6 @@ export class Circuit implements Network {
     }
   }
 
-  makeNode(id: string): Node {
-    if (this.#nodesById.has(id)) {
-      throw new CircuitError(`Duplicate node [${id}]`);
-    }
-    const node = new Node(this.#nodes.length, id);
-    this.#nodesById.set(node.id, node);
-    this.#nodes.push(node);
-    return node;
-  }
-
-  makeBranch(a: Node, b: Node): Branch {
-    const branch = new Branch(this.#nodes.length, a, b);
-    this.#nodes.push(branch);
-    return branch;
-  }
-
-  connect(device: Device, nodes: readonly Node[]): void {
-    const { id } = device;
-    if (this.#devicesById.has(id)) {
-      throw new CircuitError(`Duplicate device instance [${id}]`);
-    }
-    this.#devices.push(device);
-    this.#devicesById.set(device.id, device);
-    device.connect(this, nodes);
-  }
-
-  getNode(id: string): Node {
-    const node = this.#nodesById.get(id);
-    if (node == null) {
-      throw new CircuitError(`Unknown node [${id}]`);
-    }
-    return node;
-  }
-
-  getDevice(id: string): Device {
-    const device = this.#devicesById.get(id);
-    if (device == null) {
-      throw new CircuitError(`Unknown device instance [${id}]`);
-    }
-    return device;
-  }
-
-  initDc(): void {
-    for (const device of this.#devices) {
-      device.initDc(device.props, device.state);
-    }
-  }
-
   loadDc(stamper: RealStamper): void {
     for (const device of this.#devices) {
       device.loadDc(device.state, this, stamper);
@@ -133,12 +118,6 @@ export class Circuit implements Network {
   saveDc(): void {
     for (const device of this.#devices) {
       device.saveDc(device.state, this);
-    }
-  }
-
-  initTr(): void {
-    for (const device of this.#devices) {
-      device.initTr(device.props, device.state);
     }
   }
 
@@ -154,15 +133,22 @@ export class Circuit implements Network {
     }
   }
 
-  initAc(): void {
-    for (const device of this.#devices) {
-      device.initAc(device.props, device.state);
-    }
-  }
-
   loadAc(stamper: ComplexStamper): void {
     for (const device of this.#devices) {
       device.loadAc(device.state, this.frequency, stamper);
     }
+  }
+
+  reindexNodes(): (Node | Branch)[] {
+    let list: (Node | Branch)[] = [];
+    for (const node of this.#nodes) {
+      if (node.enabled && node !== groundNode) {
+        node.index = list.length;
+        list.push(node);
+      } else {
+        node.index = -1;
+      }
+    }
+    return list;
   }
 }

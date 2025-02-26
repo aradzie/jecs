@@ -61,7 +61,6 @@ export class AcAnalysis extends Analysis {
           circuit.time = NaN;
           circuit.frequency = frequency;
           circuit.reset();
-          circuit.initAc();
           solver.solve();
           dataset.capture();
         }

@@ -1,5 +1,5 @@
 import { Sle, SleMethod, vecClear, vecCopy, vecMake, type Vector } from "@jecs/math";
-import { type Circuit, RealStamper } from "../circuit/index.js";
+import { type Branch, type Circuit, type Node, RealStamper } from "../circuit/index.js";
 import { Props, type PropsSchema } from "../props/index.js";
 import { logger } from "../util/logging.js";
 import { ConvergenceError } from "./error.js";
@@ -37,8 +37,9 @@ export class NonlinearSolver {
     }),
   };
 
-  readonly #circuit: Circuit;
   readonly #options: ConvergenceOptions;
+  readonly #circuit: Circuit;
+  readonly #nodes: readonly (Node | Branch)[];
   readonly #sle: Sle;
   readonly #backupX: Vector;
   readonly #currX: Vector;
@@ -51,14 +52,16 @@ export class NonlinearSolver {
   #gMin: number;
 
   constructor(circuit: Circuit, props: Props) {
-    this.#circuit = circuit;
+    circuit.init("dc");
     this.#options = getConvergenceOptions(props);
-    this.#sle = new Sle(circuit.nodes.length);
-    this.#backupX = vecMake(this.#sle.size);
-    this.#currX = vecMake(this.#sle.size);
-    this.#prevX = vecMake(this.#sle.size);
-    this.#currB = vecMake(this.#sle.size);
-    this.#prevB = vecMake(this.#sle.size);
+    this.#circuit = circuit;
+    this.#nodes = circuit.reindexNodes();
+    this.#sle = new Sle(this.#nodes.length);
+    this.#backupX = vecMake(this.#nodes.length);
+    this.#currX = vecMake(this.#nodes.length);
+    this.#prevX = vecMake(this.#nodes.length);
+    this.#currB = vecMake(this.#nodes.length);
+    this.#prevB = vecMake(this.#nodes.length);
     this.#stamper = new RealStamper(this.#sle.A, this.#sle.b);
     this.#helper = ConvHelper.None;
     this.#sourceFactor = 1;
@@ -203,7 +206,7 @@ export class NonlinearSolver {
 
   #converged(): boolean {
     const { abstol, vntol, reltol } = this.#options;
-    for (const node of this.#circuit.nodes) {
+    for (const node of this.#nodes) {
       const { index } = node;
       switch (node.type) {
         case "node": {
@@ -238,7 +241,7 @@ export class NonlinearSolver {
   }
 
   #saveSolution(): void {
-    for (const node of this.#circuit.nodes) {
+    for (const node of this.#nodes) {
       const { index } = node;
       switch (node.type) {
         case "node":
@@ -252,7 +255,7 @@ export class NonlinearSolver {
   }
 
   #backupSolution(): void {
-    for (const node of this.#circuit.nodes) {
+    for (const node of this.#nodes) {
       const { index } = node;
       switch (node.type) {
         case "node":
@@ -266,7 +269,7 @@ export class NonlinearSolver {
   }
 
   #restoreSolution(): void {
-    for (const node of this.#circuit.nodes) {
+    for (const node of this.#nodes) {
       const { index } = node;
       switch (node.type) {
         case "node":

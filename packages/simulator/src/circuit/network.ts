@@ -16,7 +16,7 @@ export type Network = {
    * @param b A second node connected with the branch.
    */
   makeBranch(a: Node, b: Node): Branch;
-}
+};
 
 /**
  * Circuit's node.
@@ -24,29 +24,22 @@ export type Network = {
 export class Node {
   readonly type = "node" as const;
 
-  /**
-   * Node index in the MNA matrix.
-   * Ground node has the index -1 and is not a part of the MNA matrix.
-   */
-  readonly index: number;
-
-  /**
-   * Unique node id.
-   */
+  /** Unique node id. */
   readonly id: string;
 
-  /**
-   * Computed node voltage.
-   */
+  /** Whether this node is enabled. Disabled nodes are excluded from the MNA matrix. */
+  enabled: boolean = true;
+
+  /** A branch index in the MNA matrix, if enabled. */
+  index: number = -1;
+
+  /** Computed node voltage. */
   voltage = 0;
 
-  /**
-   * Computed node AC phase.
-   */
+  /** Computed node AC phase. */
   phase = 0;
 
-  constructor(index: number, id: string) {
-    this.index = index;
+  constructor(id: string) {
     this.id = id;
   }
 
@@ -61,33 +54,25 @@ export class Node {
 export class Branch {
   readonly type = "branch" as const;
 
-  /**
-   * A branch index in the MNA matrix.
-   */
-  readonly index: number;
-
-  /**
-   * The first node connected with this branch.
-   */
+  /** The first node connected with this branch. */
   readonly a: Node;
 
-  /**
-   * The second node connected with this branch.
-   */
+  /** The second node connected with this branch. */
   readonly b: Node;
 
-  /**
-   * Computed branch current.
-   */
+  /** Whether this branch is enabled. Disabled branches are excluded from the MNA matrix. */
+  enabled: boolean = true;
+
+  /** A branch index in the MNA matrix, if enabled. */
+  index: number = -1;
+
+  /** Computed branch current. */
   current = 0;
 
-  /**
-   * Computed branch AC phase.
-   */
+  /** Computed branch AC phase. */
   phase = 0;
 
-  constructor(index: number, a: Node, b: Node) {
-    this.index = index;
+  constructor(a: Node, b: Node) {
     this.a = a;
     this.b = b;
   }
@@ -97,4 +82,4 @@ export class Branch {
   }
 }
 
-export const groundNode = new Node(-1, "gnd");
+export const groundNode = new Node("gnd");
