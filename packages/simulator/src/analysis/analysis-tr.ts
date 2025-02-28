@@ -4,8 +4,8 @@ import {
   Circuit,
   ConstantExp,
   DiffMethod,
-  MAX_ORDER,
-  MIN_ORDER,
+  maxOrder,
+  minOrder,
   type Probe,
   timeProbe,
   Tran,
@@ -37,8 +37,8 @@ export class TrAnalysis extends Analysis {
       title: "integration method",
     }),
     order: Props.number({
-      defaultValue: MAX_ORDER,
-      range: ["integer", ">=", MIN_ORDER, "<=", MAX_ORDER],
+      defaultValue: maxOrder,
+      range: ["integer", ">=", minOrder, "<=", maxOrder],
       title: "integration order",
     }),
     dc: Props.string({
