@@ -3,7 +3,7 @@ export type Func = {
   x1: number;
   y1: number;
   exact: (x: number) => number;
-}
+};
 
 export const constant: Func = (x, y) => 0;
 constant.x1 = 0;

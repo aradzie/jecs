@@ -27,17 +27,17 @@
     "lint-fix": "eslint '{**/*,*}.{ts,tsx}' --fix"
   },
   "devDependencies": {
-    "@eslint/js": "^9.20.0",
-    "@types/node": "^22.13.4",
+    "@eslint/js": "^9.32.0",
+    "@types/node": "^22.16.5",
     "confusing-browser-globals": "^1.0.11",
-    "eslint": "^9.20.1",
+    "eslint": "^9.32.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "globals": "^15.15.0",
-    "lage": "^2.12.20",
-    "prettier": "^3.5.1",
+    "globals": "^16.3.0",
+    "lage": "^2.14.6",
+    "prettier": "^3.6.2",
     "rich-assert": "^0.0.3",
-    "tsx": "^4.19.2",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.24.0"
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0"
   }
 }

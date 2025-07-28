@@ -6,7 +6,7 @@ export type Location = {
   readonly column: number;
   /** Offset in the parsed source (0-based). */
   readonly offset: number;
-}
+};
 
 /**
  * Anything that can successfully be converted to a string with `String()`
@@ -22,7 +22,7 @@ export type GrammarSourceObject = {
    * at some offset.
    */
   readonly offset?: undefined | ((loc: Location) => Location);
-}
+};
 
 /**
  * Most often, you just use a string with the file name.
@@ -40,7 +40,7 @@ export type LocationRange = {
   readonly start: Location;
   /** Position after the end of the expression. */
   readonly end: Location;
-}
+};
 
 /**
  * Expected a literal string, like `"foo"i`.
@@ -49,18 +49,14 @@ export type LiteralExpectation = {
   readonly type: "literal";
   readonly text: string;
   readonly ignoreCase: boolean;
-}
+};
 
 /**
  * Range of characters, like `a-z`
  */
-export type ClassRange = [
-  start: string,
-  end: string,
-]
+export type ClassRange = [start: string, end: string];
 
-export type ClassParts = {
-} & Array<string | ClassRange>
+export type ClassParts = {} & Array<string | ClassRange>;
 
 /**
  * Expected a class, such as `[^acd-gz]i`
@@ -70,21 +66,21 @@ export type ClassExpectation = {
   readonly parts: ClassParts;
   readonly inverted: boolean;
   readonly ignoreCase: boolean;
-}
+};
 
 /**
  * Expected any character, with `.`
  */
 export type AnyExpectation = {
   readonly type: "any";
-}
+};
 
 /**
  * Expected the end of input.
  */
 export type EndExpectation = {
   readonly type: "end";
-}
+};
 
 /**
  * Expected some other input.  These are specified with a rule's
@@ -94,7 +90,7 @@ export type EndExpectation = {
 export type OtherExpectation = {
   readonly type: "other";
   readonly description: string;
-}
+};
 
 export type Expectation =
   | AnyExpectation
@@ -113,9 +109,9 @@ export type SourceText = {
   readonly source: GrammarSource;
   /** Source text of the input. */
   readonly text: string;
-}
+};
 
-export declare class SyntaxError extends Error {
+export declare class SyntaxError extends globalThis.SyntaxError {
   /**
    * Constructs the human-readable message from the machine representation.
    *
@@ -124,7 +120,6 @@ export declare class SyntaxError extends Error {
    *   expected
    */
   static buildMessage(expected: Expectation[], found?: string | null | undefined): string;
-  readonly message: string;
   readonly expected: Expectation[];
   readonly found: string | null | undefined;
   readonly location: LocationRange;
@@ -149,23 +144,23 @@ export declare class SyntaxError extends Error {
  */
 export type ParserTracer = {
   trace: (event: ParserTracerEvent) => void;
-}
+};
 
-export type ParserTracerEvent
-  = {
+export type ParserTracerEvent =
+  | {
       readonly type: "rule.enter";
       readonly rule: string;
-      readonly location: LocationRange
+      readonly location: LocationRange;
     }
   | {
       readonly type: "rule.fail";
       readonly rule: string;
-      readonly location: LocationRange
+      readonly location: LocationRange;
     }
   | {
       readonly type: "rule.match";
       readonly rule: string;
-      readonly location: LocationRange
+      readonly location: LocationRange;
       /** Return value from the rule. */
       readonly result: unknown;
     };
@@ -191,7 +186,7 @@ export type ParseOptions<T extends StartRuleNames = "Netlist"> = {
   peg$maxFailExpected?: Expectation[];
   // Extra application-specific properties
   [key: string]: unknown;
-}
+};
 
 export declare const StartRules: StartRuleNames[];
 export declare const parse: typeof ParseFunction;
